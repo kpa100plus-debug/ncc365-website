@@ -1,458 +1,224 @@
-*{
-box-sizing:border-box;
-}
-
-html{
-scroll-behavior:smooth;
-}
-
-body{
-margin:0;
-font-family:Arial,'Noto Sans KR',sans-serif;
-color:#13291d;
-background:#fff;
-overflow-x:hidden;
-}
-
-a{
-color:inherit;
-text-decoration:none;
-}
-
-img{
-display:block;
-max-width:100%;
-}
-
-
-/* HEADER */
-
-.header{
-height:82px;
-padding:0 max(5vw,24px);
-display:flex;
-align-items:center;
-border-bottom:1px solid #e4eae5;
-position:sticky;
-top:0;
-background:#fff;
-z-index:100;
-}
-
-.brand img{
-height:62px;
-width:auto;
-}
-
-.header nav{
-display:flex;
-gap:24px;
-margin-left:auto;
-font-size:14px;
-font-weight:700;
-}
-
-.menu{
-display:none;
-margin-left:auto;
-border:0;
-background:none;
-font-size:32px;
-}
-
-
-/* COMMON */
-
-.eyebrow{
-font-size:12px;
-font-weight:800;
-letter-spacing:2px;
-color:#43805d;
-margin:0 0 14px;
-}
-
-h1,h2,p{
-word-break:keep-all;
-}
-
-.buttons{
-display:flex;
-gap:10px;
-margin-top:26px;
-flex-wrap:wrap;
-}
-
-.buttons a{
-padding:15px 24px;
-background:#15663e;
-color:#fff;
-font-weight:800;
-border-radius:8px;
-}
-
-.buttons .outline{
-background:#fff;
-color:#15663e;
-border:1px solid #15663e;
-}
-
-
-/* HERO */
-
-.hero{
-padding:70px max(7vw,30px);
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:55px;
-align-items:center;
-background:linear-gradient(135deg,#f6faf7,#eaf4ec);
-}
-
-.hero h1{
-font-size:clamp(44px,5vw,68px);
-line-height:1.12;
-margin:0 0 22px;
-}
-
-.hero h1 em{
-font-style:normal;
-color:#53a94d;
-}
-
-.hero p{
-font-size:18px;
-line-height:1.7;
-color:#56635b;
-}
-
-.hero-photo img{
-width:100%;
-height:430px;
-object-fit:cover;
-border-radius:26px;
-}
-
-
-/* BENEFITS */
-
-.benefit-section{
-padding:70px max(7vw,30px);
-text-align:center;
-}
-
-.benefit-section h2{
-font-size:42px;
-line-height:1.2;
-margin:0 0 38px;
-}
-
-.benefit-grid{
-max-width:1100px;
-margin:auto;
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:14px;
-}
-
-.benefit-item{
-padding:26px 18px;
-border:1px solid #dfe7e1;
-border-radius:16px;
-background:#fff;
-}
-
-.benefit-item strong{
-display:block;
-font-size:21px;
-margin-bottom:8px;
-}
-
-.benefit-item span{
-font-size:15px;
-line-height:1.55;
-color:#66736b;
-}
-
-
-/* CENTER */
-
-.photo-section{
-margin:0 max(7vw,30px) 70px;
-display:grid;
-grid-template-columns:1fr 1fr;
-background:#0e3a27;
-color:#fff;
-border-radius:26px;
-overflow:hidden;
-}
-
-.photo-box img{
-width:100%;
-height:100%;
-min-height:420px;
-object-fit:cover;
-}
-
-.photo-copy{
-padding:55px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-}
-
-.photo-copy h2{
-font-size:42px;
-line-height:1.2;
-margin:0 0 20px;
-}
-
-.photo-copy p{
-font-size:17px;
-line-height:1.8;
-color:#cad6cf;
-}
-
-
-/* SERVICES */
-
-.service-section{
-padding:0 max(7vw,30px) 70px;
-display:grid;
-grid-template-columns:.9fr 1.1fr;
-gap:45px;
-align-items:center;
-}
-
-.service-photo img{
-width:100%;
-height:390px;
-object-fit:cover;
-border-radius:24px;
-}
-
-.service-copy h2{
-font-size:40px;
-line-height:1.2;
-margin:0 0 26px;
-}
-
-.service-list{
-display:grid;
-gap:10px;
-}
-
-.service-list div{
-padding:18px 20px;
-background:#f5f8f6;
-border-radius:12px;
-}
-
-.service-list strong{
-display:block;
-font-size:19px;
-margin-bottom:4px;
-}
-
-.service-list span{
-color:#69756d;
-}
-
-
-/* JOIN */
-
-.join-section{
-padding:70px 24px;
-text-align:center;
-background:#f5f8f6;
-}
-
-.join-section h2{
-font-size:42px;
-line-height:1.22;
-margin:0 0 20px;
-}
-
-.join-section p{
-font-size:17px;
-line-height:1.7;
-}
-
-.join-buttons{
-justify-content:center;
-}
-
-
-/* FOOTER */
-
-footer{
-padding:38px max(7vw,30px);
-background:#113123;
-color:#fff;
-}
-
-footer strong{
-font-size:22px;
-}
-
-footer p{
-font-size:14px;
-color:#c5d0c9;
-}
-
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-.header{
-height:72px;
-padding:0 18px;
-}
-
-.brand img{
-height:48px;
-}
-
-.header nav{
-display:none;
-position:absolute;
-top:72px;
-left:0;
-right:0;
-background:#fff;
-padding:20px;
-flex-direction:column;
-border-bottom:1px solid #ddd;
-}
-
-.header nav.open{
-display:flex;
-}
-
-.menu{
-display:block;
-}
-
-.hero{
-display:block;
-padding:48px 20px 34px;
-}
-
-.hero h1{
-font-size:39px;
-line-height:1.15;
-}
-
-.hero p{
-font-size:16px;
-}
-
-.buttons{
-display:grid;
-grid-template-columns:1fr;
-}
-
-.buttons a{
-width:100%;
-text-align:center;
-padding:15px 12px;
-}
-
-.hero-photo{
-margin-top:30px;
-}
-
-.hero-photo img{
-height:245px;
-border-radius:18px;
-}
-
-.benefit-section{
-padding:48px 16px;
-}
-
-.benefit-section h2{
-font-size:31px;
-margin-bottom:26px;
-}
-
-.benefit-grid{
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-.benefit-item{
-padding:20px 12px;
-min-height:130px;
-}
-
-.benefit-item strong{
-font-size:18px;
-}
-
-.benefit-item span{
-font-size:14px;
-}
-
-.photo-section{
-display:block;
-margin:0 12px 48px;
-border-radius:20px;
-}
-
-.photo-box img{
-height:240px;
-min-height:0;
-}
-
-.photo-copy{
-padding:32px 22px;
-}
-
-.photo-copy h2{
-font-size:31px;
-}
-
-.photo-copy p{
-font-size:16px;
-}
-
-.service-section{
-display:block;
-padding:0 16px 48px;
-}
-
-.service-photo img{
-height:230px;
-border-radius:18px;
-}
-
-.service-copy{
-padding-top:28px;
-}
-
-.service-copy h2{
-font-size:30px;
-}
-
-.service-list div{
-padding:15px 17px;
-}
-
-.join-section{
-padding:50px 20px;
-}
-
-.join-section h2{
-font-size:31px;
-}
-
-.join-section p{
-font-size:16px;
-}
-
-footer{
-padding:34px 20px;
-}
-
-}
+<!doctype html>
+<html lang="ko">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>전국소비자클럽 | 소비자에게 더 많은 혜택을</title>
+
+<meta name="description"
+content="전국소비자클럽은 상품 무료 경험, 공동구매, 회원 할인, 지역 혜택을 제공하는 소비자 혜택 플랫폼입니다.">
+
+<meta property="og:title"
+content="전국소비자클럽 | 소비자에게 더 많은 혜택을">
+
+<meta property="og:description"
+content="무료 회원가입으로 다양한 소비 혜택을 만나보세요.">
+
+<meta property="og:type" content="website">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- REF: NCC-HEADER-RESTORE-01 -->
+<header class="header">
+
+<a class="brand" href="#home" aria-label="전국소비자클럽 홈">
+<img src="images/NCC_header_logo.png" alt="전국소비자클럽 공식 로고">
+</a>
+
+<button class="menu" aria-label="메뉴 열기">☰</button>
+
+<nav>
+<a href="#benefit">회원혜택</a>
+<a href="#center">전국소비자센터</a>
+<a href="#service">주요서비스</a>
+<a href="#join">무료가입</a>
+</nav>
+
+</header>
+
+
+<main id="home">
+
+<!-- REF: NCC-HERO-RESTORE-01 -->
+<section class="hero">
+
+<div class="hero-text">
+
+<p class="eyebrow">NATIONAL CONSUMER CLUB</p>
+
+<h1>
+전국소비자클럽<br>
+<em>소비자에게 더 많은 혜택을</em>
+</h1>
+
+<p>
+상품 무료 경험 · 공동구매 · 회원 할인 · 지역 혜택<br>
+<strong>무료 회원가입으로 바로 만나보세요.</strong>
+</p>
+
+<div class="buttons">
+<a href="#join">무료 회원가입</a>
+<a class="outline" href="#center">전국소비자센터 참여</a>
+</div>
+
+</div>
+
+<div class="hero-photo">
+<img src="images/NCC_소비자.jpg" alt="전국소비자클럽 소비자 혜택 이미지">
+</div>
+
+</section>
+
+
+<!-- REF: NCC-BENEFIT-RESTORE-01 -->
+<section id="benefit" class="benefit-section">
+
+<p class="eyebrow">회원 핵심 혜택</p>
+
+<h2>
+가입하면 누리는<br>
+4가지 핵심 혜택
+</h2>
+
+<div class="benefit-grid">
+
+<div class="benefit-item">
+<strong>상품 무료 경험</strong>
+<span>회원에게 제공되는 다양한 상품을 무료로 경험</span>
+</div>
+
+<div class="benefit-item">
+<strong>공동구매</strong>
+<span>함께 구매하고 더 좋은 조건으로</span>
+</div>
+
+<div class="benefit-item">
+<strong>회원 할인</strong>
+<span>회원만을 위한 특별 할인 혜택</span>
+</div>
+
+<div class="benefit-item">
+<strong>지역 혜택</strong>
+<span>우리 동네에서 만나는 소비 혜택</span>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REF: NCC-CENTER-RESTORE-01 -->
+<section id="center" class="photo-section">
+
+<div class="photo-box">
+<img src="images/NCC_local_store.jpg" alt="전국소비자센터 지역 매장 이미지">
+</div>
+
+<div class="photo-copy">
+
+<p class="eyebrow">전국소비자센터</p>
+
+<h2>
+우리 지역에서<br>
+더 많은 혜택을
+</h2>
+
+<p>
+전국소비자센터는 지역 소비자와 기업·소상공인을 연결해
+우리 지역의 다양한 소비 혜택을 전달합니다.
+</p>
+
+<div class="buttons">
+<a href="#join">전국소비자센터 참여</a>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REF: NCC-SERVICE-RESTORE-01 -->
+<section id="service" class="service-section">
+
+<div class="service-photo">
+<img src="images/NCC_비즈니스.jpg" alt="전국소비자클럽 기업 제휴 이미지">
+</div>
+
+<div class="service-copy">
+
+<p class="eyebrow">전국소비자클럽 주요 서비스</p>
+
+<h2>
+혜택과 정보를<br>
+쉽고 빠르게
+</h2>
+
+<div class="service-list">
+
+<div>
+<strong>소비자ON</strong>
+<span>회원 혜택과 새로운 소비 정보를 쉽고 빠르게</span>
+</div>
+
+<div>
+<strong>전국소비자TV</strong>
+<span>상품과 소비자 혜택을 영상으로</span>
+</div>
+
+<div>
+<strong>기업·소상공인 제휴</strong>
+<span>좋은 상품과 서비스를 전국 소비자에게</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REF: NCC-JOIN-RESTORE-01 -->
+<section id="join" class="join-section">
+
+<p class="eyebrow">무료 회원가입</p>
+
+<h2>
+가입비 0원.<br>
+전국소비자클럽 회원가입은 무료입니다.
+</h2>
+
+<p>
+상품 무료 경험 · 공동구매 · 회원 할인 · 지역 혜택<br>
+지금 전국소비자클럽과 함께하세요.
+</p>
+
+<div class="buttons join-buttons">
+<a href="#">무료 회원가입</a>
+<a class="outline" href="#">전국소비자센터 참여</a>
+</div>
+
+</section>
+
+</main>
+
+
+<!-- REF: NCC-FOOTER-RESTORE-01 -->
+<footer>
+
+<strong>전국소비자클럽</strong>
+
+<p>소비자에게 더 많은 혜택을</p>
+
+<small>© NCC National Consumer Club. All rights reserved.</small>
+
+</footer>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>
