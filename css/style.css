@@ -273,3 +273,131 @@ font-size:13px
 footer small{
 font-size:11px
 }
+/* ========================================
+   NCC MOBILE FIX
+   REF: NCC-CSS-MOBILE-FIX-01
+======================================== */
+
+@media (max-width: 768px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .header {
+    height: 72px;
+    padding: 0 20px;
+    gap: 10px;
+  }
+
+  .brand img {
+    height: 48px;
+    width: auto;
+  }
+
+  .header nav {
+    display: none;
+  }
+
+  .menu {
+    display: block;
+    margin-left: auto;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 70px 24px 60px;
+    display: block;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+    line-height: 1.18;
+    word-break: keep-all;
+  }
+
+  .hero p {
+    font-size: 17px;
+    line-height: 1.7;
+    word-break: keep-all;
+  }
+
+  .hero-card {
+    margin-top: 40px;
+    width: 100%;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .buttons a {
+    width: auto;
+    padding: 15px 20px;
+    white-space: nowrap;
+  }
+
+  .intro {
+    padding: 70px 24px;
+  }
+
+  .intro h2 {
+    font-size: 36px;
+    line-height: 1.25;
+    word-break: keep-all;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 30px 20px 70px;
+  }
+
+  .grid article {
+    width: 100%;
+    min-height: auto;
+    padding: 30px 24px;
+  }
+
+  .grid article h3,
+  .grid article p {
+    word-break: keep-all;
+  }
+
+  .community {
+    display: block;
+    margin: 0;
+    padding: 70px 24px;
+  }
+
+  .community h2 {
+    font-size: 36px;
+    line-height: 1.25;
+    word-break: keep-all;
+  }
+
+  .community p {
+    word-break: keep-all;
+  }
+
+  .number {
+    margin-top: 40px;
+  }
+
+  .number b {
+    font-size: 64px;
+    line-height: 1;
+  }
+
+  .number span {
+    display: block;
+    margin-top: 12px;
+    word-break: keep-all;
+  }
+
+  footer {
+    padding: 45px 24px;
+  }
+}
