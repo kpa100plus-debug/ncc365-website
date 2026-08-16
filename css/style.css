@@ -1,611 +1,506 @@
-*{
-box-sizing:border-box;
+/* ========================================
+   NCC MOBILE WEBSITE
+   REF: NCC-CSS-MOBILE-FIX-01
+======================================== */
+
+* {
+  box-sizing: border-box;
 }
 
-html{
-scroll-behavior:smooth;
+html {
+  scroll-behavior: smooth;
 }
 
-body{
-margin:0;
-font-family:Arial,'Noto Sans KR',sans-serif;
-color:#14251c;
-background:#fff;
-overflow-x:hidden;
+body {
+  margin: 0;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+  color: #13291d;
+  background: #fff;
+  overflow-x: hidden;
 }
 
-a{
-color:inherit;
-text-decoration:none;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.header{
-height:82px;
-padding:0 max(5vw,24px);
-display:flex;
-align-items:center;
-gap:40px;
-border-bottom:1px solid #e7ece8;
-position:sticky;
-top:0;
-background:#fff;
-z-index:100;
-}
-
-.brand{
-display:flex;
-align-items:center;
-white-space:nowrap;
-}
-
-.brand img{
-height:65px;
-width:auto;
-max-width:100%;
-object-fit:contain;
-}
-
-.header nav{
-display:flex;
-gap:24px;
-margin-left:auto;
-font-size:14px;
-font-weight:700;
-align-items:center;
-}
-
-.header nav a{
-white-space:nowrap;
-}
-
-.menu{
-display:none;
-margin-left:auto;
-border:0;
-background:none;
-font-size:30px;
-cursor:pointer;
+img {
+  display: block;
+  width: 100%;
 }
 
 
-/* =========================
-   HERO
-   REF: NCC-HERO-CSS-02
-========================= */
+/* HEADER */
 
-.hero{
-min-height:620px;
-padding:90px max(7vw,30px);
-display:grid;
-grid-template-columns:1.1fr .9fr;
-align-items:center;
-gap:70px;
-background:linear-gradient(135deg,#f5faf6,#e8f2e9);
+.header {
+  height: 82px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e5e8e6;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.eyebrow{
-font-size:12px;
-letter-spacing:2px;
-color:#45815f;
-font-weight:800;
+.brand img {
+  width: 220px;
+  max-width: 58vw;
 }
 
-.hero h1{
-font-size:clamp(42px,5vw,70px);
-line-height:1.15;
-margin:15px 0 24px;
-max-width:720px;
-word-break:keep-all;
+.header nav {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+  font-weight: 700;
 }
 
-.hero h1 em{
-font-style:normal;
-color:#52a447;
-}
-
-.hero p{
-font-size:18px;
-color:#526158;
-line-height:1.75;
-word-break:keep-all;
-}
-
-.buttons{
-display:flex;
-gap:12px;
-margin-top:32px;
-flex-wrap:wrap;
-}
-
-.buttons a{
-background:#155d39;
-color:#fff;
-padding:15px 24px;
-border-radius:8px;
-font-weight:700;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-min-height:50px;
-}
-
-.buttons .outline{
-background:transparent;
-color:#155d39;
-border:1px solid #155d39;
+.menu {
+  display: none;
+  margin-left: auto;
+  border: 0;
+  background: none;
+  font-size: 36px;
+  cursor: pointer;
 }
 
 
-/* =========================
-   HERO BENEFIT CARD
-   REF: NCC-HERO-CARD-02
-========================= */
+/* HERO */
 
-.hero-card{
-min-height:360px;
-border-radius:28px;
-padding:42px;
-background:#0d4e31;
-color:#fff;
-display:flex;
-flex-direction:column;
-justify-content:center;
-box-shadow:0 25px 70px #193d2922;
-overflow:hidden;
+.hero {
+  background: #f2f8f3;
+  padding: 70px 6% 55px;
+  text-align: center;
 }
 
-.hero-card b{
-display:block;
-font-size:clamp(34px,3.5vw,54px);
-line-height:1.15;
-margin:14px 0 26px;
-word-break:keep-all;
+.eyebrow {
+  margin: 0 0 15px;
+  color: #43805d;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
 }
 
-.hero-card span{
-font-size:11px;
-letter-spacing:2px;
-opacity:.72;
+.hero h1 {
+  margin: 0;
+  font-size: clamp(40px, 7vw, 66px);
+  line-height: 1.12;
+  letter-spacing: -2px;
 }
 
-.hero-card p{
-margin:0;
-color:#fff;
-opacity:.92;
-font-size:18px;
-line-height:1.85;
-word-break:keep-all;
+.hero h1 em {
+  color: #4faa49;
+  font-style: normal;
 }
 
-
-/* =========================
-   INTRO
-========================= */
-
-.intro{
-padding:100px max(12vw,30px);
-text-align:center;
+.hero > div > p:not(.eyebrow) {
+  margin: 25px auto 0;
+  font-size: 19px;
+  line-height: 1.65;
+  color: #59675f;
 }
 
-.intro h2,
-.community h2{
-font-size:clamp(32px,4vw,52px);
-line-height:1.25;
-margin:12px 0 20px;
-word-break:keep-all;
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
 }
 
-.intro>p:last-child{
-max-width:750px;
-margin:auto;
-line-height:1.8;
-word-break:keep-all;
+.buttons a {
+  min-width: 190px;
+  padding: 17px 25px;
+  border-radius: 12px;
+  background: #15663e;
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.buttons .outline {
+  background: transparent;
+  color: #15663e;
+  border: 2px solid #15663e;
 }
 
 
-/* =========================
-   BENEFIT CARDS
-   REF: NCC-BENEFIT-GRID-02
-========================= */
+/* HERO BENEFIT CARD */
 
-.grid{
-padding:0 max(7vw,30px) 100px;
-display:grid;
-grid-template-columns:repeat(3,minmax(0,1fr));
-gap:18px;
+.hero-card {
+  max-width: 620px;
+  margin: 40px auto 0;
+  padding: 30px;
+  background: #0f5939;
+  border-radius: 26px;
+  color: white;
+  text-align: left;
 }
 
-.grid article{
-padding:40px;
-min-height:230px;
-border:1px solid #e2e9e4;
-border-radius:18px;
-background:#fff;
-transition:.2s ease;
-overflow:hidden;
+.hero-card span {
+  font-size: 14px;
+  letter-spacing: 2px;
+  opacity: .75;
 }
 
-.grid article:hover{
-transform:translateY(-4px);
-box-shadow:0 15px 40px #1d4b2b14;
+.hero-card b {
+  display: block;
+  margin: 12px 0 15px;
+  font-size: 30px;
 }
 
-.grid span{
-color:#59a84e;
-font-weight:800;
-}
-
-.grid h3{
-font-size:22px;
-margin:28px 0 12px;
-word-break:keep-all;
-}
-
-.grid p{
-color:#69756d;
-line-height:1.7;
-word-break:keep-all;
+.hero-card p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.9;
 }
 
 
-/* =========================
-   COMMUNITY / CENTER
-========================= */
+/* SECTION TITLE */
 
-.community{
-margin:0 max(7vw,30px) 90px;
-padding:65px;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:40px;
-background:#102f22;
-color:#fff;
-border-radius:25px;
-overflow:hidden;
+.intro {
+  padding: 65px 6% 35px;
+  text-align: center;
 }
 
-.community p{
-color:#bdc9c1;
-line-height:1.7;
-word-break:keep-all;
+.intro h2 {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1.2;
+  letter-spacing: -1px;
 }
 
-.number{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-text-align:center;
-min-width:0;
-}
-
-.number b{
-font-size:70px;
-line-height:1;
-color:#87c969;
-white-space:nowrap;
-}
-
-.number span{
-margin-top:12px;
-word-break:keep-all;
+.intro > p:not(.eyebrow) {
+  max-width: 650px;
+  margin: 22px auto 0;
+  color: #657168;
+  font-size: 18px;
+  line-height: 1.65;
 }
 
 
-/* =========================
-   FOOTER
-========================= */
+/* BENEFIT + SERVICE CARDS */
 
-footer{
-padding:45px max(7vw,30px);
-background:#f3f6f4;
-color:#56635b;
+.grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 5% 65px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
 
-footer strong{
-color:#155d39;
-font-size:24px;
-font-weight:700;
+.grid article {
+  min-height: 220px;
+  padding: 28px 22px;
+  border: 1px solid #e0e5e1;
+  border-radius: 20px;
+  background: white;
 }
 
-footer p{
-font-size:13px;
+.grid article > span {
+  color: #4da755;
+  font-weight: 900;
+  font-size: 17px;
 }
 
-footer small{
-font-size:11px;
+.grid h3 {
+  margin: 22px 0 12px;
+  font-size: 23px;
+  line-height: 1.3;
 }
 
-
-/* =========================
-   TABLET
-========================= */
-
-@media(max-width:900px){
-
-.header{
-height:72px;
-padding:0 20px;
-}
-
-.brand img{
-height:48px;
-}
-
-.header nav{
-display:none;
-position:absolute;
-top:72px;
-left:0;
-right:0;
-background:#fff;
-padding:20px 24px;
-flex-direction:column;
-align-items:flex-start;
-gap:18px;
-border-bottom:1px solid #ddd;
-box-shadow:0 12px 30px rgba(0,0,0,.08);
-}
-
-.header nav.open{
-display:flex;
-}
-
-.menu{
-display:block;
-}
-
-.hero{
-grid-template-columns:1fr;
-gap:40px;
-padding:70px 24px 60px;
-}
-
-.hero-card{
-width:100%;
-min-height:auto;
-}
-
-.grid{
-grid-template-columns:1fr 1fr;
-}
-
-.community{
-grid-template-columns:1fr;
-}
-
+.grid article p {
+  margin: 0;
+  color: #68736c;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 
-/* =========================
+/* CENTER */
+
+.community {
+  margin: 0 auto;
+  padding: 55px 7%;
+  max-width: 1100px;
+  background: #103c2c;
+  color: white;
+  border-radius: 28px;
+  display: grid;
+  grid-template-columns: 1.5fr .7fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.community h2 {
+  margin: 10px 0 20px;
+  font-size: 42px;
+  line-height: 1.2;
+}
+
+.community > div > p:not(.eyebrow) {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #d1ddd5;
+}
+
+.community .buttons {
+  justify-content: flex-start;
+}
+
+.community .buttons a {
+  background: #197448;
+}
+
+.number {
+  text-align: center;
+}
+
+.number b {
+  display: block;
+  font-size: 55px;
+}
+
+.number span {
+  display: block;
+  margin-top: 8px;
+  color: #c9d8cf;
+}
+
+
+/* JOIN */
+
+#join {
+  padding-bottom: 75px;
+}
+
+
+/* FOOTER */
+
+footer {
+  padding: 45px 6%;
+  background: #f5f7f6;
+}
+
+footer strong {
+  display: block;
+  color: #176b44;
+  font-size: 27px;
+}
+
+footer p {
+  color: #68736c;
+}
+
+footer small {
+  color: #778078;
+}
+
+
+/* ========================================
    MOBILE
-   REF: NCC-MOBILE-FINAL-02
-========================= */
+======================================== */
 
-@media(max-width:768px){
+@media (max-width: 768px) {
 
-body{
-overflow-x:hidden;
+  .header {
+    height: 72px;
+    padding: 0 5%;
+  }
+
+  .brand img {
+    width: 205px;
+  }
+
+  .menu {
+    display: block;
+    font-size: 38px;
+  }
+
+  .header nav {
+    display: none;
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #eee;
+    flex-direction: column;
+  }
+
+  .header nav.open {
+    display: flex;
+  }
+
+
+  /* HERO 길이 축소 */
+
+  .hero {
+    padding: 45px 5% 38px;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+  }
+
+  .hero h1 {
+    font-size: 39px;
+    line-height: 1.12;
+  }
+
+  .hero > div > p:not(.eyebrow) {
+    font-size: 17px;
+    line-height: 1.55;
+    margin-top: 20px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .buttons a {
+    width: 100%;
+    padding: 16px 12px;
+    font-size: 18px;
+  }
+
+
+  /* 상단 혜택박스 */
+
+  .hero-card {
+    margin-top: 28px;
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .hero-card b {
+    font-size: 27px;
+  }
+
+  .hero-card p {
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+
+  /* 제목 여백 축소 */
+
+  .intro {
+    padding: 45px 5% 28px;
+  }
+
+  .intro h2 {
+    font-size: 32px;
+    line-height: 1.22;
+  }
+
+
+  /* 핵심: 4개 혜택을 2×2 */
+
+  .grid {
+    padding: 0 4% 45px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .grid article {
+    min-height: 175px;
+    padding: 20px 15px;
+    border-radius: 16px;
+  }
+
+  .grid article > span {
+    font-size: 14px;
+  }
+
+  .grid h3 {
+    margin: 15px 0 8px;
+    font-size: 19px;
+  }
+
+  .grid article p {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+
+  /* 전국소비자센터 */
+
+  .community {
+    margin: 0 4%;
+    padding: 38px 24px;
+    display: block;
+    border-radius: 22px;
+  }
+
+  .community h2 {
+    font-size: 32px;
+  }
+
+  .community > div > p:not(.eyebrow) {
+    font-size: 16px;
+  }
+
+  .community .buttons {
+    margin-top: 22px;
+  }
+
+  .number {
+    margin-top: 30px;
+  }
+
+  .number b {
+    font-size: 42px;
+  }
+
+
+  /* 가입 */
+
+  #join {
+    padding-bottom: 50px;
+  }
+
+  #join h2 {
+    font-size: 34px;
+  }
+
+
+  /* FOOTER */
+
+  footer {
+    padding: 35px 6%;
+  }
+
+  footer strong {
+    font-size: 24px;
+  }
 }
 
-.header{
-height:72px;
-padding:0 18px;
-}
 
-.brand{
-max-width:75%;
-}
+/* 작은 스마트폰 */
 
-.brand img{
-height:48px;
-max-width:100%;
-}
+@media (max-width: 390px) {
 
-.menu{
-font-size:32px;
-line-height:1;
-}
+  .hero h1 {
+    font-size: 35px;
+  }
 
-.hero{
-min-height:auto;
-padding:64px 22px 50px;
-display:block;
-}
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
 
-.eyebrow{
-font-size:11px;
-letter-spacing:1.7px;
-}
+  .grid h3 {
+    font-size: 18px;
+  }
 
-.hero h1{
-font-size:clamp(38px,10vw,48px);
-line-height:1.16;
-margin:14px 0 24px;
-max-width:none;
-word-break:keep-all;
-overflow-wrap:normal;
-}
-
-.hero p{
-font-size:17px;
-line-height:1.75;
-word-break:keep-all;
-overflow-wrap:normal;
-}
-
-.buttons{
-display:grid;
-grid-template-columns:1fr;
-gap:10px;
-margin-top:28px;
-}
-
-.buttons a{
-width:100%;
-padding:15px 16px;
-white-space:normal;
-text-align:center;
-font-size:16px;
-}
-
-.hero-card{
-margin-top:40px;
-width:100%;
-min-height:auto;
-padding:32px 26px;
-border-radius:24px;
-justify-content:flex-start;
-}
-
-.hero-card b{
-font-size:34px;
-line-height:1.2;
-margin:12px 0 22px;
-word-break:keep-all;
-white-space:normal;
-}
-
-.hero-card p{
-font-size:17px;
-line-height:1.9;
-word-break:keep-all;
-}
-
-.intro{
-padding:64px 22px;
-}
-
-.intro h2,
-.community h2{
-font-size:34px;
-line-height:1.28;
-word-break:keep-all;
-}
-
-.intro>p:last-child{
-font-size:16px;
-line-height:1.8;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr;
-gap:14px;
-padding:10px 18px 64px;
-}
-
-.grid article{
-width:100%;
-min-height:auto;
-padding:28px 22px;
-border-radius:16px;
-}
-
-.grid h3{
-font-size:21px;
-margin:20px 0 10px;
-}
-
-.grid p{
-font-size:16px;
-line-height:1.7;
-}
-
-.community{
-display:block;
-margin:0 14px 60px;
-padding:44px 24px;
-border-radius:22px;
-}
-
-.community h2{
-font-size:34px;
-}
-
-.community p{
-font-size:16px;
-line-height:1.8;
-}
-
-.number{
-margin-top:38px;
-align-items:flex-start;
-text-align:left;
-}
-
-.number b{
-font-size:54px;
-}
-
-.number span{
-font-size:15px;
-line-height:1.5;
-}
-
-footer{
-padding:40px 22px;
-}
-
-footer strong{
-font-size:22px;
-}
-
-}
-
-
-/* =========================
-   SMALL MOBILE
-========================= */
-
-@media(max-width:420px){
-
-.brand img{
-height:43px;
-}
-
-.hero{
-padding:56px 18px 44px;
-}
-
-.hero h1{
-font-size:39px;
-}
-
-.hero p{
-font-size:16px;
-}
-
-.hero-card{
-padding:28px 22px;
-}
-
-.hero-card b{
-font-size:30px;
-}
-
-.intro{
-padding:56px 18px;
-}
-
-.intro h2,
-.community h2{
-font-size:30px;
-}
-
-.grid{
-padding-left:14px;
-padding-right:14px;
-}
-
-.community{
-margin-left:10px;
-margin-right:10px;
-padding:38px 20px;
-}
-
-.number b{
-font-size:48px;
-}
+  .grid article p {
+    font-size: 14px;
+  }
 
 }
