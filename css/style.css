@@ -79,9 +79,11 @@ font-weight:800
 
 
 .hero h1{
-font-size:clamp(45px,6vw,80px);
-line-height:1.06;
-margin:15px 0
+font-size:clamp(42px,5vw,70px);
+line-height:1.15;
+margin:15px 0;
+max-width:620px;
+word-break:keep-all;
 }
 
 
