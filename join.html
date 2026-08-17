@@ -474,16 +474,46 @@ FREE MEMBERSHIP
 <label>
 관심 혜택
 </label>
+
+<select id="benefit">
+
+<option value="전체 혜택">
+전체 혜택
+</option>
+
+<option value="상품 무료 경험">
+상품 무료 경험
+</option>
+
+<option value="공동구매">
+공동구매
+</option>
+
+<option value="회원 할인">
+회원 할인
+</option>
+
+<option value="지역 혜택">
+지역 혜택
+</option>
+
+</select>
+
+</div>
+
+
 <div class="form-group">
 
 <label>
 회원 유형
 </label>
 
-<input id="memberType" value="consumer" readonly>
+<input 
+id="memberType"
+value="consumer"
+readonly>
 
 </div>
-<select>
 
 <option>
 전체 혜택
@@ -577,27 +607,92 @@ measurementId: "G-2YR29B054J"
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-document.getElementById("memberForm").addEventListener("submit", async function(e){
+
+
+const form = document.getElementById("memberForm");
+
+
+form.addEventListener("submit", async (e)=>{
+
 
 e.preventDefault();
 
+
+try{
+
+
 const memberData = {
 
-name: document.getElementById("name").value,
 
-phone: document.getElementById("phone").value,
+name:
+document.getElementById("name").value,
 
-region: document.getElementById("region").value,
 
-email: document.getElementById("email").value,
+phone:
+document.getElementById("phone").value,
 
-memberType: "consumer",
 
-status: "active",
+region:
+document.getElementById("region").value,
 
-joinDate: new Date()
+
+email:
+document.getElementById("email").value,
+
+
+benefit:
+document.getElementById("benefit").value,
+
+
+memberType:
+document.getElementById("memberType").value,
+
+
+status:
+"active",
+
+
+joinDate:
+serverTimestamp()
+
 
 };
+
+
+
+await addDoc(
+collection(db,"members"),
+memberData
+);
+
+
+
+alert(
+"전국소비자클럽 회원가입이 완료되었습니다."
+);
+
+
+
+form.reset();
+
+
+
+}catch(error){
+
+
+console.error(error);
+
+
+alert(
+"저장 오류 발생 : "+error.message
+);
+
+
+}
+
+
+
+});
 
 
 await addDoc(collection(db,"members"), memberData);
