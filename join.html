@@ -2,428 +2,333 @@
 <html lang="ko">
 
 <head>
-
 <meta charset="utf-8">
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>NCC 소비자회원 가입 | 전국소비자클럽</title>
 
 <meta name="description"
 content="전국소비자클럽 무료 회원가입. 상품 무료 경험, 공동구매, 회원 할인, 지역 혜택을 만나보세요.">
 
-
 <style>
 
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 body{
+  margin:0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
 
-margin:0;
-
-font-family:
--apple-system,
-BlinkMacSystemFont,
-"Apple SD Gothic Neo",
-"Malgun Gothic",
-sans-serif;
-
-background:#f5f8f6;
-
-color:#12291c;
-
-letter-spacing:-0.03em;
-
+  background:#f5f8f6;
+  color:#12291c;
+  letter-spacing:-0.03em;
 }
-
 
 a{
-text-decoration:none;
-color:inherit;
+  text-decoration:none;
+  color:inherit;
 }
-
-
 
 .header{
-
-height:75px;
-
-background:#fff;
-
-display:flex;
-
-align-items:center;
-
-padding:0 25px;
-
-border-bottom:1px solid #e5ebe6;
-
+  height:75px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  padding:0 25px;
+  border-bottom:1px solid #e5ebe6;
 }
-
 
 .logo img{
-
-width:190px;
-
+  width:190px;
 }
-
-
 
 .container{
-
-width:min(700px,92%);
-
-margin:45px auto;
-
+  width:min(700px,92%);
+  margin:45px auto;
 }
-
-
 
 .card{
-
-background:#fff;
-
-border-radius:22px;
-
-padding:35px 30px;
-
-box-shadow:0 15px 40px rgba(0,0,0,.06);
-
+  background:#fff;
+  border-radius:22px;
+  padding:35px 30px;
+  box-shadow:0 15px 40px rgba(0,0,0,.06);
 }
-
-
 
 .eyebrow{
-
-font-size:12px;
-
-font-weight:800;
-
-letter-spacing:.12em;
-
-color:#39805a;
-
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.12em;
+  color:#39805a;
 }
-
-
 
 h1{
-
-font-size:42px;
-
-line-height:1.15;
-
-margin:12px 0;
-
-letter-spacing:-.06em;
-
+  font-size:42px;
+  line-height:1.15;
+  margin:12px 0;
+  letter-spacing:-.06em;
 }
-
 
 h1 span{
-
-color:#50a94b;
-
+  color:#50a94b;
 }
-
-
 
 .subtitle{
-
-font-size:17px;
-
-line-height:1.7;
-
-color:#647168;
-
+  font-size:17px;
+  line-height:1.7;
+  color:#647168;
 }
-
-
 
 .benefits{
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:10px;
-
-margin:25px 0;
-
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:25px 0;
 }
-
-
 
 .benefit{
-
-background:#f3f7f4;
-
-padding:18px;
-
-border-radius:12px;
-
-font-weight:700;
-
+  background:#f3f7f4;
+  padding:18px;
+  border-radius:12px;
+  font-weight:700;
 }
-
-
 
 .form-group{
-
-margin-top:18px;
-
+  margin-top:18px;
 }
-
-
 
 label{
-
-display:block;
-
-font-size:14px;
-
-font-weight:700;
-
-margin-bottom:7px;
-
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:7px;
 }
-
-
 
 input,
 select{
-
-width:100%;
-
-padding:15px;
-
-border:1px solid #d6dfd9;
-
-border-radius:10px;
-
-font-size:15px;
-
+  width:100%;
+  padding:15px;
+  border:1px solid #d6dfd9;
+  border-radius:10px;
+  font-size:15px;
+  background:#fff;
 }
-
-
 
 .agree{
-
-margin:25px 0;
-
-font-size:14px;
-
+  margin:25px 0;
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
-
+.agree input{
+  width:auto;
+}
 
 button{
-
-width:100%;
-
-height:55px;
-
-border:0;
-
-border-radius:12px;
-
-background:#176b42;
-
-color:white;
-
-font-size:17px;
-
-font-weight:800;
-
-cursor:pointer;
-
+  width:100%;
+  height:55px;
+  border:0;
+  border-radius:12px;
+  background:#176b42;
+  color:white;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
 }
 
-
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
 
 .notice{
-
-margin-top:20px;
-
-padding:18px;
-
-background:#f0f5f1;
-
-border-radius:12px;
-
-font-size:13px;
-
-line-height:1.6;
-
-color:#657269;
-
+  margin-top:20px;
+  padding:18px;
+  background:#f0f5f1;
+  border-radius:12px;
+  font-size:13px;
+  line-height:1.6;
+  color:#657269;
 }
-
-
 
 footer{
-
-text-align:center;
-
-padding:30px;
-
-font-size:12px;
-
-color:#78857d;
-
+  text-align:center;
+  padding:30px;
+  font-size:12px;
+  color:#78857d;
 }
-
-
 
 @media(max-width:600px){
 
+  .header{
+    height:68px;
+    padding:0 18px;
+  }
 
-.header{
+  .logo img{
+    width:170px;
+  }
 
-height:68px;
+  .container{
+    margin:25px auto;
+  }
 
-padding:0 18px;
+  .card{
+    padding:25px 18px;
+  }
 
-}
+  h1{
+    font-size:34px;
+  }
 
+  .subtitle{
+    font-size:15px;
+  }
 
-.logo img{
-
-width:170px;
-
-}
-
-
-.container{
-
-margin:25px auto;
-
-}
-
-
-.card{
-
-padding:25px 18px;
-
-}
-
-
-h1{
-
-font-size:34px;
-
-}
-
-
-.subtitle{
-
-font-size:15px;
-
-}
-
-
-.benefits{
-
-grid-template-columns:1fr;
-
-}
-
-
+  .benefits{
+    grid-template-columns:1fr;
+  }
 }
 
 </style>
-
 </head>
-
 
 <body>
 
-
 <header class="header">
 
-<a class="logo" href="index.html">
-
-<img src="images/NCC_header_logo.png"
-alt="전국소비자클럽 공식 로고">
-
-</a>
+  <a class="logo" href="index.html">
+    <img src="images/NCC_header_logo.png"
+    alt="전국소비자클럽 공식 로고">
+  </a>
 
 </header>
 
 
-
 <div class="container">
 
-
 <div class="card">
-
 
 <p class="eyebrow">
 FREE MEMBERSHIP
 </p>
 
-
 <h1>
-
 전국소비자클럽<br>
-
 <span>무료 회원가입</span>
-
 </h1>
 
-
 <p class="subtitle">
-
 가입비 0원.<br>
-
-회원이 되면 상품 무료 경험,
-공동구매, 회원 할인,
+회원이 되면 상품 무료 경험, 공동구매, 회원 할인,
 지역 혜택을 만나보실 수 있습니다.
-
 </p>
-
 
 
 <div class="benefits">
 
+  <div class="benefit">
+    🎁 상품 무료 경험
+  </div>
 
-<div class="benefit">
+  <div class="benefit">
+    🛒 공동구매 혜택
+  </div>
 
-🎁 상품 무료 경험
+  <div class="benefit">
+    💰 회원 할인
+  </div>
 
-</div>
-
-
-<div class="benefit">
-
-🛒 공동구매 혜택
-
-</div>
-
-
-<div class="benefit">
-
-💰 회원 할인
+  <div class="benefit">
+    🏪 지역 혜택
+  </div>
 
 </div>
 
 
-<div class="benefit">
+<form id="memberForm">
 
-🏪 지역 혜택
+  <div class="form-group">
+    <label for="name">이름 *</label>
+    <input
+      id="name"
+      type="text"
+      placeholder="이름을 입력하세요"
+      required>
+  </div>
 
-</div>
+  <div class="form-group">
+    <label for="phone">연락처 *</label>
+    <input
+      id="phone"
+      type="tel"
+      placeholder="010-0000-0000"
+      required>
+  </div>
 
+  <div class="form-group">
+    <label for="region">거주지역 *</label>
+    <input
+      id="region"
+      type="text"
+      placeholder="지역을 입력하세요"
+      required>
+  </div>
 
-</div>
+  <div class="form-group">
+    <label for="email">이메일</label>
+    <input
+      id="email"
+      type="email"
+      placeholder="이메일을 입력하세요">
+  </div>
 
+  <div class="form-group">
+    <label for="benefit">관심 혜택</label>
 
+    <select id="benefit">
+      <option value="전체 혜택">전체 혜택</option>
+      <option value="상품 무료 경험">상품 무료 경험</option>
+      <option value="공동구매">공동구매</option>
+      <option value="회원 할인">회원 할인</option>
+      <option value="지역 혜택">지역 혜택</option>
+    </select>
+  </div>
 
+  <div class="form-group">
+    <label for="memberType">회원 유형</label>
 
+    <input
+      id="memberType"
+      value="consumer"
+      readonly>
+  </div>
 
+  <div class="agree">
 
+    <input
+      id="agreePrivacy"
+      type="checkbox"
+      required>
+
+    <label for="agreePrivacy" style="margin:0;">
+      개인정보 수집 및 이용에 동의합니다.
+    </label>
+
+  </div>
+
+  <button id="submitButton" type="submit">
+    무료 회원가입 신청
+  </button>
+
+</form>
 
 
 <div class="notice">
@@ -435,19 +340,13 @@ FREE MEMBERSHIP
 
 </div>
 
-
-
 </div>
-
-
 </div>
-
 
 
 <footer>
 
 전국소비자클럽 NCC<br>
-
 소비자에게 더 많은 혜택을
 
 </footer>
@@ -455,18 +354,34 @@ FREE MEMBERSHIP
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 const firebaseConfig = {
-apiKey: "AIzaSyBHL7qCPUwcp9Vp_1dYWfCk2qBvRgJ9mcM",
-authDomain: "ncc-member.firebaseapp.com",
-projectId: "ncc-member",
-storageBucket: "ncc-member.firebasestorage.app",
-messagingSenderId: "772423138834",
-appId: "1:772423138834:web:753b6d6dc6f394904822cb",
-measurementId: "G-2YR29B054J"
+
+  apiKey: "AIzaSyBHL7qCPUwcp9Vp_1dYWfCk2qBvRgJ9mcM",
+
+  authDomain: "ncc-member.firebaseapp.com",
+
+  projectId: "ncc-member",
+
+  storageBucket: "ncc-member.firebasestorage.app",
+
+  messagingSenderId: "772423138834",
+
+  appId: "1:772423138834:web:753b6d6dc6f394904822cb",
+
+  measurementId: "G-2YR29B054J"
+
 };
 
 
@@ -474,101 +389,96 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-
 const form = document.getElementById("memberForm");
 
-
-form.addEventListener("submit", async (e)=>{
-
-
-e.preventDefault();
+const submitButton =
+document.getElementById("submitButton");
 
 
-try{
+form.addEventListener("submit", async function(e){
+
+  e.preventDefault();
+
+  submitButton.disabled = true;
+
+  submitButton.textContent = "가입정보 저장 중...";
 
 
-const memberData = {
+  try{
+
+    const memberData = {
+
+      name:
+      document.getElementById("name").value.trim(),
+
+      phone:
+      document.getElementById("phone").value.trim(),
+
+      region:
+      document.getElementById("region").value.trim(),
+
+      email:
+      document.getElementById("email").value.trim(),
+
+      benefit:
+      document.getElementById("benefit").value,
+
+      memberType:
+      "consumer",
+
+      agreePrivacy:
+      document.getElementById("agreePrivacy").checked,
+
+      status:
+      "active",
+
+      joinDate:
+      serverTimestamp()
+
+    };
 
 
-name:
-document.getElementById("name").value,
+    await addDoc(
+      collection(db,"members"),
+      memberData
+    );
 
 
-phone:
-document.getElementById("phone").value,
+    alert(
+      "전국소비자클럽 회원가입이 완료되었습니다."
+    );
 
 
-region:
-document.getElementById("region").value,
+    form.reset();
+
+    document.getElementById("memberType").value =
+    "consumer";
 
 
-email:
-document.getElementById("email").value,
+  }catch(error){
 
+    console.error(
+      "회원가입 저장 오류:",
+      error
+    );
 
-benefit:
-document.getElementById("benefit").value,
+    alert(
+      "회원가입 저장 중 오류가 발생했습니다.\n\n" +
+      error.message
+    );
 
+  }finally{
 
-memberType:
-document.getElementById("memberType").value,
+    submitButton.disabled = false;
 
+    submitButton.textContent =
+    "무료 회원가입 신청";
 
-status:
-"active",
-
-
-joinDate:
-serverTimestamp()
-
-
-};
-
-
-
-await addDoc(
-collection(db,"members"),
-memberData
-);
-
-
-
-alert(
-"전국소비자클럽 회원가입이 완료되었습니다."
-);
-
-
-
-form.reset();
-
-
-
-}catch(error){
-
-
-console.error(error);
-
-
-alert(
-"저장 오류 발생 : "+error.message
-);
-
-
-}
-
-
-
-});
-
-
-await addDoc(collection(db,"members"), memberData);
-console.log("Firestore 저장 완료", memberData);
-
-alert("전국소비자클럽 회원가입이 완료되었습니다.");
+  }
 
 });
 
 </script>
-</body>
 
+</body>
 </html>
