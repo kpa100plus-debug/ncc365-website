@@ -1,1 +1,695 @@
+<!doctype html>
+<html lang="ko">
 
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>전국소비자센터 | 전국소비자클럽</title>
+
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"Apple SD Gothic Neo",
+"Malgun Gothic",
+sans-serif;
+background:#f5f8f6;
+color:#12291c;
+letter-spacing:-0.03em;
+}
+
+
+.header{
+
+height:75px;
+background:#fff;
+display:flex;
+align-items:center;
+padding:0 25px;
+border-bottom:1px solid #e5ebe6;
+
+}
+
+
+.logo img{
+width:190px;
+}
+
+
+.container{
+
+width:min(950px,92%);
+margin:45px auto;
+
+}
+
+
+.card{
+
+background:#fff;
+border-radius:24px;
+padding:38px;
+margin-bottom:24px;
+box-shadow:0 15px 40px rgba(0,0,0,.06);
+
+}
+
+
+
+.eyebrow{
+
+font-size:12px;
+font-weight:850;
+letter-spacing:.13em;
+color:#39805a;
+
+}
+
+
+h1{
+
+font-size:46px;
+line-height:1.15;
+letter-spacing:-.06em;
+margin:12px 0;
+
+}
+
+
+h1 span{
+
+color:#50a94b;
+
+}
+
+
+
+h2{
+
+font-size:32px;
+letter-spacing:-.05em;
+
+}
+
+
+.desc{
+
+font-size:17px;
+line-height:1.75;
+color:#657269;
+
+}
+
+
+
+.grid{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:13px;
+
+}
+
+
+
+.box{
+
+background:#f2f6f3;
+padding:25px;
+border-radius:15px;
+
+}
+
+
+
+.box strong{
+
+display:block;
+font-size:20px;
+margin-bottom:10px;
+
+}
+
+
+
+.box p{
+
+margin:0;
+font-size:14px;
+line-height:1.6;
+color:#66736b;
+
+}
+
+
+
+
+.dark{
+
+background:#103d2b;
+color:white;
+
+}
+
+
+.dark p{
+
+color:#cad8d0;
+
+}
+
+
+.dark .box{
+
+background:rgba(255,255,255,.08);
+
+}
+
+
+
+.role{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+
+}
+
+
+.role div{
+
+padding:22px;
+background:#f4f7f5;
+border-radius:14px;
+
+font-weight:700;
+
+}
+
+
+
+.process{
+
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+
+}
+
+
+.process span{
+
+padding:13px 18px;
+background:#176b42;
+color:white;
+border-radius:30px;
+font-weight:700;
+
+}
+
+
+
+.btn{
+
+display:inline-flex;
+height:55px;
+padding:0 35px;
+align-items:center;
+justify-content:center;
+border-radius:12px;
+background:#176b42;
+color:white;
+font-weight:800;
+font-size:17px;
+
+}
+
+
+
+.cta{
+
+text-align:center;
+
+}
+
+
+
+footer{
+
+text-align:center;
+padding:30px;
+font-size:12px;
+color:#78857d;
+
+}
+
+
+
+
+@media(max-width:700px){
+
+
+.header{
+
+height:68px;
+padding:0 18px;
+
+}
+
+
+.logo img{
+
+width:170px;
+
+}
+
+
+
+.container{
+
+margin:25px auto;
+
+}
+
+
+
+.card{
+
+padding:25px 18px;
+
+}
+
+
+
+h1{
+
+font-size:34px;
+
+}
+
+
+h2{
+
+font-size:27px;
+
+}
+
+
+
+.grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+
+.role{
+
+grid-template-columns:1fr;
+
+}
+
+
+
+.process{
+
+display:block;
+
+}
+
+
+.process span{
+
+display:block;
+margin-bottom:8px;
+text-align:center;
+
+}
+
+
+}
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+<header class="header">
+
+<a class="logo" href="index.html">
+
+<img src="images/NCC_header_logo.png"
+alt="전국소비자클럽">
+
+</a>
+
+</header>
+
+
+
+
+<div class="container">
+
+
+
+<div class="card">
+
+
+<p class="eyebrow">
+NATIONAL CONSUMER CENTER
+</p>
+
+
+<h1>
+
+전국소비자센터<br>
+
+<span>지역 소비자 혜택의 중심</span>
+
+</h1>
+
+
+<p class="desc">
+
+전국소비자센터는 지역 소비자와
+기업·소상공인을 연결하는
+NCC 지역 네트워크입니다.
+
+소비자는 더 많은 혜택을 받고,
+지역 사업자는 새로운 고객과 만납니다.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="card dark">
+
+
+<h2>
+
+왜 전국소비자센터가 필요한가?
+
+</h2>
+
+
+<div class="grid">
+
+
+<div class="box">
+
+<strong>
+소비자
+</strong>
+
+<p>
+
+더 좋은 상품과 서비스,
+할인과 다양한 혜택을 만납니다.
+
+</p>
+
+</div>
+
+
+
+<div class="box">
+
+<strong>
+지역
+</strong>
+
+<p>
+
+지역 내 소비와 사업자를 연결하는
+새로운 네트워크를 만듭니다.
+
+</p>
+
+</div>
+
+
+
+<div class="box">
+
+<strong>
+기업·소상공인
+</strong>
+
+<p>
+
+좋은 상품과 서비스를
+소비자에게 알릴 기회를 얻습니다.
+
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+
+전국소비자센터장의 역할
+
+</h2>
+
+
+
+<div class="role">
+
+
+<div>
+
+① 지역 소비자에게 NCC 혜택 안내
+
+</div>
+
+
+<div>
+
+② 지역 제휴 매장 및 사업자 연결
+
+</div>
+
+
+<div>
+
+③ 소비자 커뮤니티 운영 참여
+
+</div>
+
+
+<div>
+
+④ 지역별 새로운 혜택 발굴
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+
+NCC 지역 확장 구조
+
+</h2>
+
+
+<div class="process">
+
+
+<span>
+전국소비자클럽
+</span>
+
+
+<span>
+전국소비자센터
+</span>
+
+
+<span>
+지역 소비자
+</span>
+
+
+<span>
+기업·소상공인
+</span>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+
+센터장 참여 가치
+
+</h2>
+
+
+<div class="grid">
+
+
+<div class="box">
+
+<strong>
+지역 네트워크
+</strong>
+
+<p>
+
+내 지역 소비자와
+사업자를 연결하는 역할
+
+</p>
+
+</div>
+
+
+<div class="box">
+
+<strong>
+새로운 기회
+</strong>
+
+<p>
+
+소비 혜택 중심의
+새로운 플랫폼 참여
+
+</p>
+
+</div>
+
+
+<div class="box">
+
+<strong>
+함께 성장
+</strong>
+
+<p>
+
+소비자·사업자와 함께
+성장하는 구조
+
+</p>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card cta">
+
+
+<h2>
+
+전국소비자센터와<br>
+
+함께 시작하세요
+
+</h2>
+
+
+<p class="desc">
+
+우리 지역의 소비자 혜택을
+함께 만들어갈 분을 기다립니다.
+
+</p>
+
+
+
+<a class="btn"
+href="center.html">
+
+센터장 참여 신청
+
+</a>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+<footer>
+
+전국소비자클럽 NCC<br>
+
+소비자에게 더 많은 혜택을
+
+</footer>
+
+
+
+</body>
+
+</html>
