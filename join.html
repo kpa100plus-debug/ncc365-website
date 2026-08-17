@@ -597,7 +597,7 @@ joinDate: new Date()
 
 
 await addDoc(collection(db,"members"), memberData);
-
+console.log("Firestore 저장 완료", memberData);
 
 alert("전국소비자클럽 회원가입이 완료되었습니다.");
 
