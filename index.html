@@ -9,169 +9,1015 @@
 <meta name="description"
 content="전국소비자클럽은 상품 무료 경험, 공동구매, 회원 할인, 지역 혜택을 제공하는 소비자 혜택 플랫폼입니다.">
 
-<meta property="og:title" content="전국소비자클럽 | 소비자에게 더 많은 혜택을">
-<meta property="og:description" content="무료 회원가입으로 다양한 소비 혜택을 만나보세요.">
+<meta property="og:title"
+content="전국소비자클럽 | 소비자에게 더 많은 혜택을">
+
+<meta property="og:description"
+content="무료 회원가입으로 다양한 소비 혜택을 만나보세요.">
+
 <meta property="og:type" content="website">
 
-<link rel="stylesheet" href="css/style.css">
+<style>
+
+/* =========================================================
+   NCC ONE FILE MASTER
+   REF: NCC-WEB-ONEFILE-MASTER-01
+========================================================= */
+
+*{
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+margin:0;
+font-family:
+system-ui,
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+"Apple SD Gothic Neo",
+"Malgun Gothic",
+sans-serif;
+color:#12291c;
+background:#ffffff;
+overflow-x:hidden;
+font-weight:400;
+letter-spacing:-0.025em;
+}
+
+a{
+color:inherit;
+text-decoration:none;
+}
+
+img{
+display:block;
+max-width:100%;
+}
+
+button{
+font:inherit;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+height:78px;
+padding:0 clamp(22px,6vw,100px);
+display:flex;
+align-items:center;
+background:#ffffff;
+border-bottom:1px solid #e6ebe7;
+position:sticky;
+top:0;
+z-index:999;
+}
+
+.brand{
+display:flex;
+align-items:center;
+}
+
+.brand img{
+width:205px;
+height:auto;
+}
+
+.header nav{
+margin-left:auto;
+display:flex;
+align-items:center;
+gap:27px;
+font-size:14px;
+font-weight:700;
+letter-spacing:-0.03em;
+}
+
+.header nav a:hover{
+color:#197045;
+}
+
+.menu{
+display:none;
+margin-left:auto;
+border:0;
+background:transparent;
+font-size:34px;
+font-weight:400;
+line-height:1;
+cursor:pointer;
+}
+
+
+/* =========================
+   COMMON
+========================= */
+
+.eyebrow{
+margin:0 0 13px;
+font-size:13px;
+font-weight:800;
+letter-spacing:.14em;
+color:#397d59;
+}
+
+.section-head{
+text-align:center;
+margin-bottom:30px;
+}
+
+.section-head h2{
+margin:0;
+font-size:clamp(30px,3vw,43px);
+line-height:1.16;
+letter-spacing:-0.055em;
+}
+
+.buttons{
+display:flex;
+gap:11px;
+margin-top:26px;
+}
+
+.btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+min-height:52px;
+padding:0 25px;
+border-radius:10px;
+background:#176b42;
+border:2px solid #176b42;
+color:#ffffff;
+font-size:16px;
+font-weight:700;
+letter-spacing:-0.04em;
+transition:.2s ease;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+}
+
+.btn.outline{
+background:transparent;
+color:#176b42;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+padding:66px clamp(24px,6vw,100px);
+display:grid;
+grid-template-columns:1fr .95fr;
+gap:55px;
+align-items:center;
+background:
+linear-gradient(135deg,#f4faf5 0%,#eaf4ec 100%);
+}
+
+.hero-copy{
+max-width:680px;
+}
+
+.hero h1{
+margin:0;
+font-size:clamp(46px,5vw,72px);
+line-height:1.06;
+font-weight:800;
+letter-spacing:-0.065em;
+word-break:keep-all;
+}
+
+.hero h1 em{
+display:block;
+margin-top:9px;
+font-style:normal;
+color:#4eaa49;
+}
+
+.hero-desc{
+margin:24px 0 0;
+font-size:18px;
+line-height:1.75;
+color:#59675f;
+word-break:keep-all;
+}
+
+.hero-desc strong{
+display:block;
+color:#263f31;
+font-weight:700;
+}
+
+.hero-photo img{
+width:100%;
+height:360px;
+object-fit:cover;
+border-radius:24px;
+}
+
+
+/* =========================
+   BENEFIT
+========================= */
+
+.benefits{
+padding:66px clamp(20px,6vw,100px);
+}
+
+.benefit-grid{
+max-width:1180px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+}
+
+.benefit-card{
+padding:28px 20px;
+border:1px solid #dfe6e1;
+border-radius:18px;
+background:#ffffff;
+text-align:center;
+}
+
+.benefit-icon{
+font-size:31px;
+line-height:1;
+margin-bottom:14px;
+}
+
+.benefit-card strong{
+display:block;
+margin-bottom:8px;
+font-size:20px;
+font-weight:750;
+letter-spacing:-0.045em;
+}
+
+.benefit-card span{
+display:block;
+font-size:15px;
+line-height:1.55;
+color:#657269;
+word-break:keep-all;
+}
+
+
+/* =========================
+   PHOTO FEATURE
+========================= */
+
+.feature{
+max-width:1180px;
+margin:0 auto 58px;
+display:grid;
+grid-template-columns:1fr 1fr;
+overflow:hidden;
+border-radius:25px;
+background:#f4f7f5;
+}
+
+.feature-image img{
+width:100%;
+height:100%;
+min-height:380px;
+object-fit:cover;
+}
+
+.feature-copy{
+padding:50px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+.feature-copy h2{
+margin:0 0 20px;
+font-size:clamp(34px,3.4vw,48px);
+line-height:1.14;
+font-weight:800;
+letter-spacing:-0.06em;
+word-break:keep-all;
+}
+
+.feature-copy > p:not(.eyebrow){
+margin:0;
+font-size:17px;
+line-height:1.75;
+color:#69756d;
+word-break:keep-all;
+}
+
+.feature.dark{
+background:#103b2a;
+color:#ffffff;
+}
+
+.feature.dark .eyebrow{
+color:#8dc8a1;
+}
+
+.feature.dark .feature-copy > p:not(.eyebrow){
+color:#cbd8d0;
+}
+
+.feature.dark .btn{
+margin-top:24px;
+align-self:flex-start;
+background:#1d774b;
+border-color:#1d774b;
+}
+
+
+/* =========================
+   SERVICES
+========================= */
+
+.service-list{
+display:grid;
+gap:9px;
+margin-top:5px;
+}
+
+.service-row{
+padding:16px 18px;
+background:#ffffff;
+border-radius:11px;
+}
+
+.service-row strong{
+display:block;
+font-size:18px;
+font-weight:750;
+letter-spacing:-0.04em;
+margin-bottom:3px;
+}
+
+.service-row span{
+font-size:15px;
+color:#67746c;
+}
+
+
+/* =========================
+   JOIN
+========================= */
+
+.join{
+padding:70px 22px;
+text-align:center;
+background:#f4f7f5;
+}
+
+.join h2{
+margin:0;
+font-size:clamp(34px,4vw,50px);
+line-height:1.14;
+font-weight:800;
+letter-spacing:-0.06em;
+word-break:keep-all;
+}
+
+.join-desc{
+margin:22px auto 0;
+max-width:680px;
+font-size:17px;
+line-height:1.7;
+color:#5e6b63;
+word-break:keep-all;
+}
+
+.join .buttons{
+justify-content:center;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+padding:38px clamp(22px,6vw,100px);
+background:#113123;
+color:#ffffff;
+}
+
+footer strong{
+display:block;
+font-size:23px;
+font-weight:750;
+}
+
+footer p{
+margin:8px 0 0;
+font-size:14px;
+color:#c6d2ca;
+}
+
+footer small{
+display:block;
+margin-top:16px;
+font-size:12px;
+color:#8fa097;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:768px){
+
+.header{
+height:70px;
+padding:0 18px;
+}
+
+.brand img{
+width:185px;
+}
+
+.header nav{
+display:none;
+position:absolute;
+top:70px;
+left:0;
+right:0;
+background:#ffffff;
+padding:18px 22px 24px;
+flex-direction:column;
+align-items:flex-start;
+gap:18px;
+border-bottom:1px solid #dde4df;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.header nav.open{
+display:flex;
+}
+
+.menu{
+display:block;
+}
+
+
+/* HERO */
+
+.hero{
+display:block;
+padding:42px 20px 32px;
+}
+
+.hero-copy{
+max-width:none;
+}
+
+.eyebrow{
+font-size:12px;
+margin-bottom:10px;
+}
+
+.hero h1{
+font-size:39px;
+line-height:1.09;
+letter-spacing:-0.055em;
+}
+
+.hero h1 em{
+margin-top:7px;
+}
+
+.hero-desc{
+font-size:16px;
+line-height:1.65;
+margin-top:19px;
+}
+
+.hero .buttons{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:9px;
+}
+
+.btn{
+min-height:52px;
+padding:0 8px;
+font-size:15px;
+font-weight:700;
+border-radius:9px;
+}
+
+.hero-photo{
+margin-top:25px;
+}
+
+.hero-photo img{
+height:220px;
+border-radius:18px;
+}
+
+
+/* BENEFIT */
+
+.benefits{
+padding:43px 14px;
+}
+
+.section-head{
+margin-bottom:23px;
+}
+
+.section-head h2{
+font-size:29px;
+}
+
+.benefit-grid{
+grid-template-columns:1fr 1fr;
+gap:9px;
+}
+
+.benefit-card{
+min-height:155px;
+padding:18px 10px;
+border-radius:15px;
+}
+
+.benefit-icon{
+font-size:26px;
+margin-bottom:10px;
+}
+
+.benefit-card strong{
+font-size:17px;
+margin-bottom:7px;
+}
+
+.benefit-card span{
+font-size:13px;
+line-height:1.45;
+}
+
+
+/* FEATURE */
+
+.feature{
+display:block;
+margin:0 12px 39px;
+border-radius:19px;
+}
+
+.feature-image img{
+height:215px;
+min-height:0;
+}
+
+.feature-copy{
+padding:29px 21px;
+}
+
+.feature-copy h2{
+font-size:30px;
+margin-bottom:16px;
+}
+
+.feature-copy > p:not(.eyebrow){
+font-size:15px;
+line-height:1.65;
+}
+
+.feature.dark .btn{
+width:100%;
+}
+
+
+/* SERVICES */
+
+.service-list{
+gap:8px;
+}
+
+.service-row{
+padding:13px 14px;
+}
+
+.service-row strong{
+font-size:17px;
+}
+
+.service-row span{
+font-size:14px;
+}
+
+
+/* JOIN */
+
+.join{
+padding:46px 18px;
+}
+
+.join h2{
+font-size:31px;
+}
+
+.join-desc{
+font-size:15px;
+line-height:1.65;
+}
+
+.join .buttons{
+display:grid;
+grid-template-columns:1fr;
+}
+
+
+/* FOOTER */
+
+footer{
+padding:31px 21px;
+}
+
+}
+
+
+/* SMALL MOBILE */
+
+@media(max-width:390px){
+
+.hero h1{
+font-size:35px;
+}
+
+.hero .buttons{
+grid-template-columns:1fr;
+}
+
+.benefit-card strong{
+font-size:16px;
+}
+
+}
+
+</style>
 </head>
+
 
 <body>
 
-<!-- REF: NCC-HEADER-ONE-TOUCH-01 -->
+
+<!-- =========================
+     HEADER
+     REF: NCC-HEADER-ONEFILE-01
+========================= -->
+
 <header class="header">
-  <a class="brand" href="#home">
-    <img src="images/NCC_header_logo.png" alt="전국소비자클럽 공식 로고">
-  </a>
 
-  <button class="menu" aria-label="메뉴 열기">☰</button>
+<a class="brand" href="#home">
+<img src="images/NCC_header_logo.png"
+alt="전국소비자클럽 공식 로고">
+</a>
 
-  <nav>
-    <a href="#benefit">회원혜택</a>
-    <a href="#center">전국소비자센터</a>
-    <a href="#service">주요서비스</a>
-    <a href="#join">무료가입</a>
-  </nav>
+<button class="menu"
+id="menuButton"
+aria-label="메뉴 열기">
+☰
+</button>
+
+<nav id="mainNav">
+<a href="#benefit">회원혜택</a>
+<a href="#center">전국소비자센터</a>
+<a href="#service">주요서비스</a>
+<a href="#join">무료가입</a>
+</nav>
+
 </header>
+
+
 
 <main id="home">
 
-<!-- REF: NCC-HERO-ONE-TOUCH-01 -->
+
+<!-- =========================
+     HERO
+     REF: NCC-HERO-ONEFILE-01
+========================= -->
+
 <section class="hero">
-  <div class="hero-copy">
-    <p class="eyebrow">NATIONAL CONSUMER CLUB</p>
 
-    <h1>
-      전국소비자클럽
-      <em>소비자에게 더 많은 혜택을</em>
-    </h1>
+<div class="hero-copy">
 
-    <p class="hero-desc">
-      상품 무료 경험 · 공동구매 · 회원 할인 · 지역 혜택
-      <strong>무료 회원가입으로 바로 만나보세요.</strong>
-    </p>
+<p class="eyebrow">
+NATIONAL CONSUMER CLUB
+</p>
 
-    <div class="buttons">
-      <a href="#join">무료 회원가입</a>
-      <a class="outline" href="#center">전국소비자센터 참여</a>
-    </div>
-  </div>
+<h1>
+전국소비자클럽
+<em>소비자에게 더 많은 혜택을</em>
+</h1>
 
-  <div class="hero-photo">
-    <img src="images/NCC_consumer.jpg" alt="전국소비자클럽 소비자 혜택">
-  </div>
+<p class="hero-desc">
+상품 무료 경험 · 공동구매 · 회원 할인 · 우리 지역 혜택
+<strong>
+무료 회원가입으로 바로 만나보세요.
+</strong>
+</p>
+
+<div class="buttons">
+
+<a class="btn" href="#join">
+무료 회원가입
+</a>
+
+<a class="btn outline" href="#center">
+전국소비자센터 참여
+</a>
+
+</div>
+
+</div>
+
+
+<div class="hero-photo">
+
+<img src="images/NCC_consumer.jpg"
+alt="전국소비자클럽 소비자 혜택">
+
+</div>
+
 </section>
 
 
-<!-- REF: NCC-BENEFIT-ONE-TOUCH-01 -->
+
+<!-- =========================
+     BENEFITS
+     REF: NCC-BENEFIT-ONEFILE-01
+========================= -->
+
 <section id="benefit" class="benefits">
-  <div class="section-title">
-    <p class="eyebrow">회원 핵심 혜택</p>
-    <h2>가입하면 누리는 4가지 혜택</h2>
-  </div>
 
-  <div class="benefit-grid">
-    <div class="benefit-card">
-      <b>🎁</b>
-      <strong>상품 무료 경험</strong>
-      <span>회원에게 제공되는 상품과 서비스를 무료로 경험</span>
-    </div>
+<div class="section-head">
 
-    <div class="benefit-card">
-      <b>🛒</b>
-      <strong>공동구매</strong>
-      <span>함께 구매하고 더 좋은 조건과 혜택으로</span>
-    </div>
+<p class="eyebrow">
+회원 핵심 혜택
+</p>
 
-    <div class="benefit-card">
-      <b>💰</b>
-      <strong>회원 할인</strong>
-      <span>전국소비자클럽 회원을 위한 특별 할인</span>
-    </div>
+<h2>
+가입하면 누리는 4가지 혜택
+</h2>
 
-    <div class="benefit-card">
-      <b>🏪</b>
-      <strong>우리 지역 혜택</strong>
-      <span>전국소비자센터를 통해 만나는 지역 소비 혜택</span>
-    </div>
-  </div>
+</div>
+
+
+<div class="benefit-grid">
+
+<div class="benefit-card">
+<div class="benefit-icon">🎁</div>
+<strong>상품 무료 경험</strong>
+<span>
+회원에게 제공되는 다양한 상품과 서비스를 무료로 경험
+</span>
+</div>
+
+
+<div class="benefit-card">
+<div class="benefit-icon">🛒</div>
+<strong>공동구매</strong>
+<span>
+함께 구매하고 더 좋은 조건과 혜택으로
+</span>
+</div>
+
+
+<div class="benefit-card">
+<div class="benefit-icon">💰</div>
+<strong>회원 할인</strong>
+<span>
+전국소비자클럽 회원을 위한 특별 할인
+</span>
+</div>
+
+
+<div class="benefit-card">
+<div class="benefit-icon">🏪</div>
+<strong>우리 지역 혜택</strong>
+<span>
+전국소비자센터를 통해 만나는 지역 소비 혜택
+</span>
+</div>
+
+</div>
+
 </section>
 
 
-<!-- REF: NCC-CENTER-ONE-TOUCH-01 -->
-<section id="center" class="feature feature-dark">
-  <img src="images/NCC_local_store.jpg" alt="전국소비자센터 지역 제휴 매장">
 
-  <div class="feature-copy">
-    <p class="eyebrow">전국소비자센터</p>
-    <h2>우리 지역에서<br>더 많은 혜택을</h2>
+<!-- =========================
+     CONSUMER CENTER
+     REF: NCC-CENTER-ONEFILE-01
+========================= -->
 
-    <p>
-      지역 소비자와 기업·소상공인을 연결하고
-      우리 지역에서 누릴 수 있는 다양한 소비 혜택을 전달합니다.
-    </p>
+<section id="center" class="feature dark">
 
-    <a class="feature-button" href="#join">전국소비자센터 참여</a>
-  </div>
+<div class="feature-image">
+
+<img src="images/NCC_local_store.jpg"
+alt="전국소비자센터 지역 제휴 매장">
+
+</div>
+
+
+<div class="feature-copy">
+
+<p class="eyebrow">
+전국소비자센터
+</p>
+
+<h2>
+우리 지역에서<br>
+더 많은 혜택을
+</h2>
+
+<p>
+지역 소비자와 기업·소상공인을 연결하고
+우리 지역에서 누릴 수 있는 다양한 소비 혜택을 전달합니다.
+</p>
+
+<a class="btn" href="#join">
+전국소비자센터 참여
+</a>
+
+</div>
+
 </section>
 
 
-<!-- REF: NCC-SERVICE-ONE-TOUCH-01 -->
+
+<!-- =========================
+     SERVICE
+     REF: NCC-SERVICE-ONEFILE-01
+========================= -->
+
 <section id="service" class="feature">
-  <img src="images/NCC_business.jpg" alt="전국소비자클럽 기업 소상공인 제휴">
 
-  <div class="feature-copy">
-    <p class="eyebrow">주요 서비스</p>
-    <h2>혜택과 정보를<br>쉽고 빠르게</h2>
+<div class="feature-image">
 
-    <div class="service-list">
-      <div>
-        <strong>소비자ON</strong>
-        <span>새로운 혜택과 소비 정보를 한눈에</span>
-      </div>
+<img src="images/NCC_business.jpg"
+alt="전국소비자클럽 기업 소상공인 제휴">
 
-      <div>
-        <strong>전국소비자TV</strong>
-        <span>상품과 소비자 혜택을 영상으로</span>
-      </div>
+</div>
 
-      <div>
-        <strong>기업·소상공인 제휴</strong>
-        <span>좋은 상품과 서비스를 전국 소비자에게</span>
-      </div>
-    </div>
-  </div>
+
+<div class="feature-copy">
+
+<p class="eyebrow">
+전국소비자클럽 주요 서비스
+</p>
+
+<h2>
+혜택과 정보를<br>
+쉽고 빠르게
+</h2>
+
+
+<div class="service-list">
+
+<div class="service-row">
+<strong>소비자ON</strong>
+<span>
+회원 혜택과 새로운 소비 정보를 한눈에
+</span>
+</div>
+
+
+<div class="service-row">
+<strong>전국소비자TV</strong>
+<span>
+상품·서비스·소비자 혜택을 영상으로
+</span>
+</div>
+
+
+<div class="service-row">
+<strong>기업·소상공인 제휴</strong>
+<span>
+좋은 상품과 서비스를 전국 소비자에게
+</span>
+</div>
+
+</div>
+
+</div>
+
 </section>
 
 
-<!-- REF: NCC-JOIN-ONE-TOUCH-01 -->
+
+<!-- =========================
+     JOIN
+     REF: NCC-JOIN-ONEFILE-01
+========================= -->
+
 <section id="join" class="join">
-  <p class="eyebrow">무료 회원가입</p>
 
-  <h2>
-    가입비 0원.<br>
-    회원가입은 무료입니다.
-  </h2>
+<p class="eyebrow">
+무료 회원가입
+</p>
 
-  <p>
-    상품 무료 경험 · 공동구매 · 회원 할인 · 지역 혜택<br>
-    전국소비자클럽과 함께 더 많은 혜택을 만나보세요.
-  </p>
+<h2>
+가입비 0원.<br>
+회원가입은 무료입니다.
+</h2>
 
-  <div class="buttons">
-    <a href="#">무료 회원가입</a>
-    <a class="outline" href="#">전국소비자센터 참여</a>
-  </div>
+<p class="join-desc">
+상품 무료 경험 · 공동구매 · 회원 할인 · 우리 지역 혜택<br>
+전국소비자클럽과 함께 더 많은 소비 혜택을 만나보세요.
+</p>
+
+
+<div class="buttons">
+
+<a class="btn" href="#">
+무료 회원가입
+</a>
+
+<a class="btn outline" href="#center">
+전국소비자센터 참여
+</a>
+
+</div>
+
 </section>
+
 
 </main>
 
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
 <footer>
-  <strong>전국소비자클럽</strong>
-  <span>소비자에게 더 많은 혜택을</span>
-  <small>© NCC National Consumer Club. All rights reserved.</small>
+
+<strong>
+전국소비자클럽
+</strong>
+
+<p>
+소비자에게 더 많은 혜택을
+</p>
+
+<small>
+© NCC National Consumer Club. All rights reserved.
+</small>
+
 </footer>
 
-<script src="js/main.js"></script>
+
+
+<script>
+
+/* =========================================
+   NCC MOBILE MENU
+   REF: NCC-JS-ONEFILE-01
+========================================= */
+
+const menuButton =
+document.getElementById("menuButton");
+
+const mainNav =
+document.getElementById("mainNav");
+
+menuButton.addEventListener("click", function(){
+
+mainNav.classList.toggle("open");
+
+});
+
+
+mainNav.querySelectorAll("a").forEach(function(link){
+
+link.addEventListener("click",function(){
+
+mainNav.classList.remove("open");
+
+});
+
+});
+
+</script>
+
+
 </body>
 </html>
