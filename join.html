@@ -574,9 +574,33 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 document.getElementById("memberForm").addEventListener("submit", async function(e){
-  e.preventDefault();
 
-  alert("가입정보 저장 테스트");
+e.preventDefault();
+
+const memberData = {
+
+name: document.getElementById("name").value,
+
+phone: document.getElementById("phone").value,
+
+region: document.getElementById("region").value,
+
+email: document.getElementById("email").value,
+
+memberType: "consumer",
+
+status: "active",
+
+joinDate: new Date()
+
+};
+
+
+await addDoc(collection(db,"members"), memberData);
+
+
+alert("전국소비자클럽 회원가입이 완료되었습니다.");
+
 });
 
 </script>
