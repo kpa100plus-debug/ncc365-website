@@ -422,7 +422,7 @@ FREE MEMBERSHIP
 
 
 
-<form>
+<form id="memberForm">
 
 
 <div class="form-group">
@@ -431,7 +431,7 @@ FREE MEMBERSHIP
 이름 *
 </label>
 
-<input placeholder="이름을 입력하세요">
+<input id="name" placeholder="이름을 입력하세요">
 
 </div>
 
@@ -443,7 +443,7 @@ FREE MEMBERSHIP
 연락처 *
 </label>
 
-<input placeholder="010-0000-0000">
+<input id="phone" placeholder="010-0000-0000">
 
 </div>
 
@@ -455,18 +455,34 @@ FREE MEMBERSHIP
 거주지역 *
 </label>
 
-<input placeholder="예) 서울 강남구">
+<input id="region" placeholder="지역을 입력하세요">
 
 </div>
 
+<div class="form-group">
 
+<label>
+이메일
+</label>
+
+<input id="email" placeholder="이메일을 입력하세요">
+
+</div>
 
 <div class="form-group">
 
 <label>
 관심 혜택
 </label>
+<div class="form-group">
 
+<label>
+회원 유형
+</label>
+
+<input id="memberType" value="consumer" readonly>
+
+</div>
 <select>
 
 <option>
@@ -497,19 +513,15 @@ FREE MEMBERSHIP
 
 <div class="agree">
 
-<input type="checkbox">
-
+<input id="agreePrivacy" type="checkbox">
 개인정보 수집 및 이용에 동의합니다.
 
 </div>
 
 
 
-<button type="button"
-onclick="alert('가입 신청이 접수되었습니다. 상담 후 안내드립니다.')">
-
+<button type="submit">
 무료 회원가입 신청
-
 </button>
 
 
@@ -545,7 +557,29 @@ onclick="alert('가입 신청이 접수되었습니다. 상담 후 안내드립�
 </footer>
 
 
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "여기에 Firebase 키 입력",
+  authDomain: "여기에 입력",
+  projectId: "ncc-member"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+document.getElementById("memberForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  alert("가입정보 저장 테스트");
+});
+
+</script>
 </body>
 
 </html>
