@@ -1,506 +1,460 @@
-/* ========================================
-   NCC MOBILE WEBSITE
-   REF: NCC-CSS-MOBILE-FIX-01
-======================================== */
-
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+html{
+  scroll-behavior:smooth;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, "Noto Sans KR", sans-serif;
-  color: #13291d;
-  background: #fff;
-  overflow-x: hidden;
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans KR",sans-serif;
+  color:#13291d;
+  background:#fff;
+  overflow-x:hidden;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+a{
+  color:inherit;
+  text-decoration:none;
 }
 
-img {
-  display: block;
-  width: 100%;
+img{
+  display:block;
+  width:100%;
 }
 
-
-/* HEADER */
-
-.header {
-  height: 82px;
-  padding: 0 5%;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #e5e8e6;
-  background: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+.header{
+  height:76px;
+  padding:0 5%;
+  display:flex;
+  align-items:center;
+  background:#fff;
+  border-bottom:1px solid #e6ebe7;
+  position:sticky;
+  top:0;
+  z-index:100;
 }
 
-.brand img {
-  width: 220px;
-  max-width: 58vw;
+.brand img{
+  width:205px;
+  height:auto;
 }
 
-.header nav {
-  display: flex;
-  gap: 24px;
-  margin-left: auto;
-  font-weight: 700;
+.header nav{
+  display:flex;
+  gap:22px;
+  margin-left:auto;
+  font-size:14px;
+  font-weight:800;
 }
 
-.menu {
-  display: none;
-  margin-left: auto;
-  border: 0;
-  background: none;
-  font-size: 36px;
-  cursor: pointer;
+.menu{
+  display:none;
+  margin-left:auto;
+  padding:0;
+  border:0;
+  background:none;
+  font-size:34px;
 }
 
-
-/* HERO */
-
-.hero {
-  background: #f2f8f3;
-  padding: 70px 6% 55px;
-  text-align: center;
+.eyebrow{
+  margin:0 0 10px;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  color:#478460;
 }
 
-.eyebrow {
-  margin: 0 0 15px;
-  color: #43805d;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 2px;
+.hero{
+  min-height:520px;
+  padding:55px 6%;
+  display:grid;
+  grid-template-columns:1fr .9fr;
+  align-items:center;
+  gap:42px;
+  background:linear-gradient(135deg,#f5faf6,#eaf4ec);
 }
 
-.hero h1 {
-  margin: 0;
-  font-size: clamp(40px, 7vw, 66px);
-  line-height: 1.12;
-  letter-spacing: -2px;
+.hero h1{
+  margin:0;
+  font-size:clamp(42px,5vw,65px);
+  line-height:1.08;
+  letter-spacing:-2px;
 }
 
-.hero h1 em {
-  color: #4faa49;
-  font-style: normal;
+.hero h1 em{
+  display:block;
+  margin-top:8px;
+  color:#50a94b;
+  font-style:normal;
 }
 
-.hero > div > p:not(.eyebrow) {
-  margin: 25px auto 0;
-  font-size: 19px;
-  line-height: 1.65;
-  color: #59675f;
+.hero-desc{
+  margin:22px 0 0;
+  color:#5d6962;
+  font-size:18px;
+  line-height:1.65;
 }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 30px;
+.hero-desc strong{
+  display:block;
+  margin-top:5px;
+  color:#344d3e;
 }
 
-.buttons a {
-  min-width: 190px;
-  padding: 17px 25px;
-  border-radius: 12px;
-  background: #15663e;
-  color: white;
-  font-size: 18px;
-  font-weight: 800;
+.hero-photo img{
+  height:350px;
+  object-fit:cover;
+  border-radius:24px;
 }
 
-.buttons .outline {
-  background: transparent;
-  color: #15663e;
-  border: 2px solid #15663e;
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:25px;
 }
 
-
-/* HERO BENEFIT CARD */
-
-.hero-card {
-  max-width: 620px;
-  margin: 40px auto 0;
-  padding: 30px;
-  background: #0f5939;
-  border-radius: 26px;
-  color: white;
-  text-align: left;
+.buttons a,
+.feature-button{
+  display:inline-block;
+  padding:15px 23px;
+  background:#176b42;
+  color:#fff;
+  font-weight:900;
+  border-radius:10px;
+  text-align:center;
 }
 
-.hero-card span {
-  font-size: 14px;
-  letter-spacing: 2px;
-  opacity: .75;
+.buttons .outline{
+  background:transparent;
+  color:#176b42;
+  border:2px solid #176b42;
 }
 
-.hero-card b {
-  display: block;
-  margin: 12px 0 15px;
-  font-size: 30px;
+.benefits{
+  padding:55px 6%;
 }
 
-.hero-card p {
-  margin: 0;
-  font-size: 19px;
-  line-height: 1.9;
+.section-title{
+  text-align:center;
 }
 
-
-/* SECTION TITLE */
-
-.intro {
-  padding: 65px 6% 35px;
-  text-align: center;
+.section-title h2{
+  margin:0 0 30px;
+  font-size:38px;
+  line-height:1.2;
 }
 
-.intro h2 {
-  margin: 0;
-  font-size: 42px;
-  line-height: 1.2;
-  letter-spacing: -1px;
+.benefit-grid{
+  max-width:1100px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
 }
 
-.intro > p:not(.eyebrow) {
-  max-width: 650px;
-  margin: 22px auto 0;
-  color: #657168;
-  font-size: 18px;
-  line-height: 1.65;
+.benefit-card{
+  padding:25px 18px;
+  border:1px solid #e0e6e2;
+  border-radius:18px;
+  background:#fff;
+  text-align:center;
 }
 
-
-/* BENEFIT + SERVICE CARDS */
-
-.grid {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 5% 65px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+.benefit-card b{
+  display:block;
+  font-size:30px;
+  margin-bottom:9px;
 }
 
-.grid article {
-  min-height: 220px;
-  padding: 28px 22px;
-  border: 1px solid #e0e5e1;
-  border-radius: 20px;
-  background: white;
+.benefit-card strong{
+  display:block;
+  font-size:20px;
+  margin-bottom:8px;
 }
 
-.grid article > span {
-  color: #4da755;
-  font-weight: 900;
-  font-size: 17px;
+.benefit-card span{
+  color:#69756d;
+  font-size:15px;
+  line-height:1.5;
 }
 
-.grid h3 {
-  margin: 22px 0 12px;
-  font-size: 23px;
-  line-height: 1.3;
+.feature{
+  max-width:1180px;
+  margin:0 auto 55px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  overflow:hidden;
+  border-radius:24px;
+  background:#f4f7f5;
 }
 
-.grid article p {
-  margin: 0;
-  color: #68736c;
-  font-size: 16px;
-  line-height: 1.6;
+.feature > img{
+  height:380px;
+  object-fit:cover;
 }
 
-
-/* CENTER */
-
-.community {
-  margin: 0 auto;
-  padding: 55px 7%;
-  max-width: 1100px;
-  background: #103c2c;
-  color: white;
-  border-radius: 28px;
-  display: grid;
-  grid-template-columns: 1.5fr .7fr;
-  gap: 40px;
-  align-items: center;
+.feature-copy{
+  padding:45px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 
-.community h2 {
-  margin: 10px 0 20px;
-  font-size: 42px;
-  line-height: 1.2;
+.feature-copy h2{
+  margin:0 0 18px;
+  font-size:38px;
+  line-height:1.15;
 }
 
-.community > div > p:not(.eyebrow) {
-  font-size: 18px;
-  line-height: 1.7;
-  color: #d1ddd5;
+.feature-copy > p:not(.eyebrow){
+  margin:0;
+  color:#68756d;
+  font-size:17px;
+  line-height:1.7;
 }
 
-.community .buttons {
-  justify-content: flex-start;
+.feature-dark{
+  background:#103c2b;
+  color:#fff;
 }
 
-.community .buttons a {
-  background: #197448;
+.feature-dark .eyebrow{
+  color:#8bc89d;
 }
 
-.number {
-  text-align: center;
+.feature-dark .feature-copy > p:not(.eyebrow){
+  color:#d0ddd5;
 }
 
-.number b {
-  display: block;
-  font-size: 55px;
+.feature-dark .feature-button{
+  margin-top:22px;
+  align-self:flex-start;
+  background:#1a7749;
 }
 
-.number span {
-  display: block;
-  margin-top: 8px;
-  color: #c9d8cf;
+.service-list{
+  display:grid;
+  gap:8px;
 }
 
-
-/* JOIN */
-
-#join {
-  padding-bottom: 75px;
+.service-list div{
+  padding:14px 16px;
+  background:#fff;
+  border-radius:10px;
 }
 
-
-/* FOOTER */
-
-footer {
-  padding: 45px 6%;
-  background: #f5f7f6;
+.service-list strong{
+  display:block;
+  margin-bottom:3px;
+  font-size:18px;
 }
 
-footer strong {
-  display: block;
-  color: #176b44;
-  font-size: 27px;
+.service-list span{
+  color:#6b776f;
+  font-size:15px;
 }
 
-footer p {
-  color: #68736c;
+.join{
+  padding:60px 6%;
+  text-align:center;
+  background:#f4f7f5;
 }
 
-footer small {
-  color: #778078;
+.join h2{
+  margin:0 0 18px;
+  font-size:40px;
+  line-height:1.18;
 }
 
+.join > p:not(.eyebrow){
+  margin:0;
+  font-size:17px;
+  line-height:1.7;
+}
 
-/* ========================================
-   MOBILE
-======================================== */
+.join .buttons{
+  justify-content:center;
+}
 
-@media (max-width: 768px) {
+footer{
+  padding:35px 6%;
+  background:#113123;
+  color:#fff;
+}
 
-  .header {
-    height: 72px;
-    padding: 0 5%;
+footer strong{
+  display:block;
+  font-size:23px;
+}
+
+footer span{
+  display:block;
+  margin-top:8px;
+  color:#c6d2ca;
+  font-size:14px;
+}
+
+footer small{
+  display:block;
+  margin-top:15px;
+  color:#93a39a;
+}
+
+@media(max-width:768px){
+
+  .header{
+    height:68px;
+    padding:0 18px;
   }
 
-  .brand img {
-    width: 205px;
+  .brand img{
+    width:180px;
   }
 
-  .menu {
-    display: block;
-    font-size: 38px;
+  .header nav{
+    display:none;
+    position:absolute;
+    top:68px;
+    left:0;
+    right:0;
+    padding:20px;
+    background:#fff;
+    flex-direction:column;
+    border-bottom:1px solid #ddd;
   }
 
-  .header nav {
-    display: none;
-    position: absolute;
-    top: 72px;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 20px;
-    background: white;
-    border-top: 1px solid #eee;
-    flex-direction: column;
+  .header nav.open{
+    display:flex;
   }
 
-  .header nav.open {
-    display: flex;
+  .menu{
+    display:block;
   }
 
-
-  /* HERO 길이 축소 */
-
-  .hero {
-    padding: 45px 5% 38px;
+  .hero{
+    min-height:auto;
+    display:block;
+    padding:38px 18px 30px;
   }
 
-  .eyebrow {
-    font-size: 13px;
-    letter-spacing: 1.5px;
+  .hero-copy{
+    text-align:left;
   }
 
-  .hero h1 {
-    font-size: 39px;
-    line-height: 1.12;
+  .hero h1{
+    font-size:38px;
+    line-height:1.1;
+    letter-spacing:-1.5px;
   }
 
-  .hero > div > p:not(.eyebrow) {
-    font-size: 17px;
-    line-height: 1.55;
-    margin-top: 20px;
+  .hero-desc{
+    margin-top:18px;
+    font-size:16px;
   }
 
-  .buttons {
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 24px;
+  .buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:20px;
   }
 
-  .buttons a {
-    width: 100%;
-    padding: 16px 12px;
-    font-size: 18px;
+  .buttons a{
+    padding:14px 8px;
+    font-size:15px;
   }
 
-
-  /* 상단 혜택박스 */
-
-  .hero-card {
-    margin-top: 28px;
-    padding: 24px;
-    border-radius: 20px;
+  .hero-photo{
+    margin-top:24px;
   }
 
-  .hero-card b {
-    font-size: 27px;
+  .hero-photo img{
+    height:215px;
+    border-radius:17px;
   }
 
-  .hero-card p {
-    font-size: 17px;
-    line-height: 1.75;
+  .benefits{
+    padding:38px 14px;
   }
 
-
-  /* 제목 여백 축소 */
-
-  .intro {
-    padding: 45px 5% 28px;
+  .section-title h2{
+    margin-bottom:22px;
+    font-size:29px;
   }
 
-  .intro h2 {
-    font-size: 32px;
-    line-height: 1.22;
+  .benefit-grid{
+    grid-template-columns:1fr 1fr;
+    gap:9px;
   }
 
-
-  /* 핵심: 4개 혜택을 2×2 */
-
-  .grid {
-    padding: 0 4% 45px;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+  .benefit-card{
+    min-height:145px;
+    padding:17px 10px;
+    border-radius:14px;
   }
 
-  .grid article {
-    min-height: 175px;
-    padding: 20px 15px;
-    border-radius: 16px;
+  .benefit-card b{
+    font-size:25px;
   }
 
-  .grid article > span {
-    font-size: 14px;
+  .benefit-card strong{
+    font-size:17px;
   }
 
-  .grid h3 {
-    margin: 15px 0 8px;
-    font-size: 19px;
+  .benefit-card span{
+    font-size:13px;
   }
 
-  .grid article p {
-    font-size: 15px;
-    line-height: 1.45;
+  .feature{
+    margin:0 12px 38px;
+    display:block;
+    border-radius:18px;
   }
 
-
-  /* 전국소비자센터 */
-
-  .community {
-    margin: 0 4%;
-    padding: 38px 24px;
-    display: block;
-    border-radius: 22px;
+  .feature > img{
+    height:210px;
   }
 
-  .community h2 {
-    font-size: 32px;
+  .feature-copy{
+    padding:27px 20px;
   }
 
-  .community > div > p:not(.eyebrow) {
-    font-size: 16px;
+  .feature-copy h2{
+    font-size:29px;
   }
 
-  .community .buttons {
-    margin-top: 22px;
+  .feature-copy > p:not(.eyebrow){
+    font-size:15px;
   }
 
-  .number {
-    margin-top: 30px;
+  .feature-button{
+    width:100%;
+    margin-top:18px;
   }
 
-  .number b {
-    font-size: 42px;
+  .service-list div{
+    padding:12px 14px;
   }
 
-
-  /* 가입 */
-
-  #join {
-    padding-bottom: 50px;
+  .join{
+    padding:42px 18px;
   }
 
-  #join h2 {
-    font-size: 34px;
+  .join h2{
+    font-size:30px;
   }
 
-
-  /* FOOTER */
-
-  footer {
-    padding: 35px 6%;
+  .join > p:not(.eyebrow){
+    font-size:15px;
   }
 
-  footer strong {
-    font-size: 24px;
-  }
-}
-
-
-/* 작은 스마트폰 */
-
-@media (max-width: 390px) {
-
-  .hero h1 {
-    font-size: 35px;
+  .join .buttons{
+    grid-template-columns:1fr;
   }
 
-  .grid {
-    grid-template-columns: 1fr 1fr;
+  footer{
+    padding:30px 20px;
   }
-
-  .grid h3 {
-    font-size: 18px;
-  }
-
-  .grid article p {
-    font-size: 14px;
-  }
-
 }
