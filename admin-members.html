@@ -1,1 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NCC 회원관리</title>
 
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:#f5f8f6;
+  color:#12291c;
+}
+.wrap{
+  width:min(1100px,94%);
+  margin:30px auto;
+}
+h1{
+  margin-bottom:10px;
+}
+.info{
+  color:#66736b;
+  margin-bottom:20px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+}
+th,td{
+  padding:13px 10px;
+  border-bottom:1px solid #e5ebe6;
+  text-align:left;
+  font-size:14px;
+}
+th{
+  background:#176b42;
+  color:#fff;
+}
+.status{
+  font-weight:700;
+  color:#176b42;
+}
+.error{
+  padding:18px;
+  background:#fff0f0;
+  color:#b00020;
+  border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>전국소비자클럽 회원관리</h1>
+
+<div class="info">
+Firebase members 컬렉션 실시간 조회
+</div>
+
+<div id="memberArea">
+회원정보 불러오는 중...
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHL7qCPUwcp9Vp_1dYWfCk2qBvRgJ9mcM",
+  authDomain: "ncc-member.firebaseapp.com",
+  projectId: "ncc-member",
+  storageBucket: "ncc-member.firebasestorage.app",
+  messagingSenderId: "772423138834",
+  appId: "1:772423138834:web:753b6d6dc6f394904822cb",
+  measurementId: "G-2YR29B054J"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const area = document.getElementById("memberArea");
+
+async function loadMembers(){
+
+  try{
+
+    const q = query(
+      collection(db,"members"),
+      orderBy("joinDate","desc")
+    );
+
+    const snapshot = await getDocs(q);
+
+    let rows = "";
+
+    snapshot.forEach(doc => {
+
+      const d = doc.data();
+
+      let joinDate = "";
+
+      if(d.joinDate && d.joinDate.toDate){
+        joinDate = d.joinDate.toDate().toLocaleString("ko-KR");
+      }
+
+      rows += `
+        <tr>
+          <td>${d.name || ""}</td>
+          <td>${d.phone || ""}</td>
+          <td>${d.region || ""}</td>
+          <td>${d.email || ""}</td>
+          <td>${d.benefit || ""}</td>
+          <td>${joinDate}</td>
+          <td class="status">${d.status || ""}</td>
+        </tr>
+      `;
+
+    });
+
+    area.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>연락처</th>
+            <th>지역</th>
+            <th>이메일</th>
+            <th>관심 혜택</th>
+            <th>가입일</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    `;
+
+  }catch(error){
+
+    area.innerHTML = `
+      <div class="error">
+        회원정보를 불러오지 못했습니다.<br>
+        ${error.message}
+      </div>
+    `;
+
+  }
+
+}
+
+loadMembers();
+
+</script>
+
+</body>
+</html>
