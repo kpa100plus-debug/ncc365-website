@@ -13,11 +13,31 @@
 box-sizing:border-box;
 }
 
+:root{
+--ncc-green:#0f5132;
+--ncc-green-2:#176b42;
+--ncc-green-soft:#eaf4ee;
+--text-main:#17221c;
+--text-sub:#5f6d65;
+--text-light:#7b8880;
+--border:#dbe4de;
+--bg:#f4f7f5;
+--white:#ffffff;
+--danger:#c62828;
+--warning:#a66300;
+}
+
 body{
 margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-background:#f5f8f6;
-color:#12291c;
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"Apple SD Gothic Neo",
+"Malgun Gothic",
+sans-serif;
+background:var(--bg);
+color:var(--text-main);
+letter-spacing:-0.03em;
 }
 
 .wrap{
@@ -27,35 +47,58 @@ margin:35px auto;
 
 h1{
 margin:0 0 8px;
-font-size:32px;
+font-size:34px;
+line-height:1.25;
+font-weight:900;
+color:#0d2f20;
 }
 
 .info{
-color:#66736b;
-margin-bottom:22px;
+color:var(--text-sub);
+font-size:16px;
+margin-bottom:24px;
 }
 
 .login-box{
 max-width:460px;
 margin:70px auto;
-background:#fff;
-padding:30px;
-border-radius:18px;
-box-shadow:0 12px 35px rgba(0,0,0,.08);
+background:var(--white);
+padding:32px;
+border-radius:20px;
+box-shadow:0 14px 40px rgba(0,0,0,.08);
 }
 
 .login-box h2{
-margin-top:0;
+margin:0 0 10px;
+font-size:27px;
+color:#0d2f20;
+}
+
+.login-box p{
+margin:0 0 12px;
+color:var(--text-sub);
 }
 
 input,
 select{
 width:100%;
-padding:14px;
-border:1px solid #d6dfd9;
+padding:14px 15px;
+border:1px solid var(--border);
 border-radius:10px;
 font-size:15px;
 background:#fff;
+color:var(--text-main);
+outline:none;
+}
+
+input:focus,
+select:focus{
+border-color:var(--ncc-green-2);
+box-shadow:0 0 0 3px rgba(23,107,66,.10);
+}
+
+input::placeholder{
+color:#8b9690;
 }
 
 .login-box input{
@@ -71,42 +114,50 @@ font-weight:800;
 cursor:pointer;
 }
 
+button:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
+
 .login-button{
 width:100%;
 margin-top:18px;
-background:#176b42;
-color:white;
+background:var(--ncc-green-2);
+color:#fff;
 }
 
 .logout-button{
-background:#333;
+background:#2f3431;
 color:#fff;
 }
 
 .summary-box{
 display:flex;
-gap:12px;
+gap:14px;
 flex-wrap:wrap;
-margin:20px 0;
+margin:22px 0;
 }
 
 .summary-card{
 background:#fff;
-padding:18px 22px;
+padding:20px 23px;
 border-radius:14px;
-min-width:160px;
+min-width:170px;
 box-shadow:0 5px 18px rgba(0,0,0,.05);
+border:1px solid #edf1ee;
 }
 
 .summary-label{
-font-size:13px;
-color:#66736b;
+font-size:14px;
+font-weight:700;
+color:var(--text-sub);
 }
 
 .summary-number{
-font-size:28px;
-font-weight:800;
+font-size:30px;
+font-weight:900;
 margin-top:5px;
+color:#10291d;
 }
 
 .tools{
@@ -118,7 +169,7 @@ margin:20px 0;
 }
 
 .search-box{
-max-width:420px;
+max-width:430px;
 }
 
 .filter-box{
@@ -130,6 +181,7 @@ width:100%;
 overflow-x:auto;
 border-radius:14px;
 background:#fff;
+box-shadow:0 5px 18px rgba(0,0,0,.04);
 }
 
 table{
@@ -140,64 +192,79 @@ min-width:1000px;
 
 th,
 td{
-padding:13px 10px;
-border-bottom:1px solid #e5ebe6;
+padding:14px 11px;
+border-bottom:1px solid #e7ece9;
 text-align:left;
 font-size:14px;
+color:var(--text-main);
 }
 
 th{
-background:#176b42;
+background:var(--ncc-green-2);
 color:#fff;
 white-space:nowrap;
-}
-
-.status{
 font-weight:800;
 }
 
+tbody tr:hover{
+background:#f8fbf9;
+}
+
+.status{
+font-weight:900;
+}
+
 .status-active{
-color:#176b42;
+color:var(--ncc-green-2);
 }
 
 .status-paused{
-color:#b26a00;
+color:var(--warning);
 }
 
 .status-blocked{
-color:#b00020;
+color:var(--danger);
 }
 
 .manage-button{
-background:#eaf3ed;
-color:#176b42;
+background:var(--ncc-green-soft);
+color:var(--ncc-green);
 padding:8px 12px;
+}
+
+.manage-button:hover{
+background:#dceee4;
 }
 
 .error{
 margin-top:15px;
 padding:14px;
-background:#fff0f0;
-color:#b00020;
+background:#fff1f1;
+color:#a61b1b;
+border:1px solid #ffd7d7;
 border-radius:10px;
+font-weight:700;
 }
 
 .empty{
 padding:25px;
 background:#fff;
 border-radius:12px;
-color:#66736b;
+color:var(--text-sub);
+font-size:15px;
 }
 
 #adminArea{
 display:none;
 }
 
+/* 회원 상세관리 팝업 */
+
 .modal-backdrop{
 display:none;
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.55);
+background:rgba(14,22,18,.58);
 z-index:1000;
 padding:20px;
 overflow-y:auto;
@@ -207,54 +274,66 @@ overflow-y:auto;
 max-width:620px;
 margin:40px auto;
 background:#fff;
-border-radius:18px;
-padding:25px;
-box-shadow:0 20px 60px rgba(0,0,0,.25);
+border-radius:20px;
+padding:28px;
+box-shadow:0 24px 70px rgba(0,0,0,.28);
 }
 
 .modal h2{
-margin-top:0;
+margin:0 0 20px;
+font-size:28px;
+font-weight:900;
+color:#0d2f20;
 }
 
 .form-group{
-margin-top:15px;
+margin-top:16px;
 }
 
 .form-group label{
 display:block;
 font-weight:800;
-font-size:13px;
-margin-bottom:6px;
+font-size:14px;
+margin-bottom:7px;
+color:#2d3b34;
+}
+
+.form-group input,
+.form-group select{
+color:#18231d;
+background:#fff;
+font-weight:500;
 }
 
 .member-id{
-background:#f3f7f4;
-padding:11px;
+background:#f1f5f2;
+padding:12px;
 border-radius:9px;
-font-size:12px;
+font-size:13px;
 word-break:break-all;
-color:#5d6961;
+color:#647068;
+border:1px solid #e3e9e5;
 }
 
 .modal-actions{
 display:flex;
-gap:8px;
+gap:9px;
 flex-wrap:wrap;
-margin-top:22px;
+margin-top:24px;
 }
 
 .save-button{
-background:#176b42;
+background:var(--ncc-green-2);
 color:#fff;
 }
 
 .close-button{
-background:#e7ebe8;
-color:#222;
+background:#e8ece9;
+color:#253029;
 }
 
 .delete-button{
-background:#b42318;
+background:var(--danger);
 color:#fff;
 margin-left:auto;
 }
@@ -267,12 +346,16 @@ margin:20px auto;
 }
 
 h1{
-font-size:25px;
+font-size:27px;
+}
+
+.info{
+font-size:14px;
 }
 
 .summary-card{
 flex:1;
-min-width:130px;
+min-width:135px;
 }
 
 .tools{
@@ -287,7 +370,11 @@ margin-bottom:10px;
 
 .modal{
 margin:10px auto;
-padding:20px;
+padding:21px;
+}
+
+.modal h2{
+font-size:24px;
 }
 
 .delete-button{
@@ -406,13 +493,9 @@ class="logout-button">
 <h2>회원 상세관리</h2>
 
 <div class="form-group">
-
 <label>회원 문서 ID</label>
-
 <div id="editId" class="member-id"></div>
-
 </div>
-
 
 <div class="form-group">
 <label>이름</label>
@@ -875,29 +958,17 @@ rows += `
 
 <tr>
 
-<td>
-${escapeHTML(member.name)}
-</td>
+<td>${escapeHTML(member.name)}</td>
 
-<td>
-${escapeHTML(member.phone)}
-</td>
+<td>${escapeHTML(member.phone)}</td>
 
-<td>
-${escapeHTML(member.region)}
-</td>
+<td>${escapeHTML(member.region)}</td>
 
-<td>
-${escapeHTML(member.email)}
-</td>
+<td>${escapeHTML(member.email)}</td>
 
-<td>
-${escapeHTML(member.benefit)}
-</td>
+<td>${escapeHTML(member.benefit)}</td>
 
-<td>
-${escapeHTML(member.joinDate)}
-</td>
+<td>${escapeHTML(member.joinDate)}</td>
 
 <td class="status ${statusClass(member.status)}">
 ${escapeHTML(statusText(member.status))}
