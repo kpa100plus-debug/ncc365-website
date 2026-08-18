@@ -3,12 +3,11 @@
 
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>NCC 소비자회원 가입 | 전국소비자클럽</title>
 
-<meta
-name="description"
+<meta name="description"
 content="전국소비자클럽 무료 회원가입. 상품 무료 경험, 공동구매, 회원 할인, 지역 혜택을 만나보세요.">
 
 <style>
@@ -17,37 +16,12 @@ content="전국소비자클럽 무료 회원가입. 상품 무료 경험, 공동
 box-sizing:border-box;
 }
 
-:root{
---green:#347658;
---green-dark:#285e47;
---green-soft:#f0f6f2;
---text:#2d3731;
---sub:#68736d;
---border:#dce4df;
---bg:#f5f8f6;
---white:#ffffff;
---danger:#b7504a;
-}
-
 body{
 margin:0;
-font-family:
--apple-system,
-BlinkMacSystemFont,
-"Segoe UI",
-"Apple SD Gothic Neo",
-"Malgun Gothic",
-sans-serif;
-background:var(--bg);
-color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+background:#f5f8f6;
+color:#25352c;
 letter-spacing:-0.02em;
-font-weight:400;
--webkit-font-smoothing:antialiased;
-}
-
-a{
-text-decoration:none;
-color:inherit;
 }
 
 .header{
@@ -65,23 +39,22 @@ display:block;
 }
 
 .container{
-width:min(760px,92%);
+width:min(720px,92%);
 margin:45px auto;
 }
 
 .card{
 background:#fff;
 border-radius:22px;
-padding:36px 32px;
-box-shadow:0 15px 40px rgba(0,0,0,.05);
-border:1px solid #edf1ee;
+padding:35px 30px;
+box-shadow:0 15px 40px rgba(0,0,0,.06);
 }
 
 .eyebrow{
 font-size:12px;
 font-weight:600;
 letter-spacing:.12em;
-color:var(--green);
+color:#39805a;
 }
 
 h1{
@@ -89,19 +62,16 @@ font-size:42px;
 line-height:1.15;
 margin:12px 0;
 letter-spacing:-.05em;
-font-weight:700;
-color:#25372d;
 }
 
 h1 span{
-color:#4c9b65;
+color:#50a94b;
 }
 
 .subtitle{
 font-size:17px;
 line-height:1.7;
-font-weight:400;
-color:var(--sub);
+color:#647168;
 }
 
 .benefits{
@@ -115,29 +85,18 @@ margin:25px 0 35px;
 background:#f3f7f4;
 padding:18px;
 border-radius:12px;
-font-size:15px;
 font-weight:500;
-color:#31463a;
 }
 
-.form-section{
-margin-top:35px;
-padding-top:30px;
-border-top:1px solid #e7ece9;
+.section{
+margin-top:32px;
+padding-top:28px;
+border-top:1px solid #e5ebe6;
 }
 
-.section-title{
+.section h2{
 font-size:20px;
-font-weight:700;
-color:#294333;
-margin:0 0 5px;
-}
-
-.section-desc{
-font-size:13px;
-font-weight:400;
-color:#7a857e;
-margin-bottom:20px;
+margin:0 0 18px;
 }
 
 .form-grid{
@@ -150,7 +109,7 @@ gap:16px;
 margin-top:16px;
 }
 
-.form-group.full{
+.full{
 grid-column:1/-1;
 }
 
@@ -159,120 +118,65 @@ display:block;
 font-size:14px;
 font-weight:500;
 margin-bottom:7px;
-color:#46534b;
-}
-
-.required{
-color:var(--danger);
 }
 
 input,
-select,
-textarea{
+select{
 width:100%;
-padding:14px 15px;
-border:1px solid var(--border);
+padding:15px;
+border:1px solid #d6dfd9;
 border-radius:10px;
-font-family:inherit;
 font-size:15px;
-font-weight:400;
 background:#fff;
-color:#303934;
-outline:none;
-}
-
-textarea{
-min-height:90px;
-resize:vertical;
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-border-color:#7ea68f;
-box-shadow:0 0 0 3px rgba(52,118,88,.07);
-}
-
-input::placeholder,
-textarea::placeholder{
-color:#969e99;
+color:#25352c;
 }
 
 .agreement-box{
-margin-top:20px;
+margin-top:18px;
+background:#f5f8f6;
 padding:18px;
-background:#f7f9f8;
-border:1px solid #e5ebe7;
 border-radius:12px;
+}
+
+.agree{
+display:flex;
+align-items:flex-start;
+gap:9px;
+padding:9px 0;
+font-size:14px;
+}
+
+.agree input{
+width:auto;
+margin-top:3px;
+}
+
+.agree label{
+margin:0;
+line-height:1.5;
 }
 
 .agree-all{
 padding-bottom:14px;
-margin-bottom:7px;
-border-bottom:1px solid #dde5df;
-}
-
-.agree-row{
-display:flex;
-align-items:flex-start;
-gap:10px;
-padding:9px 0;
-}
-
-.agree-row input{
-width:18px;
-height:18px;
-margin-top:1px;
-flex:none;
-accent-color:var(--green);
-}
-
-.agree-row label{
-margin:0;
-font-size:14px;
-font-weight:400;
-line-height:1.5;
-cursor:pointer;
-}
-
-.agree-all label{
-font-size:15px;
-font-weight:600;
-color:#2f4137;
-}
-
-.agree-required{
-font-weight:500;
-color:#34473b;
-}
-
-.optional{
-font-size:12px;
-color:#7a857e;
-margin-top:8px;
-line-height:1.6;
+margin-bottom:6px;
+border-bottom:1px solid #dce5df;
 }
 
 button{
 width:100%;
-height:56px;
+height:55px;
 margin-top:28px;
 border:0;
-border-radius:11px;
-background:var(--green);
+border-radius:12px;
+background:#176b42;
 color:#fff;
-font-family:inherit;
 font-size:17px;
 font-weight:600;
 cursor:pointer;
 }
 
-button:hover{
-background:var(--green-dark);
-}
-
 button:disabled{
-opacity:.55;
+opacity:.6;
 cursor:not-allowed;
 }
 
@@ -282,8 +186,7 @@ padding:18px;
 background:#f0f5f1;
 border-radius:12px;
 font-size:13px;
-font-weight:400;
-line-height:1.7;
+line-height:1.6;
 color:#657269;
 }
 
@@ -291,8 +194,6 @@ footer{
 text-align:center;
 padding:30px;
 font-size:12px;
-font-weight:400;
-line-height:1.6;
 color:#78857d;
 }
 
@@ -312,27 +213,19 @@ margin:25px auto;
 }
 
 .card{
-padding:26px 18px;
+padding:25px 18px;
 }
 
 h1{
 font-size:34px;
 }
 
-.subtitle{
-font-size:15px;
-}
-
+.form-grid,
 .benefits{
 grid-template-columns:1fr;
 }
 
-.form-grid{
-grid-template-columns:1fr;
-gap:0;
-}
-
-.form-group.full{
+.full{
 grid-column:auto;
 }
 
@@ -355,159 +248,82 @@ alt="전국소비자클럽 공식 로고">
 
 </header>
 
-
 <div class="container">
 
 <div class="card">
 
-
 <p class="eyebrow">
 FREE MEMBERSHIP
 </p>
-
 
 <h1>
 전국소비자클럽<br>
 <span>무료 회원가입</span>
 </h1>
 
-
 <p class="subtitle">
-
 가입비 0원.<br>
-
-전국소비자클럽 회원이 되면 상품 무료 경험, 공동구매,
-회원 할인, 지역 혜택 등 다양한 소비자 혜택을 만나보실 수 있습니다.
-
+회원이 되면 상품 무료 경험, 공동구매,
+회원 할인, 지역 혜택을 만나보실 수 있습니다.
 </p>
-
 
 <div class="benefits">
 
-<div class="benefit">
-🎁 상품 무료 경험
-</div>
-
-<div class="benefit">
-🛒 공동구매 혜택
-</div>
-
-<div class="benefit">
-💰 회원 할인
-</div>
-
-<div class="benefit">
-🏪 지역 혜택
-</div>
+<div class="benefit">🎁 상품 무료 경험</div>
+<div class="benefit">🛒 공동구매 혜택</div>
+<div class="benefit">💰 회원 할인</div>
+<div class="benefit">🏪 지역 혜택</div>
 
 </div>
 
 
 <form id="memberForm">
 
+<div class="section">
 
-<!-- 기본정보 -->
-
-<section class="form-section">
-
-<h2 class="section-title">
-기본정보
-</h2>
-
-<div class="section-desc">
-회원가입 및 회원관리에 필요한 기본정보입니다.
-</div>
-
+<h2>기본정보</h2>
 
 <div class="form-grid">
 
-
 <div class="form-group">
-
-<label for="name">
-이름 <span class="required">*</span>
-</label>
-
-<input
-id="name"
-type="text"
-placeholder="이름을 입력하세요"
-required>
-
+<label for="name">이름 *</label>
+<input id="name" type="text" required>
 </div>
 
-
 <div class="form-group">
-
-<label for="phone">
-연락처 <span class="required">*</span>
-</label>
-
+<label for="phone">연락처 *</label>
 <input
 id="phone"
 type="tel"
 placeholder="010-0000-0000"
 required>
-
 </div>
 
-
 <div class="form-group">
-
-<label for="email">
-이메일
-</label>
-
-<input
-id="email"
-type="email"
-placeholder="이메일을 입력하세요">
-
+<label for="email">이메일</label>
+<input id="email" type="email">
 </div>
 
-
 <div class="form-group">
-
-<label for="birthDate">
-생년월일
-</label>
-
-<input
-id="birthDate"
-type="date">
-
+<label for="birthDate">생년월일</label>
+<input id="birthDate" type="date">
 </div>
 
-
 <div class="form-group">
-
-<label for="gender">
-성별
-</label>
+<label for="gender">성별</label>
 
 <select id="gender">
-
-<option value="">
-선택
-</option>
-
-<option value="male">
-남성
-</option>
-
-<option value="female">
-여성
-</option>
-
+<option value="">선택</option>
+<option value="male">남성</option>
+<option value="female">여성</option>
 </select>
 
 </div>
 
-
 <div class="form-group full">
 
 <label for="region">
-거주지역 / 주소 <span class="required">*</span>
+거주지역 / 주소 *
 </label>
 
 <input
@@ -518,27 +334,15 @@ required>
 
 </div>
 
-
+</div>
 </div>
 
-</section>
 
+<div class="section">
 
-<!-- 관심정보 -->
-
-<section class="form-section">
-
-<h2 class="section-title">
-관심정보
-</h2>
-
-<div class="section-desc">
-맞춤 혜택 제공을 위한 선택정보입니다.
-</div>
-
+<h2>관심정보</h2>
 
 <div class="form-grid">
-
 
 <div class="form-group">
 
@@ -597,27 +401,15 @@ required>
 
 </div>
 
-
+</div>
 </div>
 
-</section>
 
+<div class="section">
 
-<!-- 추천·지역센터 -->
-
-<section class="form-section">
-
-<h2 class="section-title">
-추천 · 지역센터 정보
-</h2>
-
-<div class="section-desc">
-해당 정보가 있는 경우에만 입력하시면 됩니다.
-</div>
-
+<h2>추천 · 지역센터 정보</h2>
 
 <div class="form-grid">
-
 
 <div class="form-group">
 
@@ -627,8 +419,7 @@ required>
 
 <input
 id="referrer"
-type="text"
-placeholder="추천인 이름">
+type="text">
 
 </div>
 
@@ -641,8 +432,7 @@ placeholder="추천인 이름">
 
 <input
 id="referralCode"
-type="text"
-placeholder="추천코드">
+type="text">
 
 </div>
 
@@ -669,34 +459,22 @@ placeholder="예: 서울특별시 강남구 삼성동 소비자센터">
 
 <input
 id="centerCode"
-type="text"
-placeholder="센터코드가 있는 경우 입력">
+type="text">
 
 </div>
 
-
+</div>
 </div>
 
-</section>
 
+<div class="section">
 
-<!-- 약관 -->
-
-<section class="form-section">
-
-<h2 class="section-title">
-약관 및 개인정보 동의
-</h2>
-
-<div class="section-desc">
-필수 동의와 선택 동의를 구분하여 확인해주세요.
-</div>
-
+<h2>약관 및 개인정보 동의</h2>
 
 <div class="agreement-box">
 
 
-<div class="agree-row agree-all">
+<div class="agree agree-all">
 
 <input
 id="agreeAll"
@@ -709,67 +487,51 @@ type="checkbox">
 </div>
 
 
-<div class="agree-row">
+<div class="agree">
 
 <input
 id="agreePrivacy"
-class="agree-item"
+class="agreeItem"
 type="checkbox"
 required>
 
-<label
-for="agreePrivacy"
-class="agree-required">
-
-[필수] 개인정보 수집 및 이용에 동의합니다.
-
+<label for="agreePrivacy">
+[필수] 개인정보 수집 및 이용 동의
 </label>
 
 </div>
 
 
-<div class="agree-row">
+<div class="agree">
 
 <input
 id="agreeMarketing"
-class="agree-item"
+class="agreeItem"
 type="checkbox">
 
 <label for="agreeMarketing">
-
-[선택] 이벤트·혜택·광고 등 마케팅 정보 수신에 동의합니다.
-
+[선택] 마케팅 정보 수신 동의
 </label>
 
 </div>
 
 
-<div class="agree-row">
+<div class="agree">
 
 <input
 id="agreeThirdParty"
-class="agree-item"
+class="agreeItem"
 type="checkbox">
 
 <label for="agreeThirdParty">
-
-[선택] 서비스 제공을 위한 개인정보 제3자 제공에 동의합니다.
-
+[선택] 개인정보 제3자 제공 동의
 </label>
 
 </div>
 
 
-<div class="optional">
-
-선택 항목에 동의하지 않아도 전국소비자클럽 기본 회원가입은 가능합니다.
-
 </div>
-
-
 </div>
-
-</section>
 
 
 <button
@@ -780,21 +542,17 @@ type="submit">
 
 </button>
 
-
 </form>
 
 
 <div class="notice">
 
-※ 회원가입 정보는 전국소비자클럽 회원관리 시스템에 저장됩니다.<br>
-
-가입정보는 회원관리 및 소비자 혜택 제공을 위한 기초정보로 활용됩니다.
-
-</div>
-
+회원가입 완료 시
+NCC 고유 회원번호가 자동 발급됩니다.
 
 </div>
 
+</div>
 </div>
 
 
@@ -808,7 +566,6 @@ type="submit">
 
 <script type="module">
 
-
 import {
 initializeApp
 }
@@ -816,10 +573,13 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
+
 getFirestore,
 collection,
-addDoc,
+doc,
+runTransaction,
 serverTimestamp
+
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -853,7 +613,6 @@ measurementId:
 const app =
 initializeApp(firebaseConfig);
 
-
 const db =
 getFirestore(app);
 
@@ -861,142 +620,190 @@ getFirestore(app);
 const form =
 document.getElementById("memberForm");
 
-
 const submitButton =
 document.getElementById("submitButton");
-
 
 const agreeAll =
 document.getElementById("agreeAll");
 
+const agreeItems =
+document.querySelectorAll(".agreeItem");
 
-const agreePrivacy =
-document.getElementById("agreePrivacy");
-
-
-const agreeMarketing =
-document.getElementById("agreeMarketing");
-
-
-const agreeThirdParty =
-document.getElementById("agreeThirdParty");
-
-
-const agreeItems = [
-
-agreePrivacy,
-agreeMarketing,
-agreeThirdParty
-
-];
-
-
-/* =========================
-   전체 동의
-========================= */
 
 agreeAll.addEventListener(
 "change",
-function(){
+()=>{
 
 agreeItems.forEach(
-checkbox => {
-
-checkbox.checked =
+item=>{
+item.checked =
 agreeAll.checked;
+}
+);
 
 }
 );
 
-agreeAll.indeterminate =
-false;
-
-}
-);
-
-
-/* =========================
-   개별 체크 변경 시
-   전체동의 상태 자동 반영
-========================= */
 
 agreeItems.forEach(
-checkbox => {
+item=>{
 
-checkbox.addEventListener(
+item.addEventListener(
 "change",
-updateAgreeAllState
+()=>{
+
+const checked =
+Array.from(agreeItems)
+.every(
+checkbox=>checkbox.checked
+);
+
+agreeAll.checked =
+checked;
+
+}
 );
 
 }
 );
 
 
-function updateAgreeAllState(){
+function createMemberNumber(number){
 
-const checkedCount =
-agreeItems.filter(
-checkbox => checkbox.checked
-).length;
+return (
+"NCC-C-" +
+String(number).padStart(6,"0")
+);
+
+}
+
+
+async function saveMember(memberData){
+
+const counterRef =
+doc(
+db,
+"counters",
+"memberNumbers"
+);
+
+const memberRef =
+doc(
+collection(
+db,
+"members"
+)
+);
+
+
+return await runTransaction(
+db,
+async(transaction)=>{
+
+const counterSnapshot =
+await transaction.get(
+counterRef
+);
+
+let currentNumber = 0;
 
 
 if(
-checkedCount ===
-agreeItems.length
+counterSnapshot.exists()
 ){
 
-agreeAll.checked =
-true;
-
-agreeAll.indeterminate =
-false;
-
-return;
-
-}
-
-
-if(
-checkedCount === 0
-){
-
-agreeAll.checked =
-false;
-
-agreeAll.indeterminate =
-false;
-
-return;
+currentNumber =
+Number(
+counterSnapshot
+.data()
+.consumer || 0
+);
 
 }
 
 
-agreeAll.checked =
-false;
+const nextNumber =
+currentNumber + 1;
 
-agreeAll.indeterminate =
-true;
+
+const memberNumber =
+createMemberNumber(
+nextNumber
+);
+
+
+transaction.set(
+counterRef,
+{
+consumer:
+nextNumber
+},
+{
+merge:true
+}
+);
+
+
+transaction.set(
+memberRef,
+{
+
+...memberData,
+
+memberNumber:
+memberNumber,
+
+memberType:
+"consumer",
+
+status:
+"active",
+
+managementGrade:
+"general",
+
+adminMemo:
+"",
+
+joinDate:
+serverTimestamp(),
+
+updatedAt:
+serverTimestamp()
+
+}
+);
+
+
+return memberNumber;
+
+}
+);
 
 }
 
-
-/* =========================
-   회원가입 저장
-========================= */
 
 form.addEventListener(
 "submit",
-async function(event){
+async(event)=>{
 
 event.preventDefault();
 
 
+const agreePrivacy =
+document
+.getElementById(
+"agreePrivacy"
+)
+.checked;
+
+
 if(
-!agreePrivacy.checked
+!agreePrivacy
 ){
 
 alert(
-"개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다."
+"개인정보 수집 및 이용에 동의해주세요."
 );
 
 return;
@@ -1007,9 +814,8 @@ return;
 submitButton.disabled =
 true;
 
-
 submitButton.textContent =
-"가입정보 저장 중...";
+"회원번호 발급 중...";
 
 
 try{
@@ -1017,161 +823,106 @@ try{
 
 const memberData = {
 
-
-/* 기본정보 */
-
 name:
-document.getElementById("name")
+document
+.getElementById("name")
 .value
 .trim(),
-
 
 phone:
-document.getElementById("phone")
+document
+.getElementById("phone")
 .value
 .trim(),
-
-
-email:
-document.getElementById("email")
-.value
-.trim(),
-
-
-birthDate:
-document.getElementById("birthDate")
-.value,
-
-
-gender:
-document.getElementById("gender")
-.value,
-
 
 region:
-document.getElementById("region")
+document
+.getElementById("region")
 .value
 .trim(),
 
+email:
+document
+.getElementById("email")
+.value
+.trim(),
 
+birthDate:
+document
+.getElementById("birthDate")
+.value,
 
-/* 회원정보 */
-
-memberType:
-"consumer",
-
-
-status:
-"active",
-
-
-
-/* 관심정보 */
+gender:
+document
+.getElementById("gender")
+.value,
 
 benefit:
-document.getElementById("benefit")
+document
+.getElementById("benefit")
 .value,
-
 
 hasPet:
-document.getElementById("hasPet")
+document
+.getElementById("hasPet")
 .value,
 
-
-
-/* 추천정보 */
-
 referrer:
-document.getElementById("referrer")
+document
+.getElementById("referrer")
 .value
 .trim(),
-
 
 referralCode:
-document.getElementById("referralCode")
+document
+.getElementById("referralCode")
 .value
 .trim(),
-
-
-
-/* 지역센터 */
 
 centerName:
-document.getElementById("centerName")
+document
+.getElementById("centerName")
 .value
 .trim(),
-
 
 centerCode:
-document.getElementById("centerCode")
+document
+.getElementById("centerCode")
 .value
 .trim(),
 
-
-
-/* 개인정보 동의 */
-
 agreePrivacy:
-agreePrivacy.checked,
-
+true,
 
 agreeMarketing:
-agreeMarketing.checked,
-
+document
+.getElementById(
+"agreeMarketing"
+)
+.checked,
 
 agreeThirdParty:
-agreeThirdParty.checked,
-
-
-
-/* 관리자 관리값 */
-
-managementGrade:
-"general",
-
-
-adminMemo:
-"",
-
-
-
-/* 시스템 */
-
-joinDate:
-serverTimestamp(),
-
-
-updatedAt:
-serverTimestamp()
-
+document
+.getElementById(
+"agreeThirdParty"
+)
+.checked
 
 };
 
 
-/* Firestore 저장 */
-
-await addDoc(
-
-collection(
-db,
-"members"
-),
-
+const memberNumber =
+await saveMember(
 memberData
-
 );
 
-
-/* 가입 완료 */
 
 alert(
-
-"전국소비자클럽 회원가입이 완료되었습니다.\n\n메인페이지로 이동합니다."
-
+"전국소비자클럽 회원가입이 완료되었습니다.\n\n" +
+"회원번호: " +
+memberNumber
 );
 
-
-/* 메인 페이지 이동 */
 
 window.location.href =
 "index.html";
@@ -1181,22 +932,18 @@ window.location.href =
 
 
 console.error(
-"회원가입 저장 오류:",
 error
 );
 
 
 alert(
-
 "회원가입 저장 중 오류가 발생했습니다.\n\n" +
 error.message
-
 );
 
 
 submitButton.disabled =
 false;
-
 
 submitButton.textContent =
 "무료 회원가입 신청";
@@ -1204,10 +951,10 @@ submitButton.textContent =
 
 }
 
-});
+}
+);
 
 </script>
 
 </body>
-
 </html>
