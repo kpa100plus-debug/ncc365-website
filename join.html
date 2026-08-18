@@ -3,12 +3,9 @@
 
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>NCC 소비자회원 가입 | 전국소비자클럽</title>
-
-<meta name="description"
-content="전국소비자클럽 무료 회원가입. 상품 무료 경험, 공동구매, 회원 할인, 지역 혜택을 만나보세요.">
 
 <style>
 
@@ -18,7 +15,7 @@ box-sizing:border-box;
 
 body{
 margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 background:#f5f8f6;
 color:#25352c;
 letter-spacing:-0.02em;
@@ -131,6 +128,33 @@ background:#fff;
 color:#25352c;
 }
 
+.birth-wrap{
+display:grid;
+grid-template-columns:1fr auto;
+gap:8px;
+align-items:center;
+}
+
+.calendar-button{
+width:auto;
+height:50px;
+margin:0;
+padding:0 16px;
+border:1px solid #d6dfd9;
+background:#f3f7f4;
+color:#176b42;
+font-size:18px;
+border-radius:10px;
+}
+
+#birthCalendar{
+position:absolute;
+opacity:0;
+pointer-events:none;
+width:1px;
+height:1px;
+}
+
 .agreement-box{
 margin-top:18px;
 background:#f5f8f6;
@@ -162,7 +186,7 @@ margin-bottom:6px;
 border-bottom:1px solid #dce5df;
 }
 
-button{
+.submit-button{
 width:100%;
 height:55px;
 margin-top:28px;
@@ -175,7 +199,7 @@ font-weight:600;
 cursor:pointer;
 }
 
-button:disabled{
+.submit-button:disabled{
 opacity:.6;
 cursor:not-allowed;
 }
@@ -248,6 +272,7 @@ alt="전국소비자클럽 공식 로고">
 
 </header>
 
+
 <div class="container">
 
 <div class="card">
@@ -267,6 +292,7 @@ FREE MEMBERSHIP
 회원 할인, 지역 혜택을 만나보실 수 있습니다.
 </p>
 
+
 <div class="benefits">
 
 <div class="benefit">🎁 상품 무료 경험</div>
@@ -279,46 +305,112 @@ FREE MEMBERSHIP
 
 <form id="memberForm">
 
+
 <div class="section">
 
 <h2>기본정보</h2>
 
 <div class="form-grid">
 
-<div class="form-group">
-<label for="name">이름 *</label>
-<input id="name" type="text" required>
-</div>
 
 <div class="form-group">
-<label for="phone">연락처 *</label>
+
+<label for="name">
+이름 *
+</label>
+
+<input
+id="name"
+type="text"
+required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="phone">
+연락처 *
+</label>
+
 <input
 id="phone"
 type="tel"
 placeholder="010-0000-0000"
 required>
+
 </div>
 
-<div class="form-group">
-<label for="email">이메일</label>
-<input id="email" type="email">
-</div>
 
 <div class="form-group">
-<label for="birthDate">생년월일</label>
-<input id="birthDate" type="date">
+
+<label for="email">
+이메일
+</label>
+
+<input
+id="email"
+type="email">
+
 </div>
 
+
 <div class="form-group">
-<label for="gender">성별</label>
+
+<label for="birthDateText">
+생년월일
+</label>
+
+<div class="birth-wrap">
+
+<input
+id="birthDateText"
+type="text"
+inputmode="numeric"
+placeholder="예: 1980-01-15"
+maxlength="10">
+
+<button
+id="calendarButton"
+class="calendar-button"
+type="button"
+aria-label="달력에서 생년월일 선택">
+📅
+</button>
+
+<input
+id="birthCalendar"
+type="date">
+
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="gender">
+성별
+</label>
 
 <select id="gender">
-<option value="">선택</option>
-<option value="male">남성</option>
-<option value="female">여성</option>
+
+<option value="">
+선택
+</option>
+
+<option value="male">
+남성
+</option>
+
+<option value="female">
+여성
+</option>
+
 </select>
 
 </div>
+
 
 <div class="form-group full">
 
@@ -335,6 +427,7 @@ required>
 </div>
 
 </div>
+
 </div>
 
 
@@ -343,6 +436,7 @@ required>
 <h2>관심정보</h2>
 
 <div class="form-grid">
+
 
 <div class="form-group">
 
@@ -402,6 +496,7 @@ required>
 </div>
 
 </div>
+
 </div>
 
 
@@ -410,6 +505,7 @@ required>
 <h2>추천 · 지역센터 정보</h2>
 
 <div class="form-grid">
+
 
 <div class="form-group">
 
@@ -464,12 +560,14 @@ type="text">
 </div>
 
 </div>
+
 </div>
 
 
 <div class="section">
 
 <h2>약관 및 개인정보 동의</h2>
+
 
 <div class="agreement-box">
 
@@ -531,28 +629,32 @@ type="checkbox">
 
 
 </div>
+
 </div>
 
 
 <button
 id="submitButton"
+class="submit-button"
 type="submit">
 
 무료 회원가입 신청
 
 </button>
 
+
 </form>
 
 
 <div class="notice">
 
-회원가입 완료 시
-NCC 고유 회원번호가 자동 발급됩니다.
+회원가입 완료 시 NCC 고유 회원번호가 자동 발급됩니다.
 
 </div>
 
+
 </div>
+
 </div>
 
 
@@ -573,13 +675,11 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
-
 getFirestore,
 collection,
 doc,
 runTransaction,
 serverTimestamp
-
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -613,6 +713,7 @@ measurementId:
 const app =
 initializeApp(firebaseConfig);
 
+
 const db =
 getFirestore(app);
 
@@ -620,14 +721,29 @@ getFirestore(app);
 const form =
 document.getElementById("memberForm");
 
+
 const submitButton =
 document.getElementById("submitButton");
+
 
 const agreeAll =
 document.getElementById("agreeAll");
 
+
 const agreeItems =
 document.querySelectorAll(".agreeItem");
+
+
+const birthDateText =
+document.getElementById("birthDateText");
+
+
+const birthCalendar =
+document.getElementById("birthCalendar");
+
+
+const calendarButton =
+document.getElementById("calendarButton");
 
 
 agreeAll.addEventListener(
@@ -652,27 +768,121 @@ item.addEventListener(
 "change",
 ()=>{
 
-const checked =
-Array.from(agreeItems)
-.every(
-checkbox=>checkbox.checked
-);
-
 agreeAll.checked =
-checked;
-
-}
+Array
+.from(agreeItems)
+.every(
+checkbox =>
+checkbox.checked
 );
 
 }
 );
+
+}
+);
+
+
+birthDateText.addEventListener(
+"input",
+()=>{
+
+let value =
+birthDateText
+.value
+.replace(/\D/g,"")
+.slice(0,8);
+
+
+if(value.length >= 5){
+
+value =
+value.slice(0,4)
++
+"-"
++
+value.slice(4,6)
++
+"-"
++
+value.slice(6,8);
+
+}else if(value.length >= 4){
+
+value =
+value.slice(0,4)
++
+"-"
++
+value.slice(4);
+
+}
+
+
+birthDateText.value =
+value;
+
+}
+);
+
+
+calendarButton.addEventListener(
+"click",
+()=>{
+
+if(
+typeof birthCalendar.showPicker ===
+"function"
+){
+
+birthCalendar.showPicker();
+
+}else{
+
+birthCalendar.click();
+
+}
+
+}
+);
+
+
+birthCalendar.addEventListener(
+"change",
+()=>{
+
+if(
+birthCalendar.value
+){
+
+birthDateText.value =
+birthCalendar.value;
+
+}
+
+}
+);
+
+
+function isValidBirthDate(value){
+
+if(value === ""){
+return true;
+}
+
+return /^\d{4}-\d{2}-\d{2}$/
+.test(value);
+
+}
 
 
 function createMemberNumber(number){
 
 return (
-"NCC-C-" +
-String(number).padStart(6,"0")
+"NCC-C-"
++
+String(number)
+.padStart(6,"0")
 );
 
 }
@@ -680,12 +890,14 @@ String(number).padStart(6,"0")
 
 async function saveMember(memberData){
 
+
 const counterRef =
 doc(
 db,
 "counters",
 "memberNumbers"
 );
+
 
 const memberRef =
 doc(
@@ -700,12 +912,15 @@ return await runTransaction(
 db,
 async(transaction)=>{
 
+
 const counterSnapshot =
 await transaction.get(
 counterRef
 );
 
-let currentNumber = 0;
+
+let currentNumber =
+0;
 
 
 if(
@@ -772,10 +987,12 @@ updatedAt:
 serverTimestamp()
 
 }
+
 );
 
 
 return memberNumber;
+
 
 }
 );
@@ -786,6 +1003,7 @@ return memberNumber;
 form.addEventListener(
 "submit",
 async(event)=>{
+
 
 event.preventDefault();
 
@@ -811,8 +1029,32 @@ return;
 }
 
 
+const birthDate =
+birthDateText
+.value
+.trim();
+
+
+if(
+!isValidBirthDate(
+birthDate
+)
+){
+
+alert(
+"생년월일은 YYYY-MM-DD 형식으로 입력해주세요."
+);
+
+birthDateText.focus();
+
+return;
+
+}
+
+
 submitButton.disabled =
 true;
+
 
 submitButton.textContent =
 "회원번호 발급 중...";
@@ -823,11 +1065,13 @@ try{
 
 const memberData = {
 
+
 name:
 document
 .getElementById("name")
 .value
 .trim(),
+
 
 phone:
 document
@@ -835,11 +1079,13 @@ document
 .value
 .trim(),
 
+
 region:
 document
 .getElementById("region")
 .value
 .trim(),
+
 
 email:
 document
@@ -847,25 +1093,28 @@ document
 .value
 .trim(),
 
+
 birthDate:
-document
-.getElementById("birthDate")
-.value,
+birthDate,
+
 
 gender:
 document
 .getElementById("gender")
 .value,
 
+
 benefit:
 document
 .getElementById("benefit")
 .value,
 
+
 hasPet:
 document
 .getElementById("hasPet")
 .value,
+
 
 referrer:
 document
@@ -873,11 +1122,13 @@ document
 .value
 .trim(),
 
+
 referralCode:
 document
 .getElementById("referralCode")
 .value
 .trim(),
+
 
 centerName:
 document
@@ -885,14 +1136,17 @@ document
 .value
 .trim(),
 
+
 centerCode:
 document
 .getElementById("centerCode")
 .value
 .trim(),
 
+
 agreePrivacy:
 true,
+
 
 agreeMarketing:
 document
@@ -901,12 +1155,14 @@ document
 )
 .checked,
 
+
 agreeThirdParty:
 document
 .getElementById(
 "agreeThirdParty"
 )
 .checked
+
 
 };
 
@@ -918,8 +1174,10 @@ memberData
 
 
 alert(
-"전국소비자클럽 회원가입이 완료되었습니다.\n\n" +
-"회원번호: " +
+"전국소비자클럽 회원가입이 완료되었습니다.\n\n"
++
+"회원번호: "
++
 memberNumber
 );
 
@@ -931,13 +1189,12 @@ window.location.href =
 }catch(error){
 
 
-console.error(
-error
-);
+console.error(error);
 
 
 alert(
-"회원가입 저장 중 오류가 발생했습니다.\n\n" +
+"회원가입 저장 중 오류가 발생했습니다.\n\n"
++
 error.message
 );
 
@@ -945,11 +1202,13 @@ error.message
 submitButton.disabled =
 false;
 
+
 submitButton.textContent =
 "무료 회원가입 신청";
 
 
 }
+
 
 }
 );
