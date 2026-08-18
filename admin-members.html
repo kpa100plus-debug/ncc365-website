@@ -318,6 +318,41 @@ max-width:180px;
 }
 
 
+
+.member-filter{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin:10px 0 20px;
+}
+.member-filter select{
+  width:auto;
+  min-width:150px;
+}
+.pagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  margin:18px 0 0;
+  flex-wrap:wrap;
+}
+.page-button{
+  background:#fff;
+  color:#3f6f58;
+  border:1px solid #dce6e0;
+  padding:8px 12px;
+}
+.page-button.active{
+  background:var(--green);
+  color:#fff;
+}
+.page-button:disabled{
+  opacity:.4;
+}
+
+
 /* ===============================
    MEMBER TABLE
 ================================ */
@@ -922,6 +957,10 @@ max-width:none;
 margin-bottom:10px;
 }
 
+.member-filter select{
+width:100%;
+}
+
 .modal-backdrop{
 padding:8px;
 }
@@ -1105,36 +1144,32 @@ class="search-box"
 type="text"
 placeholder="이름, 연락처, 지역, 이메일, 추천인, 센터 검색">
 
-
-<select
-id="statusFilter"
-class="filter-box">
-
-<option value="">
-전체 상태
-</option>
-
-<option value="active">
-활성
-</option>
-
-<option value="paused">
-정지
-</option>
-
-<option value="blocked">
-차단
-</option>
-
+<select id="memberTypeFilter" class="filter-box">
+<option value="">전체 회원유형</option>
+<option value="consumer">소비자회원</option>
+<option value="corporate">법인사업자</option>
+<option value="soleProprietor">개인사업자</option>
 </select>
 
+<select id="statusFilter" class="filter-box">
+<option value="">전체 상태</option>
+<option value="active">활성</option>
+<option value="paused">정지</option>
+<option value="blocked">차단</option>
+</select>
+
+<select id="gradeFilter" class="filter-box">
+<option value="">전체 관리등급</option>
+<option value="general">일반</option>
+<option value="priority">우선관리</option>
+<option value="vip">VIP</option>
+<option value="special">특별관리</option>
+</select>
 
 <button
 id="logoutButton"
 class="logout-button">
-
 로그아웃
-
 </button>
 
 </div>
@@ -1143,6 +1178,8 @@ class="logout-button">
 <div id="memberArea">
 회원정보 불러오는 중...
 </div>
+
+<div id="pagination" class="pagination"></div>
 
 
 </div>
@@ -1918,6 +1955,15 @@ document.getElementById("memberSearch");
 const statusFilter =
 document.getElementById("statusFilter");
 
+const memberTypeFilter =
+document.getElementById("memberTypeFilter");
+
+const gradeFilter =
+document.getElementById("gradeFilter");
+
+const pagination =
+document.getElementById("pagination");
+
 
 const memberModal =
 document.getElementById("memberModal");
@@ -2034,6 +2080,10 @@ let allMembers =
 
 let selectedMemberId =
 null;
+
+let currentPage = 1;
+const PAGE_SIZE = 20;
+let currentFilteredMembers = [];
 
 
 
@@ -2515,173 +2565,125 @@ return "";
 
 function renderMembers(list){
 
+currentFilteredMembers = list;
 
-if(
-list.length === 0
-){
+const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+if(currentPage > totalPages) currentPage = totalPages;
 
-
-memberArea.innerHTML =
-
-'<div class="empty">조건에 맞는 회원이 없습니다.</div>';
-
-
-return;
-
-
+if(list.length === 0){
+  memberArea.innerHTML =
+  '<div class="empty">조건에 맞는 회원이 없습니다.</div>';
+  pagination.innerHTML = "";
+  return;
 }
 
+const startIndex = (currentPage - 1) * PAGE_SIZE;
+const pageList = list.slice(startIndex, startIndex + PAGE_SIZE);
 
+let rows = "";
 
-let rows =
-"";
+pageList.forEach((member, index)=>{
 
-
-
-list.forEach(
-(member)=>{
-
+const memberNo = String(startIndex + index + 1).padStart(5,"0");
 
 rows += `
-
 <tr>
-
-<td>
-${escapeHTML(member.name)}
+<td>${memberNo}</td>
+<td>${escapeHTML(member.name)}</td>
+<td>${escapeHTML(memberTypeText(member.memberType))}</td>
+<td>${escapeHTML(member.phone)}</td>
+<td>${escapeHTML(member.region)}</td>
+<td>${escapeHTML(member.referrer)}</td>
+<td>${escapeHTML(member.centerName)}</td>
+<td>${escapeHTML(member.managementGrade === "general" ? "일반" :
+member.managementGrade === "priority" ? "우선관리" :
+member.managementGrade === "vip" ? "VIP" :
+member.managementGrade === "special" ? "특별관리" : member.managementGrade)}</td>
+<td>${escapeHTML(member.joinDate)}</td>
+<td class="status ${statusClass(member.status)}">
+${escapeHTML(statusText(member.status))}
 </td>
-
 <td>
-${escapeHTML(member.phone)}
-</td>
-
-<td>
-${escapeHTML(member.region)}
-</td>
-
-<td>
-${escapeHTML(member.email)}
-</td>
-
-<td>
-${escapeHTML(member.benefit)}
-</td>
-
-<td>
-${escapeHTML(member.centerName)}
-</td>
-
-<td>
-${escapeHTML(member.joinDate)}
-</td>
-
-<td
-class="status ${statusClass(member.status)}">
-
-${escapeHTML(
-statusText(
-member.status
-)
-)}
-
-</td>
-
-<td>
-
 <button
 class="manage-button"
 data-member-id="${escapeHTML(member.id)}">
-
 상세관리
-
 </button>
-
 </td>
-
-</tr>
-
-`;
-
-
+</tr>`;
 });
 
-
-
 memberArea.innerHTML = `
-
 <div class="table-wrap">
-
 <table>
-
 <thead>
-
 <tr>
-
+<th>회원번호</th>
 <th>이름</th>
-
+<th>회원유형</th>
 <th>연락처</th>
-
 <th>지역</th>
-
-<th>이메일</th>
-
-<th>관심 혜택</th>
-
+<th>추천인</th>
 <th>소속센터</th>
-
+<th>관리등급</th>
 <th>가입일</th>
-
 <th>상태</th>
-
 <th>관리</th>
-
 </tr>
-
 </thead>
-
 <tbody>
-
 ${rows}
-
 </tbody>
-
 </table>
+</div>`;
 
-</div>
+document.querySelectorAll(".manage-button").forEach(button=>{
+  button.addEventListener("click",()=>{
+    openMemberModal(button.dataset.memberId);
+  });
+});
 
-`;
-
-
-
-document
-
-.querySelectorAll(
-".manage-button"
-)
-
-.forEach(
-button=>{
-
-
-button.addEventListener(
-"click",
-()=>{
-
-
-openMemberModal(
-button.dataset.memberId
-);
-
-
-}
-);
-
-
-}
-);
-
-
+renderPagination(totalPages);
 }
 
+function renderPagination(totalPages){
+
+pagination.innerHTML = "";
+
+const prev = document.createElement("button");
+prev.className = "page-button";
+prev.textContent = "이전";
+prev.disabled = currentPage === 1;
+prev.addEventListener("click",()=>{
+  currentPage--;
+  renderMembers(currentFilteredMembers);
+});
+pagination.appendChild(prev);
+
+const startPage = Math.max(1, currentPage - 2);
+const endPage = Math.min(totalPages, startPage + 4);
+
+for(let page=startPage; page<=endPage; page++){
+  const btn = document.createElement("button");
+  btn.className = "page-button" + (page === currentPage ? " active" : "");
+  btn.textContent = page;
+  btn.addEventListener("click",()=>{
+    currentPage = page;
+    renderMembers(currentFilteredMembers);
+  });
+  pagination.appendChild(btn);
+}
+
+const next = document.createElement("button");
+next.className = "page-button";
+next.textContent = "다음";
+next.disabled = currentPage === totalPages;
+next.addEventListener("click",()=>{
+  currentPage++;
+  renderMembers(currentFilteredMembers);
+});
+pagination.appendChild(next);
+}
 
 
 /* ===============================
@@ -2690,101 +2692,72 @@ button.dataset.memberId
 
 function applyFilters(){
 
-
 const keyword =
+memberSearch.value.trim().toLowerCase();
 
-memberSearch
-.value
-.trim()
-.toLowerCase();
+const selectedStatus = statusFilter.value;
+const selectedMemberType = memberTypeFilter.value;
+const selectedGrade = gradeFilter.value;
 
-
-const selectedStatus =
-statusFilter.value;
-
-
-
-const filtered =
-
-allMembers.filter(
-member=>{
-
+const filtered = allMembers.filter(member=>{
 
 const searchText = [
-
 member.name,
-
 member.phone,
-
 member.region,
-
 member.email,
-
 member.benefit,
-
 member.referrer,
-
 member.referralCode,
-
 member.centerName,
+member.centerCode,
+memberTypeText(member.memberType)
+].join(" ").toLowerCase();
 
-member.centerCode
+const keywordOK = searchText.includes(keyword);
+const statusOK = !selectedStatus || member.status === selectedStatus;
+const typeOK = !selectedMemberType || member.memberType === selectedMemberType;
+const gradeOK = !selectedGrade || member.managementGrade === selectedGrade;
 
-]
-
-.join(" ")
-
-.toLowerCase();
-
-
-
-const keywordOK =
-
-searchText.includes(
-keyword
-);
-
-
-
-const statusOK =
-
-!selectedStatus ||
-
-member.status ===
-selectedStatus;
-
-
-
-return (
-
-keywordOK &&
-statusOK
-
-);
-
-
+return keywordOK && statusOK && typeOK && gradeOK;
 });
 
-
-renderMembers(
-filtered
-);
-
-
+renderMembers(filtered);
 }
-
 
 
 memberSearch.addEventListener(
 "input",
-applyFilters
+()=>{
+currentPage = 1;
+applyFilters();
+}
 );
 
 
 
 statusFilter.addEventListener(
 "change",
-applyFilters
+()=>{
+currentPage = 1;
+applyFilters();
+}
+);
+
+memberTypeFilter.addEventListener(
+"change",
+()=>{
+currentPage = 1;
+applyFilters();
+}
+);
+
+gradeFilter.addEventListener(
+"change",
+()=>{
+currentPage = 1;
+applyFilters();
+}
 );
 
 
