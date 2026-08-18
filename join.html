@@ -13,12 +13,35 @@
 box-sizing:border-box;
 }
 
+:root{
+--green:#347658;
+--green-dark:#285e47;
+--green-soft:#edf5f0;
+--text:#2d3731;
+--sub:#68736d;
+--border:#dce4df;
+--bg:#f5f8f6;
+--danger:#b7504a;
+}
+
 body{
 margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-background:#f5f8f6;
-color:#25352c;
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+"Apple SD Gothic Neo",
+"Malgun Gothic",
+sans-serif;
+background:var(--bg);
+color:var(--text);
 letter-spacing:-0.02em;
+-webkit-font-smoothing:antialiased;
+}
+
+a{
+text-decoration:none;
+color:inherit;
 }
 
 .header{
@@ -36,22 +59,22 @@ display:block;
 }
 
 .container{
-width:min(720px,92%);
+width:min(760px,92%);
 margin:45px auto;
 }
 
 .card{
 background:#fff;
 border-radius:22px;
-padding:35px 30px;
-box-shadow:0 15px 40px rgba(0,0,0,.06);
+padding:36px 32px;
+box-shadow:0 15px 40px rgba(0,0,0,.05);
 }
 
 .eyebrow{
 font-size:12px;
 font-weight:600;
 letter-spacing:.12em;
-color:#39805a;
+color:var(--green);
 }
 
 h1{
@@ -59,16 +82,17 @@ font-size:42px;
 line-height:1.15;
 margin:12px 0;
 letter-spacing:-.05em;
+color:#25372d;
 }
 
 h1 span{
-color:#50a94b;
+color:#4c9b65;
 }
 
 .subtitle{
 font-size:17px;
 line-height:1.7;
-color:#647168;
+color:var(--sub);
 }
 
 .benefits{
@@ -82,18 +106,26 @@ margin:25px 0 35px;
 background:#f3f7f4;
 padding:18px;
 border-radius:12px;
+font-size:15px;
 font-weight:500;
 }
 
 .section{
-margin-top:32px;
-padding-top:28px;
-border-top:1px solid #e5ebe6;
+margin-top:34px;
+padding-top:30px;
+border-top:1px solid #e7ece9;
 }
 
 .section h2{
 font-size:20px;
-margin:0 0 18px;
+margin:0 0 5px;
+color:#294333;
+}
+
+.section-desc{
+font-size:13px;
+color:#7a857e;
+margin-bottom:20px;
 }
 
 .form-grid{
@@ -102,6 +134,366 @@ grid-template-columns:1fr 1fr;
 gap:16px;
 }
 
+.form-group{
+margin-top:16px;
+}
+
+.full{
+grid-column:1/-1;
+}
+
+label{
+display:block;
+font-size:14px;
+font-weight:500;
+margin-bottom:7px;
+color:#46534b;
+}
+
+.required{
+color:var(--danger);
+}
+
+input{
+width:100%;
+padding:14px 15px;
+border:1px solid var(--border);
+border-radius:10px;
+font-family:inherit;
+font-size:15px;
+background:#fff;
+color:#303934;
+outline:none;
+}
+
+input:focus{
+border-color:#7ea68f;
+box-shadow:0 0 0 3px rgba(52,118,88,.07);
+}
+
+input::placeholder{
+color:#969e99;
+}
+
+/* 생년월일 */
+
+.birth-wrap{
+display:grid;
+grid-template-columns:1fr 54px;
+gap:8px;
+}
+
+.calendar-button{
+width:54px;
+height:49px;
+margin:0;
+padding:0;
+border:1px solid var(--border);
+border-radius:10px;
+background:#f3f7f4;
+color:#356d51;
+font-size:20px;
+cursor:pointer;
+}
+
+#birthCalendar{
+position:fixed;
+left:-9999px;
+width:1px;
+height:1px;
+opacity:0;
+}
+
+/* 선택 버튼 공통 */
+
+.choice-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:9px;
+}
+
+.choice-grid.benefit-choice{
+grid-template-columns:repeat(2,1fr);
+}
+
+.choice-button{
+min-height:48px;
+padding:11px 12px;
+border:1px solid var(--border);
+border-radius:10px;
+background:#fff;
+color:#46534b;
+font-family:inherit;
+font-size:14px;
+font-weight:500;
+cursor:pointer;
+}
+
+.choice-button:hover{
+background:#f6f9f7;
+}
+
+.choice-button.active{
+background:var(--green);
+border-color:var(--green);
+color:#fff;
+}
+
+.benefit-choice .choice-button:first-child{
+grid-column:1/-1;
+}
+
+/* 동의 */
+
+.agreement-box{
+margin-top:18px;
+background:#f7f9f8;
+border:1px solid #e5ebe7;
+padding:18px;
+border-radius:12px;
+}
+
+.agree{
+display:flex;
+align-items:flex-start;
+gap:10px;
+padding:9px 0;
+}
+
+.agree input{
+width:18px;
+height:18px;
+margin:1px 0 0;
+flex:none;
+accent-color:var(--green);
+}
+
+.agree label{
+margin:0;
+line-height:1.5;
+font-size:14px;
+cursor:pointer;
+}
+
+.agree-all{
+padding-bottom:14px;
+margin-bottom:7px;
+border-bottom:1px solid #dde5df;
+}
+
+.agree-all label{
+font-weight:600;
+}
+
+.optional{
+font-size:12px;
+color:#7a857e;
+line-height:1.6;
+margin-top:8px;
+}
+
+/* 가입버튼 */
+
+.submit-button{
+width:100%;
+height:56px;
+margin-top:28px;
+border:0;
+border-radius:11px;
+background:var(--green);
+color:#fff;
+font-family:inherit;
+font-size:17px;
+font-weight:600;
+cursor:pointer;
+}
+
+.submit-button:hover{
+background:var(--green-dark);
+}
+
+.submit-button:disabled{
+opacity:.55;
+cursor:not-allowed;
+}
+
+.notice{
+margin-top:20px;
+padding:18px;
+background:#f0f5f1;
+border-radius:12px;
+font-size:13px;
+line-height:1.7;
+color:#657269;
+}
+
+footer{
+text-align:center;
+padding:30px;
+font-size:12px;
+line-height:1.6;
+color:#78857d;
+}
+
+@media(max-width:600px){
+
+.header{
+height:68px;
+padding:0 18px;
+}
+
+.logo img{
+width:170px;
+}
+
+.container{
+margin:25px auto;
+}
+
+.card{
+padding:26px 18px;
+}
+
+h1{
+font-size:34px;
+}
+
+.subtitle{
+font-size:15px;
+}
+
+.benefits{
+grid-template-columns:1fr;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+gap:0;
+}
+
+.full{
+grid-column:auto;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+<a class="logo" href="index.html">
+
+<img
+src="images/NCC_header_logo.png"
+alt="전국소비자클럽 공식 로고">
+
+</a>
+
+</header>
+
+
+<div class="container">
+
+<div class="card">
+
+<p class="eyebrow">
+FREE MEMBERSHIP
+</p>
+
+<h1>
+전국소비자클럽<br>
+<span>무료 회원가입</span>
+</h1>
+
+<p class="subtitle">
+가입비 0원.<br>
+회원이 되면 상품 무료 경험, 공동구매,
+회원 할인, 지역 혜택을 만나보실 수 있습니다.
+</p>
+
+
+<div class="benefits">
+
+<div class="benefit">
+🎁 상품 무료 경험
+</div>
+
+<div class="benefit">
+🛒 공동구매 혜택
+</div>
+
+<div class="benefit">
+💰 회원 할인
+</div>
+
+<div class="benefit">
+🏪 지역 혜택
+</div>
+
+</div>
+
+
+<form id="memberForm">
+
+
+<section class="section">
+
+<h2>기본정보</h2>
+
+<div class="section-desc">
+회원가입 및 회원관리에 필요한 기본정보입니다.
+</div>
+
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+<label for="name">
+이름 <span class="required">*</span>
+</label>
+
+<input
+id="name"
+type="text"
+placeholder="이름을 입력하세요"
+required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="phone">
+연락처 <span class="required">*</span>
+</label>
+
+<input
+id="phone"
+type="tel"
+inputmode="tel"
+placeholder="010-0000-0000"
+required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="email">
+이메일
+</label>
+
+<input
+id="email"
+type="email"
+placeholder="이메일을 입력하세요">
+
+</div
 .form-group{
 margin-top:16px;
 }
