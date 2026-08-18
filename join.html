@@ -30,7 +30,6 @@ box-sizing:border-box;
 
 body{
 margin:0;
-
 font-family:
 -apple-system,
 BlinkMacSystemFont,
@@ -38,404 +37,253 @@ BlinkMacSystemFont,
 "Apple SD Gothic Neo",
 "Malgun Gothic",
 sans-serif;
-
 background:var(--bg);
-
 color:var(--text);
-
 letter-spacing:-0.02em;
-
 font-weight:400;
-
 -webkit-font-smoothing:antialiased;
 }
-
 
 a{
 text-decoration:none;
 color:inherit;
 }
 
-
-/* HEADER */
-
 .header{
 height:75px;
-
 background:#fff;
-
 display:flex;
-
 align-items:center;
-
 padding:0 25px;
-
 border-bottom:1px solid #e5ebe6;
 }
-
 
 .logo img{
 width:190px;
 display:block;
 }
 
-
-/* LAYOUT */
-
 .container{
 width:min(760px,92%);
 margin:45px auto;
 }
 
-
 .card{
 background:#fff;
-
 border-radius:22px;
-
 padding:36px 32px;
-
 box-shadow:0 15px 40px rgba(0,0,0,.05);
-
 border:1px solid #edf1ee;
 }
 
-
 .eyebrow{
 font-size:12px;
-
 font-weight:600;
-
 letter-spacing:.12em;
-
 color:var(--green);
 }
 
-
 h1{
 font-size:42px;
-
 line-height:1.15;
-
 margin:12px 0;
-
 letter-spacing:-.05em;
-
 font-weight:700;
-
 color:#25372d;
 }
-
 
 h1 span{
 color:#4c9b65;
 }
 
-
 .subtitle{
 font-size:17px;
-
 line-height:1.7;
-
 font-weight:400;
-
 color:var(--sub);
 }
 
-
-/* BENEFITS */
-
 .benefits{
 display:grid;
-
 grid-template-columns:1fr 1fr;
-
 gap:10px;
-
 margin:25px 0 35px;
 }
 
-
 .benefit{
 background:#f3f7f4;
-
 padding:18px;
-
 border-radius:12px;
-
 font-size:15px;
-
 font-weight:500;
-
 color:#31463a;
 }
 
-
-/* SECTION */
-
 .form-section{
 margin-top:35px;
-
 padding-top:30px;
-
 border-top:1px solid #e7ece9;
 }
 
-
-.form-section:first-of-type{
-margin-top:10px;
-}
-
-
 .section-title{
 font-size:20px;
-
 font-weight:700;
-
 color:#294333;
-
 margin:0 0 5px;
 }
 
-
 .section-desc{
 font-size:13px;
-
 font-weight:400;
-
 color:#7a857e;
-
 margin-bottom:20px;
 }
 
-
-/* FORM */
-
 .form-grid{
 display:grid;
-
 grid-template-columns:1fr 1fr;
-
 gap:16px;
 }
-
 
 .form-group{
 margin-top:16px;
 }
 
-
 .form-group.full{
-grid-column:1 / -1;
+grid-column:1/-1;
 }
-
 
 label{
 display:block;
-
 font-size:14px;
-
 font-weight:500;
-
 margin-bottom:7px;
-
 color:#46534b;
 }
-
 
 .required{
 color:#b7504a;
 }
 
-
 input,
 select,
 textarea{
-
 width:100%;
-
 padding:14px 15px;
-
 border:1px solid var(--border);
-
 border-radius:10px;
-
 font-family:inherit;
-
 font-size:15px;
-
 font-weight:400;
-
 background:#fff;
-
 color:#303934;
-
 outline:none;
 }
-
 
 textarea{
 min-height:90px;
 resize:vertical;
 }
 
-
 input:focus,
 select:focus,
 textarea:focus{
-
 border-color:#7ea68f;
-
 box-shadow:0 0 0 3px rgba(52,118,88,.07);
 }
-
 
 input::placeholder,
 textarea::placeholder{
 color:#969e99;
 }
 
-
 .readonly{
 background:#f4f6f5;
 color:#6c7770;
 }
 
-
-/* AGREEMENT */
-
 .agreement-box{
 margin-top:20px;
-
 padding:18px;
-
 background:#f7f9f8;
-
 border:1px solid #e5ebe7;
-
 border-radius:12px;
 }
 
-
 .agree-row{
 display:flex;
-
 align-items:flex-start;
-
 gap:10px;
-
 padding:9px 0;
 }
-
 
 .agree-row input{
 width:18px;
 height:18px;
-
 margin-top:1px;
-
 flex:none;
 }
 
-
 .agree-row label{
 margin:0;
-
 font-size:14px;
-
 font-weight:400;
-
 line-height:1.5;
 }
-
 
 .agree-required{
 font-weight:600;
 color:#34473b;
 }
 
-
 .optional{
 font-size:12px;
 color:#7a857e;
+margin-top:7px;
 }
-
-
-/* BUTTON */
 
 button{
 width:100%;
-
 height:56px;
-
 margin-top:28px;
-
 border:0;
-
 border-radius:11px;
-
 background:var(--green);
-
 color:#fff;
-
 font-family:inherit;
-
 font-size:17px;
-
 font-weight:600;
-
 cursor:pointer;
 }
-
 
 button:hover{
 background:var(--green-dark);
 }
-
 
 button:disabled{
 opacity:.55;
 cursor:not-allowed;
 }
 
-
-/* NOTICE */
-
 .notice{
 margin-top:20px;
-
 padding:18px;
-
 background:#f0f5f1;
-
 border-radius:12px;
-
 font-size:13px;
-
 font-weight:400;
-
 line-height:1.7;
-
 color:#657269;
 }
 
-
 footer{
 text-align:center;
-
 padding:30px;
-
 font-size:12px;
-
 font-weight:400;
-
 line-height:1.6;
-
 color:#78857d;
 }
-
-
-/* MOBILE */
 
 @media(max-width:600px){
 
@@ -480,18 +328,13 @@ grid-column:auto;
 }
 
 </style>
-
 </head>
-
 
 <body>
 
-
 <header class="header">
 
-<a
-class="logo"
-href="index.html">
+<a class="logo" href="index.html">
 
 <img
 src="images/NCC_header_logo.png"
@@ -502,33 +345,27 @@ alt="전국소비자클럽 공식 로고">
 </header>
 
 
-
 <div class="container">
 
 <div class="card">
 
-
 <p class="eyebrow">
 FREE MEMBERSHIP
 </p>
-
 
 <h1>
 전국소비자클럽<br>
 <span>무료 회원가입</span>
 </h1>
 
-
 <p class="subtitle">
 
 가입비 0원.<br>
 
-전국소비자클럽 회원이 되면
-상품 무료 경험, 공동구매, 회원 할인,
-지역 혜택 등 다양한 소비자 혜택을 만나보실 수 있습니다.
+전국소비자클럽 회원이 되면 상품 무료 경험, 공동구매,
+회원 할인, 지역 혜택 등 다양한 소비자 혜택을 만나보실 수 있습니다.
 
 </p>
-
 
 
 <div class="benefits">
@@ -552,11 +389,8 @@ FREE MEMBERSHIP
 </div>
 
 
-
 <form id="memberForm">
 
-
-<!-- 기본정보 -->
 
 <section class="form-section">
 
@@ -565,9 +399,8 @@ FREE MEMBERSHIP
 </h2>
 
 <div class="section-desc">
-회원가입과 기본 회원관리에 필요한 정보입니다.
+회원가입 및 회원관리에 필요한 기본정보입니다.
 </div>
-
 
 <div class="form-grid">
 
@@ -587,7 +420,6 @@ required>
 </div>
 
 
-
 <div class="form-group">
 
 <label for="phone">
@@ -601,7 +433,6 @@ placeholder="010-0000-0000"
 required>
 
 </div>
-
 
 
 <div class="form-group">
@@ -618,7 +449,6 @@ placeholder="이메일을 입력하세요">
 </div>
 
 
-
 <div class="form-group">
 
 <label for="birthDate">
@@ -630,7 +460,6 @@ id="birthDate"
 type="date">
 
 </div>
-
 
 
 <div class="form-group">
@@ -653,10 +482,13 @@ type="date">
 여성
 </option>
 
+<option value="other">
+기타
+</option>
+
 </select>
 
 </div>
-
 
 
 <div class="form-group">
@@ -672,7 +504,6 @@ value="consumer"
 readonly>
 
 </div>
-
 
 
 <div class="form-group full">
@@ -695,9 +526,6 @@ required>
 </section>
 
 
-
-<!-- 소비정보 -->
-
 <section class="form-section">
 
 <h2 class="section-title">
@@ -705,9 +533,8 @@ required>
 </h2>
 
 <div class="section-desc">
-회원 맞춤 혜택 제공을 위한 선택정보입니다.
+맞춤 혜택 제공을 위한 선택정보입니다.
 </div>
-
 
 <div class="form-grid">
 
@@ -745,7 +572,6 @@ required>
 </div>
 
 
-
 <div class="form-group">
 
 <label for="hasPet">
@@ -776,9 +602,6 @@ required>
 </section>
 
 
-
-<!-- 추천 / 센터정보 -->
-
 <section class="form-section">
 
 <h2 class="section-title">
@@ -788,7 +611,6 @@ required>
 <div class="section-desc">
 해당 정보가 있는 경우에만 입력하시면 됩니다.
 </div>
-
 
 <div class="form-grid">
 
@@ -807,7 +629,6 @@ placeholder="추천인 이름">
 </div>
 
 
-
 <div class="form-group">
 
 <label for="referralCode">
@@ -822,7 +643,6 @@ placeholder="추천코드">
 </div>
 
 
-
 <div class="form-group">
 
 <label for="centerName">
@@ -835,7 +655,6 @@ type="text"
 placeholder="예: 삼성동 소비자센터">
 
 </div>
-
 
 
 <div class="form-group">
@@ -857,9 +676,6 @@ placeholder="센터코드가 있는 경우 입력">
 </section>
 
 
-
-<!-- 동의정보 -->
-
 <section class="form-section">
 
 <h2 class="section-title">
@@ -869,7 +685,6 @@ placeholder="센터코드가 있는 경우 입력">
 <div class="section-desc">
 필수 동의와 선택 동의를 구분하여 확인해주세요.
 </div>
-
 
 <div class="agreement-box">
 
@@ -892,7 +707,6 @@ class="agree-required">
 </div>
 
 
-
 <div class="agree-row">
 
 <input
@@ -906,7 +720,6 @@ type="checkbox">
 </label>
 
 </div>
-
 
 
 <div class="agree-row">
@@ -926,16 +739,13 @@ type="checkbox">
 
 <div class="optional">
 
-선택 항목에 동의하지 않아도
-전국소비자클럽 기본 회원가입은 가능합니다.
+선택 항목에 동의하지 않아도 전국소비자클럽 기본 회원가입은 가능합니다.
 
 </div>
-
 
 </div>
 
 </section>
-
 
 
 <button
@@ -946,17 +756,14 @@ type="submit">
 
 </button>
 
-
 </form>
-
 
 
 <div class="notice">
 
 ※ 회원가입 정보는 전국소비자클럽 회원관리 시스템에 저장됩니다.<br>
 
-가입 후 회원정보 및 소비자 혜택 제공을 위한
-기초 회원관리 정보로 활용됩니다.
+가입정보는 회원관리 및 소비자 혜택 제공을 위한 기초정보로 활용됩니다.
 
 </div>
 
@@ -964,7 +771,6 @@ type="submit">
 </div>
 
 </div>
-
 
 
 <footer>
@@ -975,15 +781,12 @@ type="submit">
 </footer>
 
 
-
 <script type="module">
-
 
 import {
 initializeApp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 
 import {
 getFirestore,
@@ -992,7 +795,6 @@ addDoc,
 serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 
 const firebaseConfig = {
@@ -1021,36 +823,28 @@ measurementId:
 };
 
 
-
 const app =
 initializeApp(firebaseConfig);
-
 
 const db =
 getFirestore(app);
 
-
 const form =
 document.getElementById("memberForm");
 
-
 const submitButton =
 document.getElementById("submitButton");
-
 
 
 form.addEventListener(
 "submit",
 async function(event){
 
-
 event.preventDefault();
-
 
 
 const agreePrivacy =
 document.getElementById("agreePrivacy").checked;
-
 
 if(!agreePrivacy){
 
@@ -1063,14 +857,11 @@ return;
 }
 
 
-
 submitButton.disabled =
 true;
 
-
 submitButton.textContent =
 "가입정보 저장 중...";
-
 
 
 try{
@@ -1078,8 +869,6 @@ try{
 
 const memberData = {
 
-
-/* 기본정보 */
 
 name:
 document.getElementById("name")
@@ -1115,9 +904,6 @@ document.getElementById("region")
 .trim(),
 
 
-
-/* 회원정보 */
-
 memberType:
 "consumer",
 
@@ -1125,9 +911,6 @@ memberType:
 status:
 "active",
 
-
-
-/* 소비정보 */
 
 benefit:
 document.getElementById("benefit")
@@ -1138,9 +921,6 @@ hasPet:
 document.getElementById("hasPet")
 .value,
 
-
-
-/* 추천정보 */
 
 referrer:
 document.getElementById("referrer")
@@ -1154,9 +934,6 @@ document.getElementById("referralCode")
 .trim(),
 
 
-
-/* 센터정보 */
-
 centerName:
 document.getElementById("centerName")
 .value
@@ -1168,9 +945,6 @@ document.getElementById("centerCode")
 .value
 .trim(),
 
-
-
-/* 동의정보 */
 
 agreePrivacy:
 true,
@@ -1186,9 +960,6 @@ document.getElementById("agreeThirdParty")
 .checked,
 
 
-
-/* 관리자용 초기값 */
-
 managementGrade:
 "general",
 
@@ -1197,9 +968,6 @@ adminMemo:
 "",
 
 
-
-/* 시스템 */
-
 joinDate:
 serverTimestamp(),
 
@@ -1207,9 +975,7 @@ serverTimestamp(),
 updatedAt:
 serverTimestamp()
 
-
 };
-
 
 
 await addDoc(
@@ -1224,20 +990,16 @@ memberData
 );
 
 
-
 alert(
 "전국소비자클럽 회원가입이 완료되었습니다."
 );
 
 
-
 form.reset();
-
 
 document.getElementById("memberType")
 .value =
 "consumer";
-
 
 
 }catch(error){
@@ -1263,19 +1025,15 @@ error.message
 submitButton.disabled =
 false;
 
-
 submitButton.textContent =
 "무료 회원가입 신청";
 
 
 }
 
-
 });
 
 </script>
 
-
 </body>
-
 </html>
