@@ -26,6 +26,7 @@ box-sizing:border-box;
 --border:#dce4df;
 --bg:#f5f8f6;
 --white:#ffffff;
+--danger:#b7504a;
 }
 
 body{
@@ -162,7 +163,7 @@ color:#46534b;
 }
 
 .required{
-color:#b7504a;
+color:var(--danger);
 }
 
 input,
@@ -205,6 +206,12 @@ border:1px solid #e5ebe7;
 border-radius:12px;
 }
 
+.agree-all{
+padding-bottom:14px;
+margin-bottom:7px;
+border-bottom:1px solid #dde5df;
+}
+
 .agree-row{
 display:flex;
 align-items:flex-start;
@@ -217,6 +224,7 @@ width:18px;
 height:18px;
 margin-top:1px;
 flex:none;
+accent-color:var(--green);
 }
 
 .agree-row label{
@@ -224,17 +232,25 @@ margin:0;
 font-size:14px;
 font-weight:400;
 line-height:1.5;
+cursor:pointer;
+}
+
+.agree-all label{
+font-size:15px;
+font-weight:600;
+color:#2f4137;
 }
 
 .agree-required{
-font-weight:600;
+font-weight:500;
 color:#34473b;
 }
 
 .optional{
 font-size:12px;
 color:#7a857e;
-margin-top:7px;
+margin-top:8px;
+line-height:1.6;
 }
 
 button{
@@ -344,14 +360,17 @@ alt="전국소비자클럽 공식 로고">
 
 <div class="card">
 
+
 <p class="eyebrow">
 FREE MEMBERSHIP
 </p>
+
 
 <h1>
 전국소비자클럽<br>
 <span>무료 회원가입</span>
 </h1>
+
 
 <p class="subtitle">
 
@@ -387,6 +406,8 @@ FREE MEMBERSHIP
 <form id="memberForm">
 
 
+<!-- 기본정보 -->
+
 <section class="form-section">
 
 <h2 class="section-title">
@@ -396,6 +417,7 @@ FREE MEMBERSHIP
 <div class="section-desc">
 회원가입 및 회원관리에 필요한 기본정보입니다.
 </div>
+
 
 <div class="form-grid">
 
@@ -502,6 +524,8 @@ required>
 </section>
 
 
+<!-- 관심정보 -->
+
 <section class="form-section">
 
 <h2 class="section-title">
@@ -511,6 +535,7 @@ required>
 <div class="section-desc">
 맞춤 혜택 제공을 위한 선택정보입니다.
 </div>
+
 
 <div class="form-grid">
 
@@ -578,6 +603,8 @@ required>
 </section>
 
 
+<!-- 추천·지역센터 -->
+
 <section class="form-section">
 
 <h2 class="section-title">
@@ -587,6 +614,7 @@ required>
 <div class="section-desc">
 해당 정보가 있는 경우에만 입력하시면 됩니다.
 </div>
+
 
 <div class="form-grid">
 
@@ -652,6 +680,8 @@ placeholder="센터코드가 있는 경우 입력">
 </section>
 
 
+<!-- 약관 -->
+
 <section class="form-section">
 
 <h2 class="section-title">
@@ -662,13 +692,28 @@ placeholder="센터코드가 있는 경우 입력">
 필수 동의와 선택 동의를 구분하여 확인해주세요.
 </div>
 
+
 <div class="agreement-box">
+
+
+<div class="agree-row agree-all">
+
+<input
+id="agreeAll"
+type="checkbox">
+
+<label for="agreeAll">
+전체 동의
+</label>
+
+</div>
 
 
 <div class="agree-row">
 
 <input
 id="agreePrivacy"
+class="agree-item"
 type="checkbox"
 required>
 
@@ -687,6 +732,7 @@ class="agree-required">
 
 <input
 id="agreeMarketing"
+class="agree-item"
 type="checkbox">
 
 <label for="agreeMarketing">
@@ -702,6 +748,7 @@ type="checkbox">
 
 <input
 id="agreeThirdParty"
+class="agree-item"
 type="checkbox">
 
 <label for="agreeThirdParty">
@@ -719,6 +766,7 @@ type="checkbox">
 
 </div>
 
+
 </div>
 
 </section>
@@ -731,6 +779,7 @@ type="submit">
 무료 회원가입 신청
 
 </button>
+
 
 </form>
 
@@ -759,10 +808,12 @@ type="submit">
 
 <script type="module">
 
+
 import {
 initializeApp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 
 import {
 getFirestore,
@@ -802,15 +853,136 @@ measurementId:
 const app =
 initializeApp(firebaseConfig);
 
+
 const db =
 getFirestore(app);
+
 
 const form =
 document.getElementById("memberForm");
 
+
 const submitButton =
 document.getElementById("submitButton");
 
+
+const agreeAll =
+document.getElementById("agreeAll");
+
+
+const agreePrivacy =
+document.getElementById("agreePrivacy");
+
+
+const agreeMarketing =
+document.getElementById("agreeMarketing");
+
+
+const agreeThirdParty =
+document.getElementById("agreeThirdParty");
+
+
+const agreeItems = [
+
+agreePrivacy,
+agreeMarketing,
+agreeThirdParty
+
+];
+
+
+/* =========================
+   전체 동의
+========================= */
+
+agreeAll.addEventListener(
+"change",
+function(){
+
+agreeItems.forEach(
+checkbox => {
+
+checkbox.checked =
+agreeAll.checked;
+
+}
+);
+
+agreeAll.indeterminate =
+false;
+
+}
+);
+
+
+/* =========================
+   개별 체크 변경 시
+   전체동의 상태 자동 반영
+========================= */
+
+agreeItems.forEach(
+checkbox => {
+
+checkbox.addEventListener(
+"change",
+updateAgreeAllState
+);
+
+}
+);
+
+
+function updateAgreeAllState(){
+
+const checkedCount =
+agreeItems.filter(
+checkbox => checkbox.checked
+).length;
+
+
+if(
+checkedCount ===
+agreeItems.length
+){
+
+agreeAll.checked =
+true;
+
+agreeAll.indeterminate =
+false;
+
+return;
+
+}
+
+
+if(
+checkedCount === 0
+){
+
+agreeAll.checked =
+false;
+
+agreeAll.indeterminate =
+false;
+
+return;
+
+}
+
+
+agreeAll.checked =
+false;
+
+agreeAll.indeterminate =
+true;
+
+}
+
+
+/* =========================
+   회원가입 저장
+========================= */
 
 form.addEventListener(
 "submit",
@@ -819,10 +991,9 @@ async function(event){
 event.preventDefault();
 
 
-const agreePrivacy =
-document.getElementById("agreePrivacy").checked;
-
-if(!agreePrivacy){
+if(
+!agreePrivacy.checked
+){
 
 alert(
 "개인정보 수집 및 이용에 동의해야 회원가입이 가능합니다."
@@ -836,6 +1007,7 @@ return;
 submitButton.disabled =
 true;
 
+
 submitButton.textContent =
 "가입정보 저장 중...";
 
@@ -845,6 +1017,8 @@ try{
 
 const memberData = {
 
+
+/* 기본정보 */
 
 name:
 document.getElementById("name")
@@ -880,6 +1054,9 @@ document.getElementById("region")
 .trim(),
 
 
+
+/* 회원정보 */
+
 memberType:
 "consumer",
 
@@ -887,6 +1064,9 @@ memberType:
 status:
 "active",
 
+
+
+/* 관심정보 */
 
 benefit:
 document.getElementById("benefit")
@@ -897,6 +1077,9 @@ hasPet:
 document.getElementById("hasPet")
 .value,
 
+
+
+/* 추천정보 */
 
 referrer:
 document.getElementById("referrer")
@@ -910,6 +1093,9 @@ document.getElementById("referralCode")
 .trim(),
 
 
+
+/* 지역센터 */
+
 centerName:
 document.getElementById("centerName")
 .value
@@ -922,19 +1108,23 @@ document.getElementById("centerCode")
 .trim(),
 
 
+
+/* 개인정보 동의 */
+
 agreePrivacy:
-true,
+agreePrivacy.checked,
 
 
 agreeMarketing:
-document.getElementById("agreeMarketing")
-.checked,
+agreeMarketing.checked,
 
 
 agreeThirdParty:
-document.getElementById("agreeThirdParty")
-.checked,
+agreeThirdParty.checked,
 
+
+
+/* 관리자 관리값 */
 
 managementGrade:
 "general",
@@ -944,6 +1134,9 @@ adminMemo:
 "",
 
 
+
+/* 시스템 */
+
 joinDate:
 serverTimestamp(),
 
@@ -951,8 +1144,11 @@ serverTimestamp(),
 updatedAt:
 serverTimestamp()
 
+
 };
 
+
+/* Firestore 저장 */
 
 await addDoc(
 
@@ -966,12 +1162,19 @@ memberData
 );
 
 
+/* 가입 완료 */
+
 alert(
-"전국소비자클럽 회원가입이 완료되었습니다."
+
+"전국소비자클럽 회원가입이 완료되었습니다.\n\n메인페이지로 이동합니다."
+
 );
 
 
-form.reset();
+/* 메인 페이지 이동 */
+
+window.location.href =
+"index.html";
 
 
 }catch(error){
@@ -991,11 +1194,9 @@ error.message
 );
 
 
-}finally{
-
-
 submitButton.disabled =
 false;
+
 
 submitButton.textContent =
 "무료 회원가입 신청";
@@ -1008,4 +1209,5 @@ submitButton.textContent =
 </script>
 
 </body>
+
 </html>
