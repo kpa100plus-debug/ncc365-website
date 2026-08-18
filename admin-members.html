@@ -21,22 +21,23 @@ color:#12291c;
 }
 
 .wrap{
-width:min(1100px,94%);
-margin:40px auto;
+width:min(1200px,94%);
+margin:35px auto;
 }
 
 h1{
-margin-bottom:8px;
+margin:0 0 8px;
+font-size:32px;
 }
 
 .info{
 color:#66736b;
-margin-bottom:25px;
+margin-bottom:22px;
 }
 
 .login-box{
 max-width:460px;
-margin:60px auto;
+margin:70px auto;
 background:#fff;
 padding:30px;
 border-radius:18px;
@@ -47,21 +48,26 @@ box-shadow:0 12px 35px rgba(0,0,0,.08);
 margin-top:0;
 }
 
-input{
+input,
+select{
 width:100%;
-padding:15px;
-margin-top:12px;
+padding:14px;
 border:1px solid #d6dfd9;
 border-radius:10px;
-font-size:16px;
+font-size:15px;
+background:#fff;
+}
+
+.login-box input{
+margin-top:12px;
 }
 
 button{
 border:0;
 border-radius:10px;
-padding:13px 18px;
-font-size:15px;
-font-weight:700;
+padding:12px 17px;
+font-size:14px;
+font-weight:800;
 cursor:pointer;
 }
 
@@ -74,8 +80,7 @@ color:white;
 
 .logout-button{
 background:#333;
-color:white;
-margin-bottom:20px;
+color:#fff;
 }
 
 .summary-box{
@@ -88,7 +93,7 @@ margin:20px 0;
 .summary-card{
 background:#fff;
 padding:18px 22px;
-border-radius:12px;
+border-radius:14px;
 min-width:160px;
 box-shadow:0 5px 18px rgba(0,0,0,.05);
 }
@@ -104,17 +109,33 @@ font-weight:800;
 margin-top:5px;
 }
 
+.tools{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+align-items:center;
+margin:20px 0;
+}
+
 .search-box{
 max-width:420px;
-margin:10px 0 20px;
+}
+
+.filter-box{
+max-width:180px;
+}
+
+.table-wrap{
+width:100%;
+overflow-x:auto;
+border-radius:14px;
+background:#fff;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-background:#fff;
-border-radius:14px;
-overflow:hidden;
+min-width:1000px;
 }
 
 th,
@@ -128,11 +149,29 @@ font-size:14px;
 th{
 background:#176b42;
 color:#fff;
+white-space:nowrap;
 }
 
 .status{
-font-weight:700;
+font-weight:800;
+}
+
+.status-active{
 color:#176b42;
+}
+
+.status-paused{
+color:#b26a00;
+}
+
+.status-blocked{
+color:#b00020;
+}
+
+.manage-button{
+background:#eaf3ed;
+color:#176b42;
+padding:8px 12px;
 }
 
 .error{
@@ -144,7 +183,7 @@ border-radius:10px;
 }
 
 .empty{
-padding:20px;
+padding:25px;
 background:#fff;
 border-radius:12px;
 color:#66736b;
@@ -154,27 +193,113 @@ color:#66736b;
 display:none;
 }
 
+.modal-backdrop{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.55);
+z-index:1000;
+padding:20px;
+overflow-y:auto;
+}
+
+.modal{
+max-width:620px;
+margin:40px auto;
+background:#fff;
+border-radius:18px;
+padding:25px;
+box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.modal h2{
+margin-top:0;
+}
+
+.form-group{
+margin-top:15px;
+}
+
+.form-group label{
+display:block;
+font-weight:800;
+font-size:13px;
+margin-bottom:6px;
+}
+
+.member-id{
+background:#f3f7f4;
+padding:11px;
+border-radius:9px;
+font-size:12px;
+word-break:break-all;
+color:#5d6961;
+}
+
+.modal-actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:22px;
+}
+
+.save-button{
+background:#176b42;
+color:#fff;
+}
+
+.close-button{
+background:#e7ebe8;
+color:#222;
+}
+
+.delete-button{
+background:#b42318;
+color:#fff;
+margin-left:auto;
+}
+
 @media(max-width:700px){
 
 .wrap{
-width:96%;
+width:95%;
+margin:20px auto;
 }
 
-table{
-display:block;
-overflow-x:auto;
-white-space:nowrap;
+h1{
+font-size:25px;
 }
 
 .summary-card{
 flex:1;
-min-width:140px;
+min-width:130px;
+}
+
+.tools{
+display:block;
+}
+
+.search-box,
+.filter-box{
+max-width:none;
+margin-bottom:10px;
+}
+
+.modal{
+margin:10px auto;
+padding:20px;
+}
+
+.delete-button{
+margin-left:0;
+width:100%;
 }
 
 }
 
 </style>
 </head>
+
 
 <body>
 
@@ -189,12 +314,14 @@ min-width:140px;
 <input
 id="adminEmail"
 type="email"
-placeholder="관리자 이메일">
+placeholder="관리자 이메일"
+autocomplete="username">
 
 <input
 id="adminPassword"
 type="password"
-placeholder="비밀번호">
+placeholder="비밀번호"
+autocomplete="current-password">
 
 <button
 id="loginButton"
@@ -212,7 +339,7 @@ class="login-button">
 <h1>전국소비자클럽 회원관리</h1>
 
 <div class="info">
-NCC 회원가입 데이터 관리
+NCC 회원가입 데이터 관리 시스템
 </div>
 
 <div class="summary-box">
@@ -227,7 +354,15 @@ NCC 회원가입 데이터 관리
 <div id="activeMembers" class="summary-number">0명</div>
 </div>
 
+<div class="summary-card">
+<div class="summary-label">정지·차단</div>
+<div id="inactiveMembers" class="summary-number">0명</div>
 </div>
+
+</div>
+
+
+<div class="tools">
 
 <input
 id="memberSearch"
@@ -235,7 +370,16 @@ class="search-box"
 type="text"
 placeholder="이름, 연락처, 지역, 이메일 검색">
 
-<br>
+<select
+id="statusFilter"
+class="filter-box">
+
+<option value="">전체 상태</option>
+<option value="active">활성</option>
+<option value="paused">정지</option>
+<option value="blocked">차단</option>
+
+</select>
 
 <button
 id="logoutButton"
@@ -243,8 +387,98 @@ class="logout-button">
 로그아웃
 </button>
 
+</div>
+
+
 <div id="memberArea">
 회원정보 불러오는 중...
+</div>
+
+</div>
+
+</div>
+
+
+<div id="memberModal" class="modal-backdrop">
+
+<div class="modal">
+
+<h2>회원 상세관리</h2>
+
+<div class="form-group">
+
+<label>회원 문서 ID</label>
+
+<div id="editId" class="member-id"></div>
+
+</div>
+
+
+<div class="form-group">
+<label>이름</label>
+<input id="editName">
+</div>
+
+<div class="form-group">
+<label>연락처</label>
+<input id="editPhone">
+</div>
+
+<div class="form-group">
+<label>지역</label>
+<input id="editRegion">
+</div>
+
+<div class="form-group">
+<label>이메일</label>
+<input id="editEmail">
+</div>
+
+<div class="form-group">
+<label>관심 혜택</label>
+
+<select id="editBenefit">
+<option value="전체 혜택">전체 혜택</option>
+<option value="상품 무료 경험">상품 무료 경험</option>
+<option value="공동구매">공동구매</option>
+<option value="회원 할인">회원 할인</option>
+<option value="지역 혜택">지역 혜택</option>
+</select>
+
+</div>
+
+<div class="form-group">
+<label>회원 상태</label>
+
+<select id="editStatus">
+<option value="active">활성</option>
+<option value="paused">정지</option>
+<option value="blocked">차단</option>
+</select>
+
+</div>
+
+
+<div class="modal-actions">
+
+<button
+id="saveMemberButton"
+class="save-button">
+수정 저장
+</button>
+
+<button
+id="closeModalButton"
+class="close-button">
+닫기
+</button>
+
+<button
+id="deleteMemberButton"
+class="delete-button">
+회원 삭제
+</button>
+
 </div>
 
 </div>
@@ -272,7 +506,10 @@ getFirestore,
 collection,
 getDocs,
 query,
-orderBy
+orderBy,
+doc,
+updateDoc,
+deleteDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -303,11 +540,18 @@ measurementId:
 };
 
 
-const app = initializeApp(firebaseConfig);
+const ADMIN_EMAIL =
+"kpa100plus@gmail.com";
 
-const auth = getAuth(app);
 
-const db = getFirestore(app);
+const app =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(app);
+
+const db =
+getFirestore(app);
 
 
 const loginArea =
@@ -334,19 +578,76 @@ document.getElementById("totalMembers");
 const activeMembers =
 document.getElementById("activeMembers");
 
+const inactiveMembers =
+document.getElementById("inactiveMembers");
+
 const memberSearch =
 document.getElementById("memberSearch");
 
+const statusFilter =
+document.getElementById("statusFilter");
+
+const memberModal =
+document.getElementById("memberModal");
+
+const editId =
+document.getElementById("editId");
+
+const editName =
+document.getElementById("editName");
+
+const editPhone =
+document.getElementById("editPhone");
+
+const editRegion =
+document.getElementById("editRegion");
+
+const editEmail =
+document.getElementById("editEmail");
+
+const editBenefit =
+document.getElementById("editBenefit");
+
+const editStatus =
+document.getElementById("editStatus");
+
+const saveMemberButton =
+document.getElementById("saveMemberButton");
+
+const closeModalButton =
+document.getElementById("closeModalButton");
+
+const deleteMemberButton =
+document.getElementById("deleteMemberButton");
+
+
 let allMembers = [];
+
+let selectedMemberId = null;
+
+
+function escapeHTML(value){
+
+return String(value ?? "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
 
 
 loginButton.addEventListener("click",async()=>{
 
 const email =
-document.getElementById("adminEmail").value.trim();
+document.getElementById("adminEmail")
+.value
+.trim();
 
 const password =
-document.getElementById("adminPassword").value;
+document.getElementById("adminPassword")
+.value;
 
 loginError.innerHTML = "";
 
@@ -375,17 +676,30 @@ await signOut(auth);
 });
 
 
-onAuthStateChanged(auth,(user)=>{
+onAuthStateChanged(auth,async(user)=>{
 
-if(user){
+if(
+user &&
+user.email &&
+user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
+){
 
 loginArea.style.display="none";
 
 adminArea.style.display="block";
 
-loadMembers();
+await loadMembers();
 
 }else{
+
+if(user){
+
+await signOut(auth);
+
+loginError.innerHTML =
+'<div class="error">관리자 권한이 없는 계정입니다.</div>';
+
+}
 
 loginArea.style.display="block";
 
@@ -413,9 +727,10 @@ await getDocs(q);
 
 allMembers = [];
 
-snapshot.forEach((doc)=>{
+snapshot.forEach((documentSnapshot)=>{
 
-const d = doc.data();
+const d =
+documentSnapshot.data();
 
 let joinDate = "";
 
@@ -433,44 +748,48 @@ d.joinDate
 
 allMembers.push({
 
-id: doc.id,
+id:
+documentSnapshot.id,
 
-name: d.name || "",
+name:
+d.name || "",
 
-phone: d.phone || "",
+phone:
+d.phone || "",
 
-region: d.region || "",
+region:
+d.region || "",
 
-email: d.email || "",
+email:
+d.email || "",
 
-benefit: d.benefit || "",
+benefit:
+d.benefit || "",
 
-joinDate: joinDate,
+joinDate:
+joinDate,
 
-status: d.status || ""
+status:
+d.status || "active"
 
 });
 
 });
 
+updateSummary();
 
-totalMembers.textContent =
-allMembers.length + "명";
-
-activeMembers.textContent =
-allMembers.filter(
-member => member.status === "active"
-).length + "명";
-
-renderMembers(allMembers);
+applyFilters();
 
 }catch(error){
 
 memberArea.innerHTML = `
 
 <div class="error">
+
 회원정보를 불러오지 못했습니다.<br>
-${error.message}
+
+${escapeHTML(error.message)}
+
 </div>
 
 `;
@@ -480,12 +799,69 @@ ${error.message}
 }
 
 
+function updateSummary(){
+
+totalMembers.textContent =
+allMembers.length + "명";
+
+const activeCount =
+allMembers.filter(
+member => member.status === "active"
+).length;
+
+activeMembers.textContent =
+activeCount + "명";
+
+inactiveMembers.textContent =
+(allMembers.length - activeCount) + "명";
+
+}
+
+
+function statusText(status){
+
+if(status === "active"){
+return "활성";
+}
+
+if(status === "paused"){
+return "정지";
+}
+
+if(status === "blocked"){
+return "차단";
+}
+
+return status;
+
+}
+
+
+function statusClass(status){
+
+if(status === "active"){
+return "status-active";
+}
+
+if(status === "paused"){
+return "status-paused";
+}
+
+if(status === "blocked"){
+return "status-blocked";
+}
+
+return "";
+
+}
+
+
 function renderMembers(list){
 
 if(list.length === 0){
 
 memberArea.innerHTML =
-'<div class="empty">현재 표시할 회원이 없습니다.</div>';
+'<div class="empty">조건에 맞는 회원이 없습니다.</div>';
 
 return;
 
@@ -493,18 +869,48 @@ return;
 
 let rows = "";
 
-list.forEach((d)=>{
+list.forEach((member)=>{
 
 rows += `
 
 <tr>
-<td>${d.name}</td>
-<td>${d.phone}</td>
-<td>${d.region}</td>
-<td>${d.email}</td>
-<td>${d.benefit}</td>
-<td>${d.joinDate}</td>
-<td class="status">${d.status}</td>
+
+<td>
+${escapeHTML(member.name)}
+</td>
+
+<td>
+${escapeHTML(member.phone)}
+</td>
+
+<td>
+${escapeHTML(member.region)}
+</td>
+
+<td>
+${escapeHTML(member.email)}
+</td>
+
+<td>
+${escapeHTML(member.benefit)}
+</td>
+
+<td>
+${escapeHTML(member.joinDate)}
+</td>
+
+<td class="status ${statusClass(member.status)}">
+${escapeHTML(statusText(member.status))}
+</td>
+
+<td>
+<button
+class="manage-button"
+data-member-id="${escapeHTML(member.id)}">
+상세관리
+</button>
+</td>
+
 </tr>
 
 `;
@@ -514,11 +920,14 @@ rows += `
 
 memberArea.innerHTML = `
 
+<div class="table-wrap">
+
 <table>
 
 <thead>
 
 <tr>
+
 <th>이름</th>
 <th>연락처</th>
 <th>지역</th>
@@ -526,44 +935,339 @@ memberArea.innerHTML = `
 <th>관심 혜택</th>
 <th>가입일</th>
 <th>상태</th>
+<th>관리</th>
+
 </tr>
 
 </thead>
 
 <tbody>
+
 ${rows}
+
 </tbody>
 
 </table>
 
+</div>
+
 `;
+
+
+document
+.querySelectorAll(".manage-button")
+.forEach((button)=>{
+
+button.addEventListener("click",()=>{
+
+openMemberModal(
+button.dataset.memberId
+);
+
+});
+
+});
 
 }
 
 
-memberSearch.addEventListener("input",()=>{
+function applyFilters(){
 
 const keyword =
-memberSearch.value.trim().toLowerCase();
+memberSearch.value
+.trim()
+.toLowerCase();
+
+const selectedStatus =
+statusFilter.value;
 
 const filtered =
 allMembers.filter((member)=>{
 
+const searchTarget = [
+
+member.name,
+member.phone,
+member.region,
+member.email,
+member.benefit
+
+]
+.join(" ")
+.toLowerCase();
+
+const matchesKeyword =
+searchTarget.includes(keyword);
+
+const matchesStatus =
+!selectedStatus ||
+member.status === selectedStatus;
+
 return (
-
-member.name.toLowerCase().includes(keyword) ||
-
-member.phone.toLowerCase().includes(keyword) ||
-
-member.region.toLowerCase().includes(keyword) ||
-
-member.email.toLowerCase().includes(keyword)
-
+matchesKeyword &&
+matchesStatus
 );
 
 });
 
 renderMembers(filtered);
+
+}
+
+
+memberSearch.addEventListener(
+"input",
+applyFilters
+);
+
+statusFilter.addEventListener(
+"change",
+applyFilters
+);
+
+
+function openMemberModal(memberId){
+
+const member =
+allMembers.find(
+item => item.id === memberId
+);
+
+if(!member){
+return;
+}
+
+selectedMemberId =
+member.id;
+
+editId.textContent =
+member.id;
+
+editName.value =
+member.name;
+
+editPhone.value =
+member.phone;
+
+editRegion.value =
+member.region;
+
+editEmail.value =
+member.email;
+
+editBenefit.value =
+member.benefit || "전체 혜택";
+
+editStatus.value =
+member.status || "active";
+
+memberModal.style.display =
+"block";
+
+}
+
+
+function closeMemberModal(){
+
+memberModal.style.display =
+"none";
+
+selectedMemberId =
+null;
+
+}
+
+
+closeModalButton.addEventListener(
+"click",
+closeMemberModal
+);
+
+
+memberModal.addEventListener(
+"click",
+(event)=>{
+
+if(event.target === memberModal){
+
+closeMemberModal();
+
+}
+
+});
+
+
+saveMemberButton.addEventListener(
+"click",
+async()=>{
+
+if(!selectedMemberId){
+return;
+}
+
+const name =
+editName.value.trim();
+
+const phone =
+editPhone.value.trim();
+
+const region =
+editRegion.value.trim();
+
+const email =
+editEmail.value.trim();
+
+if(
+!name ||
+!phone ||
+!region
+){
+
+alert(
+"이름, 연락처, 지역은 필수입니다."
+);
+
+return;
+
+}
+
+const confirmed =
+confirm(
+"회원정보를 수정하시겠습니까?"
+);
+
+if(!confirmed){
+return;
+}
+
+try{
+
+saveMemberButton.disabled =
+true;
+
+saveMemberButton.textContent =
+"저장 중...";
+
+await updateDoc(
+doc(
+db,
+"members",
+selectedMemberId
+),
+{
+
+name:
+name,
+
+phone:
+phone,
+
+region:
+region,
+
+email:
+email,
+
+benefit:
+editBenefit.value,
+
+status:
+editStatus.value
+
+}
+);
+
+alert(
+"회원정보가 수정되었습니다."
+);
+
+closeMemberModal();
+
+await loadMembers();
+
+}catch(error){
+
+alert(
+"수정 오류: " +
+error.message
+);
+
+}finally{
+
+saveMemberButton.disabled =
+false;
+
+saveMemberButton.textContent =
+"수정 저장";
+
+}
+
+});
+
+
+deleteMemberButton.addEventListener(
+"click",
+async()=>{
+
+if(!selectedMemberId){
+return;
+}
+
+const member =
+allMembers.find(
+item => item.id === selectedMemberId
+);
+
+const confirmed =
+confirm(
+(member?.name || "이 회원") +
+"의 회원정보를 정말 삭제하시겠습니까?\n\n삭제하면 되돌릴 수 없습니다."
+);
+
+if(!confirmed){
+return;
+}
+
+try{
+
+deleteMemberButton.disabled =
+true;
+
+deleteMemberButton.textContent =
+"삭제 중...";
+
+await deleteDoc(
+doc(
+db,
+"members",
+selectedMemberId
+)
+);
+
+alert(
+"회원정보가 삭제되었습니다."
+);
+
+closeMemberModal();
+
+await loadMembers();
+
+}catch(error){
+
+alert(
+"삭제 오류: " +
+error.message
+);
+
+}finally{
+
+deleteMemberButton.disabled =
+false;
+
+deleteMemberButton.textContent =
+"회원 삭제";
+
+}
 
 });
 
@@ -572,4 +1276,3 @@ renderMembers(filtered);
 </body>
 
 </html>
- 
