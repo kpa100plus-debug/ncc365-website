@@ -14,24 +14,30 @@ box-sizing:border-box;
 }
 
 :root{
---ncc-green:#2f7654;
---ncc-green-dark:#245f44;
---ncc-green-soft:#edf5f0;
---text-main:#27312b;
---text-sub:#68736d;
---text-light:#87908b;
---border:#dde4df;
---background:#f5f7f6;
---white:#ffffff;
---gray-button:#e5e9e6;
---gray-button-text:#404944;
---danger:#b85a55;
---danger-hover:#a84f4a;
---warning:#a7782d;
+--green:#3f7b5d;
+--green-dark:#32694e;
+--green-soft:#edf5f0;
+
+--text:#29352e;
+--sub:#6d7871;
+--light:#8a948e;
+
+--border:#dfe6e1;
+--bg:#f5f7f6;
+--white:#fff;
+
+--danger:#b95d58;
+--warning:#a57b38;
 }
+
+
+/* ===============================
+   BASE
+================================ */
 
 body{
 margin:0;
+
 font-family:
 -apple-system,
 BlinkMacSystemFont,
@@ -40,432 +46,851 @@ BlinkMacSystemFont,
 "Malgun Gothic",
 Arial,
 sans-serif;
-background:var(--background);
-color:var(--text-main);
-letter-spacing:-0.02em;
+
+background:var(--bg);
+color:var(--text);
+
+letter-spacing:-.02em;
+
 font-weight:400;
+
 -webkit-font-smoothing:antialiased;
--moz-osx-font-smoothing:grayscale;
 }
+
 
 .wrap{
 width:min(1200px,94%);
 margin:35px auto;
 }
 
+
 h1{
-margin:0 0 8px;
+margin:0 0 7px;
+
 font-size:32px;
-line-height:1.3;
 font-weight:700;
-color:#24352c;
+
+color:#27382f;
 }
+
 
 .info{
 font-size:15px;
-font-weight:400;
-color:var(--text-sub);
+color:var(--sub);
+
 margin-bottom:24px;
 }
 
-/* LOGIN */
 
-.login-box{
-max-width:460px;
-margin:70px auto;
-background:#fff;
-padding:32px;
-border-radius:18px;
-border:1px solid #e7ece9;
-box-shadow:0 12px 35px rgba(0,0,0,.06);
-}
-
-.login-box h2{
-margin:0 0 10px;
-font-size:26px;
-font-weight:700;
-color:#26382e;
-}
-
-.login-box p{
-margin:0 0 12px;
-font-size:15px;
-font-weight:400;
-color:var(--text-sub);
-}
-
-/* INPUT */
+/* ===============================
+   INPUT
+================================ */
 
 input,
 select,
 textarea{
+
 width:100%;
-padding:14px 15px;
+
+padding:13px 14px;
+
 border:1px solid var(--border);
-border-radius:10px;
-font-family:inherit;
-font-size:15px;
-font-weight:400;
-color:#303934;
+
+border-radius:9px;
+
 background:#fff;
+
+font-family:inherit;
+
+font-size:14px;
+font-weight:400;
+
+color:#303a34;
+
 outline:none;
 }
 
+
 textarea{
-min-height:100px;
+min-height:105px;
 resize:vertical;
 }
+
 
 input:focus,
 select:focus,
 textarea:focus{
-border-color:#78a88d;
-box-shadow:0 0 0 3px rgba(47,118,84,.08);
+
+border-color:#87aa96;
+
+box-shadow:
+0 0 0 3px rgba(63,123,93,.07);
 }
+
 
 input::placeholder,
 textarea::placeholder{
-color:#929a95;
-font-weight:400;
+color:#959d98;
 }
 
-.login-box input{
-margin-top:12px;
-}
 
-/* BUTTON */
+/* ===============================
+   BUTTON
+================================ */
 
 button{
+
 border:0;
+
 border-radius:9px;
+
 padding:11px 16px;
+
 font-family:inherit;
+
 font-size:14px;
 font-weight:600;
-line-height:1.2;
+
 cursor:pointer;
-transition:
-background .15s ease,
-opacity .15s ease,
-transform .1s ease;
+
+transition:.15s;
 }
+
 
 button:hover{
 opacity:.92;
 }
 
-button:active{
-transform:translateY(1px);
-}
 
 button:disabled{
 opacity:.55;
 cursor:not-allowed;
 }
 
+
+/* ===============================
+   LOGIN
+================================ */
+
+.login-box{
+
+max-width:460px;
+
+margin:70px auto;
+
+background:#fff;
+
+padding:32px;
+
+border:1px solid #e7ece9;
+
+border-radius:18px;
+
+box-shadow:
+0 12px 35px rgba(0,0,0,.06);
+}
+
+
+.login-box h2{
+
+margin:0 0 10px;
+
+font-size:26px;
+font-weight:700;
+}
+
+
+.login-box p{
+
+font-size:14px;
+
+color:var(--sub);
+}
+
+
+.login-box input{
+margin-top:12px;
+}
+
+
 .login-button{
+
 width:100%;
+
 margin-top:18px;
-background:var(--ncc-green);
+
+background:var(--green);
+
 color:#fff;
 }
 
+
 .logout-button{
-background:#59615d;
+
+background:#5e6762;
+
 color:#fff;
+
 font-weight:500;
 }
 
-/* SUMMARY */
+
+/* ===============================
+   SUMMARY
+================================ */
 
 .summary-box{
+
 display:flex;
+
 gap:14px;
+
 flex-wrap:wrap;
+
 margin:22px 0;
 }
 
+
 .summary-card{
+
 background:#fff;
+
 padding:19px 22px;
-border-radius:13px;
+
 min-width:170px;
+
 border:1px solid #e8ece9;
-box-shadow:0 4px 14px rgba(0,0,0,.035);
+
+border-radius:13px;
+
+box-shadow:
+0 4px 14px rgba(0,0,0,.035);
 }
+
 
 .summary-label{
+
 font-size:13px;
+
 font-weight:500;
-color:var(--text-sub);
+
+color:var(--sub);
 }
 
+
 .summary-number{
-font-size:28px;
-font-weight:700;
+
 margin-top:5px;
+
+font-size:28px;
+
+font-weight:700;
+
 color:#29382f;
 }
 
-/* TOOLS */
+
+/* ===============================
+   TOOLS
+================================ */
 
 .tools{
+
 display:flex;
+
 gap:10px;
-flex-wrap:wrap;
+
 align-items:center;
+
+flex-wrap:wrap;
+
 margin:20px 0;
 }
+
 
 .search-box{
 max-width:430px;
 }
 
+
 .filter-box{
 max-width:180px;
 }
 
-/* TABLE */
+
+/* ===============================
+   MEMBER TABLE
+================================ */
 
 .table-wrap{
+
 width:100%;
+
 overflow-x:auto;
-border-radius:13px;
+
 background:#fff;
+
 border:1px solid #e6ebe8;
-box-shadow:0 4px 14px rgba(0,0,0,.035);
+
+border-radius:13px;
+
+box-shadow:
+0 4px 14px rgba(0,0,0,.035);
 }
 
+
 table{
+
 width:100%;
+
 border-collapse:collapse;
-min-width:1050px;
+
+min-width:1080px;
 }
+
 
 th,
 td{
+
 padding:14px 11px;
+
 border-bottom:1px solid #e8ece9;
+
 text-align:left;
+
 font-size:14px;
+
 font-weight:400;
+
 color:#303934;
-vertical-align:middle;
 }
 
+
 th{
-background:#3a7357;
+
+background:#417a5e;
+
 color:#fff;
-white-space:nowrap;
+
 font-weight:600;
+
+white-space:nowrap;
 }
+
 
 tbody tr:hover{
 background:#fafcfb;
 }
 
+
 .status{
 font-weight:500;
 }
 
+
 .status-active{
-color:#347658 !important;
-font-weight:500 !important;
+color:#41785c;
 }
+
 
 .status-paused{
-color:#9c7433 !important;
-font-weight:500 !important;
+color:#9a753a;
 }
+
 
 .status-blocked{
-color:#a94f4a !important;
-font-weight:500 !important;
+color:#a75550;
 }
+
 
 .manage-button{
-background:#edf4f0 !important;
-color:#366c52 !important;
-font-weight:500 !important;
+
+background:#eef5f1;
+
+color:#427058;
+
+border:1px solid #dce8e1;
+
+font-weight:500;
+
 padding:8px 12px;
-border:1px solid #d9e7df;
 }
 
-.manage-button:hover{
-background:#e5efe9 !important;
-}
+
+/* ===============================
+   ERROR
+================================ */
 
 .error{
+
 margin-top:15px;
+
 padding:14px;
+
 background:#fff2f2;
-color:#9b4641;
-border:1px solid #f1d9d7;
+
+border:1px solid #f0dad8;
+
 border-radius:10px;
+
+color:#9f4e49;
+
 font-size:14px;
-font-weight:500;
 }
 
+
 .empty{
+
 padding:25px;
+
 background:#fff;
+
 border-radius:12px;
-color:var(--text-sub);
-font-size:15px;
-font-weight:400;
+
+color:var(--sub);
 }
+
 
 #adminArea{
 display:none;
 }
 
-/* MODAL */
+
+/* ===============================
+   MODAL BACKGROUND
+================================ */
 
 .modal-backdrop{
+
 display:none;
+
 position:fixed;
+
 inset:0;
-background:rgba(22,30,26,.52);
+
 z-index:1000;
+
 padding:20px;
-overflow-y:auto;
+
+background:rgba(24,32,28,.52);
 }
+
+
+/* ===============================
+   CRM MODAL
+================================ */
 
 .modal{
-max-width:760px;
-margin:30px auto;
+
+width:min(760px,100%);
+
+height:min(760px,calc(100vh - 40px));
+
+margin:auto;
+
+display:flex;
+
+flex-direction:column;
+
 background:#fff;
+
 border-radius:18px;
-padding:27px;
+
 border:1px solid #e5eae7;
-box-shadow:0 22px 65px rgba(0,0,0,.22);
+
+box-shadow:
+0 24px 70px rgba(0,0,0,.24);
+
+overflow:hidden;
 }
+
+
+/* HEADER */
+
+.modal-header{
+
+padding:23px 25px 15px;
+
+border-bottom:1px solid #e8ece9;
+
+background:#fff;
+
+flex:none;
+}
+
+
+.modal-title-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-start;
+
+gap:15px;
+}
+
 
 .modal h2{
-margin:0 0 8px;
-font-size:26px;
+
+margin:0;
+
+font-size:25px;
+
 font-weight:700;
-color:#27382f;
+
+color:#293a31;
 }
+
 
 .modal-desc{
-font-size:13px;
-color:var(--text-sub);
-margin-bottom:20px;
+
+margin-top:5px;
+
+font-size:12px;
+
+color:var(--sub);
 }
 
-.crm-section{
-margin-top:25px;
-padding-top:22px;
-border-top:1px solid #e6ebe8;
+
+.modal-x{
+
+border:0;
+
+background:transparent;
+
+padding:2px 6px;
+
+font-size:25px;
+
+font-weight:400;
+
+color:#707a74;
 }
 
-.crm-section:first-of-type{
-border-top:0;
-margin-top:10px;
-padding-top:0;
+
+/* ===============================
+   TAB
+================================ */
+
+.crm-tabs{
+
+display:flex;
+
+gap:4px;
+
+padding:12px 25px 0;
+
+background:#fff;
+
+border-bottom:1px solid #e5eae7;
+
+overflow-x:auto;
+
+flex:none;
 }
 
-.crm-title{
+
+.crm-tab{
+
+background:transparent;
+
+color:#707a74;
+
+border-radius:8px 8px 0 0;
+
+padding:11px 15px;
+
+font-size:14px;
+
+font-weight:500;
+
+white-space:nowrap;
+
+border-bottom:3px solid transparent;
+}
+
+
+.crm-tab.active{
+
+color:#356c51;
+
+background:#f4f8f5;
+
+border-bottom-color:#4b8565;
+}
+
+
+/* ===============================
+   TAB CONTENT
+================================ */
+
+.modal-body{
+
+flex:1;
+
+overflow-y:auto;
+
+padding:23px 25px 30px;
+}
+
+
+.tab-panel{
+display:none;
+}
+
+
+.tab-panel.active{
+display:block;
+}
+
+
+.section-title{
+
 font-size:17px;
+
 font-weight:600;
-color:#30483a;
-margin-bottom:12px;
+
+color:#35483d;
+
+margin:0 0 16px;
 }
+
+
+.section-note{
+
+font-size:12px;
+
+color:var(--sub);
+
+margin:-8px 0 17px;
+}
+
 
 .crm-grid{
+
 display:grid;
+
 grid-template-columns:1fr 1fr;
-gap:14px;
+
+gap:15px;
 }
 
+
 .form-group{
-margin-top:4px;
+margin-bottom:3px;
 }
+
 
 .form-group.full{
 grid-column:1/-1;
 }
 
+
 .form-group label{
+
 display:block;
+
 font-size:13px;
+
 font-weight:500;
+
 margin-bottom:6px;
-color:#4b5650;
+
+color:#4d5952;
 }
 
-.member-id{
-background:#f4f6f5;
-padding:12px;
-border-radius:9px;
-font-size:12px;
-font-weight:400;
-word-break:break-all;
-color:#77817b;
-border:1px solid #e5e9e6;
-}
 
+.member-id,
 .readonly-box{
-background:#f6f8f7;
-padding:12px 14px;
-border:1px solid #e5e9e6;
+
+min-height:44px;
+
+padding:12px 13px;
+
+background:#f5f7f6;
+
+border:1px solid #e4e9e6;
+
 border-radius:9px;
-font-size:14px;
-color:#59655e;
-min-height:45px;
+
+font-size:13px;
+
+font-weight:400;
+
+color:#727d76;
+
+word-break:break-all;
 }
 
-.agree-status{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-gap:10px;
+
+/* INFO BOX */
+
+.info-card{
+
+padding:16px;
+
+background:#f6f9f7;
+
+border:1px solid #e4eae6;
+
+border-radius:11px;
+
+margin-bottom:15px;
 }
+
+
+.info-card-title{
+
+font-size:12px;
+
+color:var(--sub);
+
+margin-bottom:5px;
+}
+
+
+.info-card-value{
+
+font-size:15px;
+
+font-weight:500;
+
+color:#36443c;
+}
+
+
+/* AGREEMENTS */
+
+.agree-list{
+
+display:grid;
+
+gap:12px;
+}
+
 
 .agree-card{
-padding:13px;
-border-radius:10px;
-background:#f6f8f7;
-border:1px solid #e5eae7;
-font-size:13px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+gap:15px;
+
+padding:16px 17px;
+
+border:1px solid #e2e8e4;
+
+border-radius:11px;
+
+background:#f7f9f8;
 }
+
+
+.agree-card-title{
+
+font-size:14px;
+
+font-weight:500;
+}
+
+
+.agree-card-desc{
+
+font-size:12px;
+
+color:var(--sub);
+
+margin-top:3px;
+}
+
+
+.agree-badge{
+
+padding:6px 10px;
+
+border-radius:20px;
+
+font-size:12px;
+
+font-weight:600;
+
+white-space:nowrap;
+}
+
 
 .agree-yes{
-color:#347658;
+
+background:#eaf4ee;
+
+color:#397354;
 }
+
 
 .agree-no{
-color:#8a5e59;
+
+background:#f5eeee;
+
+color:#9b5753;
 }
+
+
+/* ===============================
+   FOOTER ACTION
+================================ */
 
 .modal-actions{
+
 display:flex;
+
 gap:9px;
-flex-wrap:wrap;
+
 align-items:center;
-margin-top:26px;
+
+padding:15px 25px;
+
+background:#fff;
+
+border-top:1px solid #e5eae7;
+
+flex:none;
 }
+
 
 .save-button{
-background:#4a8063 !important;
-color:#fff !important;
-font-weight:600 !important;
+
+background:#4b8064;
+
+color:#fff;
 }
+
 
 .close-button{
-background:#e4e8e5 !important;
-color:#3f4843 !important;
-font-weight:500 !important;
+
+background:#e5e9e6;
+
+color:#414a45;
+
+font-weight:500;
 }
+
 
 .delete-button{
-background:#b85a55 !important;
-color:#fff !important;
-font-weight:600 !important;
+
 margin-left:auto;
+
+background:#b75e58;
+
+color:#fff;
 }
 
-/* MOBILE */
+
+/* ===============================
+   MOBILE
+================================ */
 
 @media(max-width:700px){
 
@@ -480,11 +905,11 @@ font-size:26px;
 
 .summary-card{
 flex:1;
-min-width:135px;
+min-width:130px;
 }
 
 .summary-number{
-font-size:26px;
+font-size:25px;
 }
 
 .tools{
@@ -497,13 +922,35 @@ max-width:none;
 margin-bottom:10px;
 }
 
+.modal-backdrop{
+padding:8px;
+}
+
 .modal{
-margin:10px auto;
-padding:20px;
+height:calc(100vh - 16px);
+border-radius:14px;
+}
+
+.modal-header{
+padding:18px 17px 12px;
 }
 
 .modal h2{
-font-size:23px;
+font-size:22px;
+}
+
+.crm-tabs{
+padding-left:10px;
+padding-right:10px;
+}
+
+.crm-tab{
+padding:10px 12px;
+font-size:13px;
+}
+
+.modal-body{
+padding:20px 17px;
 }
 
 .crm-grid{
@@ -514,11 +961,8 @@ grid-template-columns:1fr;
 grid-column:auto;
 }
 
-.agree-status{
-grid-template-columns:1fr;
-}
-
 .modal-actions{
+padding:12px 17px;
 display:grid;
 grid-template-columns:1fr 1fr;
 }
@@ -543,11 +987,15 @@ grid-column:1/-1;
 <div class="wrap">
 
 
-<!-- 관리자 로그인 -->
+<!-- LOGIN -->
 
-<div id="loginArea" class="login-box">
+<div
+id="loginArea"
+class="login-box">
 
-<h2>NCC 관리자 로그인</h2>
+<h2>
+NCC 관리자 로그인
+</h2>
 
 <p>
 관리자 계정으로 로그인하세요.
@@ -568,7 +1016,9 @@ autocomplete="current-password">
 <button
 id="loginButton"
 class="login-button">
+
 관리자 로그인
+
 </button>
 
 <div id="loginError"></div>
@@ -576,7 +1026,8 @@ class="login-button">
 </div>
 
 
-<!-- 관리자 영역 -->
+
+<!-- ADMIN -->
 
 <div id="adminArea">
 
@@ -591,6 +1042,7 @@ NCC 회원 CRM 관리 시스템
 
 <div class="summary-box">
 
+
 <div class="summary-card">
 
 <div class="summary-label">
@@ -600,7 +1052,9 @@ NCC 회원 CRM 관리 시스템
 <div
 id="totalMembers"
 class="summary-number">
+
 0명
+
 </div>
 
 </div>
@@ -615,7 +1069,9 @@ class="summary-number">
 <div
 id="activeMembers"
 class="summary-number">
+
 0명
+
 </div>
 
 </div>
@@ -630,10 +1086,13 @@ class="summary-number">
 <div
 id="inactiveMembers"
 class="summary-number">
+
 0명
+
 </div>
 
 </div>
+
 
 </div>
 
@@ -645,6 +1104,7 @@ id="memberSearch"
 class="search-box"
 type="text"
 placeholder="이름, 연락처, 지역, 이메일, 추천인, 센터 검색">
+
 
 <select
 id="statusFilter"
@@ -672,7 +1132,9 @@ class="filter-box">
 <button
 id="logoutButton"
 class="logout-button">
+
 로그아웃
+
 </button>
 
 </div>
@@ -682,93 +1144,116 @@ class="logout-button">
 회원정보 불러오는 중...
 </div>
 
-</div>
 
 </div>
 
+</div>
 
-<!-- 회원 상세관리 -->
+
+
+<!-- ===========================
+     CRM MODAL
+=========================== -->
 
 <div
 id="memberModal"
 class="modal-backdrop">
 
+
 <div class="modal">
+
+
+<!-- HEADER -->
+
+<div class="modal-header">
+
+<div class="modal-title-row">
+
+<div>
 
 <h2>
 회원 상세관리
 </h2>
 
 <div class="modal-desc">
-회원 가입정보와 CRM 관리정보를 확인하고 수정할 수 있습니다.
+회원 가입정보와 CRM 관리정보를 확인하고 수정합니다.
 </div>
 
-
-<!-- 시스템 -->
-
-<section class="crm-section">
-
-<div class="crm-title">
-시스템 정보
 </div>
 
-<div class="crm-grid">
+<button
+id="topCloseButton"
+class="modal-x"
+type="button">
 
-<div class="form-group full">
+×
+</button>
 
-<label>
-회원 문서 ID
-</label>
-
-<div
-id="editId"
-class="member-id">
 </div>
 
 </div>
 
 
-<div class="form-group">
 
-<label>
-가입일
-</label>
+<!-- TABS -->
 
-<div
-id="editJoinDate"
-class="readonly-box">
--
-</div>
+<div class="crm-tabs">
 
-</div>
+<button
+class="crm-tab active"
+data-tab="basic">
 
-
-<div class="form-group">
-
-<label>
-최종 수정일
-</label>
-
-<div
-id="editUpdatedAt"
-class="readonly-box">
--
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- 기본정보 -->
-
-<section class="crm-section">
-
-<div class="crm-title">
 기본정보
+
+</button>
+
+
+<button
+class="crm-tab"
+data-tab="center">
+
+추천 · 센터
+
+</button>
+
+
+<button
+class="crm-tab"
+data-tab="management">
+
+CRM 관리
+
+</button>
+
+
+<button
+class="crm-tab"
+data-tab="agreement">
+
+동의 · 시스템
+
+</button>
+
 </div>
+
+
+
+<!-- BODY -->
+
+<div class="modal-body">
+
+
+<!-- TAB 1 -->
+
+<div
+id="tab-basic"
+class="tab-panel active">
+
+
+<div class="section-title">
+기본 회원정보
+</div>
+
 
 <div class="crm-grid">
 
@@ -855,7 +1340,9 @@ type="date">
 <div
 id="editMemberType"
 class="readonly-box">
+
 소비자회원
+
 </div>
 
 </div>
@@ -870,22 +1357,6 @@ class="readonly-box">
 <input id="editRegion">
 
 </div>
-
-
-</div>
-
-</section>
-
-
-<!-- 관심정보 -->
-
-<section class="crm-section">
-
-<div class="crm-title">
-관심정보
-</div>
-
-<div class="crm-grid">
 
 
 <div class="form-group">
@@ -948,16 +1419,25 @@ class="readonly-box">
 
 </div>
 
-</section>
+</div>
 
 
-<!-- 추천·센터 -->
 
-<section class="crm-section">
+<!-- TAB 2 -->
 
-<div class="crm-title">
+<div
+id="tab-center"
+class="tab-panel">
+
+
+<div class="section-title">
 추천 · 지역센터 정보
 </div>
+
+<div class="section-note">
+회원가입 시 입력된 추천 및 지역센터 연결정보입니다.
+</div>
+
 
 <div class="crm-grid">
 
@@ -984,18 +1464,20 @@ class="readonly-box">
 </div>
 
 
-<div class="form-group">
+<div class="form-group full">
 
 <label>
 소속센터
 </label>
 
-<input id="editCenterName">
+<input
+id="editCenterName"
+placeholder="예: 서울특별시 강남구 삼성동 소비자센터">
 
 </div>
 
 
-<div class="form-group">
+<div class="form-group full">
 
 <label>
 센터코드
@@ -1008,16 +1490,21 @@ class="readonly-box">
 
 </div>
 
-</section>
+</div>
 
 
-<!-- 관리자 관리 -->
 
-<section class="crm-section">
+<!-- TAB 3 -->
 
-<div class="crm-title">
+<div
+id="tab-management"
+class="tab-panel">
+
+
+<div class="section-title">
 관리자 CRM 정보
 </div>
+
 
 <div class="crm-grid">
 
@@ -1084,7 +1571,7 @@ VIP
 
 <textarea
 id="editAdminMemo"
-placeholder="회원 상담내용, 특이사항, 관리메모 등을 입력하세요.">
+placeholder="상담내용, 특이사항, 요청사항, 회원 관리메모 등을 입력하세요.">
 </textarea>
 
 </div>
@@ -1092,80 +1579,209 @@ placeholder="회원 상담내용, 특이사항, 관리메모 등을 입력하세
 
 </div>
 
-</section>
+</div>
 
 
-<!-- 동의정보 -->
 
-<section class="crm-section">
+<!-- TAB 4 -->
 
-<div class="crm-title">
+<div
+id="tab-agreement"
+class="tab-panel">
+
+
+<div class="section-title">
 개인정보 및 마케팅 동의
 </div>
 
-<div class="agree-status">
 
-<div class="agree-card">
-
-<div>
-개인정보 수집·이용
-</div>
-
-<strong id="viewAgreePrivacy">
--
-</strong>
-
-</div>
+<div class="agree-list">
 
 
 <div class="agree-card">
 
 <div>
-마케팅 수신
+
+<div class="agree-card-title">
+개인정보 수집 및 이용
 </div>
 
-<strong id="viewAgreeMarketing">
+<div class="agree-card-desc">
+회원가입 필수 동의
+</div>
+
+</div>
+
+<div
+id="viewAgreePrivacy"
+class="agree-badge">
+
 -
-</strong>
 
 </div>
+
+</div>
+
 
 
 <div class="agree-card">
 
 <div>
-제3자 제공
+
+<div class="agree-card-title">
+마케팅 정보 수신
 </div>
 
-<strong id="viewAgreeThirdParty">
+<div class="agree-card-desc">
+이벤트·혜택·광고 정보 수신 선택동의
+</div>
+
+</div>
+
+<div
+id="viewAgreeMarketing"
+class="agree-badge">
+
 -
-</strong>
 
 </div>
 
 </div>
 
-</section>
 
+
+<div class="agree-card">
+
+<div>
+
+<div class="agree-card-title">
+개인정보 제3자 제공
+</div>
+
+<div class="agree-card-desc">
+서비스 제공 관련 선택동의
+</div>
+
+</div>
+
+<div
+id="viewAgreeThirdParty"
+class="agree-badge">
+
+-
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<div style="
+height:1px;
+background:#e8ece9;
+margin:28px 0;
+"></div>
+
+
+<div class="section-title">
+시스템 정보
+</div>
+
+
+<div class="info-card">
+
+<div class="info-card-title">
+회원 문서 ID
+</div>
+
+<div
+id="editId"
+class="info-card-value">
+
+-
+
+</div>
+
+</div>
+
+
+<div class="crm-grid">
+
+
+<div class="info-card">
+
+<div class="info-card-title">
+가입일
+</div>
+
+<div
+id="editJoinDate"
+class="info-card-value">
+
+-
+
+</div>
+
+</div>
+
+
+<div class="info-card">
+
+<div class="info-card-title">
+최종 수정일
+</div>
+
+<div
+id="editUpdatedAt"
+class="info-card-value">
+
+-
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- FOOTER -->
 
 <div class="modal-actions">
 
 <button
 id="saveMemberButton"
 class="save-button">
+
 수정 저장
+
 </button>
+
 
 <button
 id="closeModalButton"
 class="close-button">
+
 닫기
+
 </button>
+
 
 <button
 id="deleteMemberButton"
 class="delete-button">
+
 회원 삭제
+
 </button>
 
 </div>
@@ -1174,6 +1790,7 @@ class="delete-button">
 </div>
 
 </div>
+
 
 
 <script type="module">
@@ -1208,6 +1825,7 @@ serverTimestamp
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+
 const firebaseConfig = {
 
 apiKey:
@@ -1234,54 +1852,72 @@ measurementId:
 };
 
 
+
 const ADMIN_EMAIL =
 "kpa100plus@gmail.com";
+
 
 
 const app =
 initializeApp(firebaseConfig);
 
+
 const auth =
 getAuth(app);
+
 
 const db =
 getFirestore(app);
 
 
-/* DOM */
+
+/* ===============================
+   DOM
+================================ */
 
 const loginArea =
 document.getElementById("loginArea");
 
+
 const adminArea =
 document.getElementById("adminArea");
+
 
 const loginButton =
 document.getElementById("loginButton");
 
+
 const logoutButton =
 document.getElementById("logoutButton");
+
 
 const loginError =
 document.getElementById("loginError");
 
+
 const memberArea =
 document.getElementById("memberArea");
+
 
 const totalMembers =
 document.getElementById("totalMembers");
 
+
 const activeMembers =
 document.getElementById("activeMembers");
+
 
 const inactiveMembers =
 document.getElementById("inactiveMembers");
 
+
 const memberSearch =
 document.getElementById("memberSearch");
 
+
 const statusFilter =
 document.getElementById("statusFilter");
+
 
 const memberModal =
 document.getElementById("memberModal");
@@ -1290,97 +1926,137 @@ document.getElementById("memberModal");
 const editId =
 document.getElementById("editId");
 
+
 const editJoinDate =
 document.getElementById("editJoinDate");
+
 
 const editUpdatedAt =
 document.getElementById("editUpdatedAt");
 
+
 const editName =
 document.getElementById("editName");
+
 
 const editPhone =
 document.getElementById("editPhone");
 
+
 const editEmail =
 document.getElementById("editEmail");
+
 
 const editBirthDate =
 document.getElementById("editBirthDate");
 
+
 const editGender =
 document.getElementById("editGender");
+
 
 const editMemberType =
 document.getElementById("editMemberType");
 
+
 const editRegion =
 document.getElementById("editRegion");
+
 
 const editBenefit =
 document.getElementById("editBenefit");
 
+
 const editHasPet =
 document.getElementById("editHasPet");
+
 
 const editReferrer =
 document.getElementById("editReferrer");
 
+
 const editReferralCode =
 document.getElementById("editReferralCode");
+
 
 const editCenterName =
 document.getElementById("editCenterName");
 
+
 const editCenterCode =
 document.getElementById("editCenterCode");
+
 
 const editStatus =
 document.getElementById("editStatus");
 
+
 const editManagementGrade =
 document.getElementById("editManagementGrade");
+
 
 const editAdminMemo =
 document.getElementById("editAdminMemo");
 
+
 const viewAgreePrivacy =
 document.getElementById("viewAgreePrivacy");
+
 
 const viewAgreeMarketing =
 document.getElementById("viewAgreeMarketing");
 
+
 const viewAgreeThirdParty =
 document.getElementById("viewAgreeThirdParty");
+
 
 const saveMemberButton =
 document.getElementById("saveMemberButton");
 
+
 const closeModalButton =
 document.getElementById("closeModalButton");
+
+
+const topCloseButton =
+document.getElementById("topCloseButton");
+
 
 const deleteMemberButton =
 document.getElementById("deleteMemberButton");
 
 
-let allMembers = [];
+
+let allMembers =
+[];
+
 
 let selectedMemberId =
 null;
 
 
-/* 유틸 */
+
+/* ===============================
+   UTIL
+================================ */
 
 function escapeHTML(value){
 
 return String(value ?? "")
+
 .replaceAll("&","&amp;")
+
 .replaceAll("<","&lt;")
+
 .replaceAll(">","&gt;")
+
 .replaceAll('"',"&quot;")
+
 .replaceAll("'","&#039;");
 
 }
+
 
 
 function timestampText(value){
@@ -1401,71 +2077,84 @@ return "";
 }
 
 
-function agreementText(value){
 
-return value === true
-? "동의"
-: "미동의";
+function memberTypeText(value){
+
+if(value === "consumer"){
+return "소비자회원";
+}
+
+if(value === "corporate"){
+return "법인사업자";
+}
+
+if(value === "soleProprietor"){
+return "개인사업자";
+}
+
+return value || "미지정";
 
 }
 
 
-function setAgreementDisplay(
+
+function setAgreement(
 element,
 value
 ){
 
+if(value === true){
+
 element.textContent =
-agreementText(value);
+"동의";
 
 element.className =
-value === true
-? "agree-yes"
-: "agree-no";
+"agree-badge agree-yes";
+
+}else{
+
+element.textContent =
+"미동의";
+
+element.className =
+"agree-badge agree-no";
+
+}
 
 }
 
 
-function memberTypeText(type){
 
-if(type === "consumer"){
-return "소비자회원";
-}
-
-if(type === "corporate"){
-return "법인사업자";
-}
-
-if(type === "soleProprietor"){
-return "개인사업자";
-}
-
-return type || "미지정";
-
-}
-
-
-/* 로그인 */
+/* ===============================
+   LOGIN
+================================ */
 
 loginButton.addEventListener(
 "click",
 async()=>{
 
+
 const email =
+
 document
 .getElementById("adminEmail")
 .value
 .trim();
 
+
 const password =
+
 document
 .getElementById("adminPassword")
 .value;
 
+
 loginError.innerHTML =
 "";
 
+
 try{
+
 
 await signInWithEmailAndPassword(
 auth,
@@ -1473,96 +2162,137 @@ email,
 password
 );
 
+
 }catch(error){
 
+
 loginError.innerHTML =
+
 '<div class="error">로그인에 실패했습니다.<br>이메일 또는 비밀번호를 확인하세요.</div>';
+
 
 }
 
+
 });
+
 
 
 logoutButton.addEventListener(
 "click",
 async()=>{
 
+
 await signOut(auth);
 
+
 });
+
 
 
 onAuthStateChanged(
 auth,
 async(user)=>{
 
+
 if(
+
 user &&
+
 user.email &&
+
 user.email.toLowerCase() ===
 ADMIN_EMAIL.toLowerCase()
+
 ){
+
 
 loginArea.style.display =
 "none";
 
+
 adminArea.style.display =
 "block";
+
 
 await loadMembers();
 
+
 }else{
+
 
 if(user){
 
+
 await signOut(auth);
 
+
 loginError.innerHTML =
+
 '<div class="error">관리자 권한이 없는 계정입니다.</div>';
 
+
 }
+
 
 loginArea.style.display =
 "block";
 
+
 adminArea.style.display =
 "none";
 
+
 }
+
 
 });
 
 
-/* 회원 불러오기 */
+
+/* ===============================
+   LOAD MEMBERS
+================================ */
 
 async function loadMembers(){
+
 
 memberArea.innerHTML =
 "회원정보 불러오는 중...";
 
+
 try{
 
+
 const q =
+
 query(
+
 collection(
 db,
 "members"
 ),
+
 orderBy(
 "joinDate",
 "desc"
 )
+
 );
+
 
 const snapshot =
 await getDocs(q);
+
 
 allMembers =
 [];
 
 
+
 snapshot.forEach(
 (documentSnapshot)=>{
+
 
 const d =
 documentSnapshot.data();
@@ -1570,87 +2300,113 @@ documentSnapshot.data();
 
 allMembers.push({
 
+
 id:
 documentSnapshot.id,
+
 
 name:
 d.name || "",
 
+
 phone:
 d.phone || "",
+
 
 email:
 d.email || "",
 
+
 birthDate:
 d.birthDate || "",
+
 
 gender:
 d.gender || "",
 
+
 region:
 d.region || "",
+
 
 memberType:
 d.memberType || "consumer",
 
+
 status:
 d.status || "active",
+
 
 benefit:
 d.benefit || "전체 혜택",
 
+
 hasPet:
 d.hasPet || "",
+
 
 referrer:
 d.referrer || "",
 
+
 referralCode:
 d.referralCode || "",
+
 
 centerName:
 d.centerName || "",
 
+
 centerCode:
 d.centerCode || "",
+
 
 agreePrivacy:
 d.agreePrivacy === true,
 
+
 agreeMarketing:
 d.agreeMarketing === true,
+
 
 agreeThirdParty:
 d.agreeThirdParty === true,
 
+
 managementGrade:
 d.managementGrade || "general",
 
+
 adminMemo:
 d.adminMemo || "",
+
 
 joinDate:
 timestampText(
 d.joinDate
 ),
 
+
 updatedAt:
 timestampText(
 d.updatedAt
 )
 
+
 });
+
 
 });
 
 
 updateSummary();
 
+
 applyFilters();
 
 
 }catch(error){
+
 
 memberArea.innerHTML = `
 
@@ -1664,14 +2420,20 @@ ${escapeHTML(error.message)}
 
 `;
 
-}
 
 }
 
 
-/* 통계 */
+}
+
+
+
+/* ===============================
+   SUMMARY
+================================ */
 
 function updateSummary(){
+
 
 totalMembers.textContent =
 allMembers.length + "명";
@@ -1690,16 +2452,22 @@ activeCount + "명";
 
 
 inactiveMembers.textContent =
+
 (
 allMembers.length -
 activeCount
 )
+
 + "명";
+
 
 }
 
 
-/* 상태 */
+
+/* ===============================
+   STATUS
+================================ */
 
 function statusText(status){
 
@@ -1718,6 +2486,7 @@ return "차단";
 return status;
 
 }
+
 
 
 function statusClass(status){
@@ -1739,28 +2508,39 @@ return "";
 }
 
 
-/* 회원목록 */
+
+/* ===============================
+   MEMBER LIST
+================================ */
 
 function renderMembers(list){
+
 
 if(
 list.length === 0
 ){
 
+
 memberArea.innerHTML =
+
 '<div class="empty">조건에 맞는 회원이 없습니다.</div>';
+
 
 return;
 
+
 }
+
 
 
 let rows =
 "";
 
 
+
 list.forEach(
 (member)=>{
+
 
 rows += `
 
@@ -1821,7 +2601,9 @@ data-member-id="${escapeHTML(member.id)}">
 
 `;
 
+
 });
+
 
 
 memberArea.innerHTML = `
@@ -1835,13 +2617,21 @@ memberArea.innerHTML = `
 <tr>
 
 <th>이름</th>
+
 <th>연락처</th>
+
 <th>지역</th>
+
 <th>이메일</th>
+
 <th>관심 혜택</th>
+
 <th>소속센터</th>
+
 <th>가입일</th>
+
 <th>상태</th>
+
 <th>관리</th>
 
 </tr>
@@ -1861,33 +2651,45 @@ ${rows}
 `;
 
 
+
 document
+
 .querySelectorAll(
 ".manage-button"
 )
+
 .forEach(
-(button)=>{
+button=>{
+
 
 button.addEventListener(
 "click",
 ()=>{
 
+
 openMemberModal(
 button.dataset.memberId
 );
 
-}
-);
 
 }
 );
 
+
+}
+);
+
+
 }
 
 
-/* 검색 / 필터 */
+
+/* ===============================
+   SEARCH FILTER
+================================ */
 
 function applyFilters(){
+
 
 const keyword =
 
@@ -1901,56 +2703,76 @@ const selectedStatus =
 statusFilter.value;
 
 
+
 const filtered =
 
 allMembers.filter(
-(member)=>{
+member=>{
 
 
-const searchTarget = [
+const searchText = [
 
 member.name,
+
 member.phone,
+
 member.region,
+
 member.email,
+
 member.benefit,
+
 member.referrer,
+
 member.referralCode,
+
 member.centerName,
+
 member.centerCode
 
 ]
+
 .join(" ")
+
 .toLowerCase();
 
 
-const matchesKeyword =
-searchTarget.includes(
+
+const keywordOK =
+
+searchText.includes(
 keyword
 );
 
 
-const matchesStatus =
+
+const statusOK =
 
 !selectedStatus ||
+
 member.status ===
 selectedStatus;
 
 
+
 return (
-matchesKeyword &&
-matchesStatus
+
+keywordOK &&
+statusOK
+
 );
 
-}
-);
+
+});
 
 
 renderMembers(
 filtered
 );
 
+
 }
+
 
 
 memberSearch.addEventListener(
@@ -1959,17 +2781,103 @@ applyFilters
 );
 
 
+
 statusFilter.addEventListener(
 "change",
 applyFilters
 );
 
 
-/* 상세관리 */
 
-function openMemberModal(
-memberId
-){
+/* ===============================
+   TABS
+================================ */
+
+function openTab(tabName){
+
+
+document
+.querySelectorAll(
+".crm-tab"
+)
+.forEach(
+tab=>{
+
+
+tab.classList.toggle(
+
+"active",
+
+tab.dataset.tab ===
+tabName
+
+);
+
+
+}
+);
+
+
+
+document
+.querySelectorAll(
+".tab-panel"
+)
+.forEach(
+panel=>{
+
+
+panel.classList.toggle(
+
+"active",
+
+panel.id ===
+"tab-" + tabName
+
+);
+
+
+}
+);
+
+
+}
+
+
+
+document
+.querySelectorAll(
+".crm-tab"
+)
+.forEach(
+tab=>{
+
+
+tab.addEventListener(
+"click",
+()=>{
+
+
+openTab(
+tab.dataset.tab
+);
+
+
+}
+);
+
+
+}
+);
+
+
+
+/* ===============================
+   OPEN MEMBER
+================================ */
+
+function openMemberModal(memberId){
+
 
 const member =
 
@@ -1985,22 +2893,10 @@ return;
 }
 
 
+
 selectedMemberId =
 member.id;
 
-
-editId.textContent =
-member.id;
-
-
-editJoinDate.textContent =
-member.joinDate ||
-"-";
-
-
-editUpdatedAt.textContent =
-member.updatedAt ||
-"-";
 
 
 editName.value =
@@ -2072,41 +2968,68 @@ editAdminMemo.value =
 member.adminMemo;
 
 
-setAgreementDisplay(
+editId.textContent =
+member.id;
+
+
+editJoinDate.textContent =
+member.joinDate ||
+"-";
+
+
+editUpdatedAt.textContent =
+member.updatedAt ||
+"-";
+
+
+setAgreement(
 viewAgreePrivacy,
 member.agreePrivacy
 );
 
 
-setAgreementDisplay(
+setAgreement(
 viewAgreeMarketing,
 member.agreeMarketing
 );
 
 
-setAgreementDisplay(
+setAgreement(
 viewAgreeThirdParty,
 member.agreeThirdParty
 );
 
 
+openTab(
+"basic"
+);
+
+
 memberModal.style.display =
-"block";
+"flex";
+
 
 }
 
 
-/* 팝업 닫기 */
+
+/* ===============================
+   CLOSE MODAL
+================================ */
 
 function closeMemberModal(){
+
 
 memberModal.style.display =
 "none";
 
+
 selectedMemberId =
 null;
 
+
 }
+
 
 
 closeModalButton.addEventListener(
@@ -2115,9 +3038,18 @@ closeMemberModal
 );
 
 
+
+topCloseButton.addEventListener(
+"click",
+closeMemberModal
+);
+
+
+
 memberModal.addEventListener(
 "click",
-(event)=>{
+event=>{
+
 
 if(
 event.target ===
@@ -2128,11 +3060,35 @@ closeMemberModal();
 
 }
 
+
 }
 );
 
 
-/* 수정 저장 */
+
+document.addEventListener(
+"keydown",
+event=>{
+
+
+if(
+event.key === "Escape" &&
+memberModal.style.display === "flex"
+){
+
+closeMemberModal();
+
+}
+
+
+}
+);
+
+
+
+/* ===============================
+   SAVE
+================================ */
 
 saveMemberButton.addEventListener(
 "click",
@@ -2146,17 +3102,18 @@ return;
 }
 
 
+
 const name =
 editName.value.trim();
+
 
 const phone =
 editPhone.value.trim();
 
+
 const region =
 editRegion.value.trim();
 
-const email =
-editEmail.value.trim();
 
 
 if(
@@ -2165,13 +3122,17 @@ if(
 !region
 ){
 
+
 alert(
 "이름, 연락처, 지역은 필수입니다."
 );
 
+
 return;
 
+
 }
+
 
 
 const confirmed =
@@ -2180,11 +3141,13 @@ confirm(
 );
 
 
+
 if(
 !confirmed
 ){
 return;
 }
+
 
 
 try{
@@ -2198,6 +3161,7 @@ saveMemberButton.textContent =
 "저장 중...";
 
 
+
 await updateDoc(
 
 doc(
@@ -2208,57 +3172,76 @@ selectedMemberId
 
 {
 
+
 name:
 name,
+
 
 phone:
 phone,
 
+
 email:
-email,
+editEmail.value.trim(),
+
 
 birthDate:
 editBirthDate.value,
 
+
 gender:
 editGender.value,
+
 
 region:
 region,
 
+
 benefit:
 editBenefit.value,
+
 
 hasPet:
 editHasPet.value,
 
+
 referrer:
 editReferrer.value.trim(),
+
 
 referralCode:
 editReferralCode.value.trim(),
 
+
 centerName:
 editCenterName.value.trim(),
+
 
 centerCode:
 editCenterCode.value.trim(),
 
+
 status:
 editStatus.value,
+
 
 managementGrade:
 editManagementGrade.value,
 
+
 adminMemo:
 editAdminMemo.value.trim(),
+
 
 updatedAt:
 serverTimestamp()
 
+
 }
 
+
 );
+
 
 
 alert(
@@ -2266,18 +3249,23 @@ alert(
 );
 
 
+
 closeMemberModal();
 
 
+
 await loadMembers();
+
 
 
 }catch(error){
 
 
 alert(
+
 "수정 오류: " +
 error.message
+
 );
 
 
@@ -2294,11 +3282,15 @@ saveMemberButton.textContent =
 
 }
 
+
 }
 );
 
 
-/* 회원 삭제 */
+
+/* ===============================
+   DELETE
+================================ */
 
 deleteMemberButton.addEventListener(
 "click",
@@ -2312,6 +3304,7 @@ return;
 }
 
 
+
 const member =
 
 allMembers.find(
@@ -2321,14 +3314,12 @@ selectedMemberId
 );
 
 
+
 const confirmed =
 
 confirm(
 
-(
-member?.name ||
-"이 회원"
-)
+(member?.name || "이 회원")
 
 +
 
@@ -2337,11 +3328,13 @@ member?.name ||
 );
 
 
+
 if(
 !confirmed
 ){
 return;
 }
+
 
 
 try{
@@ -2355,6 +3348,7 @@ deleteMemberButton.textContent =
 "삭제 중...";
 
 
+
 await deleteDoc(
 
 doc(
@@ -2366,23 +3360,29 @@ selectedMemberId
 );
 
 
+
 alert(
 "회원정보가 삭제되었습니다."
 );
 
 
+
 closeMemberModal();
 
 
+
 await loadMembers();
+
 
 
 }catch(error){
 
 
 alert(
+
 "삭제 오류: " +
 error.message
+
 );
 
 
@@ -2399,6 +3399,7 @@ deleteMemberButton.textContent =
 
 }
 
+
 }
 );
 
@@ -2406,5 +3407,4 @@ deleteMemberButton.textContent =
 </script>
 
 </body>
-
 </html>
