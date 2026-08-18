@@ -17,32 +17,21 @@ box-sizing:border-box;
 --ncc-green:#2f7654;
 --ncc-green-dark:#245f44;
 --ncc-green-soft:#edf5f0;
-
 --text-main:#27312b;
 --text-sub:#68736d;
 --text-light:#87908b;
-
 --border:#dde4df;
 --background:#f5f7f6;
 --white:#ffffff;
-
 --gray-button:#e5e9e6;
 --gray-button-text:#404944;
-
 --danger:#b85a55;
 --danger-hover:#a84f4a;
-
 --warning:#a7782d;
 }
 
-
-/* =========================
-   BASE
-========================= */
-
 body{
 margin:0;
-
 font-family:
 -apple-system,
 BlinkMacSystemFont,
@@ -51,847 +40,510 @@ BlinkMacSystemFont,
 "Malgun Gothic",
 Arial,
 sans-serif;
-
 background:var(--background);
-
 color:var(--text-main);
-
 letter-spacing:-0.02em;
-
 font-weight:400;
-
 -webkit-font-smoothing:antialiased;
 -moz-osx-font-smoothing:grayscale;
 }
-
 
 .wrap{
 width:min(1200px,94%);
 margin:35px auto;
 }
 
-
 h1{
 margin:0 0 8px;
-
 font-size:32px;
 line-height:1.3;
-
 font-weight:700;
-
 color:#24352c;
 }
 
-
 .info{
 font-size:15px;
-
 font-weight:400;
-
 color:var(--text-sub);
-
 margin-bottom:24px;
 }
 
-
-/* =========================
-   LOGIN
-========================= */
+/* LOGIN */
 
 .login-box{
 max-width:460px;
-
 margin:70px auto;
-
 background:#fff;
-
 padding:32px;
-
 border-radius:18px;
-
 border:1px solid #e7ece9;
-
 box-shadow:0 12px 35px rgba(0,0,0,.06);
 }
 
-
 .login-box h2{
 margin:0 0 10px;
-
 font-size:26px;
-
 font-weight:700;
-
 color:#26382e;
 }
 
-
 .login-box p{
 margin:0 0 12px;
-
 font-size:15px;
-
 font-weight:400;
-
 color:var(--text-sub);
 }
 
-
-/* =========================
-   INPUT
-========================= */
+/* INPUT */
 
 input,
-select{
-
+select,
+textarea{
 width:100%;
-
 padding:14px 15px;
-
 border:1px solid var(--border);
-
 border-radius:10px;
-
 font-family:inherit;
-
 font-size:15px;
-
 font-weight:400;
-
 color:#303934;
-
 background:#fff;
-
 outline:none;
-
 }
 
+textarea{
+min-height:100px;
+resize:vertical;
+}
 
 input:focus,
-select:focus{
-
+select:focus,
+textarea:focus{
 border-color:#78a88d;
-
 box-shadow:0 0 0 3px rgba(47,118,84,.08);
-
 }
 
-
-input::placeholder{
+input::placeholder,
+textarea::placeholder{
 color:#929a95;
 font-weight:400;
 }
-
 
 .login-box input{
 margin-top:12px;
 }
 
-
-/* =========================
-   BUTTON COMMON
-========================= */
+/* BUTTON */
 
 button{
-
 border:0;
-
 border-radius:9px;
-
 padding:11px 16px;
-
 font-family:inherit;
-
 font-size:14px;
-
 font-weight:600;
-
 line-height:1.2;
-
 cursor:pointer;
-
 transition:
 background .15s ease,
 opacity .15s ease,
 transform .1s ease;
-
 }
-
 
 button:hover{
 opacity:.92;
 }
 
-
 button:active{
 transform:translateY(1px);
 }
-
 
 button:disabled{
 opacity:.55;
 cursor:not-allowed;
 }
 
-
-/* LOGIN */
-
 .login-button{
-
 width:100%;
-
 margin-top:18px;
-
 background:var(--ncc-green);
-
 color:#fff;
-
-font-weight:600;
-
 }
-
-
-/* LOGOUT */
 
 .logout-button{
-
 background:#59615d;
-
 color:#fff;
-
-font-weight:600;
-
+font-weight:500;
 }
 
-
-/* =========================
-   SUMMARY
-========================= */
+/* SUMMARY */
 
 .summary-box{
-
 display:flex;
-
 gap:14px;
-
 flex-wrap:wrap;
-
 margin:22px 0;
-
 }
-
 
 .summary-card{
-
 background:#fff;
-
 padding:19px 22px;
-
 border-radius:13px;
-
 min-width:170px;
-
 border:1px solid #e8ece9;
-
 box-shadow:0 4px 14px rgba(0,0,0,.035);
-
 }
-
 
 .summary-label{
-
 font-size:13px;
-
 font-weight:500;
-
 color:var(--text-sub);
-
 }
-
 
 .summary-number{
-
 font-size:28px;
-
 font-weight:700;
-
 margin-top:5px;
-
 color:#29382f;
-
 }
 
-
-/* =========================
-   TOOLS
-========================= */
+/* TOOLS */
 
 .tools{
-
 display:flex;
-
 gap:10px;
-
 flex-wrap:wrap;
-
 align-items:center;
-
 margin:20px 0;
-
 }
-
 
 .search-box{
 max-width:430px;
 }
 
-
 .filter-box{
 max-width:180px;
 }
 
-
-/* =========================
-   TABLE
-========================= */
+/* TABLE */
 
 .table-wrap{
-
 width:100%;
-
 overflow-x:auto;
-
 border-radius:13px;
-
 background:#fff;
-
 border:1px solid #e6ebe8;
-
 box-shadow:0 4px 14px rgba(0,0,0,.035);
-
 }
-
 
 table{
-
 width:100%;
-
 border-collapse:collapse;
-
-min-width:1000px;
-
+min-width:1050px;
 }
-
 
 th,
 td{
-
 padding:14px 11px;
-
 border-bottom:1px solid #e8ece9;
-
 text-align:left;
-
 font-size:14px;
-
 font-weight:400;
-
 color:#303934;
-
 vertical-align:middle;
-
 }
-
 
 th{
-
 background:#3a7357;
-
 color:#fff;
-
 white-space:nowrap;
-
 font-weight:600;
-
 }
-
 
 tbody tr:hover{
 background:#fafcfb;
 }
 
-
-/* =========================
-   STATUS
-========================= */
-
 .status{
-
 font-weight:500;
-
 }
-
 
 .status-active{
-
 color:#347658 !important;
-
 font-weight:500 !important;
-
 }
-
 
 .status-paused{
-
 color:#9c7433 !important;
-
 font-weight:500 !important;
-
 }
-
 
 .status-blocked{
-
 color:#a94f4a !important;
-
 font-weight:500 !important;
-
 }
-
-
-/* =========================
-   MANAGE BUTTON
-========================= */
 
 .manage-button{
-
 background:#edf4f0 !important;
-
 color:#366c52 !important;
-
 font-weight:500 !important;
-
 padding:8px 12px;
-
 border:1px solid #d9e7df;
-
 }
-
 
 .manage-button:hover{
-
 background:#e5efe9 !important;
-
 }
-
-
-/* =========================
-   ERROR / EMPTY
-========================= */
 
 .error{
-
 margin-top:15px;
-
 padding:14px;
-
 background:#fff2f2;
-
 color:#9b4641;
-
 border:1px solid #f1d9d7;
-
 border-radius:10px;
-
 font-size:14px;
-
 font-weight:500;
-
 }
-
 
 .empty{
-
 padding:25px;
-
 background:#fff;
-
 border-radius:12px;
-
 color:var(--text-sub);
-
 font-size:15px;
-
 font-weight:400;
-
 }
-
-
-/* =========================
-   ADMIN
-========================= */
 
 #adminArea{
 display:none;
 }
 
-
-/* =========================
-   MODAL
-========================= */
+/* MODAL */
 
 .modal-backdrop{
-
 display:none;
-
 position:fixed;
-
 inset:0;
-
 background:rgba(22,30,26,.52);
-
 z-index:1000;
-
 padding:20px;
-
 overflow-y:auto;
-
 }
-
 
 .modal{
-
-max-width:620px;
-
-margin:40px auto;
-
+max-width:760px;
+margin:30px auto;
 background:#fff;
-
 border-radius:18px;
-
 padding:27px;
-
 border:1px solid #e5eae7;
-
 box-shadow:0 22px 65px rgba(0,0,0,.22);
-
 }
-
 
 .modal h2{
-
-margin:0 0 20px;
-
+margin:0 0 8px;
 font-size:26px;
-
 font-weight:700;
-
 color:#27382f;
-
 }
 
+.modal-desc{
+font-size:13px;
+color:var(--text-sub);
+margin-bottom:20px;
+}
+
+.crm-section{
+margin-top:25px;
+padding-top:22px;
+border-top:1px solid #e6ebe8;
+}
+
+.crm-section:first-of-type{
+border-top:0;
+margin-top:10px;
+padding-top:0;
+}
+
+.crm-title{
+font-size:17px;
+font-weight:600;
+color:#30483a;
+margin-bottom:12px;
+}
+
+.crm-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
 
 .form-group{
-margin-top:16px;
+margin-top:4px;
 }
 
+.form-group.full{
+grid-column:1/-1;
+}
 
 .form-group label{
-
 display:block;
-
-font-size:14px;
-
+font-size:13px;
 font-weight:500;
-
-margin-bottom:7px;
-
+margin-bottom:6px;
 color:#4b5650;
-
 }
-
-
-.form-group input,
-.form-group select{
-
-font-size:15px;
-
-font-weight:400;
-
-color:#303934;
-
-background:#fff;
-
-}
-
 
 .member-id{
-
 background:#f4f6f5;
-
 padding:12px;
-
 border-radius:9px;
-
 font-size:12px;
-
 font-weight:400;
-
 word-break:break-all;
-
 color:#77817b;
-
 border:1px solid #e5e9e6;
-
 }
 
+.readonly-box{
+background:#f6f8f7;
+padding:12px 14px;
+border:1px solid #e5e9e6;
+border-radius:9px;
+font-size:14px;
+color:#59655e;
+min-height:45px;
+}
 
-/* =========================
-   MODAL BUTTONS
-========================= */
+.agree-status{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:10px;
+}
+
+.agree-card{
+padding:13px;
+border-radius:10px;
+background:#f6f8f7;
+border:1px solid #e5eae7;
+font-size:13px;
+}
+
+.agree-yes{
+color:#347658;
+}
+
+.agree-no{
+color:#8a5e59;
+}
 
 .modal-actions{
-
 display:flex;
-
 gap:9px;
-
 flex-wrap:wrap;
-
 align-items:center;
-
-margin-top:24px;
-
+margin-top:26px;
 }
-
 
 .save-button{
-
 background:#4a8063 !important;
-
 color:#fff !important;
-
 font-weight:600 !important;
-
 }
-
-
-.save-button:hover{
-
-background:#407358 !important;
-
-}
-
 
 .close-button{
-
 background:#e4e8e5 !important;
-
 color:#3f4843 !important;
-
 font-weight:500 !important;
-
 }
-
-
-.close-button:hover{
-
-background:#dce1de !important;
-
-}
-
 
 .delete-button{
-
 background:#b85a55 !important;
-
 color:#fff !important;
-
 font-weight:600 !important;
-
 margin-left:auto;
-
 }
 
-
-.delete-button:hover{
-
-background:#a84f4a !important;
-
-}
-
-
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:700px){
 
 .wrap{
-
 width:95%;
-
 margin:20px auto;
-
 }
-
 
 h1{
-
 font-size:26px;
-
-font-weight:700;
-
 }
-
-
-.info{
-
-font-size:14px;
-
-}
-
 
 .summary-card{
-
 flex:1;
-
 min-width:135px;
-
 }
-
 
 .summary-number{
-
 font-size:26px;
-
 }
-
 
 .tools{
-
 display:block;
-
 }
-
 
 .search-box,
 .filter-box{
-
 max-width:none;
-
 margin-bottom:10px;
-
 }
-
 
 .modal{
-
 margin:10px auto;
-
-padding:21px;
-
+padding:20px;
 }
-
 
 .modal h2{
-
 font-size:23px;
-
-font-weight:700;
-
 }
 
+.crm-grid{
+grid-template-columns:1fr;
+}
+
+.form-group.full{
+grid-column:auto;
+}
+
+.agree-status{
+grid-template-columns:1fr;
+}
 
 .modal-actions{
-
 display:grid;
-
 grid-template-columns:1fr 1fr;
-
 }
-
 
 .modal-actions button{
-
 width:100%;
-
 }
 
-
 .delete-button{
-
 margin-left:0;
-
 grid-column:1/-1;
-
 }
 
-
-}
-
-
-/* =========================
-   FINAL COLOR / FONT LOCK
-========================= */
-
-.status-active{
-color:#347658 !important;
-font-weight:500 !important;
-}
-
-.status-paused{
-color:#9c7433 !important;
-font-weight:500 !important;
-}
-
-.status-blocked{
-color:#a94f4a !important;
-font-weight:500 !important;
-}
-
-.manage-button{
-background:#edf4f0 !important;
-color:#366c52 !important;
-font-weight:500 !important;
-}
-
-.save-button{
-background:#4a8063 !important;
-color:#ffffff !important;
-font-weight:600 !important;
-}
-
-.close-button{
-background:#e4e8e5 !important;
-color:#3f4843 !important;
-font-weight:500 !important;
-}
-
-.delete-button{
-background:#b85a55 !important;
-color:#ffffff !important;
-font-weight:600 !important;
-}
-
-.logout-button{
-background:#59615d !important;
-color:#ffffff !important;
-font-weight:500 !important;
 }
 
 </style>
-
 </head>
 
 
 <body>
 
-
 <div class="wrap">
 
 
-<!-- LOGIN -->
+<!-- 관리자 로그인 -->
 
 <div id="loginArea" class="login-box">
 
@@ -924,24 +576,20 @@ class="login-button">
 </div>
 
 
-
-<!-- ADMIN -->
+<!-- 관리자 영역 -->
 
 <div id="adminArea">
-
 
 <h1>
 전국소비자클럽 회원관리
 </h1>
 
 <div class="info">
-NCC 회원가입 데이터 관리 시스템
+NCC 회원 CRM 관리 시스템
 </div>
 
 
-
 <div class="summary-box">
-
 
 <div class="summary-card">
 
@@ -949,12 +597,13 @@ NCC 회원가입 데이터 관리 시스템
 전체 회원
 </div>
 
-<div id="totalMembers" class="summary-number">
+<div
+id="totalMembers"
+class="summary-number">
 0명
 </div>
 
 </div>
-
 
 
 <div class="summary-card">
@@ -963,12 +612,13 @@ NCC 회원가입 데이터 관리 시스템
 활성 회원
 </div>
 
-<div id="activeMembers" class="summary-number">
+<div
+id="activeMembers"
+class="summary-number">
 0명
 </div>
 
 </div>
-
 
 
 <div class="summary-card">
@@ -977,15 +627,15 @@ NCC 회원가입 데이터 관리 시스템
 정지·차단
 </div>
 
-<div id="inactiveMembers" class="summary-number">
+<div
+id="inactiveMembers"
+class="summary-number">
 0명
 </div>
 
 </div>
 
-
 </div>
-
 
 
 <div class="tools">
@@ -994,8 +644,7 @@ NCC 회원가입 데이터 관리 시스템
 id="memberSearch"
 class="search-box"
 type="text"
-placeholder="이름, 연락처, 지역, 이메일 검색">
-
+placeholder="이름, 연락처, 지역, 이메일, 추천인, 센터 검색">
 
 <select
 id="statusFilter"
@@ -1023,44 +672,49 @@ class="filter-box">
 <button
 id="logoutButton"
 class="logout-button">
-
 로그아웃
-
 </button>
 
 </div>
 
 
-
 <div id="memberArea">
-
 회원정보 불러오는 중...
-
-</div>
-
-
 </div>
 
 </div>
 
+</div>
 
 
-<!-- MEMBER MODAL -->
+<!-- 회원 상세관리 -->
 
-
-<div id="memberModal" class="modal-backdrop">
-
+<div
+id="memberModal"
+class="modal-backdrop">
 
 <div class="modal">
-
 
 <h2>
 회원 상세관리
 </h2>
 
+<div class="modal-desc">
+회원 가입정보와 CRM 관리정보를 확인하고 수정할 수 있습니다.
+</div>
 
 
-<div class="form-group">
+<!-- 시스템 -->
+
+<section class="crm-section">
+
+<div class="crm-title">
+시스템 정보
+</div>
+
+<div class="crm-grid">
+
+<div class="form-group full">
 
 <label>
 회원 문서 ID
@@ -1074,6 +728,50 @@ class="member-id">
 </div>
 
 
+<div class="form-group">
+
+<label>
+가입일
+</label>
+
+<div
+id="editJoinDate"
+class="readonly-box">
+-
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+최종 수정일
+</label>
+
+<div
+id="editUpdatedAt"
+class="readonly-box">
+-
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 기본정보 -->
+
+<section class="crm-section">
+
+<div class="crm-title">
+기본정보
+</div>
+
+<div class="crm-grid">
+
 
 <div class="form-group">
 
@@ -1084,7 +782,6 @@ class="member-id">
 <input id="editName">
 
 </div>
-
 
 
 <div class="form-group">
@@ -1098,11 +795,76 @@ class="member-id">
 </div>
 
 
+<div class="form-group">
+
+<label>
+이메일
+</label>
+
+<input
+id="editEmail"
+type="email">
+
+</div>
+
 
 <div class="form-group">
 
 <label>
-지역
+생년월일
+</label>
+
+<input
+id="editBirthDate"
+type="date">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+성별
+</label>
+
+<select id="editGender">
+
+<option value="">
+미입력
+</option>
+
+<option value="male">
+남성
+</option>
+
+<option value="female">
+여성
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+회원 유형
+</label>
+
+<div
+id="editMemberType"
+class="readonly-box">
+소비자회원
+</div>
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+거주지역 / 주소
 </label>
 
 <input id="editRegion">
@@ -1110,17 +872,20 @@ class="member-id">
 </div>
 
 
-
-<div class="form-group">
-
-<label>
-이메일
-</label>
-
-<input id="editEmail">
-
 </div>
 
+</section>
+
+
+<!-- 관심정보 -->
+
+<section class="crm-section">
+
+<div class="crm-title">
+관심정보
+</div>
+
+<div class="crm-grid">
 
 
 <div class="form-group">
@@ -1128,7 +893,6 @@ class="member-id">
 <label>
 관심 혜택
 </label>
-
 
 <select id="editBenefit">
 
@@ -1157,13 +921,112 @@ class="member-id">
 </div>
 
 
+<div class="form-group">
+
+<label>
+반려동물 보유 여부
+</label>
+
+<select id="editHasPet">
+
+<option value="">
+미입력
+</option>
+
+<option value="yes">
+보유
+</option>
+
+<option value="no">
+미보유
+</option>
+
+</select>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- 추천·센터 -->
+
+<section class="crm-section">
+
+<div class="crm-title">
+추천 · 지역센터 정보
+</div>
+
+<div class="crm-grid">
+
+
+<div class="form-group">
+
+<label>
+추천인
+</label>
+
+<input id="editReferrer">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+추천코드
+</label>
+
+<input id="editReferralCode">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+소속센터
+</label>
+
+<input id="editCenterName">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+센터코드
+</label>
+
+<input id="editCenterCode">
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- 관리자 관리 -->
+
+<section class="crm-section">
+
+<div class="crm-title">
+관리자 CRM 정보
+</div>
+
+<div class="crm-grid">
+
 
 <div class="form-group">
 
 <label>
 회원 상태
 </label>
-
 
 <select id="editStatus">
 
@@ -1184,44 +1047,133 @@ class="member-id">
 </div>
 
 
+<div class="form-group">
+
+<label>
+관리등급
+</label>
+
+<select id="editManagementGrade">
+
+<option value="general">
+일반
+</option>
+
+<option value="priority">
+우선관리
+</option>
+
+<option value="vip">
+VIP
+</option>
+
+<option value="special">
+특별관리
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+관리자 메모
+</label>
+
+<textarea
+id="editAdminMemo"
+placeholder="회원 상담내용, 특이사항, 관리메모 등을 입력하세요.">
+</textarea>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- 동의정보 -->
+
+<section class="crm-section">
+
+<div class="crm-title">
+개인정보 및 마케팅 동의
+</div>
+
+<div class="agree-status">
+
+<div class="agree-card">
+
+<div>
+개인정보 수집·이용
+</div>
+
+<strong id="viewAgreePrivacy">
+-
+</strong>
+
+</div>
+
+
+<div class="agree-card">
+
+<div>
+마케팅 수신
+</div>
+
+<strong id="viewAgreeMarketing">
+-
+</strong>
+
+</div>
+
+
+<div class="agree-card">
+
+<div>
+제3자 제공
+</div>
+
+<strong id="viewAgreeThirdParty">
+-
+</strong>
+
+</div>
+
+</div>
+
+</section>
+
 
 <div class="modal-actions">
-
 
 <button
 id="saveMemberButton"
 class="save-button">
-
 수정 저장
-
 </button>
-
 
 <button
 id="closeModalButton"
 class="close-button">
-
 닫기
-
 </button>
-
 
 <button
 id="deleteMemberButton"
 class="delete-button">
-
 회원 삭제
-
 </button>
 
-
 </div>
 
 
 </div>
 
 </div>
-
 
 
 <script type="module">
@@ -1250,10 +1202,10 @@ query,
 orderBy,
 doc,
 updateDoc,
-deleteDoc
+deleteDoc,
+serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 
 const firebaseConfig = {
@@ -1282,68 +1234,54 @@ measurementId:
 };
 
 
-
 const ADMIN_EMAIL =
 "kpa100plus@gmail.com";
-
 
 
 const app =
 initializeApp(firebaseConfig);
 
-
 const auth =
 getAuth(app);
-
 
 const db =
 getFirestore(app);
 
 
+/* DOM */
 
 const loginArea =
 document.getElementById("loginArea");
 
-
 const adminArea =
 document.getElementById("adminArea");
-
 
 const loginButton =
 document.getElementById("loginButton");
 
-
 const logoutButton =
 document.getElementById("logoutButton");
-
 
 const loginError =
 document.getElementById("loginError");
 
-
 const memberArea =
 document.getElementById("memberArea");
-
 
 const totalMembers =
 document.getElementById("totalMembers");
 
-
 const activeMembers =
 document.getElementById("activeMembers");
-
 
 const inactiveMembers =
 document.getElementById("inactiveMembers");
 
-
 const memberSearch =
 document.getElementById("memberSearch");
 
-
 const statusFilter =
 document.getElementById("statusFilter");
-
 
 const memberModal =
 document.getElementById("memberModal");
@@ -1352,307 +1290,367 @@ document.getElementById("memberModal");
 const editId =
 document.getElementById("editId");
 
+const editJoinDate =
+document.getElementById("editJoinDate");
+
+const editUpdatedAt =
+document.getElementById("editUpdatedAt");
 
 const editName =
 document.getElementById("editName");
 
-
 const editPhone =
 document.getElementById("editPhone");
-
-
-const editRegion =
-document.getElementById("editRegion");
-
 
 const editEmail =
 document.getElementById("editEmail");
 
+const editBirthDate =
+document.getElementById("editBirthDate");
+
+const editGender =
+document.getElementById("editGender");
+
+const editMemberType =
+document.getElementById("editMemberType");
+
+const editRegion =
+document.getElementById("editRegion");
 
 const editBenefit =
 document.getElementById("editBenefit");
 
+const editHasPet =
+document.getElementById("editHasPet");
+
+const editReferrer =
+document.getElementById("editReferrer");
+
+const editReferralCode =
+document.getElementById("editReferralCode");
+
+const editCenterName =
+document.getElementById("editCenterName");
+
+const editCenterCode =
+document.getElementById("editCenterCode");
 
 const editStatus =
 document.getElementById("editStatus");
 
+const editManagementGrade =
+document.getElementById("editManagementGrade");
+
+const editAdminMemo =
+document.getElementById("editAdminMemo");
+
+const viewAgreePrivacy =
+document.getElementById("viewAgreePrivacy");
+
+const viewAgreeMarketing =
+document.getElementById("viewAgreeMarketing");
+
+const viewAgreeThirdParty =
+document.getElementById("viewAgreeThirdParty");
 
 const saveMemberButton =
 document.getElementById("saveMemberButton");
 
-
 const closeModalButton =
 document.getElementById("closeModalButton");
-
 
 const deleteMemberButton =
 document.getElementById("deleteMemberButton");
 
 
-
 let allMembers = [];
 
+let selectedMemberId =
+null;
 
-let selectedMemberId = null;
 
-
+/* 유틸 */
 
 function escapeHTML(value){
 
 return String(value ?? "")
-
 .replaceAll("&","&amp;")
-
 .replaceAll("<","&lt;")
-
 .replaceAll(">","&gt;")
-
 .replaceAll('"',"&quot;")
-
 .replaceAll("'","&#039;");
 
 }
 
 
+function timestampText(value){
+
+if(
+value &&
+value.toDate
+){
+
+return value
+.toDate()
+.toLocaleString("ko-KR");
+
+}
+
+return "";
+
+}
+
+
+function agreementText(value){
+
+return value === true
+? "동의"
+: "미동의";
+
+}
+
+
+function setAgreementDisplay(
+element,
+value
+){
+
+element.textContent =
+agreementText(value);
+
+element.className =
+value === true
+? "agree-yes"
+: "agree-no";
+
+}
+
+
+function memberTypeText(type){
+
+if(type === "consumer"){
+return "소비자회원";
+}
+
+if(type === "corporate"){
+return "법인사업자";
+}
+
+if(type === "soleProprietor"){
+return "개인사업자";
+}
+
+return type || "미지정";
+
+}
+
+
+/* 로그인 */
 
 loginButton.addEventListener(
 "click",
 async()=>{
 
-
 const email =
-
 document
 .getElementById("adminEmail")
 .value
 .trim();
 
-
 const password =
-
 document
 .getElementById("adminPassword")
 .value;
 
-
-loginError.innerHTML = "";
-
+loginError.innerHTML =
+"";
 
 try{
 
-
 await signInWithEmailAndPassword(
-
 auth,
-
 email,
-
 password
-
 );
-
 
 }catch(error){
 
-
 loginError.innerHTML =
-
 '<div class="error">로그인에 실패했습니다.<br>이메일 또는 비밀번호를 확인하세요.</div>';
-
 
 }
 
-
 });
-
 
 
 logoutButton.addEventListener(
 "click",
 async()=>{
 
-
 await signOut(auth);
 
-
 });
-
 
 
 onAuthStateChanged(
 auth,
 async(user)=>{
 
-
 if(
-
 user &&
-
 user.email &&
-
 user.email.toLowerCase() ===
 ADMIN_EMAIL.toLowerCase()
-
 ){
-
 
 loginArea.style.display =
 "none";
 
-
 adminArea.style.display =
 "block";
-
 
 await loadMembers();
 
-
 }else{
-
 
 if(user){
 
-
 await signOut(auth);
 
-
 loginError.innerHTML =
-
 '<div class="error">관리자 권한이 없는 계정입니다.</div>';
 
-
 }
-
 
 loginArea.style.display =
 "block";
 
-
 adminArea.style.display =
 "none";
 
-
 }
-
 
 });
 
 
+/* 회원 불러오기 */
 
 async function loadMembers(){
 
-
 memberArea.innerHTML =
-
 "회원정보 불러오는 중...";
-
 
 try{
 
-
-const q = query(
-
+const q =
+query(
 collection(
 db,
 "members"
 ),
-
 orderBy(
 "joinDate",
 "desc"
 )
-
 );
 
-
 const snapshot =
-
 await getDocs(q);
 
-
-allMembers = [];
+allMembers =
+[];
 
 
 snapshot.forEach(
 (documentSnapshot)=>{
 
-
 const d =
-
 documentSnapshot.data();
-
-
-let joinDate = "";
-
-
-if(
-
-d.joinDate &&
-
-d.joinDate.toDate
-
-){
-
-
-joinDate =
-
-d.joinDate
-.toDate()
-.toLocaleString("ko-KR");
-
-
-}
 
 
 allMembers.push({
 
-
 id:
 documentSnapshot.id,
-
 
 name:
 d.name || "",
 
-
 phone:
 d.phone || "",
-
-
-region:
-d.region || "",
-
 
 email:
 d.email || "",
 
+birthDate:
+d.birthDate || "",
 
-benefit:
-d.benefit || "",
+gender:
+d.gender || "",
 
+region:
+d.region || "",
 
-joinDate:
-joinDate,
-
+memberType:
+d.memberType || "consumer",
 
 status:
-d.status || "active"
+d.status || "active",
 
+benefit:
+d.benefit || "전체 혜택",
+
+hasPet:
+d.hasPet || "",
+
+referrer:
+d.referrer || "",
+
+referralCode:
+d.referralCode || "",
+
+centerName:
+d.centerName || "",
+
+centerCode:
+d.centerCode || "",
+
+agreePrivacy:
+d.agreePrivacy === true,
+
+agreeMarketing:
+d.agreeMarketing === true,
+
+agreeThirdParty:
+d.agreeThirdParty === true,
+
+managementGrade:
+d.managementGrade || "general",
+
+adminMemo:
+d.adminMemo || "",
+
+joinDate:
+timestampText(
+d.joinDate
+),
+
+updatedAt:
+timestampText(
+d.updatedAt
+)
 
 });
-
 
 });
 
 
 updateSummary();
 
-
 applyFilters();
 
 
 }catch(error){
-
 
 memberArea.innerHTML = `
 
@@ -1666,176 +1664,146 @@ ${escapeHTML(error.message)}
 
 `;
 
+}
 
 }
 
 
-}
-
-
+/* 통계 */
 
 function updateSummary(){
 
-
 totalMembers.textContent =
-
 allMembers.length + "명";
 
 
 const activeCount =
 
 allMembers.filter(
-
 member =>
 member.status === "active"
-
 ).length;
 
 
 activeMembers.textContent =
-
 activeCount + "명";
 
 
 inactiveMembers.textContent =
-
-(allMembers.length - activeCount)
+(
+allMembers.length -
+activeCount
+)
 + "명";
-
 
 }
 
 
+/* 상태 */
 
 function statusText(status){
 
-
 if(status === "active"){
-
 return "활성";
-
 }
-
 
 if(status === "paused"){
-
 return "정지";
-
 }
-
 
 if(status === "blocked"){
-
 return "차단";
-
 }
-
 
 return status;
 
-
 }
-
 
 
 function statusClass(status){
 
-
 if(status === "active"){
-
 return "status-active";
-
 }
-
 
 if(status === "paused"){
-
 return "status-paused";
-
 }
-
 
 if(status === "blocked"){
-
 return "status-blocked";
-
 }
-
 
 return "";
 
-
 }
 
 
+/* 회원목록 */
 
 function renderMembers(list){
 
-
-if(list.length === 0){
-
+if(
+list.length === 0
+){
 
 memberArea.innerHTML =
-
 '<div class="empty">조건에 맞는 회원이 없습니다.</div>';
 
-
 return;
-
 
 }
 
 
-let rows = "";
+let rows =
+"";
 
 
 list.forEach(
 (member)=>{
 
-
 rows += `
 
-
 <tr>
-
 
 <td>
 ${escapeHTML(member.name)}
 </td>
 
-
 <td>
 ${escapeHTML(member.phone)}
 </td>
-
 
 <td>
 ${escapeHTML(member.region)}
 </td>
 
-
 <td>
 ${escapeHTML(member.email)}
 </td>
-
 
 <td>
 ${escapeHTML(member.benefit)}
 </td>
 
+<td>
+${escapeHTML(member.centerName)}
+</td>
 
 <td>
 ${escapeHTML(member.joinDate)}
 </td>
 
-
 <td
 class="status ${statusClass(member.status)}">
 
-${escapeHTML(statusText(member.status))}
+${escapeHTML(
+statusText(
+member.status
+)
+)}
 
 </td>
-
 
 <td>
 
@@ -1849,131 +1817,77 @@ data-member-id="${escapeHTML(member.id)}">
 
 </td>
 
-
 </tr>
 
-
 `;
-
 
 });
 
 
-
 memberArea.innerHTML = `
-
 
 <div class="table-wrap">
 
-
 <table>
-
 
 <thead>
 
-
 <tr>
 
-
-<th>
-이름
-</th>
-
-
-<th>
-연락처
-</th>
-
-
-<th>
-지역
-</th>
-
-
-<th>
-이메일
-</th>
-
-
-<th>
-관심 혜택
-</th>
-
-
-<th>
-가입일
-</th>
-
-
-<th>
-상태
-</th>
-
-
-<th>
-관리
-</th>
-
+<th>이름</th>
+<th>연락처</th>
+<th>지역</th>
+<th>이메일</th>
+<th>관심 혜택</th>
+<th>소속센터</th>
+<th>가입일</th>
+<th>상태</th>
+<th>관리</th>
 
 </tr>
 
-
 </thead>
-
 
 <tbody>
 
-
 ${rows}
-
 
 </tbody>
 
-
 </table>
 
-
 </div>
-
 
 `;
 
 
-
 document
-
 .querySelectorAll(
 ".manage-button"
 )
-
 .forEach(
 (button)=>{
-
 
 button.addEventListener(
 "click",
 ()=>{
 
-
 openMemberModal(
-
 button.dataset.memberId
-
 );
 
+}
+);
 
-});
-
-
-});
-
+}
+);
 
 }
 
 
+/* 검색 / 필터 */
 
 function applyFilters(){
-
 
 const keyword =
 
@@ -1984,9 +1898,7 @@ memberSearch
 
 
 const selectedStatus =
-
 statusFilter.value;
-
 
 
 const filtered =
@@ -1998,98 +1910,78 @@ allMembers.filter(
 const searchTarget = [
 
 member.name,
-
 member.phone,
-
 member.region,
-
 member.email,
-
-member.benefit
+member.benefit,
+member.referrer,
+member.referralCode,
+member.centerName,
+member.centerCode
 
 ]
-
 .join(" ")
-
 .toLowerCase();
 
 
-
 const matchesKeyword =
-
 searchTarget.includes(
 keyword
 );
 
 
-
 const matchesStatus =
 
 !selectedStatus ||
-
 member.status ===
 selectedStatus;
 
 
-
 return (
-
 matchesKeyword &&
-
 matchesStatus
-
 );
 
-
-});
+}
+);
 
 
 renderMembers(
 filtered
 );
 
-
 }
 
 
-
 memberSearch.addEventListener(
-
 "input",
-
 applyFilters
-
 );
-
 
 
 statusFilter.addEventListener(
-
 "change",
-
 applyFilters
-
 );
 
 
+/* 상세관리 */
 
-function openMemberModal(memberId){
-
+function openMemberModal(
+memberId
+){
 
 const member =
 
 allMembers.find(
-
 item =>
-item.id === memberId
-
+item.id ===
+memberId
 );
 
 
 if(!member){
-
 return;
-
 }
 
 
@@ -2101,6 +1993,16 @@ editId.textContent =
 member.id;
 
 
+editJoinDate.textContent =
+member.joinDate ||
+"-";
+
+
+editUpdatedAt.textContent =
+member.updatedAt ||
+"-";
+
+
 editName.value =
 member.name;
 
@@ -2109,161 +2011,180 @@ editPhone.value =
 member.phone;
 
 
-editRegion.value =
-member.region;
-
-
 editEmail.value =
 member.email;
 
 
-editBenefit.value =
+editBirthDate.value =
+member.birthDate;
 
+
+editGender.value =
+member.gender;
+
+
+editMemberType.textContent =
+memberTypeText(
+member.memberType
+);
+
+
+editRegion.value =
+member.region;
+
+
+editBenefit.value =
 member.benefit ||
 "전체 혜택";
 
 
-editStatus.value =
+editHasPet.value =
+member.hasPet;
 
+
+editReferrer.value =
+member.referrer;
+
+
+editReferralCode.value =
+member.referralCode;
+
+
+editCenterName.value =
+member.centerName;
+
+
+editCenterCode.value =
+member.centerCode;
+
+
+editStatus.value =
 member.status ||
 "active";
+
+
+editManagementGrade.value =
+member.managementGrade ||
+"general";
+
+
+editAdminMemo.value =
+member.adminMemo;
+
+
+setAgreementDisplay(
+viewAgreePrivacy,
+member.agreePrivacy
+);
+
+
+setAgreementDisplay(
+viewAgreeMarketing,
+member.agreeMarketing
+);
+
+
+setAgreementDisplay(
+viewAgreeThirdParty,
+member.agreeThirdParty
+);
 
 
 memberModal.style.display =
 "block";
 
-
 }
 
 
+/* 팝업 닫기 */
 
 function closeMemberModal(){
-
 
 memberModal.style.display =
 "none";
 
-
 selectedMemberId =
 null;
 
-
 }
-
 
 
 closeModalButton.addEventListener(
-
 "click",
-
 closeMemberModal
-
 );
-
 
 
 memberModal.addEventListener(
-
 "click",
-
 (event)=>{
 
-
 if(
-
 event.target ===
 memberModal
-
 ){
-
 
 closeMemberModal();
 
-
 }
 
+}
+);
 
-});
 
-
+/* 수정 저장 */
 
 saveMemberButton.addEventListener(
-
 "click",
-
 async()=>{
 
 
-if(!selectedMemberId){
-
+if(
+!selectedMemberId
+){
 return;
-
 }
-
 
 
 const name =
-
 editName.value.trim();
 
-
 const phone =
-
 editPhone.value.trim();
 
-
 const region =
-
 editRegion.value.trim();
 
-
 const email =
-
 editEmail.value.trim();
 
 
-
 if(
-
 !name ||
-
 !phone ||
-
 !region
-
 ){
 
-
 alert(
-
 "이름, 연락처, 지역은 필수입니다."
-
 );
-
 
 return;
 
-
 }
-
 
 
 const confirmed =
-
 confirm(
-
 "회원정보를 수정하시겠습니까?"
-
 );
 
 
-
-if(!confirmed){
-
+if(
+!confirmed
+){
 return;
-
 }
-
 
 
 try{
@@ -2277,76 +2198,86 @@ saveMemberButton.textContent =
 "저장 중...";
 
 
-
 await updateDoc(
 
 doc(
-
 db,
-
 "members",
-
 selectedMemberId
-
 ),
 
 {
 
-
 name:
 name,
-
 
 phone:
 phone,
 
+email:
+email,
+
+birthDate:
+editBirthDate.value,
+
+gender:
+editGender.value,
 
 region:
 region,
 
-
-email:
-email,
-
-
 benefit:
 editBenefit.value,
 
+hasPet:
+editHasPet.value,
+
+referrer:
+editReferrer.value.trim(),
+
+referralCode:
+editReferralCode.value.trim(),
+
+centerName:
+editCenterName.value.trim(),
+
+centerCode:
+editCenterCode.value.trim(),
 
 status:
-editStatus.value
+editStatus.value,
 
+managementGrade:
+editManagementGrade.value,
+
+adminMemo:
+editAdminMemo.value.trim(),
+
+updatedAt:
+serverTimestamp()
 
 }
 
 );
 
 
-
 alert(
-
 "회원정보가 수정되었습니다."
-
 );
-
 
 
 closeMemberModal();
 
 
-
 await loadMembers();
-
 
 
 }catch(error){
 
 
 alert(
-
 "수정 오류: " +
 error.message
-
 );
 
 
@@ -2363,55 +2294,54 @@ saveMemberButton.textContent =
 
 }
 
+}
+);
 
-});
 
-
+/* 회원 삭제 */
 
 deleteMemberButton.addEventListener(
-
 "click",
-
 async()=>{
 
 
-if(!selectedMemberId){
-
+if(
+!selectedMemberId
+){
 return;
-
 }
-
 
 
 const member =
 
 allMembers.find(
-
 item =>
-item.id === selectedMemberId
-
+item.id ===
+selectedMemberId
 );
-
 
 
 const confirmed =
 
 confirm(
 
-(member?.name || "이 회원") +
+(
+member?.name ||
+"이 회원"
+)
+
++
 
 "의 회원정보를 정말 삭제하시겠습니까?\n\n삭제하면 되돌릴 수 없습니다."
 
 );
 
 
-
-if(!confirmed){
-
+if(
+!confirmed
+){
 return;
-
 }
-
 
 
 try{
@@ -2425,47 +2355,34 @@ deleteMemberButton.textContent =
 "삭제 중...";
 
 
-
 await deleteDoc(
 
 doc(
-
 db,
-
 "members",
-
 selectedMemberId
-
 )
 
 );
 
 
-
 alert(
-
 "회원정보가 삭제되었습니다."
-
 );
-
 
 
 closeMemberModal();
 
 
-
 await loadMembers();
-
 
 
 }catch(error){
 
 
 alert(
-
 "삭제 오류: " +
 error.message
-
 );
 
 
@@ -2482,12 +2399,11 @@ deleteMemberButton.textContent =
 
 }
 
-
-});
+}
+);
 
 
 </script>
-
 
 </body>
 
