@@ -1035,7 +1035,7 @@ grid-column:1/-1;
 /* 검색/필터 */
 .tools{
   display:grid;
-  grid-template-columns:minmax(330px,1.7fr) repeat(3,minmax(145px,.75fr)) minmax(150px,.7fr) auto;
+  grid-template-columns:minmax(300px,1.6fr) repeat(3,minmax(130px,.7fr)) minmax(145px,.7fr) minmax(175px,.85fr) auto;
   gap:10px;
   align-items:center;
   margin:20px 0;
@@ -1301,6 +1301,19 @@ td:nth-child(11){
   min-width:150px;
 }
 
+
+.phone-backfill-button{
+  background:#8A6B1F;
+  color:#fff;
+  white-space:nowrap;
+  min-width:175px;
+}
+
+.phone-backfill-button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
 .issue-number-button:disabled{
   opacity:.55;
   cursor:not-allowed;
@@ -1466,6 +1479,13 @@ id="issueMissingNumbersButton"
 class="issue-number-button"
 type="button">
 미발급 번호 일괄발급
+</button>
+
+<button
+id="backfillMemberPhonesButton"
+class="phone-backfill-button"
+type="button">
+기존회원 중복방지 등록
 </button>
 
 <button
@@ -2153,6 +2173,7 @@ class="delete-button">
 
 /* REF-NCC-ADMIN-CLEAN-FINAL-01 */
 /* REF-NCC-ADMIN-BACKFILL-01 */
+/* REF-NCC-DUPLICATE-MEMBER-BACKFILL-03 */
 
 
 import {
@@ -2249,6 +2270,10 @@ document.getElementById("loginButton");
 
 const issueMissingNumbersButton =
 document.getElementById("issueMissingNumbersButton");
+
+
+const backfillMemberPhonesButton =
+document.getElementById("backfillMemberPhonesButton");
 
 
 const logoutButton =
@@ -3098,6 +3123,308 @@ applyFilters();
 );
 
 
+
+
+
+/* ===============================
+   REF-NCC-DUPLICATE-MEMBER-BACKFILL-03
+   EXISTING MEMBER PHONE LOCK BACKFILL
+=============================== */
+
+function normalizePhoneKey(value){
+
+return String(value || "")
+.replace(/\D/g,"");
+
+}
+
+
+backfillMemberPhonesButton.addEventListener(
+"click",
+async()=>{
+
+const consumerMembers =
+allMembers.filter(
+member =>
+(member.memberType || "consumer") === "consumer"
+);
+
+
+// 연락처 그룹 생성
+const phoneGroups = new Map();
+
+consumerMembers.forEach(member=>{
+
+const phoneKey =
+normalizePhoneKey(member.phone);
+
+if(
+phoneKey.length < 9
+||
+phoneKey.length > 11
+){
+return;
+}
+
+if(!phoneGroups.has(phoneKey)){
+phoneGroups.set(phoneKey,[]);
+}
+
+phoneGroups.get(phoneKey).push(member);
+
+});
+
+
+// 동일 연락처가 이미 여러 회원에게 있는 경우는 자동 처리하지 않음
+const conflictGroups =
+Array.from(phoneGroups.entries())
+.filter(
+([phoneKey,members]) =>
+members.length > 1
+);
+
+
+const candidates =
+Array.from(phoneGroups.entries())
+.filter(
+([phoneKey,members]) =>
+members.length === 1
+)
+.map(
+([phoneKey,members])=>({
+phoneKey,
+member:members[0]
+})
+)
+.filter(
+item =>
+item.member.memberNumber
+);
+
+
+const invalidCount =
+consumerMembers.filter(member=>{
+
+const phoneKey =
+normalizePhoneKey(member.phone);
+
+return (
+phoneKey.length < 9
+||
+phoneKey.length > 11
+||
+!member.memberNumber
+);
+
+}).length;
+
+
+if(
+candidates.length === 0
+&&
+conflictGroups.length === 0
+){
+
+alert(
+"중복방지 등록 대상 회원이 없습니다."
+);
+
+return;
+
+}
+
+
+const conflictText =
+conflictGroups.length > 0
+?
+`
+
+※ 동일 연락처가 이미 여러 회원에게 등록된 충돌 ${conflictGroups.length}건은 자동등록하지 않고 건너뜁니다.`
+:
+"";
+
+
+const confirmed =
+confirm(
+`기존 소비자회원의 연락처를 중복가입 방지 시스템에 등록하시겠습니까?
+
+자동등록 가능: ${candidates.length}명
+기존 중복 충돌: ${conflictGroups.length}건
+연락처/회원번호 오류: ${invalidCount}명
+${conflictText}
+
+기존 회원정보는 삭제되지 않습니다.`
+);
+
+if(!confirmed){
+return;
+}
+
+
+backfillMemberPhonesButton.disabled = true;
+backfillMemberPhonesButton.textContent = "등록 중...";
+
+
+let createdCount = 0;
+let alreadyCount = 0;
+let errorCount = 0;
+
+
+try{
+
+for(
+const item of candidates
+){
+
+try{
+
+const result =
+await runTransaction(
+db,
+async(transaction)=>{
+
+const phoneRef =
+doc(
+db,
+"memberPhones",
+item.phoneKey
+);
+
+const memberRef =
+doc(
+db,
+"members",
+item.member.id
+);
+
+const phoneSnapshot =
+await transaction.get(
+phoneRef
+);
+
+
+// 이미 잠금이 있으면 기존 잠금은 변경하지 않음
+if(phoneSnapshot.exists()){
+
+transaction.update(
+memberRef,
+{
+phoneKey:item.phoneKey,
+updatedAt:serverTimestamp()
+}
+);
+
+return "already";
+
+}
+
+
+transaction.set(
+phoneRef,
+{
+memberId:item.member.id,
+memberNumber:item.member.memberNumber,
+createdAt:serverTimestamp()
+}
+);
+
+
+transaction.update(
+memberRef,
+{
+phoneKey:item.phoneKey,
+updatedAt:serverTimestamp()
+}
+);
+
+
+return "created";
+
+}
+);
+
+
+if(result === "created"){
+createdCount += 1;
+}else{
+alreadyCount += 1;
+}
+
+
+}catch(error){
+
+console.error(
+"기존회원 중복방지 등록 오류",
+item,
+error
+);
+
+errorCount += 1;
+
+}
+
+}
+
+
+await loadMembers();
+
+
+let conflictDetail = "";
+
+if(conflictGroups.length > 0){
+
+conflictDetail =
+"\n\n[자동처리 제외된 기존 중복 연락처]\n"
++
+conflictGroups
+.slice(0,10)
+.map(
+([phoneKey,members]) =>
+`${phoneKey}: ${members.map(m => m.memberNumber || m.name || m.id).join(", ")}`
+)
+.join("\n");
+
+if(conflictGroups.length > 10){
+conflictDetail +=
+`\n외 ${conflictGroups.length - 10}건`;
+}
+
+}
+
+
+alert(
+`기존회원 중복방지 등록이 완료되었습니다.
+
+신규 잠금 생성: ${createdCount}명
+이미 등록됨: ${alreadyCount}명
+기존 중복 충돌: ${conflictGroups.length}건
+연락처/회원번호 오류: ${invalidCount}명
+처리 오류: ${errorCount}명`
++
+conflictDetail
+);
+
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"기존회원 중복방지 등록 중 오류가 발생했습니다.\n"
++
+(error.message || error)
+);
+
+}finally{
+
+backfillMemberPhonesButton.disabled = false;
+backfillMemberPhonesButton.textContent =
+"기존회원 중복방지 등록";
+
+}
+
+}
+);
 
 
 /* ===============================
