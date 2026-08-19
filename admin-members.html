@@ -1325,6 +1325,85 @@ td:nth-child(11){
   }
 }
 
+
+/* =========================================
+   REF-NCC-BULK-MEMBER-IMPORT-03
+   회원 대량등록
+========================================= */
+
+.bulk-import-button{
+  background:#245d8f;
+  color:#fff;
+  white-space:nowrap;
+  min-width:150px;
+}
+
+.bulk-import-button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.bulk-modal{
+  width:min(980px,96vw);
+  max-height:86vh;
+}
+
+.bulk-summary{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:14px 0 18px;
+}
+
+.bulk-summary-card{
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#f8faf9;
+}
+
+.bulk-summary-card strong{
+  display:block;
+  font-size:22px;
+  margin-top:4px;
+}
+
+.bulk-preview-wrap{
+  overflow:auto;
+  max-height:340px;
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+
+.bulk-preview-table{
+  width:100%;
+  min-width:760px;
+  border-collapse:collapse;
+  table-layout:auto;
+}
+
+.bulk-preview-table th,
+.bulk-preview-table td{
+  padding:9px 10px !important;
+  font-size:12px !important;
+  white-space:nowrap;
+}
+
+.bulk-status-ok{ color:#2f6f50; font-weight:700; }
+.bulk-status-dup{ color:#a57b38; font-weight:700; }
+.bulk-status-err{ color:#b95d58; font-weight:700; }
+
+.bulk-note{
+  margin-top:12px;
+  font-size:12px;
+  color:var(--sub);
+  line-height:1.6;
+}
+
+@media(max-width:800px){
+  .bulk-summary{ grid-template-columns:1fr 1fr; }
+}
+
 </style>
 </head>
 
@@ -1489,6 +1568,13 @@ type="button">
 </button>
 
 <button
+id="bulkImportButton"
+class="bulk-import-button"
+type="button">
+회원 대량등록
+</button>
+
+<button
 id="logoutButton"
 class="logout-button">
 로그아웃
@@ -1508,6 +1594,71 @@ class="logout-button">
 
 </div>
 
+
+
+
+<!-- ===========================
+     BULK IMPORT MODAL
+=========================== -->
+
+<div id="bulkImportModal" class="modal-backdrop">
+  <div class="modal bulk-modal">
+
+    <div class="modal-header">
+      <div class="modal-title-row">
+        <div>
+          <h2>회원 대량등록</h2>
+          <div class="modal-desc">
+            NCC 표준 XLSX/CSV 회원명부를 검사한 후 정상 회원만 등록합니다.
+          </div>
+        </div>
+
+        <button
+          id="bulkTopCloseButton"
+          class="modal-x"
+          type="button">×</button>
+      </div>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="section-title">파일 선택</div>
+
+      <input
+        id="bulkFileInput"
+        type="file"
+        accept=".xlsx,.xls,.csv">
+
+      <div class="bulk-note">
+        필수 열: 이름, 연락처, 지역, 개인정보동의<br>
+        권장: 이메일, 생년월일, 성별, 관심혜택, 반려동물, 추천인, 추천코드, 소속센터, 센터코드
+      </div>
+
+      <div id="bulkSummary" class="bulk-summary" style="display:none;"></div>
+
+      <div id="bulkPreviewArea"></div>
+
+    </div>
+
+    <div class="modal-actions">
+      <button
+        id="bulkRegisterButton"
+        class="save-button"
+        type="button"
+        disabled>
+        정상회원 최종 등록
+      </button>
+
+      <button
+        id="bulkCloseButton"
+        class="close-button"
+        type="button">
+        닫기
+      </button>
+    </div>
+
+  </div>
+</div>
 
 
 <!-- ===========================
@@ -2169,11 +2320,14 @@ class="delete-button">
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <script type="module">
 
 /* REF-NCC-ADMIN-CLEAN-FINAL-01 */
 /* REF-NCC-ADMIN-BACKFILL-01 */
 /* REF-NCC-DUPLICATE-MEMBER-BACKFILL-03 */
+/* REF-NCC-BULK-MEMBER-IMPORT-03 */
 
 
 import {
@@ -2274,6 +2428,31 @@ document.getElementById("issueMissingNumbersButton");
 
 const backfillMemberPhonesButton =
 document.getElementById("backfillMemberPhonesButton");
+
+
+const bulkImportButton =
+document.getElementById("bulkImportButton");
+
+const bulkImportModal =
+document.getElementById("bulkImportModal");
+
+const bulkTopCloseButton =
+document.getElementById("bulkTopCloseButton");
+
+const bulkCloseButton =
+document.getElementById("bulkCloseButton");
+
+const bulkFileInput =
+document.getElementById("bulkFileInput");
+
+const bulkSummary =
+document.getElementById("bulkSummary");
+
+const bulkPreviewArea =
+document.getElementById("bulkPreviewArea");
+
+const bulkRegisterButton =
+document.getElementById("bulkRegisterButton");
 
 
 const logoutButton =
@@ -3124,6 +3303,917 @@ applyFilters();
 
 
 
+
+
+
+/* ===============================
+   REF-NCC-BULK-MEMBER-IMPORT-03
+   XLSX / CSV BULK MEMBER IMPORT
+=============================== */
+
+let bulkParsedRows = [];
+
+
+function openBulkImportModal(){
+
+bulkParsedRows = [];
+bulkFileInput.value = "";
+bulkSummary.style.display = "none";
+bulkSummary.innerHTML = "";
+bulkPreviewArea.innerHTML = "";
+bulkRegisterButton.disabled = true;
+
+bulkImportModal.style.display = "flex";
+
+}
+
+
+function closeBulkImportModal(){
+
+bulkImportModal.style.display = "none";
+bulkParsedRows = [];
+
+}
+
+
+bulkImportButton.addEventListener(
+"click",
+openBulkImportModal
+);
+
+
+bulkTopCloseButton.addEventListener(
+"click",
+closeBulkImportModal
+);
+
+
+bulkCloseButton.addEventListener(
+"click",
+closeBulkImportModal
+);
+
+
+bulkImportModal.addEventListener(
+"click",
+event=>{
+if(event.target === bulkImportModal){
+closeBulkImportModal();
+}
+}
+);
+
+
+function normalizeHeader(value){
+
+return String(value || "")
+.trim()
+.replace(/\s+/g,"")
+.replace(/[·ㆍ]/g,"");
+
+}
+
+
+function valueByAliases(row, aliases){
+
+const normalized = {};
+
+Object.keys(row || {}).forEach(key=>{
+normalized[normalizeHeader(key)] = row[key];
+});
+
+for(const alias of aliases){
+
+const key = normalizeHeader(alias);
+
+if(
+Object.prototype.hasOwnProperty.call(
+normalized,
+key
+)
+){
+return normalized[key];
+}
+
+}
+
+return "";
+
+}
+
+
+function toBoolAgreement(value){
+
+const v =
+String(value ?? "")
+.trim()
+.toLowerCase();
+
+return (
+v === "동의"
+||
+v === "예"
+||
+v === "yes"
+||
+v === "true"
+||
+v === "1"
+||
+value === true
+);
+
+}
+
+
+function normalizeGender(value){
+
+const v =
+String(value ?? "")
+.trim();
+
+if(v === "남성" || v === "남" || v.toLowerCase() === "male"){
+return "male";
+}
+
+if(v === "여성" || v === "여" || v.toLowerCase() === "female"){
+return "female";
+}
+
+return "";
+
+}
+
+
+function normalizePet(value){
+
+const v =
+String(value ?? "")
+.trim();
+
+if(
+v === "보유"
+||
+v === "있음"
+||
+v === "예"
+||
+v.toLowerCase() === "yes"
+){
+return "yes";
+}
+
+if(
+v === "미보유"
+||
+v === "없음"
+||
+v === "아니오"
+||
+v.toLowerCase() === "no"
+){
+return "no";
+}
+
+return "";
+
+}
+
+
+function normalizeBulkRow(row, rowNumber){
+
+const name =
+String(
+valueByAliases(
+row,
+["이름","성명","회원명"]
+)
+?? ""
+).trim();
+
+const phone =
+String(
+valueByAliases(
+row,
+["연락처","휴대전화","휴대폰","전화번호"]
+)
+?? ""
+).trim();
+
+const phoneKey =
+normalizePhoneKey(phone);
+
+const region =
+String(
+valueByAliases(
+row,
+["지역","거주지역","주소","시도시군구"]
+)
+?? ""
+).trim();
+
+const agreePrivacy =
+toBoolAgreement(
+valueByAliases(
+row,
+["개인정보동의","개인정보수집및이용동의","개인정보수집이용동의"]
+)
+);
+
+const data = {
+
+name,
+phone,
+phoneKey,
+
+email:String(
+valueByAliases(row,["이메일","email"])
+?? ""
+).trim(),
+
+birthDate:String(
+valueByAliases(row,["생년월일","출생일"])
+?? ""
+).trim(),
+
+gender:normalizeGender(
+valueByAliases(row,["성별"])
+),
+
+region,
+
+benefit:String(
+valueByAliases(row,["관심혜택","혜택","관심혜택분야"])
+?? "전체 혜택"
+).trim() || "전체 혜택",
+
+hasPet:normalizePet(
+valueByAliases(row,["반려동물","반려동물보유","반려동물보유여부"])
+),
+
+referrer:String(
+valueByAliases(row,["추천인","추천인이름"])
+?? ""
+).trim(),
+
+referralCode:String(
+valueByAliases(row,["추천코드"])
+?? ""
+).trim(),
+
+centerName:String(
+valueByAliases(row,["소속센터","소속센터명","센터명"])
+?? ""
+).trim(),
+
+centerCode:String(
+valueByAliases(row,["센터코드"])
+?? ""
+).trim(),
+
+agreePrivacy,
+
+agreeMarketing:toBoolAgreement(
+valueByAliases(row,["마케팅동의","마케팅정보수신동의"])
+),
+
+agreeThirdParty:toBoolAgreement(
+valueByAliases(row,["제3자제공동의","개인정보제3자제공동의"])
+)
+
+};
+
+
+const errors = [];
+
+if(!name){
+errors.push("이름 누락");
+}
+
+if(
+phoneKey.length < 9
+||
+phoneKey.length > 11
+){
+errors.push("연락처 오류");
+}
+
+if(!region){
+errors.push("지역 누락");
+}
+
+if(!agreePrivacy){
+errors.push("개인정보동의 필요");
+}
+
+
+return {
+rowNumber,
+data,
+errors,
+status:
+errors.length > 0
+?
+"error"
+:
+"pending",
+message:
+errors.join(", ")
+};
+
+}
+
+
+function renderBulkPreview(rows){
+
+const total = rows.length;
+const ok = rows.filter(r=>r.status === "ok").length;
+const dup = rows.filter(r=>r.status === "duplicate").length;
+const err = rows.filter(r=>r.status === "error").length;
+
+bulkSummary.style.display = "grid";
+
+bulkSummary.innerHTML = `
+<div class="bulk-summary-card">
+총 데이터
+<strong>${total}명</strong>
+</div>
+<div class="bulk-summary-card">
+등록 가능
+<strong>${ok}명</strong>
+</div>
+<div class="bulk-summary-card">
+중복 제외
+<strong>${dup}명</strong>
+</div>
+<div class="bulk-summary-card">
+오류
+<strong>${err}명</strong>
+</div>
+`;
+
+
+const previewRows =
+rows.slice(0,200);
+
+
+bulkPreviewArea.innerHTML = `
+<div class="bulk-preview-wrap">
+<table class="bulk-preview-table">
+<thead>
+<tr>
+<th>행</th>
+<th>이름</th>
+<th>연락처</th>
+<th>지역</th>
+<th>판정</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+${previewRows.map(item=>{
+
+const statusText =
+item.status === "ok"
+?
+"등록 가능"
+:
+item.status === "duplicate"
+?
+"중복"
+:
+"오류";
+
+const cls =
+item.status === "ok"
+?
+"bulk-status-ok"
+:
+item.status === "duplicate"
+?
+"bulk-status-dup"
+:
+"bulk-status-err";
+
+return `
+<tr>
+<td>${item.rowNumber}</td>
+<td>${escapeHTML(item.data.name)}</td>
+<td>${escapeHTML(item.data.phone)}</td>
+<td>${escapeHTML(item.data.region)}</td>
+<td class="${cls}">${statusText}</td>
+<td>${escapeHTML(item.message || "")}</td>
+</tr>
+`;
+
+}).join("")}
+</tbody>
+</table>
+</div>
+
+<div class="bulk-note">
+최대 200행까지만 미리보기로 표시합니다.
+</div>
+`;
+
+
+bulkRegisterButton.disabled =
+ok === 0;
+
+}
+
+
+bulkFileInput.addEventListener(
+"change",
+async()=>{
+
+const file =
+bulkFileInput.files &&
+bulkFileInput.files[0];
+
+if(!file){
+return;
+}
+
+bulkRegisterButton.disabled = true;
+bulkPreviewArea.innerHTML =
+"파일 검사 중...";
+
+
+try{
+
+const buffer =
+await file.arrayBuffer();
+
+const workbook =
+XLSX.read(
+buffer,
+{
+type:"array",
+cellDates:false
+}
+);
+
+const sheetName =
+workbook.SheetNames.includes("01_대량등록")
+?
+"01_대량등록"
+:
+workbook.SheetNames[0];
+
+const sheet =
+workbook.Sheets[sheetName];
+
+const rawRows =
+XLSX.utils.sheet_to_json(
+sheet,
+{
+defval:"",
+raw:false
+}
+);
+
+
+// 우리 표준양식의 제목/안내행이 있는 경우 실제 헤더 행 자동 탐색
+let rows = rawRows;
+
+if(
+rows.length > 0
+&&
+!Object.keys(rows[0]).some(
+k =>
+normalizeHeader(k) === "이름"
+||
+normalizeHeader(k) === "성명"
+)
+){
+
+const matrix =
+XLSX.utils.sheet_to_json(
+sheet,
+{
+header:1,
+defval:"",
+raw:false
+}
+);
+
+let headerIndex = -1;
+
+for(
+let i=0;
+i<matrix.length;
+i++
+){
+
+const normalizedHeaders =
+matrix[i].map(normalizeHeader);
+
+if(
+normalizedHeaders.includes("이름")
+&&
+(
+normalizedHeaders.includes("연락처")
+||
+normalizedHeaders.includes("휴대전화")
+)
+){
+headerIndex = i;
+break;
+}
+
+}
+
+if(headerIndex >= 0){
+
+const headerRow =
+matrix[headerIndex];
+
+rows =
+matrix
+.slice(headerIndex + 1)
+.filter(row =>
+row.some(cell =>
+String(cell ?? "").trim() !== ""
+)
+)
+.map(row=>{
+
+const obj = {};
+
+headerRow.forEach((header,index)=>{
+obj[header] = row[index] ?? "";
+});
+
+return obj;
+
+});
+
+}
+
+}
+
+
+const parsed =
+rows
+.filter(row => {
+
+const values =
+Object.values(row || {});
+
+return values.some(
+value =>
+String(value ?? "").trim() !== ""
+);
+
+})
+.map(
+(row,index)=>
+normalizeBulkRow(
+row,
+index + 2
+)
+);
+
+
+if(parsed.length === 0){
+throw new Error("등록할 회원 데이터가 없습니다.");
+}
+
+
+// 파일 내부 중복 먼저 확인
+const seen = new Set();
+
+parsed.forEach(item=>{
+
+if(item.status === "error"){
+return;
+}
+
+if(seen.has(item.data.phoneKey)){
+
+item.status = "duplicate";
+item.message = "파일 내부 동일 연락처";
+
+}else{
+
+seen.add(item.data.phoneKey);
+
+}
+
+});
+
+
+// 현재 회원 DB 중복
+const existingPhoneKeys =
+new Set(
+allMembers
+.map(member => normalizePhoneKey(member.phone))
+.filter(Boolean)
+);
+
+parsed.forEach(item=>{
+
+if(item.status === "error"){
+return;
+}
+
+if(existingPhoneKeys.has(item.data.phoneKey)){
+
+item.status = "duplicate";
+item.message = "기존 회원과 동일 연락처";
+
+}else if(item.status !== "duplicate"){
+
+item.status = "ok";
+item.message = "";
+
+}
+
+});
+
+
+bulkParsedRows = parsed;
+
+renderBulkPreview(
+bulkParsedRows
+);
+
+
+}catch(error){
+
+console.error(error);
+
+bulkParsedRows = [];
+
+bulkSummary.style.display = "none";
+
+bulkPreviewArea.innerHTML =
+`<div class="error">
+파일을 읽지 못했습니다.<br>
+${escapeHTML(error.message || error)}
+</div>`;
+
+}
+
+}
+);
+
+
+async function registerBulkMember(item){
+
+const counterRef =
+doc(
+db,
+"counters",
+"memberNumbers"
+);
+
+const memberRef =
+doc(
+collection(
+db,
+"members"
+)
+);
+
+const phoneRef =
+doc(
+db,
+"memberPhones",
+item.data.phoneKey
+);
+
+
+return await runTransaction(
+db,
+async transaction=>{
+
+const phoneSnapshot =
+await transaction.get(
+phoneRef
+);
+
+const counterSnapshot =
+await transaction.get(
+counterRef
+);
+
+
+if(phoneSnapshot.exists()){
+
+const e =
+new Error("중복 연락처");
+
+e.code =
+"NCC_BULK_DUPLICATE";
+
+throw e;
+
+}
+
+
+let currentNumber =
+0;
+
+if(counterSnapshot.exists()){
+
+currentNumber =
+Number(
+counterSnapshot.data().consumer || 0
+);
+
+}
+
+
+const nextNumber =
+currentNumber + 1;
+
+const memberNumber =
+"NCC-C-"
++
+String(nextNumber)
+.padStart(6,"0");
+
+
+transaction.set(
+counterRef,
+{
+consumer:nextNumber
+},
+{
+merge:true
+}
+);
+
+
+transaction.set(
+phoneRef,
+{
+memberId:memberRef.id,
+memberNumber,
+createdAt:serverTimestamp()
+}
+);
+
+
+transaction.set(
+memberRef,
+{
+...item.data,
+
+memberNumber,
+
+memberType:"consumer",
+
+status:"active",
+
+managementGrade:"general",
+
+adminMemo:"",
+
+joinDate:serverTimestamp(),
+
+updatedAt:serverTimestamp()
+}
+);
+
+
+return memberNumber;
+
+}
+);
+
+}
+
+
+bulkRegisterButton.addEventListener(
+"click",
+async()=>{
+
+const targets =
+bulkParsedRows.filter(
+item =>
+item.status === "ok"
+);
+
+
+if(targets.length === 0){
+
+alert(
+"등록 가능한 회원이 없습니다."
+);
+
+return;
+
+}
+
+
+if(
+!confirm(
+`${targets.length}명의 회원을 NCC 회원DB에 최종 등록하시겠습니까?
+
+동일 연락처는 등록 과정에서도 다시 검사합니다.
+회원번호는 현재 마지막 번호 다음부터 자동 발급됩니다.`
+)
+){
+return;
+}
+
+
+bulkRegisterButton.disabled = true;
+bulkRegisterButton.textContent = "등록 중...";
+
+
+let successCount = 0;
+let duplicateCount = 0;
+let errorCount = 0;
+
+const issued = [];
+
+
+for(
+const item of targets
+){
+
+try{
+
+const memberNumber =
+await registerBulkMember(item);
+
+item.status = "registered";
+item.message = memberNumber;
+
+successCount += 1;
+
+issued.push(
+`${memberNumber} ${item.data.name}`
+);
+
+
+}catch(error){
+
+console.error(
+"대량등록 오류",
+item,
+error
+);
+
+if(
+error.code === "NCC_BULK_DUPLICATE"
+||
+String(error.message || "").includes("중복")
+){
+
+item.status = "duplicate";
+item.message = "등록 중 중복 발견";
+duplicateCount += 1;
+
+}else{
+
+item.status = "error";
+item.message = error.message || "등록 오류";
+errorCount += 1;
+
+}
+
+}
+
+}
+
+
+await loadMembers();
+
+
+alert(
+`NCC 회원 대량등록이 완료되었습니다.
+
+성공: ${successCount}명
+중복 제외: ${duplicateCount}명
+오류: ${errorCount}명`
++
+(
+issued.length > 0
+?
+`
+
+[발급 회원번호]
+${issued.slice(0,20).join("\n")}${issued.length > 20 ? `\n외 ${issued.length - 20}명` : ""}`
+:
+""
+)
+);
+
+
+closeBulkImportModal();
+
+
+bulkRegisterButton.disabled = false;
+bulkRegisterButton.textContent =
+"정상회원 최종 등록";
+
+}
+);
 
 
 /* ===============================
