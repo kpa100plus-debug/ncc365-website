@@ -1887,9 +1887,21 @@ async function saveMember(
 memberData
 ){
 
+const phoneKey =
+memberData.phone.replace(/\D/g,"");
+
+if(
+phoneKey.length < 9
+||
+phoneKey.length > 11
+){
+throw new Error(
+"연락처를 정확하게 입력해주세요."
+);
+}
+
 
 const counterRef =
-
 doc(
 db,
 "counters",
@@ -1898,12 +1910,19 @@ db,
 
 
 const memberRef =
-
 doc(
 collection(
 db,
 "members"
 )
+);
+
+
+const phoneRef =
+doc(
+db,
+"memberPhones",
+phoneKey
 );
 
 
@@ -1913,12 +1932,34 @@ async(
 transaction
 )=>{
 
+// 모든 읽기를 먼저 실행
+const phoneSnapshot =
+await transaction.get(
+phoneRef
+);
 
 const counterSnapshot =
-
 await transaction.get(
 counterRef
 );
+
+
+// 동일 전화번호 잠금 문서가 있으면 가입 중단
+if(
+phoneSnapshot.exists()
+){
+
+const duplicateError =
+new Error(
+"이미 가입된 연락처입니다."
+);
+
+duplicateError.code =
+"NCC_DUPLICATE_PHONE";
+
+throw duplicateError;
+
+}
 
 
 let currentNumber =
@@ -1930,7 +1971,6 @@ counterSnapshot.exists()
 ){
 
 currentNumber =
-
 Number(
 counterSnapshot
 .data()
@@ -1952,7 +1992,7 @@ nextNumber
 );
 
 
-
+// 1. 회원번호 카운터 증가
 transaction.set(
 counterRef,
 {
@@ -1969,12 +2009,33 @@ merge:true
 );
 
 
+// 2. 전화번호 중복방지 잠금 생성
+transaction.set(
+phoneRef,
+{
 
+memberId:
+memberRef.id,
+
+memberNumber:
+memberNumber,
+
+createdAt:
+serverTimestamp()
+
+}
+);
+
+
+// 3. 회원정보 저장
 transaction.set(
 memberRef,
 {
 
 ...memberData,
+
+phoneKey:
+phoneKey,
 
 memberNumber:
 memberNumber,
@@ -2001,17 +2062,18 @@ serverTimestamp()
 );
 
 
-
 return memberNumber;
-
 
 }
 );
 
-
 }
 
 
+/* REF-NCC-DUPLICATE-MEMBER-BLOCK-05
+   동일 연락처 중복가입 방지:
+   members + memberPhones + counters 를 하나의 transaction으로 처리
+*/
 
 /* ===============================
    SUBMIT
@@ -2299,6 +2361,16 @@ error
 );
 
 
+if(
+error.code === "NCC_DUPLICATE_PHONE"
+){
+
+alert(
+"이미 전국소비자클럽에 가입된 연락처입니다.\n\n중복 회원가입은 할 수 없습니다.\n기존 회원정보 확인이 필요한 경우 관리자에게 문의해주세요."
+);
+
+}else{
+
 alert(
 
 "회원가입 저장 중 오류가 발생했습니다."
@@ -2312,6 +2384,8 @@ alert(
 error.message
 
 );
+
+}
 
 
 submitButton.disabled =
