@@ -1035,7 +1035,7 @@ grid-column:1/-1;
 /* 검색/필터 */
 .tools{
   display:grid;
-  grid-template-columns:minmax(360px,1.8fr) repeat(3,minmax(160px,.8fr)) auto;
+  grid-template-columns:minmax(330px,1.7fr) repeat(3,minmax(145px,.75fr)) minmax(150px,.7fr) auto;
   gap:10px;
   align-items:center;
   margin:20px 0;
@@ -1288,6 +1288,30 @@ td:nth-child(11){
   }
 }
 
+
+/* =========================================
+   REF-NCC-ADMIN-BACKFILL-01
+   미발급 소비자회원 NCC 회원번호 일괄 발급
+========================================= */
+
+.issue-number-button{
+  background:#2f6f50;
+  color:#fff;
+  white-space:nowrap;
+  min-width:150px;
+}
+
+.issue-number-button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+@media(max-width:1100px){
+  .issue-number-button{
+    flex:1 1 180px;
+  }
+}
+
 </style>
 </head>
 
@@ -1436,6 +1460,13 @@ placeholder="회원번호, 이름, 연락처, 지역, 이메일, 추천인, 센�
 <option value="vip">VIP</option>
 <option value="special">특별관리</option>
 </select>
+
+<button
+id="issueMissingNumbersButton"
+class="issue-number-button"
+type="button">
+미발급 번호 일괄발급
+</button>
 
 <button
 id="logoutButton"
@@ -2121,6 +2152,7 @@ class="delete-button">
 <script type="module">
 
 /* REF-NCC-ADMIN-CLEAN-FINAL-01 */
+/* REF-NCC-ADMIN-BACKFILL-01 */
 
 
 import {
@@ -2147,7 +2179,8 @@ orderBy,
 doc,
 updateDoc,
 deleteDoc,
-serverTimestamp
+serverTimestamp,
+runTransaction
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -2212,6 +2245,10 @@ document.getElementById("adminArea");
 
 const loginButton =
 document.getElementById("loginButton");
+
+
+const issueMissingNumbersButton =
+document.getElementById("issueMissingNumbersButton");
 
 
 const logoutButton =
@@ -3060,6 +3097,204 @@ applyFilters();
 }
 );
 
+
+
+
+/* ===============================
+   REF-NCC-ADMIN-BACKFILL-01
+   ISSUE MISSING MEMBER NUMBERS
+=============================== */
+
+issueMissingNumbersButton.addEventListener(
+"click",
+async()=>{
+
+const candidates =
+allMembers.filter(
+member =>
+member.memberType === "consumer" &&
+!member.memberNumber
+);
+
+if(candidates.length === 0){
+
+alert(
+"회원번호 미발급 소비자회원이 없습니다."
+);
+
+return;
+
+}
+
+
+const confirmed =
+confirm(
+`회원번호가 없는 소비자회원 ${candidates.length}명에게 NCC 공식 회원번호를 일괄 발급하시겠습니까?
+
+기존에 발급되었거나 삭제된 회원번호는 재사용하지 않습니다.`
+);
+
+if(!confirmed){
+return;
+}
+
+
+issueMissingNumbersButton.disabled = true;
+issueMissingNumbersButton.textContent = "발급 중...";
+
+
+try{
+
+const result =
+await runTransaction(
+db,
+async(transaction)=>{
+
+const counterRef =
+doc(
+db,
+"counters",
+"memberNumbers"
+);
+
+const counterSnapshot =
+await transaction.get(
+counterRef
+);
+
+let currentNumber = 0;
+
+if(counterSnapshot.exists()){
+
+currentNumber =
+Number(
+counterSnapshot.data().consumer || 0
+);
+
+}
+
+
+const freshMembers = [];
+
+for(
+const member of candidates
+){
+
+const memberRef =
+doc(
+db,
+"members",
+member.id
+);
+
+const memberSnapshot =
+await transaction.get(
+memberRef
+);
+
+if(
+memberSnapshot.exists() &&
+!memberSnapshot.data().memberNumber &&
+(memberSnapshot.data().memberType || "consumer") === "consumer"
+){
+
+freshMembers.push({
+memberRef,
+memberId:member.id
+});
+
+}
+
+}
+
+
+const issued = [];
+
+for(
+const item of freshMembers
+){
+
+currentNumber += 1;
+
+const memberNumber =
+"NCC-C-" +
+String(currentNumber).padStart(6,"0");
+
+transaction.update(
+item.memberRef,
+{
+memberNumber,
+updatedAt:serverTimestamp()
+}
+);
+
+issued.push({
+memberId:item.memberId,
+memberNumber
+});
+
+}
+
+
+if(issued.length > 0){
+
+transaction.set(
+counterRef,
+{
+consumer:currentNumber
+},
+{
+merge:true
+}
+);
+
+}
+
+
+return issued;
+
+}
+);
+
+
+await loadMembers();
+
+
+if(result.length === 0){
+
+alert(
+"발급 대상 회원이 없습니다."
+);
+
+}else{
+
+alert(
+`${result.length}명의 NCC 회원번호 발급이 완료되었습니다.
+
+${result.map(item => item.memberNumber).join("\n")}`
+);
+
+}
+
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"회원번호 발급 중 오류가 발생했습니다.\n" +
+(error.message || error)
+);
+
+}finally{
+
+issueMissingNumbersButton.disabled = false;
+issueMissingNumbersButton.textContent = "미발급 번호 일괄발급";
+
+}
+
+}
+);
 
 
 /* ===============================
