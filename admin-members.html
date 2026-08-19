@@ -1170,6 +1170,101 @@ td:nth-child(11){
   }
 }
 
+
+/* =========================================
+   REF-NCC-ADMIN-FULL-FIX-01
+   회원번호 + 긴 텍스트 + 테이블 정렬 최종 보정
+========================================= */
+
+.table-wrap{
+  overflow-x:visible !important;
+}
+
+table{
+  width:100% !important;
+  min-width:0 !important;
+  table-layout:fixed !important;
+}
+
+th,
+td{
+  box-sizing:border-box;
+  vertical-align:middle;
+}
+
+/* 총합 100% */
+th:nth-child(1), td:nth-child(1){ width:12% !important; }
+th:nth-child(2), td:nth-child(2){ width:8% !important; }
+th:nth-child(3), td:nth-child(3){ width:8% !important; }
+th:nth-child(4), td:nth-child(4){ width:10% !important; }
+th:nth-child(5), td:nth-child(5){ width:14% !important; }
+th:nth-child(6), td:nth-child(6){ width:7% !important; }
+th:nth-child(7), td:nth-child(7){ width:14% !important; }
+th:nth-child(8), td:nth-child(8){ width:7% !important; }
+th:nth-child(9), td:nth-child(9){ width:9% !important; }
+th:nth-child(10), td:nth-child(10){ width:4% !important; }
+th:nth-child(11), td:nth-child(11){ width:7% !important; }
+
+/* 한 줄 표시가 필요한 칸 */
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(6),
+td:nth-child(8),
+td:nth-child(10),
+td:nth-child(11){
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+
+/* 지역/센터명은 최대 2줄 범위에서 안전하게 줄바꿈 */
+td:nth-child(5),
+td:nth-child(7){
+  overflow:hidden !important;
+  overflow-wrap:anywhere !important;
+  word-break:keep-all !important;
+}
+
+/* 이름/회원번호가 다른 칸을 침범하지 않도록 제한 */
+tbody td{
+  min-width:0;
+}
+
+/* 회원번호 가독성 */
+td:nth-child(1){
+  font-weight:600;
+  color:#2f614a;
+  letter-spacing:-0.01em;
+}
+
+/* 이름은 긴 경우 말줄임표 */
+td:nth-child(2){
+  font-weight:500;
+}
+
+/* 툴팁용 */
+.cell-ellipsis{
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* 모바일/태블릿은 가로스크롤 허용 */
+@media(max-width:980px){
+  .table-wrap{
+    overflow-x:auto !important;
+  }
+
+  table{
+    min-width:1120px !important;
+    table-layout:fixed !important;
+  }
+}
+
 </style>
 </head>
 
@@ -1884,6 +1979,23 @@ margin:28px 0;
 <div class="info-card">
 
 <div class="info-card-title">
+NCC 공식 회원번호
+</div>
+
+<div
+id="editMemberNumber"
+class="info-card-value">
+
+-
+
+</div>
+
+</div>
+
+
+<div class="info-card">
+
+<div class="info-card-title">
 회원 문서 ID
 </div>
 
@@ -1984,6 +2096,8 @@ class="delete-button">
 
 
 <script type="module">
+
+/* REF-NCC-ADMIN-FULL-FIX-01 */
 
 
 import {
@@ -2120,6 +2234,10 @@ document.getElementById("pagination");
 
 const memberModal =
 document.getElementById("memberModal");
+
+
+const editMemberNumber =
+document.getElementById("editMemberNumber");
 
 
 const editId =
@@ -2508,6 +2626,10 @@ id:
 documentSnapshot.id,
 
 
+memberNumber:
+d.memberNumber || "",
+
+
 name:
 d.name || "",
 
@@ -2737,17 +2859,18 @@ let rows = "";
 
 pageList.forEach((member, index)=>{
 
-const memberNo = String(startIndex + index + 1).padStart(5,"0");
+const memberNo =
+member.memberNumber || "미발급";
 
 rows += `
 <tr>
-<td>${memberNo}</td>
-<td>${escapeHTML(member.name)}</td>
-<td>${escapeHTML(memberTypeText(member.memberType))}</td>
-<td>${escapeHTML(member.phone)}</td>
-<td>${escapeHTML(member.region)}</td>
-<td>${escapeHTML(member.referrer)}</td>
-<td>${escapeHTML(member.centerName)}</td>
+<td title="${escapeHTML(memberNo)}"><span class="cell-ellipsis">${escapeHTML(memberNo)}</span></td>
+<td title="${escapeHTML(member.name)}"><span class="cell-ellipsis">${escapeHTML(member.name)}</span></td>
+<td title="${escapeHTML(memberTypeText(member.memberType))}"><span class="cell-ellipsis">${escapeHTML(memberTypeText(member.memberType))}</span></td>
+<td title="${escapeHTML(member.phone)}"><span class="cell-ellipsis">${escapeHTML(member.phone)}</span></td>
+<td title="${escapeHTML(member.region)}">${escapeHTML(member.region)}</td>
+<td title="${escapeHTML(member.referrer)}"><span class="cell-ellipsis">${escapeHTML(member.referrer)}</span></td>
+<td title="${escapeHTML(member.centerName)}">${escapeHTML(member.centerName)}</td>
 <td>${escapeHTML(member.managementGrade === "general" ? "일반" :
 member.managementGrade === "priority" ? "우선관리" :
 member.managementGrade === "vip" ? "VIP" :
@@ -2771,7 +2894,7 @@ memberArea.innerHTML = `
 <table>
 <thead>
 <tr>
-<th>회원번호</th>
+<th>NCC 회원번호</th>
 <th>이름</th>
 <th>회원유형</th>
 <th>연락처</th>
@@ -2855,6 +2978,7 @@ const selectedGrade = gradeFilter.value;
 const filtered = allMembers.filter(member=>{
 
 const searchText = [
+member.memberNumber,
 member.name,
 member.phone,
 member.region,
@@ -3092,6 +3216,10 @@ member.managementGrade ||
 
 editAdminMemo.value =
 member.adminMemo;
+
+
+editMemberNumber.textContent =
+member.memberNumber || "미발급";
 
 
 editId.textContent =
