@@ -1018,120 +1018,27 @@ grid-column:1/-1;
 }
 
 
-/* ===============================
-   REF-NCC-ADMIN-TABLE-FIT-05
-   DESKTOP TABLE FIT FINAL
-================================ */
 
-.table-wrap{
-  overflow-x:visible !important;
+
+
+/* =========================================
+   REF-NCC-ADMIN-CLEAN-FINAL-01
+   관리자 회원목록 PC/모바일 최종 정리
+========================================= */
+
+/* PC 기본 폭 */
+.wrap{
+  width:min(1380px,96%);
+  margin:30px auto;
 }
 
-table{
-  width:100% !important;
-  min-width:0 !important;
-  table-layout:fixed !important;
-}
-
-th,
-td{
-  padding:12px 8px !important;
-  font-size:13px !important;
-  line-height:1.35;
-  vertical-align:middle;
-  word-break:keep-all;
-  overflow-wrap:break-word;
-}
-
-th{
-  white-space:nowrap;
-}
-
-/* 11개 열 폭 최종 조정 */
-th:nth-child(1),
-td:nth-child(1){
-  width:7%;
-  white-space:nowrap;
-}
-
-th:nth-child(2),
-td:nth-child(2){
-  width:6%;
-  white-space:nowrap;
-}
-
-th:nth-child(3),
-td:nth-child(3){
-  width:8%;
-  white-space:nowrap;
-}
-
-th:nth-child(4),
-td:nth-child(4){
-  width:11%;
-  white-space:nowrap;
-}
-
-th:nth-child(5),
-td:nth-child(5){
-  width:15%;
-}
-
-th:nth-child(6),
-td:nth-child(6){
-  width:8%;
-  white-space:nowrap;
-}
-
-th:nth-child(7),
-td:nth-child(7){
-  width:17%;
-}
-
-th:nth-child(8),
-td:nth-child(8){
-  width:8%;
-  white-space:nowrap;
-}
-
-th:nth-child(9),
-td:nth-child(9){
-  width:11%;
-  font-size:12px !important;
-}
-
-th:nth-child(10),
-td:nth-child(10){
-  width:5%;
-  white-space:nowrap;
-  text-align:center;
-}
-
-th:nth-child(11),
-td:nth-child(11){
-  width:8%;
-  white-space:nowrap;
-  text-align:center;
-}
-
-.manage-button{
-  display:inline-flex !important;
-  align-items:center;
-  justify-content:center;
-  white-space:nowrap !important;
-  word-break:keep-all !important;
-  min-width:68px;
-  padding:8px 10px !important;
-  font-size:12px !important;
-  line-height:1.2;
-}
-
-/* 툴바 한 줄 정리 */
+/* 검색/필터 */
 .tools{
-  display:grid !important;
-  grid-template-columns:minmax(260px,1.8fr) repeat(3,minmax(130px,.8fr)) auto;
+  display:grid;
+  grid-template-columns:minmax(360px,1.8fr) repeat(3,minmax(160px,.8fr)) auto;
   gap:10px;
   align-items:center;
+  margin:20px 0;
 }
 
 .search-box,
@@ -1139,11 +1046,135 @@ td:nth-child(11){
   max-width:none !important;
 }
 
-/* 모바일/좁은 화면에서는 가로스크롤 허용 */
-@media(max-width:980px){
+/* 표 전체 */
+.table-wrap{
+  width:100%;
+  overflow-x:hidden;
+  background:#fff;
+  border:1px solid #e6ebe8;
+  border-radius:13px;
+  box-shadow:0 4px 14px rgba(0,0,0,.035);
+}
+
+table{
+  width:100%;
+  min-width:0;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+
+th,
+td{
+  padding:11px 8px !important;
+  font-size:12.5px !important;
+  line-height:1.35;
+  vertical-align:middle;
+  box-sizing:border-box;
+  border-bottom:1px solid #e8ece9;
+}
+
+th{
+  background:#417a5e;
+  color:#fff;
+  font-weight:600;
+  white-space:nowrap;
+}
+
+/* 11개 열 합계 100% */
+th:nth-child(1), td:nth-child(1){ width:12%; }
+th:nth-child(2), td:nth-child(2){ width:8%; }
+th:nth-child(3), td:nth-child(3){ width:8%; }
+th:nth-child(4), td:nth-child(4){ width:10%; }
+th:nth-child(5), td:nth-child(5){ width:14%; }
+th:nth-child(6), td:nth-child(6){ width:7%; }
+th:nth-child(7), td:nth-child(7){ width:15%; }
+th:nth-child(8), td:nth-child(8){ width:7%; }
+th:nth-child(9), td:nth-child(9){ width:9%; }
+th:nth-child(10), td:nth-child(10){ width:4%; }
+th:nth-child(11), td:nth-child(11){ width:6%; }
+
+/* 한 줄 + 말줄임표 */
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(6),
+td:nth-child(8),
+td:nth-child(10),
+td:nth-child(11){
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* 지역/소속센터는 최대 2줄 */
+td:nth-child(5),
+td:nth-child(7){
+  overflow:hidden;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+
+/* 가입일은 2줄까지만 */
+td:nth-child(9){
+  font-size:11.5px !important;
+  white-space:normal;
+  overflow:hidden;
+}
+
+/* 회원번호 */
+td:nth-child(1){
+  color:#2f614a;
+  font-weight:700;
+  letter-spacing:-.02em;
+}
+
+/* 이름 */
+td:nth-child(2){
+  font-weight:500;
+}
+
+/* 상태/관리 중앙 */
+th:nth-child(10),
+td:nth-child(10),
+th:nth-child(11),
+td:nth-child(11){
+  text-align:center;
+}
+
+/* 상세관리 버튼 */
+.manage-button{
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-width:0 !important;
+  max-width:74px;
+  padding:7px 8px !important;
+  font-size:11.5px !important;
+  line-height:1.2;
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+}
+
+/* 셀 내부 말줄임 */
+.cell-ellipsis{
+  display:block;
+  min-width:0;
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* 태블릿/모바일 */
+@media(max-width:1100px){
+  .wrap{
+    width:96%;
+  }
 
   .tools{
-    display:flex !important;
+    display:flex;
     flex-wrap:wrap;
   }
 
@@ -1156,112 +1187,104 @@ td:nth-child(11){
   }
 
   .table-wrap{
-    overflow-x:auto !important;
+    overflow-x:auto;
   }
 
   table{
-    min-width:1080px !important;
-    table-layout:auto !important;
-  }
-
-  th,
-  td{
-    font-size:13px !important;
+    min-width:1120px;
+    table-layout:fixed;
   }
 }
 
+@media(max-width:700px){
+  .wrap{
+    width:95%;
+    margin:20px auto;
+  }
 
-/* =========================================
-   REF-NCC-ADMIN-FULL-FIX-01
-   회원번호 + 긴 텍스트 + 테이블 정렬 최종 보정
-========================================= */
+  h1{
+    font-size:26px;
+  }
 
-.table-wrap{
-  overflow-x:visible !important;
-}
+  .summary-card{
+    flex:1;
+    min-width:130px;
+  }
 
-table{
-  width:100% !important;
-  min-width:0 !important;
-  table-layout:fixed !important;
-}
+  .summary-number{
+    font-size:25px;
+  }
 
-th,
-td{
-  box-sizing:border-box;
-  vertical-align:middle;
-}
+  .tools{
+    display:block;
+  }
 
-/* 총합 100% */
-th:nth-child(1), td:nth-child(1){ width:12% !important; }
-th:nth-child(2), td:nth-child(2){ width:8% !important; }
-th:nth-child(3), td:nth-child(3){ width:8% !important; }
-th:nth-child(4), td:nth-child(4){ width:10% !important; }
-th:nth-child(5), td:nth-child(5){ width:14% !important; }
-th:nth-child(6), td:nth-child(6){ width:7% !important; }
-th:nth-child(7), td:nth-child(7){ width:14% !important; }
-th:nth-child(8), td:nth-child(8){ width:7% !important; }
-th:nth-child(9), td:nth-child(9){ width:9% !important; }
-th:nth-child(10), td:nth-child(10){ width:4% !important; }
-th:nth-child(11), td:nth-child(11){ width:7% !important; }
+  .search-box,
+  .filter-box{
+    width:100%;
+    margin-bottom:10px;
+  }
 
-/* 한 줄 표시가 필요한 칸 */
-td:nth-child(1),
-td:nth-child(2),
-td:nth-child(3),
-td:nth-child(4),
-td:nth-child(6),
-td:nth-child(8),
-td:nth-child(10),
-td:nth-child(11){
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-  white-space:nowrap !important;
-}
-
-/* 지역/센터명은 최대 2줄 범위에서 안전하게 줄바꿈 */
-td:nth-child(5),
-td:nth-child(7){
-  overflow:hidden !important;
-  overflow-wrap:anywhere !important;
-  word-break:keep-all !important;
-}
-
-/* 이름/회원번호가 다른 칸을 침범하지 않도록 제한 */
-tbody td{
-  min-width:0;
-}
-
-/* 회원번호 가독성 */
-td:nth-child(1){
-  font-weight:600;
-  color:#2f614a;
-  letter-spacing:-0.01em;
-}
-
-/* 이름은 긴 경우 말줄임표 */
-td:nth-child(2){
-  font-weight:500;
-}
-
-/* 툴팁용 */
-.cell-ellipsis{
-  display:block;
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-/* 모바일/태블릿은 가로스크롤 허용 */
-@media(max-width:980px){
   .table-wrap{
-    overflow-x:auto !important;
+    overflow-x:auto;
   }
 
   table{
-    min-width:1120px !important;
-    table-layout:fixed !important;
+    min-width:1120px;
+  }
+
+  .modal-backdrop{
+    padding:8px;
+  }
+
+  .modal{
+    height:calc(100vh - 16px);
+    border-radius:14px;
+  }
+
+  .modal-header{
+    padding:18px 17px 12px;
+  }
+
+  .modal h2{
+    font-size:22px;
+  }
+
+  .crm-tabs{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .crm-tab{
+    padding:10px 12px;
+    font-size:13px;
+  }
+
+  .modal-body{
+    padding:20px 17px;
+  }
+
+  .crm-grid{
+    grid-template-columns:1fr;
+  }
+
+  .form-group.full{
+    grid-column:auto;
+  }
+
+  .modal-actions{
+    padding:12px 17px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .modal-actions button{
+    width:100%;
+  }
+
+  .delete-button{
+    margin-left:0;
+    grid-column:1/-1;
   }
 }
 
@@ -1390,7 +1413,7 @@ class="summary-number">
 id="memberSearch"
 class="search-box"
 type="text"
-placeholder="이름, 연락처, 지역, 이메일, 추천인, 센터 검색">
+placeholder="회원번호, 이름, 연락처, 지역, 이메일, 추천인, 센터 검색">
 
 <select id="memberTypeFilter" class="filter-box">
 <option value="">전체 회원유형</option>
@@ -2097,7 +2120,7 @@ class="delete-button">
 
 <script type="module">
 
-/* REF-NCC-ADMIN-FULL-FIX-01 */
+/* REF-NCC-ADMIN-CLEAN-FINAL-01 */
 
 
 import {
