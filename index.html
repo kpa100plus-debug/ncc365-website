@@ -73,14 +73,122 @@
  .desktop-join-shortcut{display:none}
 }
 
+
+/* ==========================================================
+   REF-NCC-WEBSITE-V06-MENU-31
+   PC 드롭다운 + 모바일 아코디언 메뉴
+========================================================== */
+.header-nav{display:flex;align-items:center;gap:6px}
+.nav-item{position:relative}
+.nav-link,.nav-toggle{
+  display:flex;align-items:center;gap:5px;
+  padding:12px 10px;border:0;background:transparent;
+  color:var(--text);font-size:14px;font-weight:800;cursor:pointer;
+}
+.nav-arrow{font-size:10px;color:#7b8981;transition:.2s}
+.nav-item:hover>.nav-toggle .nav-arrow,
+.nav-item.open>.nav-toggle .nav-arrow{transform:rotate(180deg)}
+.dropdown{
+  display:none;position:absolute;top:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);min-width:220px;padding:9px;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  box-shadow:0 18px 45px rgba(13,59,41,.14);z-index:5000
+}
+.nav-item:hover>.dropdown,.nav-item.open>.dropdown{display:block}
+.dropdown a{
+  display:block!important;padding:11px 12px!important;border-radius:10px!important;
+  background:transparent!important;color:var(--text)!important;
+  font-size:13px!important;font-weight:750!important;white-space:nowrap
+}
+.dropdown a:hover{background:var(--light)!important;color:var(--green)!important}
+.header-nav>.nav-join{
+  padding:10px 15px;border-radius:9px;background:var(--green);color:#fff;
+  font-size:14px;font-weight:900
+}
+.mobile-menu-title{display:none}
+@media(max-width:900px) and (min-width:769px){
+ .header{padding:0 14px}.brand img{width:170px}
+ .header-nav{gap:0}.nav-link,.nav-toggle{font-size:12px;padding:10px 6px}
+ .header-nav>.nav-join{font-size:12px;padding:9px 10px}
+}
+@media(max-width:768px){
+ .header nav.header-nav{
+   display:none;position:absolute;left:0;right:0;top:66px;
+   max-height:calc(100vh - 134px);overflow:auto;
+   padding:10px 17px 20px;background:#fff;border-bottom:1px solid var(--line);
+   box-shadow:0 15px 25px rgba(0,0,0,.08)
+ }
+ .header nav.header-nav.open{display:block}
+ .mobile-menu-title{display:block;padding:7px 3px 10px;color:var(--sub);font-size:11px;font-weight:900;letter-spacing:.1em}
+ .nav-item{border-bottom:1px solid #eef2ef}
+ .nav-link,.nav-toggle{width:100%;justify-content:space-between;padding:14px 3px;font-size:15px}
+ .nav-item:hover>.dropdown{display:none}
+ .nav-item.open>.dropdown{display:block}
+ .dropdown{
+   position:static;transform:none;min-width:0;padding:0 0 9px;
+   border:0;border-radius:0;box-shadow:none;background:#f7faf8
+ }
+ .nav-item.open>.dropdown{display:block}
+ .dropdown a{padding:12px 15px!important;border-radius:0!important;border-bottom:1px solid #edf2ee!important;font-size:13px!important}
+ .dropdown a:last-child{border-bottom:0!important}
+ .header-nav>.nav-join{display:block;margin-top:12px;padding:13px;text-align:center;border-radius:10px}
+}
+
 </style>
 </head>
 <body>
 <header class="header">
 <a class="brand" href="index.html"><img src="images/NCC_header_logo.png" alt="전국소비자클럽 공식 로고"></a>
 <button class="menu" id="menuButton" aria-label="메뉴 열기">☰</button>
-<nav id="mainNav">
-<a href="#benefit">회원혜택</a><a href="center.html">전국소비자센터</a><a href="consumer-on.html">소비자ON</a><a href="consumer-tv.html">NCC TV</a><a href="partner.html">기업제휴</a><a href="join.html">무료가입</a>
+<nav id="mainNav" class="header-nav" aria-label="주요 메뉴">
+<div class="mobile-menu-title">NCC MAIN MENU</div>
+
+<div class="nav-item">
+  <a class="nav-link" href="index.html">전국소비자클럽</a>
+</div>
+
+<div class="nav-item">
+  <button class="nav-toggle" type="button" aria-expanded="false">회원혜택 <span class="nav-arrow">▼</span></button>
+  <div class="dropdown">
+    <a href="#recommended">무료 경험</a>
+    <a href="#benefit">회원 할인</a>
+    <a href="#benefit">공동구매</a>
+    <a href="#categories">건강·뷰티</a>
+    <a href="#categories">여행·숙박</a>
+    <a href="#events">문화·행사</a>
+    <a href="#categories">생활서비스</a>
+    <a href="center.html">지역혜택</a>
+  </div>
+</div>
+
+<div class="nav-item">
+  <button class="nav-toggle" type="button" aria-expanded="false">전국소비자센터 <span class="nav-arrow">▼</span></button>
+  <div class="dropdown">
+    <a href="#center">센터 소개</a>
+    <a href="center.html">지역센터 보기</a>
+    <a href="center.html">센터장 안내</a>
+    <a href="center.html">센터 참여</a>
+  </div>
+</div>
+
+<div class="nav-item">
+  <a class="nav-link" href="consumer-on.html">소비자ON</a>
+</div>
+
+<div class="nav-item">
+  <a class="nav-link" href="consumer-tv.html">NCC TV</a>
+</div>
+
+<div class="nav-item">
+  <button class="nav-toggle" type="button" aria-expanded="false">기업·소상공인 <span class="nav-arrow">▼</span></button>
+  <div class="dropdown">
+    <a href="#partner">파트너 소개</a>
+    <a href="#partner">소비자 혜택 제공</a>
+    <a href="partner.html">파트너 등록</a>
+  </div>
+</div>
+
+<a class="nav-join" href="join.html">무료가입</a>
 </nav>
 </header>
 
@@ -221,8 +329,60 @@
 <script>
 const menuButton=document.getElementById('menuButton');
 const mainNav=document.getElementById('mainNav');
-menuButton.addEventListener('click',()=>mainNav.classList.toggle('open'));
-mainNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mainNav.classList.remove('open')));
+const navItems=[...document.querySelectorAll('.nav-item')];
+
+function closeSubmenus(){
+  navItems.forEach(item=>{
+    item.classList.remove('open');
+    const btn=item.querySelector('.nav-toggle');
+    if(btn) btn.setAttribute('aria-expanded','false');
+  });
+}
+
+menuButton.addEventListener('click',()=>{
+  const isOpen=mainNav.classList.toggle('open');
+  menuButton.textContent=isOpen?'×':'☰';
+  menuButton.setAttribute('aria-label',isOpen?'메뉴 닫기':'메뉴 열기');
+  if(!isOpen) closeSubmenus();
+});
+
+document.querySelectorAll('.nav-toggle').forEach(button=>{
+  button.addEventListener('click',event=>{
+    event.stopPropagation();
+    const item=button.closest('.nav-item');
+    const willOpen=!item.classList.contains('open');
+    closeSubmenus();
+    if(willOpen){
+      item.classList.add('open');
+      button.setAttribute('aria-expanded','true');
+    }
+  });
+});
+
+mainNav.querySelectorAll('a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    if(window.innerWidth<=768){
+      mainNav.classList.remove('open');
+      menuButton.textContent='☰';
+      menuButton.setAttribute('aria-label','메뉴 열기');
+    }
+    closeSubmenus();
+  });
+});
+
+document.addEventListener('click',event=>{
+  if(!mainNav.contains(event.target) && event.target!==menuButton){
+    closeSubmenus();
+  }
+});
+
+window.addEventListener('resize',()=>{
+  if(window.innerWidth>768){
+    mainNav.classList.remove('open');
+    menuButton.textContent='☰';
+    closeSubmenus();
+  }
+});
 </script>
 </body>
 </html>
