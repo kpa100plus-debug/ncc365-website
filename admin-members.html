@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>NCC 관리자 회원관리</title>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -24,7 +24,7 @@
 
 body{
   margin:0;
-  font-family:Arial,"Noto Sans KR",sans-serif;
+  font-family:Arial,"Noto Sans KR","Malgun Gothic",sans-serif;
   background:var(--bg);
   color:var(--text);
 }
@@ -32,10 +32,12 @@ body{
 button,input,select,textarea{font:inherit}
 
 .wrap{
-  max-width:1180px;
+  width:min(1180px,94%);
   margin:0 auto;
-  padding:34px 22px 60px;
+  padding:34px 0 60px;
 }
+
+/* LOGIN */
 
 .login-box{
   max-width:400px;
@@ -50,7 +52,9 @@ button,input,select,textarea{font:inherit}
 .login-box h2{margin:0 0 8px}
 .login-box p{margin:0 0 20px;color:var(--sub)}
 
-input,select,textarea{
+input,
+select,
+textarea{
   width:100%;
   border:1px solid var(--border);
   border-radius:10px;
@@ -61,7 +65,8 @@ input,select,textarea{
 
 .login-box input{margin-bottom:10px}
 
-.login-button,.save-button{
+.login-button,
+.save-button{
   width:100%;
   border:0;
   border-radius:10px;
@@ -83,6 +88,8 @@ h1{
   color:var(--sub);
   margin-bottom:22px;
 }
+
+/* SUMMARY */
 
 .summary-box{
   display:grid;
@@ -109,10 +116,15 @@ h1{
   margin-top:4px;
 }
 
+/* TOOLS */
+
 .tools{
   display:grid;
-  grid-template-columns:minmax(290px,1.7fr) repeat(3,minmax(130px,.7fr)) repeat(3,auto);
-  gap:9px;
+  grid-template-columns:
+    minmax(270px,1.7fr)
+    repeat(3,minmax(120px,.7fr))
+    auto auto auto auto;
+  gap:8px;
   margin-bottom:16px;
   align-items:center;
 }
@@ -120,7 +132,8 @@ h1{
 .tools button{
   border:0;
   border-radius:10px;
-  padding:12px 14px;
+  min-height:44px;
+  padding:10px 12px;
   font-weight:800;
   color:#fff;
   cursor:pointer;
@@ -131,6 +144,8 @@ h1{
 .phone-backfill-button{background:var(--gold)}
 .bulk-import-button{background:var(--blue)}
 .logout-button{background:#68736d}
+
+/* TABLE */
 
 .table-wrap{
   background:#fff;
@@ -158,7 +173,7 @@ td{
   padding:12px 10px;
   border-bottom:1px solid #edf0ee;
   font-size:13px;
-  vertical-align:top;
+  vertical-align:middle;
 }
 
 tbody tr:last-child td{border-bottom:0}
@@ -170,7 +185,24 @@ tbody tr:last-child td{border-bottom:0}
 
 .status-active{
   color:#2d7a56;
-  font-weight:700;
+  font-weight:800;
+}
+
+.status-paused{
+  color:#a57b38;
+  font-weight:800;
+}
+
+.status-blocked{
+  color:#b95d58;
+  font-weight:800;
+}
+
+.center-cell{
+  max-width:180px;
+  line-height:1.35;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
 }
 
 .manage-button{
@@ -182,6 +214,8 @@ tbody tr:last-child td{border-bottom:0}
   cursor:pointer;
   white-space:nowrap;
 }
+
+/* PAGINATION */
 
 .pagination{
   display:flex;
@@ -201,6 +235,8 @@ tbody tr:last-child td{border-bottom:0}
   background:var(--green);
   color:#fff;
 }
+
+/* MODAL */
 
 .modal-backdrop{
   display:none;
@@ -242,7 +278,8 @@ tbody tr:last-child td{border-bottom:0}
 
 .modal-title-row h2{margin:0 0 5px}
 
-.modal-desc,.section-note{
+.modal-desc,
+.section-note{
   font-size:12px;
   color:var(--sub);
 }
@@ -338,6 +375,8 @@ textarea{
   color:#fff;
 }
 
+/* AGREEMENT */
+
 .agree-list{
   display:grid;
   gap:9px;
@@ -372,6 +411,7 @@ textarea{
   border-radius:10px;
   padding:12px;
   margin-top:14px;
+  line-height:1.8;
 }
 
 .error{
@@ -379,6 +419,8 @@ textarea{
   font-size:13px;
   margin-top:8px;
 }
+
+/* BULK */
 
 .bulk-summary{
   display:grid;
@@ -407,7 +449,10 @@ textarea{
   border-radius:10px;
 }
 
-.bulk-preview-table{min-width:760px}
+.bulk-preview-table{
+  min-width:760px;
+}
+
 .bulk-status-ok{color:#2f6f50;font-weight:800}
 .bulk-status-dup{color:#a57b38;font-weight:800}
 .bulk-status-err{color:#b95d58;font-weight:800}
@@ -422,32 +467,51 @@ textarea{
 .hidden{display:none!important}
 
 /* =========================================
-   MOBILE
+   MOBILE COMPACT
 ========================================= */
 
 @media(max-width:768px){
 
   .wrap{
-    padding:28px 18px 45px;
+    width:100%;
+    padding:24px 14px 42px;
   }
 
   h1{
-    font-size:29px;
+    font-size:27px;
+    line-height:1.25;
   }
+
+  .info{
+    margin-bottom:16px;
+  }
+
+  /* SUMMARY 압축 */
 
   .summary-box{
     grid-template-columns:1fr 1fr;
-    gap:12px;
+    gap:9px;
+    margin-bottom:14px;
+  }
+
+  .summary-card{
+    padding:13px 14px;
   }
 
   .summary-card:nth-child(3){
     grid-column:1/-1;
   }
 
+  .summary-number{
+    font-size:24px;
+  }
+
+  /* 검색/필터 */
+
   .tools{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
+    gap:8px;
   }
 
   .search-box,
@@ -457,10 +521,25 @@ textarea{
     grid-column:1/-1;
   }
 
+  .tools input,
+  .tools select{
+    padding:11px;
+  }
+
+  /* 4개 관리버튼 모바일 2x2 */
+
   .tools button{
     width:100%;
     min-width:0;
+    min-height:44px;
+    padding:8px 6px;
+    font-size:12px;
+    line-height:1.25;
+    white-space:normal;
+    word-break:keep-all;
   }
+
+  /* 모바일 카드 */
 
   .table-wrap{
     background:transparent;
@@ -489,22 +568,24 @@ textarea{
     width:100%;
     background:#fff;
     border:1px solid var(--border);
-    border-radius:16px;
-    padding:8px 16px;
-    margin:0 0 14px;
-    box-shadow:0 3px 12px rgba(0,0,0,.04);
+    border-radius:14px;
+    padding:5px 14px;
+    margin:0 0 11px;
+    box-shadow:0 2px 8px rgba(0,0,0,.035);
   }
 
   #memberArea tbody td{
     display:grid;
-    grid-template-columns:90px minmax(0,1fr);
-    gap:10px;
+    grid-template-columns:78px minmax(0,1fr);
+    gap:8px;
     width:100%;
-    padding:9px 0;
+    padding:7px 0;
     border:0;
     border-bottom:1px solid #eef1ef;
     white-space:normal;
     overflow-wrap:anywhere;
+    font-size:13px;
+    line-height:1.35;
   }
 
   #memberArea tbody td:last-child{
@@ -522,17 +603,37 @@ textarea{
   #memberArea tbody td:nth-child(3)::before{content:"회원유형"}
   #memberArea tbody td:nth-child(4)::before{content:"연락처"}
   #memberArea tbody td:nth-child(5)::before{content:"지역"}
-  #memberArea tbody td:nth-child(6)::before{content:"추천인"}
-  #memberArea tbody td:nth-child(7)::before{content:"소속센터"}
   #memberArea tbody td:nth-child(8)::before{content:"관리등급"}
-  #memberArea tbody td:nth-child(9)::before{content:"가입일"}
   #memberArea tbody td:nth-child(10)::before{content:"상태"}
   #memberArea tbody td:nth-child(11)::before{content:"관리"}
 
+  /*
+    추천인 / 소속센터 / 가입일은
+    모바일 카드에서 숨김.
+    상세관리에서 확인 가능.
+  */
+
+  #memberArea tbody td:nth-child(6),
+  #memberArea tbody td:nth-child(7),
+  #memberArea tbody td:nth-child(9){
+    display:none!important;
+  }
+
+  #memberArea tbody td:nth-child(1){
+    font-size:14px;
+  }
+
   .manage-button{
     width:100%;
-    min-height:42px;
+    min-height:39px;
+    padding:7px 10px;
   }
+
+  .pagination{
+    margin-top:13px;
+  }
+
+  /* 상세관리 */
 
   .crm-grid{
     grid-template-columns:1fr;
@@ -544,7 +645,29 @@ textarea{
 
   .modal{
     width:96vw;
-    max-height:91vh;
+    max-height:92vh;
+  }
+
+  .modal-header{
+    padding:16px 16px 10px;
+  }
+
+  .modal-body{
+    padding:17px 16px;
+  }
+
+  .modal-actions{
+    padding:11px 16px;
+  }
+
+  .crm-tabs{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .crm-tab{
+    padding:10px 11px;
+    font-size:13px;
   }
 
   .bulk-summary{
@@ -558,6 +681,8 @@ textarea{
 <body>
 
 <div class="wrap">
+
+<!-- LOGIN -->
 
 <div id="loginArea" class="login-box">
 
@@ -587,6 +712,8 @@ class="login-button">
 </div>
 
 
+<!-- ADMIN -->
+
 <div id="adminArea">
 
 <h1>전국소비자클럽 회원관리</h1>
@@ -594,7 +721,6 @@ class="login-button">
 <div class="info">
 NCC 회원 CRM 관리 시스템
 </div>
-
 
 <div class="summary-box">
 
@@ -682,9 +808,7 @@ class="logout-button">
 </div>
 
 
-<!-- ====================================
-     MEMBER DETAIL MODAL
-==================================== -->
+<!-- MEMBER DETAIL MODAL -->
 
 <div id="memberModal" class="modal-backdrop">
 
@@ -695,10 +819,13 @@ class="logout-button">
 <div class="modal-title-row">
 
 <div>
+
 <h2>회원 상세관리</h2>
+
 <div class="modal-desc">
 회원 가입정보와 CRM 관리정보를 확인하고 수정합니다.
 </div>
+
 </div>
 
 <button
@@ -743,6 +870,7 @@ data-tab="agreement">
 
 <div class="modal-body">
 
+<!-- BASIC -->
 
 <div id="tab-basic" class="tab-panel active">
 
@@ -773,6 +901,7 @@ data-tab="agreement">
 </div>
 
 <div class="form-group">
+
 <label>성별</label>
 
 <select id="editGender">
@@ -784,21 +913,28 @@ data-tab="agreement">
 </div>
 
 <div class="form-group">
+
 <label>회원 유형</label>
 <input id="editMemberType" disabled>
+
 </div>
 
 <div class="form-group full">
+
 <label>거주지역 / 주소</label>
 <input id="editRegion">
+
 </div>
 
 <div class="form-group">
+
 <label>관심 혜택</label>
 <input id="editBenefit">
+
 </div>
 
 <div class="form-group">
+
 <label>반려동물 보유 여부</label>
 
 <select id="editHasPet">
@@ -810,8 +946,11 @@ data-tab="agreement">
 </div>
 
 </div>
+
 </div>
 
+
+<!-- CENTER -->
 
 <div id="tab-center" class="tab-panel">
 
@@ -842,8 +981,11 @@ data-tab="agreement">
 </div>
 
 </div>
+
 </div>
 
+
+<!-- MANAGEMENT -->
 
 <div id="tab-management" class="tab-panel">
 
@@ -854,6 +996,7 @@ data-tab="agreement">
 <div class="crm-grid">
 
 <div class="form-group">
+
 <label>회원 상태</label>
 
 <select id="editStatus">
@@ -865,6 +1008,7 @@ data-tab="agreement">
 </div>
 
 <div class="form-group">
+
 <label>관리등급</label>
 
 <select id="editManagementGrade">
@@ -877,13 +1021,18 @@ data-tab="agreement">
 </div>
 
 <div class="form-group full">
+
 <label>관리자 메모</label>
 <textarea id="editAdminMemo"></textarea>
+
 </div>
 
 </div>
+
 </div>
 
+
+<!-- AGREEMENT -->
 
 <div id="tab-agreement" class="tab-panel">
 
@@ -896,12 +1045,15 @@ data-tab="agreement">
 <div class="agree-card">
 
 <div>
+
 <div class="agree-card-title">
 개인정보 수집 및 이용
 </div>
+
 <div class="agree-card-desc">
 회원가입 필수 동의
 </div>
+
 </div>
 
 <div id="viewAgreePrivacy" class="agree-badge">
@@ -914,9 +1066,11 @@ data-tab="agreement">
 <div class="agree-card">
 
 <div>
+
 <div class="agree-card-title">
 마케팅 정보 수신
 </div>
+
 </div>
 
 <div id="viewAgreeMarketing" class="agree-badge">
@@ -929,9 +1083,11 @@ data-tab="agreement">
 <div class="agree-card">
 
 <div>
+
 <div class="agree-card-title">
 개인정보 제3자 제공
 </div>
+
 </div>
 
 <div id="viewAgreeThirdParty" class="agree-badge">
@@ -999,9 +1155,7 @@ class="delete-button">
 </div>
 
 
-<!-- ====================================
-     BULK IMPORT MODAL
-==================================== -->
+<!-- BULK IMPORT MODAL -->
 
 <div id="bulkImportModal" class="modal-backdrop">
 
@@ -1088,54 +1242,56 @@ class="close-button">
 
 <script type="module">
 
+/* REF-NCC-ADMIN-MOBILE-COMPACT-04 */
+
 import {
-initializeApp
+  initializeApp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
-getAuth,
-onAuthStateChanged,
-signInWithEmailAndPassword,
-signOut
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
-getFirestore,
-collection,
-getDocs,
-doc,
-serverTimestamp,
-runTransaction
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  serverTimestamp,
+  runTransaction
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 const firebaseConfig = {
 
-apiKey:
-"AIzaSyBHL7qCPUwcp9Vp_1dYWfCk2qBvRgJ9mcM",
+  apiKey:
+  "AIzaSyBHL7qCPUwcp9Vp_1dYWfCk2qBvRgJ9mcM",
 
-authDomain:
-"ncc-member.firebaseapp.com",
+  authDomain:
+  "ncc-member.firebaseapp.com",
 
-projectId:
-"ncc-member",
+  projectId:
+  "ncc-member",
 
-storageBucket:
-"ncc-member.firebasestorage.app",
+  storageBucket:
+  "ncc-member.firebasestorage.app",
 
-messagingSenderId:
-"772423138834",
+  messagingSenderId:
+  "772423138834",
 
-appId:
-"1:772423138834:web:753b6d6dc6f394904822cb",
+  appId:
+  "1:772423138834:web:753b6d6dc6f394904822cb",
 
-measurementId:
-"G-2YR29B054J"
+  measurementId:
+  "G-2YR29B054J"
 
 };
 
@@ -1180,130 +1336,221 @@ let selectedMember = null;
 
 let currentPage = 1;
 
-
 const PAGE_SIZE = 20;
 
 
+/* =========================================
+   UTIL
+========================================= */
+
 function normalizePhone(value){
 
-return String(value || "")
-.replace(/\D/g,"");
+  return String(value || "")
+  .replace(/\D/g,"");
+
+}
+
+
+function formatPhone(value){
+
+  const number =
+  normalizePhone(value);
+
+  if(number.length === 11){
+
+    return (
+      number.slice(0,3)
+      +
+      "-"
+      +
+      number.slice(3,7)
+      +
+      "-"
+      +
+      number.slice(7)
+    );
+
+  }
+
+  if(number.length === 10){
+
+    if(number.startsWith("02")){
+
+      return (
+        number.slice(0,2)
+        +
+        "-"
+        +
+        number.slice(2,6)
+        +
+        "-"
+        +
+        number.slice(6)
+      );
+
+    }
+
+    return (
+      number.slice(0,3)
+      +
+      "-"
+      +
+      number.slice(3,6)
+      +
+      "-"
+      +
+      number.slice(6)
+    );
+
+  }
+
+  if(number.length === 9 && number.startsWith("02")){
+
+    return (
+      number.slice(0,2)
+      +
+      "-"
+      +
+      number.slice(2,5)
+      +
+      "-"
+      +
+      number.slice(5)
+    );
+
+  }
+
+  return String(value || "");
 
 }
 
 
 function esc(value){
 
-return String(value ?? "")
-.replace(
-/[&<>"']/g,
-character => ({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#39;"
-})[character]
-);
+  return String(value ?? "")
+  .replace(
+    /[&<>"']/g,
+    character => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    })[character]
+  );
 
 }
 
 
 function typeText(value){
 
-return ({
-consumer:"소비자회원",
-corporate:"법인사업자",
-soleProprietor:"개인사업자"
-})[value]
-||
-value
-||
-"-";
+  return ({
+    consumer:"소비자회원",
+    corporate:"법인사업자",
+    soleProprietor:"개인사업자"
+  })[value]
+  ||
+  value
+  ||
+  "-";
 
 }
 
 
 function statusText(value){
 
-return ({
-active:"활성",
-paused:"정지",
-blocked:"차단"
-})[value]
-||
-value
-||
-"-";
+  return ({
+    active:"활성",
+    paused:"정지",
+    blocked:"차단"
+  })[value]
+  ||
+  value
+  ||
+  "-";
+
+}
+
+
+function statusClass(value){
+
+  if(value === "paused"){
+    return "status-paused";
+  }
+
+  if(value === "blocked"){
+    return "status-blocked";
+  }
+
+  return "status-active";
 
 }
 
 
 function gradeText(value){
 
-return ({
-general:"일반",
-priority:"우선관리",
-vip:"VIP",
-special:"특별관리"
-})[value]
-||
-value
-||
-"-";
+  return ({
+    general:"일반",
+    priority:"우선관리",
+    vip:"VIP",
+    special:"특별관리"
+  })[value]
+  ||
+  value
+  ||
+  "-";
 
 }
 
 
 function fmtDate(value){
 
-try{
+  try{
 
-const date =
-value?.toDate
-?
-value.toDate()
-:
-value instanceof Date
-?
-value
-:
-null;
+    const date =
+    value?.toDate
+    ?
+    value.toDate()
+    :
+    value instanceof Date
+    ?
+    value
+    :
+    null;
 
-if(!date){
-return "-";
-}
+    if(!date){
+      return "-";
+    }
 
-return new Intl.DateTimeFormat(
-"ko-KR",
-{
-year:"numeric",
-month:"numeric",
-day:"numeric",
-hour:"numeric",
-minute:"2-digit",
-second:"2-digit"
-}
-).format(date);
+    return new Intl.DateTimeFormat(
+      "ko-KR",
+      {
+        year:"numeric",
+        month:"numeric",
+        day:"numeric",
+        hour:"numeric",
+        minute:"2-digit"
+      }
+    ).format(date);
 
-}catch{
+  }catch{
 
-return "-";
+    return "-";
 
-}
+  }
 
 }
 
 
 function isAdminUser(user){
 
-return !!(
-user?.email
-&&
-user.email.toLowerCase()
-===
-ADMIN_EMAIL.toLowerCase()
-);
+  return !!(
+    user?.email
+    &&
+    user.email.toLowerCase()
+    ===
+    ADMIN_EMAIL.toLowerCase()
+  );
 
 }
 
@@ -1315,24 +1562,24 @@ ADMIN_EMAIL.toLowerCase()
 $("loginButton").onclick =
 async()=>{
 
-try{
+  try{
 
-$("loginError").textContent = "";
+    $("loginError").textContent = "";
 
-await signInWithEmailAndPassword(
-auth,
-$("adminEmail").value.trim(),
-$("adminPassword").value
-);
+    await signInWithEmailAndPassword(
+      auth,
+      $("adminEmail").value.trim(),
+      $("adminPassword").value
+    );
 
-}catch(error){
+  }catch(error){
 
-$("loginError").textContent =
-"로그인 실패: "
-+
-error.message;
+    $("loginError").textContent =
+    "로그인 실패: "
+    +
+    error.message;
 
-}
+  }
 
 };
 
@@ -1342,30 +1589,30 @@ $("logoutButton").onclick =
 
 
 onAuthStateChanged(
-auth,
-async user=>{
+  auth,
+  async user=>{
 
-if(isAdminUser(user)){
+    if(isAdminUser(user)){
 
-loginArea.style.display =
-"none";
+      loginArea.style.display =
+      "none";
 
-adminArea.style.display =
-"block";
+      adminArea.style.display =
+      "block";
 
-await loadMembers();
+      await loadMembers();
 
-}else{
+    }else{
 
-adminArea.style.display =
-"none";
+      adminArea.style.display =
+      "none";
 
-loginArea.style.display =
-"block";
+      loginArea.style.display =
+      "block";
 
-}
+    }
 
-}
+  }
 );
 
 
@@ -1375,46 +1622,56 @@ loginArea.style.display =
 
 async function loadMembers(){
 
-memberArea.textContent =
-"회원정보 불러오는 중...";
+  memberArea.textContent =
+  "회원정보 불러오는 중...";
 
-const snapshot =
-await getDocs(
-collection(
-db,
-"members"
-)
-);
+  try{
 
+    const snapshot =
+    await getDocs(
+      collection(
+        db,
+        "members"
+      )
+    );
 
-allMembers =
-snapshot.docs
-.map(
-documentSnapshot=>({
-id:documentSnapshot.id,
-...documentSnapshot.data()
-})
-)
-.sort(
-(a,b)=>{
+    allMembers =
+    snapshot.docs
+    .map(
+      documentSnapshot=>({
+        id:documentSnapshot.id,
+        ...documentSnapshot.data()
+      })
+    )
+    .sort(
+      (a,b)=>{
 
-const timeA =
-a.joinDate?.seconds
-||
-0;
+        const timeA =
+        a.joinDate?.seconds
+        ||
+        0;
 
-const timeB =
-b.joinDate?.seconds
-||
-0;
+        const timeB =
+        b.joinDate?.seconds
+        ||
+        0;
 
-return timeB - timeA;
+        return timeB - timeA;
 
-}
-);
+      }
+    );
 
+    applyFilters();
 
-applyFilters();
+  }catch(error){
+
+    memberArea.innerHTML =
+    `<div class="error">
+    회원정보를 불러오지 못했습니다.<br>
+    ${esc(error.message)}
+    </div>`;
+
+  }
 
 }
 
@@ -1425,258 +1682,250 @@ applyFilters();
 
 function applyFilters(){
 
-const query =
-$("memberSearch")
-.value
-.trim()
-.toLowerCase();
+  const queryText =
+  $("memberSearch")
+  .value
+  .trim()
+  .toLowerCase();
 
-const type =
-$("memberTypeFilter").value;
+  const type =
+  $("memberTypeFilter").value;
 
-const status =
-$("statusFilter").value;
+  const status =
+  $("statusFilter").value;
 
-const grade =
-$("gradeFilter").value;
-
-
-filteredMembers =
-allMembers.filter(
-member=>{
-
-const searchText =
-[
-member.memberNumber,
-member.name,
-member.phone,
-member.region,
-member.email,
-member.referrer,
-member.referralCode,
-member.centerName,
-member.centerCode
-]
-.join(" ")
-.toLowerCase();
+  const grade =
+  $("gradeFilter").value;
 
 
-return (
-(!query || searchText.includes(query))
-&&
-(!type || (member.memberType || "consumer") === type)
-&&
-(!status || (member.status || "active") === status)
-&&
-(!grade || (member.managementGrade || "general") === grade)
-);
+  filteredMembers =
+  allMembers.filter(
+    member=>{
 
-}
-);
+      const searchText =
+      [
+        member.memberNumber,
+        member.name,
+        member.phone,
+        member.region,
+        member.email,
+        member.referrer,
+        member.referralCode,
+        member.centerName,
+        member.centerCode
+      ]
+      .join(" ")
+      .toLowerCase();
 
 
-currentPage = 1;
+      return (
+        (!queryText || searchText.includes(queryText))
+        &&
+        (!type || (member.memberType || "consumer") === type)
+        &&
+        (!status || (member.status || "active") === status)
+        &&
+        (!grade || (member.managementGrade || "general") === grade)
+      );
 
-renderSummary();
+    }
+  );
 
-renderMembers();
+
+  currentPage = 1;
+
+  renderSummary();
+
+  renderMembers();
 
 }
 
 
 function renderSummary(){
 
-$("totalMembers").textContent =
-allMembers.length
-+
-"명";
+  $("totalMembers").textContent =
+  allMembers.length
+  +
+  "명";
 
 
-$("activeMembers").textContent =
-allMembers.filter(
-member =>
-(member.status || "active")
-===
-"active"
-).length
-+
-"명";
+  $("activeMembers").textContent =
+  allMembers.filter(
+    member =>
+    (member.status || "active")
+    ===
+    "active"
+  ).length
+  +
+  "명";
 
 
-$("inactiveMembers").textContent =
-allMembers.filter(
-member =>
-[
-"paused",
-"blocked"
-].includes(
-member.status
-)
-).length
-+
-"명";
+  $("inactiveMembers").textContent =
+  allMembers.filter(
+    member =>
+    [
+      "paused",
+      "blocked"
+    ]
+    .includes(
+      member.status
+    )
+  ).length
+  +
+  "명";
 
 }
 
 
 /* =========================================
-   MEMBER TABLE / MOBILE CARD
+   MEMBER LIST
 ========================================= */
 
 function renderMembers(){
 
-if(!filteredMembers.length){
+  if(!filteredMembers.length){
 
-memberArea.innerHTML = `
-<div
-style="
-padding:25px;
-text-align:center;
-color:#758078;
-">
-표시할 회원이 없습니다.
-</div>
-`;
+    memberArea.innerHTML =
+    `
+    <div style="
+      padding:25px;
+      text-align:center;
+      color:#758078;
+    ">
+    표시할 회원이 없습니다.
+    </div>
+    `;
 
-pagination.innerHTML = "";
+    pagination.innerHTML = "";
 
-return;
+    return;
 
-}
-
-
-const start =
-(currentPage - 1)
-*
-PAGE_SIZE;
+  }
 
 
-const rows =
-filteredMembers.slice(
-start,
-start + PAGE_SIZE
-);
+  const start =
+  (currentPage - 1)
+  *
+  PAGE_SIZE;
 
 
-memberArea.innerHTML = `
-
-<div class="table-wrap">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>NCC 회원번호</th>
-<th>이름</th>
-<th>회원유형</th>
-<th>연락처</th>
-<th>지역</th>
-<th>추천인</th>
-<th>소속센터</th>
-<th>관리등급</th>
-<th>가입일</th>
-<th>상태</th>
-<th>관리</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-${rows.map(
-member=>`
-
-<tr>
-
-<td class="member-number">
-${esc(member.memberNumber || "미발급")}
-</td>
-
-<td>
-${esc(member.name)}
-</td>
-
-<td>
-${esc(typeText(member.memberType || "consumer"))}
-</td>
-
-<td>
-${esc(member.phone)}
-</td>
-
-<td>
-${esc(member.region)}
-</td>
-
-<td>
-${esc(member.referrer || "")}
-</td>
-
-<td>
-${esc(member.centerName || "")}
-</td>
-
-<td>
-${esc(gradeText(member.managementGrade || "general"))}
-</td>
-
-<td>
-${esc(fmtDate(member.joinDate))}
-</td>
-
-<td
-class="${
-(member.status || "active") === "active"
-?
-"status-active"
-:
-""
-}">
-${esc(statusText(member.status || "active"))}
-</td>
-
-<td>
-
-<button
-class="manage-button"
-data-id="${member.id}">
-상세관리
-</button>
-
-</td>
-
-</tr>
-
-`
-).join("")}
-
-</tbody>
-
-</table>
-
-</div>
-
-`;
+  const rows =
+  filteredMembers.slice(
+    start,
+    start + PAGE_SIZE
+  );
 
 
-memberArea
-.querySelectorAll(".manage-button")
-.forEach(
-button=>{
+  memberArea.innerHTML = `
 
-button.onclick =
-()=>openMember(
-button.dataset.id
-);
+  <div class="table-wrap">
 
-}
-);
+  <table>
+
+  <thead>
+
+  <tr>
+  <th>NCC 회원번호</th>
+  <th>이름</th>
+  <th>회원유형</th>
+  <th>연락처</th>
+  <th>지역</th>
+  <th>추천인</th>
+  <th>소속센터</th>
+  <th>관리등급</th>
+  <th>가입일</th>
+  <th>상태</th>
+  <th>관리</th>
+  </tr>
+
+  </thead>
+
+  <tbody>
+
+  ${rows.map(
+    member=>`
+
+    <tr>
+
+    <td class="member-number">
+    ${esc(member.memberNumber || "미발급")}
+    </td>
+
+    <td>
+    ${esc(member.name)}
+    </td>
+
+    <td>
+    ${esc(typeText(member.memberType || "consumer"))}
+    </td>
+
+    <td>
+    ${esc(formatPhone(member.phone))}
+    </td>
+
+    <td>
+    ${esc(member.region)}
+    </td>
+
+    <td>
+    ${esc(member.referrer || "")}
+    </td>
+
+    <td class="center-cell">
+    ${esc(member.centerName || "")}
+    </td>
+
+    <td>
+    ${esc(gradeText(member.managementGrade || "general"))}
+    </td>
+
+    <td>
+    ${esc(fmtDate(member.joinDate))}
+    </td>
+
+    <td class="${statusClass(member.status || "active")}">
+    ${esc(statusText(member.status || "active"))}
+    </td>
+
+    <td>
+
+    <button
+    class="manage-button"
+    data-id="${esc(member.id)}">
+    상세관리
+    </button>
+
+    </td>
+
+    </tr>
+
+    `
+  ).join("")}
+
+  </tbody>
+
+  </table>
+
+  </div>
+
+  `;
 
 
-renderPagination();
+  memberArea
+  .querySelectorAll(".manage-button")
+  .forEach(
+    button=>{
+
+      button.onclick =
+      ()=>openMember(
+        button.dataset.id
+      );
+
+    }
+  );
+
+
+  renderPagination();
 
 }
 
@@ -1687,118 +1936,109 @@ renderPagination();
 
 function renderPagination(){
 
-const pages =
-Math.max(
-1,
-Math.ceil(
-filteredMembers.length
-/
-PAGE_SIZE
-)
-);
+  const pages =
+  Math.max(
+    1,
+    Math.ceil(
+      filteredMembers.length
+      /
+      PAGE_SIZE
+    )
+  );
 
 
-pagination.innerHTML = `
+  pagination.innerHTML = `
 
-<button
-${currentPage === 1 ? "disabled" : ""}
-data-page="prev">
-이전
-</button>
+  <button
+  ${currentPage === 1 ? "disabled" : ""}
+  data-page="prev">
+  이전
+  </button>
 
-${Array.from(
-{length:pages},
-(_,index)=>`
+  ${Array.from(
+    {length:pages},
+    (_,index)=>`
 
-<button
-class="${
-currentPage === index + 1
-?
-"current"
-:
-""
-}"
-data-page="${index + 1}">
-${index + 1}
-</button>
+    <button
+    class="${currentPage === index + 1 ? "current" : ""}"
+    data-page="${index + 1}">
+    ${index + 1}
+    </button>
 
-`
-).join("")}
+    `
+  ).join("")}
 
-<button
-${currentPage === pages ? "disabled" : ""}
-data-page="next">
-다음
-</button>
+  <button
+  ${currentPage === pages ? "disabled" : ""}
+  data-page="next">
+  다음
+  </button>
 
-`;
+  `;
 
 
-pagination
-.querySelectorAll("button")
-.forEach(
-button=>{
+  pagination
+  .querySelectorAll("button")
+  .forEach(
+    button=>{
 
-button.onclick =
-()=>{
+      button.onclick =
+      ()=>{
 
-const page =
-button.dataset.page;
+        const page =
+        button.dataset.page;
 
+        if(page === "prev"){
 
-if(page === "prev"){
+          currentPage--;
 
-currentPage--;
+        }else if(page === "next"){
 
-}else if(page === "next"){
+          currentPage++;
 
-currentPage++;
+        }else{
 
-}else{
+          currentPage =
+          Number(page);
 
-currentPage =
-Number(page);
+        }
 
-}
+        renderMembers();
 
+        window.scrollTo(
+          {
+            top:0,
+            behavior:"smooth"
+          }
+        );
 
-renderMembers();
+      };
 
-
-window.scrollTo(
-{
-top:0,
-behavior:"smooth"
-}
-);
-
-};
-
-}
-);
+    }
+  );
 
 }
 
 
 [
-"memberSearch",
-"memberTypeFilter",
-"statusFilter",
-"gradeFilter"
+  "memberSearch",
+  "memberTypeFilter",
+  "statusFilter",
+  "gradeFilter"
 ]
 .forEach(
-id=>{
+  id=>{
 
-$(id).addEventListener(
-id === "memberSearch"
-?
-"input"
-:
-"change",
-applyFilters
-);
+    $(id).addEventListener(
+      id === "memberSearch"
+      ?
+      "input"
+      :
+      "change",
+      applyFilters
+    );
 
-}
+  }
 );
 
 
@@ -1812,183 +2052,183 @@ $("memberModal");
 
 function openMember(id){
 
-selectedMember =
-allMembers.find(
-member =>
-member.id === id
-);
+  selectedMember =
+  allMembers.find(
+    member =>
+    member.id === id
+  );
 
 
-if(!selectedMember){
-return;
-}
+  if(!selectedMember){
+    return;
+  }
 
 
-const member =
-selectedMember;
+  const member =
+  selectedMember;
 
 
-$("editName").value =
-member.name
-||
-"";
+  $("editName").value =
+  member.name
+  ||
+  "";
 
 
-$("editPhone").value =
-member.phone
-||
-"";
+  $("editPhone").value =
+  formatPhone(
+    member.phone
+  );
 
 
-$("editEmail").value =
-member.email
-||
-"";
+  $("editEmail").value =
+  member.email
+  ||
+  "";
 
 
-$("editBirthDate").value =
-member.birthDate
-||
-"";
+  $("editBirthDate").value =
+  member.birthDate
+  ||
+  "";
 
 
-$("editGender").value =
-member.gender
-||
-"";
+  $("editGender").value =
+  member.gender
+  ||
+  "";
 
 
-$("editMemberType").value =
-typeText(
-member.memberType
-||
-"consumer"
-);
+  $("editMemberType").value =
+  typeText(
+    member.memberType
+    ||
+    "consumer"
+  );
 
 
-$("editRegion").value =
-member.region
-||
-"";
+  $("editRegion").value =
+  member.region
+  ||
+  "";
 
 
-$("editBenefit").value =
-member.benefit
-||
-"";
+  $("editBenefit").value =
+  member.benefit
+  ||
+  "";
 
 
-$("editHasPet").value =
-member.hasPet
-||
-"";
+  $("editHasPet").value =
+  member.hasPet
+  ||
+  "";
 
 
-$("editReferrer").value =
-member.referrer
-||
-"";
+  $("editReferrer").value =
+  member.referrer
+  ||
+  "";
 
 
-$("editReferralCode").value =
-member.referralCode
-||
-"";
+  $("editReferralCode").value =
+  member.referralCode
+  ||
+  "";
 
 
-$("editCenterName").value =
-member.centerName
-||
-"";
+  $("editCenterName").value =
+  member.centerName
+  ||
+  "";
 
 
-$("editCenterCode").value =
-member.centerCode
-||
-"";
+  $("editCenterCode").value =
+  member.centerCode
+  ||
+  "";
 
 
-$("editStatus").value =
-member.status
-||
-"active";
+  $("editStatus").value =
+  member.status
+  ||
+  "active";
 
 
-$("editManagementGrade").value =
-member.managementGrade
-||
-"general";
+  $("editManagementGrade").value =
+  member.managementGrade
+  ||
+  "general";
 
 
-$("editAdminMemo").value =
-member.adminMemo
-||
-"";
+  $("editAdminMemo").value =
+  member.adminMemo
+  ||
+  "";
 
 
-$("viewAgreePrivacy").textContent =
-member.agreePrivacy
-?
-"동의"
-:
-"미동의";
+  $("viewAgreePrivacy").textContent =
+  member.agreePrivacy
+  ?
+  "동의"
+  :
+  "미동의";
 
 
-$("viewAgreeMarketing").textContent =
-member.agreeMarketing
-?
-"동의"
-:
-"미동의";
+  $("viewAgreeMarketing").textContent =
+  member.agreeMarketing
+  ?
+  "동의"
+  :
+  "미동의";
 
 
-$("viewAgreeThirdParty").textContent =
-member.agreeThirdParty
-?
-"동의"
-:
-"미동의";
+  $("viewAgreeThirdParty").textContent =
+  member.agreeThirdParty
+  ?
+  "동의"
+  :
+  "미동의";
 
 
-$("viewDocumentId").textContent =
-member.id;
+  $("viewDocumentId").textContent =
+  member.id;
 
 
-$("viewMemberNumber").textContent =
-member.memberNumber
-||
-"미발급";
+  $("viewMemberNumber").textContent =
+  member.memberNumber
+  ||
+  "미발급";
 
 
-$("viewJoinDate").textContent =
-fmtDate(
-member.joinDate
-);
+  $("viewJoinDate").textContent =
+  fmtDate(
+    member.joinDate
+  );
 
 
-$("viewUpdatedAt").textContent =
-fmtDate(
-member.updatedAt
-);
+  $("viewUpdatedAt").textContent =
+  fmtDate(
+    member.updatedAt
+  );
 
 
-memberModal.style.display =
-"flex";
+  memberModal.style.display =
+  "flex";
 
 
-activateTab(
-"basic"
-);
+  activateTab(
+    "basic"
+  );
 
 }
 
 
 function closeMember(){
 
-memberModal.style.display =
-"none";
+  memberModal.style.display =
+  "none";
 
-selectedMember = null;
+  selectedMember = null;
 
 }
 
@@ -2004,58 +2244,58 @@ closeMember;
 memberModal.onclick =
 event=>{
 
-if(event.target === memberModal){
+  if(event.target === memberModal){
 
-closeMember();
+    closeMember();
 
-}
+  }
 
 };
 
 
 function activateTab(tab){
 
+  document
+  .querySelectorAll(".crm-tab")
+  .forEach(
+    button=>{
+
+      button.classList.toggle(
+        "active",
+        button.dataset.tab === tab
+      );
+
+    }
+  );
+
+
+  document
+  .querySelectorAll(".tab-panel")
+  .forEach(
+    panel=>{
+
+      panel.classList.toggle(
+        "active",
+        panel.id === `tab-${tab}`
+      );
+
+    }
+  );
+
+}
+
+
 document
 .querySelectorAll(".crm-tab")
 .forEach(
-button=>{
+  button=>{
 
-button.classList.toggle(
-"active",
-button.dataset.tab === tab
-);
+    button.onclick =
+    ()=>activateTab(
+      button.dataset.tab
+    );
 
-}
-);
-
-
-document
-.querySelectorAll(".tab-panel")
-.forEach(
-panel=>{
-
-panel.classList.toggle(
-"active",
-panel.id === `tab-${tab}`
-);
-
-}
-);
-
-}
-
-
-document
-.querySelectorAll(".crm-tab")
-.forEach(
-button=>{
-
-button.onclick =
-()=>activateTab(
-button.dataset.tab
-);
-
-}
+  }
 );
 
 
@@ -2066,252 +2306,260 @@ button.dataset.tab
 $("saveMemberButton").onclick =
 async()=>{
 
-if(!selectedMember){
-return;
-}
+  if(!selectedMember){
+    return;
+  }
 
 
-const name =
-$("editName").value.trim();
+  const name =
+  $("editName").value.trim();
 
-const phone =
-$("editPhone").value.trim();
 
-const region =
-$("editRegion").value.trim();
+  const phoneKey =
+  normalizePhone(
+    $("editPhone").value
+  );
 
 
-const newPhoneKey =
-normalizePhone(phone);
+  const phone =
+  formatPhone(
+    phoneKey
+  );
 
-const oldPhoneKey =
-normalizePhone(
-selectedMember.phone
-);
 
+  const region =
+  $("editRegion").value.trim();
 
-if(
-!name
-||
-!phone
-||
-!region
-){
 
-alert(
-"이름, 연락처, 지역은 필수입니다."
-);
+  const oldPhoneKey =
+  normalizePhone(
+    selectedMember.phone
+  );
 
-return;
 
-}
+  if(
+    !name
+    ||
+    !phone
+    ||
+    !region
+  ){
 
+    alert(
+      "이름, 연락처, 지역은 필수입니다."
+    );
 
-if(
-newPhoneKey.length < 9
-||
-newPhoneKey.length > 11
-){
+    return;
 
-alert(
-"연락처 형식을 확인해주세요."
-);
+  }
 
-return;
 
-}
+  if(
+    phoneKey.length < 9
+    ||
+    phoneKey.length > 11
+  ){
 
+    alert(
+      "연락처 형식을 확인해주세요."
+    );
 
-try{
+    return;
 
-$("saveMemberButton").disabled =
-true;
+  }
 
 
-await runTransaction(
-db,
-async transaction=>{
+  try{
 
+    $("saveMemberButton").disabled =
+    true;
 
-const memberReference =
-doc(
-db,
-"members",
-selectedMember.id
-);
 
+    await runTransaction(
+      db,
+      async transaction=>{
 
-const newPhoneReference =
-doc(
-db,
-"memberPhones",
-newPhoneKey
-);
 
+        const memberReference =
+        doc(
+          db,
+          "members",
+          selectedMember.id
+        );
 
-const newPhoneSnapshot =
-await transaction.get(
-newPhoneReference
-);
 
+        const newPhoneReference =
+        doc(
+          db,
+          "memberPhones",
+          phoneKey
+        );
 
-if(
-newPhoneKey !== oldPhoneKey
-&&
-newPhoneSnapshot.exists()
-&&
-newPhoneSnapshot.data().memberId
-!==
-selectedMember.id
-){
 
-throw new Error(
-"이미 다른 회원이 사용 중인 연락처입니다."
-);
+        const newPhoneSnapshot =
+        await transaction.get(
+          newPhoneReference
+        );
 
-}
 
+        if(
+          phoneKey !== oldPhoneKey
+          &&
+          newPhoneSnapshot.exists()
+          &&
+          newPhoneSnapshot.data().memberId
+          !==
+          selectedMember.id
+        ){
 
-let oldPhoneReference = null;
+          throw new Error(
+            "이미 다른 회원이 사용 중인 연락처입니다."
+          );
 
-let oldPhoneSnapshot = null;
+        }
 
 
-if(
-oldPhoneKey
-&&
-oldPhoneKey !== newPhoneKey
-){
+        let oldPhoneReference = null;
+        let oldPhoneSnapshot = null;
 
-oldPhoneReference =
-doc(
-db,
-"memberPhones",
-oldPhoneKey
-);
 
+        if(
+          oldPhoneKey
+          &&
+          oldPhoneKey !== phoneKey
+        ){
 
-oldPhoneSnapshot =
-await transaction.get(
-oldPhoneReference
-);
+          oldPhoneReference =
+          doc(
+            db,
+            "memberPhones",
+            oldPhoneKey
+          );
 
-}
 
+          oldPhoneSnapshot =
+          await transaction.get(
+            oldPhoneReference
+          );
 
-if(
-!newPhoneSnapshot.exists()
-){
+        }
 
-transaction.set(
-newPhoneReference,
-{
-memberId:selectedMember.id,
-memberNumber:selectedMember.memberNumber || "",
-createdAt:serverTimestamp()
-}
-);
 
-}
+        if(
+          !newPhoneSnapshot.exists()
+        ){
 
+          transaction.set(
+            newPhoneReference,
+            {
+              memberId:selectedMember.id,
+              memberNumber:selectedMember.memberNumber || "",
+              createdAt:serverTimestamp()
+            }
+          );
 
-if(
-oldPhoneReference
-&&
-oldPhoneSnapshot?.exists()
-&&
-oldPhoneSnapshot.data().memberId
-===
-selectedMember.id
-){
+        }
 
-transaction.delete(
-oldPhoneReference
-);
 
-}
+        if(
+          oldPhoneReference
+          &&
+          oldPhoneSnapshot?.exists()
+          &&
+          oldPhoneSnapshot.data().memberId
+          ===
+          selectedMember.id
+        ){
 
+          transaction.delete(
+            oldPhoneReference
+          );
 
-transaction.update(
-memberReference,
-{
+        }
 
-name:name,
 
-phone:phone,
+        transaction.update(
+          memberReference,
+          {
 
-email:
-$("editEmail").value.trim(),
+            name:name,
 
-birthDate:
-$("editBirthDate").value,
+            phone:phone,
 
-gender:
-$("editGender").value,
+            phoneKey:phoneKey,
 
-region:region,
+            email:
+            $("editEmail").value.trim(),
 
-benefit:
-$("editBenefit").value.trim(),
+            birthDate:
+            $("editBirthDate").value,
 
-hasPet:
-$("editHasPet").value,
+            gender:
+            $("editGender").value,
 
-referrer:
-$("editReferrer").value.trim(),
+            region:region,
 
-referralCode:
-$("editReferralCode").value.trim(),
+            benefit:
+            $("editBenefit").value.trim(),
 
-centerName:
-$("editCenterName").value.trim(),
+            hasPet:
+            $("editHasPet").value,
 
-centerCode:
-$("editCenterCode").value.trim(),
+            referrer:
+            $("editReferrer").value.trim(),
 
-status:
-$("editStatus").value,
+            referralCode:
+            $("editReferralCode").value.trim(),
 
-managementGrade:
-$("editManagementGrade").value,
+            centerName:
+            $("editCenterName").value.trim(),
 
-adminMemo:
-$("editAdminMemo").value.trim(),
+            centerCode:
+            $("editCenterCode").value.trim(),
 
-updatedAt:
-serverTimestamp()
+            status:
+            $("editStatus").value,
 
-}
-);
+            managementGrade:
+            $("editManagementGrade").value,
 
-}
-);
+            adminMemo:
+            $("editAdminMemo").value.trim(),
 
+            updatedAt:
+            serverTimestamp()
 
-alert(
-"회원정보가 수정되었습니다."
-);
+          }
+        );
 
+      }
+    );
 
-closeMember();
 
-await loadMembers();
+    alert(
+      "회원정보가 수정되었습니다."
+    );
 
 
-}catch(error){
+    closeMember();
 
-alert(
-"수정 오류: "
-+
-error.message
-);
+    await loadMembers();
 
-}finally{
 
-$("saveMemberButton").disabled =
-false;
+  }catch(error){
 
-}
+    alert(
+      "수정 오류: "
+      +
+      error.message
+    );
+
+  }finally{
+
+    $("saveMemberButton").disabled =
+    false;
+
+  }
 
 };
 
@@ -2323,114 +2571,114 @@ false;
 $("deleteMemberButton").onclick =
 async()=>{
 
-if(!selectedMember){
-return;
-}
+  if(!selectedMember){
+    return;
+  }
 
 
-if(
-!confirm(
-`${selectedMember.name || "회원"}의 회원정보를 정말 삭제하시겠습니까?
+  if(
+    !confirm(
+      `${selectedMember.name || "회원"}의 회원정보를 정말 삭제하시겠습니까?
 
 삭제하면 되돌릴 수 없습니다.`
-)
-){
+    )
+  ){
 
-return;
+    return;
 
-}
-
-
-try{
-
-$("deleteMemberButton").disabled =
-true;
+  }
 
 
-await runTransaction(
-db,
-async transaction=>{
+  try{
+
+    $("deleteMemberButton").disabled =
+    true;
 
 
-const memberReference =
-doc(
-db,
-"members",
-selectedMember.id
-);
+    await runTransaction(
+      db,
+      async transaction=>{
 
 
-const phoneKey =
-normalizePhone(
-selectedMember.phone
-);
+        const memberReference =
+        doc(
+          db,
+          "members",
+          selectedMember.id
+        );
 
 
-if(phoneKey){
-
-const phoneReference =
-doc(
-db,
-"memberPhones",
-phoneKey
-);
+        const phoneKey =
+        normalizePhone(
+          selectedMember.phone
+        );
 
 
-const phoneSnapshot =
-await transaction.get(
-phoneReference
-);
+        if(phoneKey){
+
+          const phoneReference =
+          doc(
+            db,
+            "memberPhones",
+            phoneKey
+          );
 
 
-if(
-phoneSnapshot.exists()
-&&
-phoneSnapshot.data().memberId
-===
-selectedMember.id
-){
-
-transaction.delete(
-phoneReference
-);
-
-}
-
-}
+          const phoneSnapshot =
+          await transaction.get(
+            phoneReference
+          );
 
 
-transaction.delete(
-memberReference
-);
+          if(
+            phoneSnapshot.exists()
+            &&
+            phoneSnapshot.data().memberId
+            ===
+            selectedMember.id
+          ){
 
-}
-);
+            transaction.delete(
+              phoneReference
+            );
+
+          }
+
+        }
 
 
-alert(
-"회원정보가 삭제되었습니다."
-);
+        transaction.delete(
+          memberReference
+        );
+
+      }
+    );
 
 
-closeMember();
+    alert(
+      "회원정보가 삭제되었습니다."
+    );
 
-await loadMembers();
+
+    closeMember();
+
+    await loadMembers();
 
 
-}catch(error){
+  }catch(error){
 
-alert(
-"삭제 오류: "
-+
-error.message
-);
+    alert(
+      "삭제 오류: "
+      +
+      error.message
+    );
 
-}finally{
+  }finally{
 
-$("deleteMemberButton").disabled =
-false;
+    $("deleteMemberButton").disabled =
+    false;
 
-}
+  }
 
 };
 
@@ -2441,82 +2689,83 @@ false;
 
 async function issueOneMissing(member){
 
-const counterReference =
-doc(
-db,
-"counters",
-"memberNumbers"
-);
+  const counterReference =
+  doc(
+    db,
+    "counters",
+    "memberNumbers"
+  );
 
 
-const memberReference =
-doc(
-db,
-"members",
-member.id
-);
+  const memberReference =
+  doc(
+    db,
+    "members",
+    member.id
+  );
 
 
-return runTransaction(
-db,
-async transaction=>{
+  return runTransaction(
+    db,
+    async transaction=>{
 
 
-const counterSnapshot =
-await transaction.get(
-counterReference
-);
+      const counterSnapshot =
+      await transaction.get(
+        counterReference
+      );
 
 
-const current =
-counterSnapshot.exists()
-?
-Number(
-counterSnapshot.data().consumer
-||
-0
-)
-:
-0;
+      const current =
+      counterSnapshot.exists()
+      ?
+      Number(
+        counterSnapshot.data().consumer
+        ||
+        0
+      )
+      :
+      0;
 
 
-const next =
-current + 1;
+      const next =
+      current + 1;
 
 
-const memberNumber =
-"NCC-C-"
-+
-String(next).padStart(
-6,
-"0"
-);
+      const memberNumber =
+      "NCC-C-"
+      +
+      String(next)
+      .padStart(
+        6,
+        "0"
+      );
 
 
-transaction.set(
-counterReference,
-{
-consumer:next
-},
-{
-merge:true
-}
-);
+      transaction.set(
+        counterReference,
+        {
+          consumer:next
+        },
+        {
+          merge:true
+        }
+      );
 
 
-transaction.update(
-memberReference,
-{
-memberNumber:memberNumber,
-updatedAt:serverTimestamp()
-}
-);
+      transaction.update(
+        memberReference,
+        {
+          memberNumber:memberNumber,
+          updatedAt:serverTimestamp()
+        }
+      );
 
 
-return memberNumber;
+      return memberNumber;
 
-}
-);
+    }
+  );
 
 }
 
@@ -2525,92 +2774,89 @@ $("issueMissingNumbersButton").onclick =
 async()=>{
 
 
-const targets =
-allMembers.filter(
-member =>
-(member.memberType || "consumer")
-===
-"consumer"
-&&
-!/^NCC-C-\d{6}$/.test(
-member.memberNumber
-||
-""
-)
-);
+  const targets =
+  allMembers.filter(
+    member =>
+    (member.memberType || "consumer")
+    ===
+    "consumer"
+    &&
+    !/^NCC-C-\d{6}$/.test(
+      member.memberNumber
+      ||
+      ""
+    )
+  );
 
 
-if(!targets.length){
+  if(!targets.length){
 
-alert(
-"미발급 회원이 없습니다."
-);
+    alert(
+      "미발급 회원이 없습니다."
+    );
 
-return;
+    return;
 
-}
+  }
 
 
-if(
-!confirm(
-`회원번호가 없는 소비자회원 ${targets.length}명에게 NCC 회원번호를 일괄 발급하시겠습니까?
+  if(
+    !confirm(
+      `회원번호가 없는 소비자회원 ${targets.length}명에게 NCC 회원번호를 일괄 발급하시겠습니까?
 
 기존 번호는 재사용하지 않습니다.`
-)
-){
+    )
+  ){
 
-return;
+    return;
 
-}
-
-
-let success = 0;
-
-let errorCount = 0;
-
-const issued = [];
+  }
 
 
-for(
-const member of targets
-){
-
-try{
-
-const memberNumber =
-await issueOneMissing(
-member
-);
+  let success = 0;
+  let errorCount = 0;
+  const issued = [];
 
 
-success++;
+  for(
+    const member of targets
+  ){
 
-issued.push(
-memberNumber
-);
+    try{
 
-}catch(error){
+      const memberNumber =
+      await issueOneMissing(
+        member
+      );
 
-console.error(error);
+      success++;
 
-errorCount++;
+      issued.push(
+        memberNumber
+      );
 
-}
+    }catch(error){
 
-}
+      console.error(error);
+
+      errorCount++;
+
+    }
+
+  }
 
 
-alert(
-`회원번호 발급 완료
+  alert(
+    `회원번호 발급 완료
 
 성공: ${success}명
 오류: ${errorCount}명
 
 ${issued.join("\n")}`
-);
+  );
 
 
-await loadMembers();
+  await loadMembers();
 
 };
 
@@ -2623,246 +2869,276 @@ $("backfillMemberPhonesButton").onclick =
 async()=>{
 
 
-const consumers =
-allMembers.filter(
-member =>
-(member.memberType || "consumer")
-===
-"consumer"
-);
+  const consumers =
+  allMembers.filter(
+    member =>
+    (member.memberType || "consumer")
+    ===
+    "consumer"
+  );
 
 
-const groups =
-new Map();
+  const groups =
+  new Map();
 
 
-for(
-const member of consumers
-){
+  for(
+    const member of consumers
+  ){
 
-const phoneKey =
-normalizePhone(
-member.phone
-);
-
-
-if(
-phoneKey.length < 9
-||
-phoneKey.length > 11
-){
-
-continue;
-
-}
+    const phoneKey =
+    normalizePhone(
+      member.phone
+    );
 
 
-if(
-!groups.has(
-phoneKey
-)
-){
+    if(
+      phoneKey.length < 9
+      ||
+      phoneKey.length > 11
+    ){
 
-groups.set(
-phoneKey,
-[]
-);
+      continue;
 
-}
+    }
 
 
-groups
-.get(phoneKey)
-.push(member);
+    if(
+      !groups.has(
+        phoneKey
+      )
+    ){
 
-}
+      groups.set(
+        phoneKey,
+        []
+      );
 
-
-const conflicts =
-[
-...groups.entries()
-]
-.filter(
-([,members]) =>
-members.length > 1
-);
+    }
 
 
-const candidates =
-[
-...groups.entries()
-]
-.filter(
-([,members]) =>
-members.length === 1
-)
-.map(
-([phoneKey,members])=>({
-phoneKey,
-member:members[0]
-})
-)
-.filter(
-item =>
-/^NCC-C-\d{6}$/.test(
-item.member.memberNumber
-||
-""
-)
-);
+    groups
+    .get(phoneKey)
+    .push(member);
+
+  }
 
 
-const invalid =
-consumers.filter(
-member=>{
-
-const phoneKey =
-normalizePhone(
-member.phone
-);
-
-
-return (
-phoneKey.length < 9
-||
-phoneKey.length > 11
-||
-!/^NCC-C-\d{6}$/.test(
-member.memberNumber
-||
-""
-)
-);
-
-}
-).length;
+  const conflicts =
+  [
+    ...groups.entries()
+  ]
+  .filter(
+    ([,members]) =>
+    members.length > 1
+  );
 
 
-if(
-!confirm(
-`기존 소비자회원의 연락처를 중복가입 방지 시스템에 등록하시겠습니까?
+  const candidates =
+  [
+    ...groups.entries()
+  ]
+  .filter(
+    ([,members]) =>
+    members.length === 1
+  )
+  .map(
+    ([phoneKey,members])=>({
+      phoneKey,
+      member:members[0]
+    })
+  )
+  .filter(
+    item =>
+    /^NCC-C-\d{6}$/.test(
+      item.member.memberNumber
+      ||
+      ""
+    )
+  );
+
+
+  const invalid =
+  consumers.filter(
+    member=>{
+
+      const phoneKey =
+      normalizePhone(
+        member.phone
+      );
+
+
+      return (
+        phoneKey.length < 9
+        ||
+        phoneKey.length > 11
+        ||
+        !/^NCC-C-\d{6}$/.test(
+          member.memberNumber
+          ||
+          ""
+        )
+      );
+
+    }
+  ).length;
+
+
+  if(
+    !confirm(
+      `기존 소비자회원의 연락처를 중복가입 방지 시스템에 등록하시겠습니까?
 
 자동등록 가능: ${candidates.length}명
 기존 중복 충돌: ${conflicts.length}건
 연락처/회원번호 오류: ${invalid}명
 
 충돌 건은 자동등록하지 않고 건너뜁니다.`
-)
-){
+    )
+  ){
 
-return;
+    return;
 
-}
-
-
-let created = 0;
-
-let already = 0;
-
-let errorCount = 0;
+  }
 
 
-for(
-const item of candidates
-){
-
-try{
-
-const result =
-await runTransaction(
-db,
-async transaction=>{
+  let created = 0;
+  let already = 0;
+  let errorCount = 0;
 
 
-const phoneReference =
-doc(
-db,
-"memberPhones",
-item.phoneKey
-);
+  for(
+    const item of candidates
+  ){
+
+    try{
+
+      const result =
+      await runTransaction(
+        db,
+        async transaction=>{
 
 
-const memberReference =
-doc(
-db,
-"members",
-item.member.id
-);
+          const phoneReference =
+          doc(
+            db,
+            "memberPhones",
+            item.phoneKey
+          );
 
 
-const phoneSnapshot =
-await transaction.get(
-phoneReference
-);
+          const memberReference =
+          doc(
+            db,
+            "members",
+            item.member.id
+          );
 
 
-if(
-phoneSnapshot.exists()
-){
-
-return "already";
-
-}
+          const phoneSnapshot =
+          await transaction.get(
+            phoneReference
+          );
 
 
-transaction.set(
-phoneReference,
-{
-memberId:item.member.id,
-memberNumber:item.member.memberNumber,
-createdAt:serverTimestamp()
-}
-);
+          if(
+            phoneSnapshot.exists()
+          ){
+
+            transaction.update(
+              memberReference,
+              {
+                phone:
+                formatPhone(
+                  item.member.phone
+                ),
+
+                phoneKey:
+                item.phoneKey,
+
+                updatedAt:
+                serverTimestamp()
+              }
+            );
+
+            return "already";
+
+          }
 
 
-transaction.update(
-memberReference,
-{
-updatedAt:serverTimestamp()
-}
-);
+          transaction.set(
+            phoneReference,
+            {
+              memberId:
+              item.member.id,
+
+              memberNumber:
+              item.member.memberNumber,
+
+              createdAt:
+              serverTimestamp()
+            }
+          );
 
 
-return "created";
+          transaction.update(
+            memberReference,
+            {
 
-}
-);
+              phone:
+              formatPhone(
+                item.member.phone
+              ),
 
+              phoneKey:
+              item.phoneKey,
 
-if(result === "created"){
+              updatedAt:
+              serverTimestamp()
 
-created++;
-
-}else{
-
-already++;
-
-}
-
-
-}catch(error){
-
-console.error(error);
-
-errorCount++;
-
-}
-
-}
+            }
+          );
 
 
-alert(
-`기존회원 중복방지 등록 완료
+          return "created";
+
+        }
+      );
+
+
+      if(result === "created"){
+
+        created++;
+
+      }else{
+
+        already++;
+
+      }
+
+
+    }catch(error){
+
+      console.error(error);
+
+      errorCount++;
+
+    }
+
+  }
+
+
+  alert(
+    `기존회원 중복방지 등록 완료
 
 신규 잠금 생성: ${created}명
 이미 등록됨: ${already}명
 기존 중복 충돌: ${conflicts.length}건
 연락처/회원번호 오류: ${invalid}명
 처리 오류: ${errorCount}명`
-);
+  );
 
 
-await loadMembers();
+  await loadMembers();
 
 };
 
@@ -2881,33 +3157,33 @@ let bulkRows = [];
 $("bulkImportButton").onclick =
 ()=>{
 
-bulkRows = [];
+  bulkRows = [];
 
-$("bulkFileInput").value = "";
+  $("bulkFileInput").value = "";
 
-$("bulkSummary")
-.classList
-.add("hidden");
+  $("bulkSummary")
+  .classList
+  .add("hidden");
 
-$("bulkSummary").innerHTML = "";
+  $("bulkSummary").innerHTML = "";
 
-$("bulkPreviewArea").innerHTML = "";
+  $("bulkPreviewArea").innerHTML = "";
 
-$("bulkRegisterButton").disabled =
-true;
+  $("bulkRegisterButton").disabled =
+  true;
 
-bulkModal.style.display =
-"flex";
+  bulkModal.style.display =
+  "flex";
 
 };
 
 
 function closeBulk(){
 
-bulkModal.style.display =
-"none";
+  bulkModal.style.display =
+  "none";
 
-bulkRows = [];
+  bulkRows = [];
 
 }
 
@@ -2923,478 +3199,486 @@ closeBulk;
 bulkModal.onclick =
 event=>{
 
-if(event.target === bulkModal){
+  if(event.target === bulkModal){
 
-closeBulk();
+    closeBulk();
 
-}
+  }
 
 };
 
 
 function normalizeHeader(value){
 
-return String(value || "")
-.trim()
-.replace(/\s+/g,"")
-.replace(/[·ㆍ]/g,"");
+  return String(value || "")
+  .trim()
+  .replace(/\s+/g,"")
+  .replace(/[·ㆍ]/g,"");
 
 }
 
 
 function valueByAlias(
-row,
-names
+  row,
+  names
 ){
 
-const normalized = {};
+  const normalized = {};
 
 
-Object.keys(
-row
-||
-{}
-)
-.forEach(
-key=>{
+  Object.keys(
+    row
+    ||
+    {}
+  )
+  .forEach(
+    key=>{
 
-normalized[
-normalizeHeader(key)
-]
-=
-row[key];
+      normalized[
+        normalizeHeader(key)
+      ]
+      =
+      row[key];
 
-}
-);
-
-
-for(
-const name of names
-){
-
-const key =
-normalizeHeader(name);
+    }
+  );
 
 
-if(
-Object.prototype.hasOwnProperty.call(
-normalized,
-key
-)
-){
+  for(
+    const name of names
+  ){
 
-return normalized[key];
-
-}
-
-}
+    const key =
+    normalizeHeader(name);
 
 
-return "";
+    if(
+      Object.prototype.hasOwnProperty.call(
+        normalized,
+        key
+      )
+    ){
+
+      return normalized[key];
+
+    }
+
+  }
+
+
+  return "";
 
 }
 
 
 function agreementBoolean(value){
 
-return (
-[
-"동의",
-"예",
-"yes",
-"true",
-"1"
-]
-.includes(
-String(value ?? "")
-.trim()
-.toLowerCase()
-)
-||
-value === true
-);
+  return (
+    [
+      "동의",
+      "예",
+      "yes",
+      "true",
+      "1"
+    ]
+    .includes(
+      String(value ?? "")
+      .trim()
+      .toLowerCase()
+    )
+    ||
+    value === true
+  );
 
 }
 
 
 function normalizeGender(value){
 
-const text =
-String(value ?? "")
-.trim()
-.toLowerCase();
+  const text =
+  String(value ?? "")
+  .trim()
+  .toLowerCase();
 
 
-if(
-[
-"남성",
-"남",
-"male"
-]
-.includes(text)
-){
+  if(
+    [
+      "남성",
+      "남",
+      "male"
+    ]
+    .includes(text)
+  ){
 
-return "male";
+    return "male";
 
-}
-
-
-if(
-[
-"여성",
-"여",
-"female"
-]
-.includes(text)
-){
-
-return "female";
-
-}
+  }
 
 
-return "";
+  if(
+    [
+      "여성",
+      "여",
+      "female"
+    ]
+    .includes(text)
+  ){
+
+    return "female";
+
+  }
+
+
+  return "";
 
 }
 
 
 function normalizePet(value){
 
-const text =
-String(value ?? "")
-.trim()
-.toLowerCase();
+  const text =
+  String(value ?? "")
+  .trim()
+  .toLowerCase();
 
 
-if(
-[
-"보유",
-"있음",
-"예",
-"yes"
-]
-.includes(text)
-){
+  if(
+    [
+      "보유",
+      "있음",
+      "예",
+      "yes"
+    ]
+    .includes(text)
+  ){
 
-return "yes";
+    return "yes";
 
-}
-
-
-if(
-[
-"미보유",
-"없음",
-"아니오",
-"no"
-]
-.includes(text)
-){
-
-return "no";
-
-}
+  }
 
 
-return "";
+  if(
+    [
+      "미보유",
+      "없음",
+      "아니오",
+      "no"
+    ]
+    .includes(text)
+  ){
+
+    return "no";
+
+  }
+
+
+  return "";
 
 }
 
 
 function parseBulkRow(
-row,
-rowNumber
+  row,
+  rowNumber
 ){
 
-const name =
-String(
-valueByAlias(
-row,
-[
-"이름",
-"성명",
-"회원명"
-]
-)
-||
-""
-)
-.trim();
+  const name =
+  String(
+    valueByAlias(
+      row,
+      [
+        "이름",
+        "성명",
+        "회원명"
+      ]
+    )
+    ||
+    ""
+  )
+  .trim();
 
 
-const phone =
-String(
-valueByAlias(
-row,
-[
-"연락처",
-"휴대전화",
-"휴대폰",
-"전화번호"
-]
-)
-||
-""
-)
-.trim();
+  const rawPhone =
+  String(
+    valueByAlias(
+      row,
+      [
+        "연락처",
+        "휴대전화",
+        "휴대폰",
+        "전화번호"
+      ]
+    )
+    ||
+    ""
+  )
+  .trim();
 
 
-const phoneKey =
-normalizePhone(
-phone
-);
+  const phoneKey =
+  normalizePhone(
+    rawPhone
+  );
 
 
-const region =
-String(
-valueByAlias(
-row,
-[
-"지역",
-"거주지역",
-"주소",
-"시도시군구"
-]
-)
-||
-""
-)
-.trim();
+  const phone =
+  formatPhone(
+    rawPhone
+  );
 
 
-const agreePrivacy =
-agreementBoolean(
-valueByAlias(
-row,
-[
-"개인정보동의",
-"개인정보수집및이용동의",
-"개인정보수집이용동의"
-]
-)
-);
+  const region =
+  String(
+    valueByAlias(
+      row,
+      [
+        "지역",
+        "거주지역",
+        "주소",
+        "시도시군구"
+      ]
+    )
+    ||
+    ""
+  )
+  .trim();
 
 
-const data = {
-
-name:name,
-
-phone:phone,
-
-email:
-String(
-valueByAlias(
-row,
-[
-"이메일",
-"email"
-]
-)
-||
-""
-)
-.trim(),
-
-birthDate:
-String(
-valueByAlias(
-row,
-[
-"생년월일",
-"출생일"
-]
-)
-||
-""
-)
-.trim(),
-
-gender:
-normalizeGender(
-valueByAlias(
-row,
-[
-"성별"
-]
-)
-),
-
-region:region,
-
-benefit:
-String(
-valueByAlias(
-row,
-[
-"관심혜택",
-"혜택",
-"관심혜택분야"
-]
-)
-||
-"전체 혜택"
-)
-.trim()
-||
-"전체 혜택",
-
-hasPet:
-normalizePet(
-valueByAlias(
-row,
-[
-"반려동물",
-"반려동물보유",
-"반려동물보유여부"
-]
-)
-),
-
-referrer:
-String(
-valueByAlias(
-row,
-[
-"추천인",
-"추천인이름"
-]
-)
-||
-""
-)
-.trim(),
-
-referralCode:
-String(
-valueByAlias(
-row,
-[
-"추천코드"
-]
-)
-||
-""
-)
-.trim(),
-
-centerName:
-String(
-valueByAlias(
-row,
-[
-"소속센터",
-"소속센터명",
-"센터명"
-]
-)
-||
-""
-)
-.trim(),
-
-centerCode:
-String(
-valueByAlias(
-row,
-[
-"센터코드"
-]
-)
-||
-""
-)
-.trim(),
-
-agreePrivacy:
-agreePrivacy,
-
-agreeMarketing:
-agreementBoolean(
-valueByAlias(
-row,
-[
-"마케팅동의",
-"마케팅정보수신동의"
-]
-)
-),
-
-agreeThirdParty:
-agreementBoolean(
-valueByAlias(
-row,
-[
-"제3자제공동의",
-"개인정보제3자제공동의"
-]
-)
-)
-
-};
+  const agreePrivacy =
+  agreementBoolean(
+    valueByAlias(
+      row,
+      [
+        "개인정보동의",
+        "개인정보수집및이용동의",
+        "개인정보수집이용동의"
+      ]
+    )
+  );
 
 
-const errors = [];
+  const data = {
+
+    name:name,
+
+    phone:phone,
+
+    phoneKey:phoneKey,
+
+    email:
+    String(
+      valueByAlias(
+        row,
+        [
+          "이메일",
+          "email"
+        ]
+      )
+      ||
+      ""
+    )
+    .trim(),
+
+    birthDate:
+    String(
+      valueByAlias(
+        row,
+        [
+          "생년월일",
+          "출생일"
+        ]
+      )
+      ||
+      ""
+    )
+    .trim(),
+
+    gender:
+    normalizeGender(
+      valueByAlias(
+        row,
+        [
+          "성별"
+        ]
+      )
+    ),
+
+    region:region,
+
+    benefit:
+    String(
+      valueByAlias(
+        row,
+        [
+          "관심혜택",
+          "혜택",
+          "관심혜택분야"
+        ]
+      )
+      ||
+      "전체 혜택"
+    )
+    .trim()
+    ||
+    "전체 혜택",
+
+    hasPet:
+    normalizePet(
+      valueByAlias(
+        row,
+        [
+          "반려동물",
+          "반려동물보유",
+          "반려동물보유여부"
+        ]
+      )
+    ),
+
+    referrer:
+    String(
+      valueByAlias(
+        row,
+        [
+          "추천인",
+          "추천인이름"
+        ]
+      )
+      ||
+      ""
+    )
+    .trim(),
+
+    referralCode:
+    String(
+      valueByAlias(
+        row,
+        [
+          "추천코드"
+        ]
+      )
+      ||
+      ""
+    )
+    .trim(),
+
+    centerName:
+    String(
+      valueByAlias(
+        row,
+        [
+          "소속센터",
+          "소속센터명",
+          "센터명"
+        ]
+      )
+      ||
+      ""
+    )
+    .trim(),
+
+    centerCode:
+    String(
+      valueByAlias(
+        row,
+        [
+          "센터코드"
+        ]
+      )
+      ||
+      ""
+    )
+    .trim(),
+
+    agreePrivacy:
+    agreePrivacy,
+
+    agreeMarketing:
+    agreementBoolean(
+      valueByAlias(
+        row,
+        [
+          "마케팅동의",
+          "마케팅정보수신동의"
+        ]
+      )
+    ),
+
+    agreeThirdParty:
+    agreementBoolean(
+      valueByAlias(
+        row,
+        [
+          "제3자제공동의",
+          "개인정보제3자제공동의"
+        ]
+      )
+    )
+
+  };
 
 
-if(!name){
-
-errors.push(
-"이름 누락"
-);
-
-}
+  const errors = [];
 
 
-if(
-phoneKey.length < 9
-||
-phoneKey.length > 11
-){
+  if(!name){
 
-errors.push(
-"연락처 오류"
-);
+    errors.push(
+      "이름 누락"
+    );
 
-}
+  }
 
 
-if(!region){
+  if(
+    phoneKey.length < 9
+    ||
+    phoneKey.length > 11
+  ){
 
-errors.push(
-"지역 누락"
-);
+    errors.push(
+      "연락처 오류"
+    );
 
-}
-
-
-if(!agreePrivacy){
-
-errors.push(
-"개인정보동의 필요"
-);
-
-}
+  }
 
 
-return {
+  if(!region){
 
-rowNumber:rowNumber,
+    errors.push(
+      "지역 누락"
+    );
 
-data:data,
+  }
 
-phoneKey:phoneKey,
 
-status:
-errors.length
-?
-"error"
-:
-"pending",
+  if(!agreePrivacy){
 
-message:
-errors.join(", ")
+    errors.push(
+      "개인정보동의 필요"
+    );
 
-};
+  }
+
+
+  return {
+
+    rowNumber:rowNumber,
+
+    data:data,
+
+    phoneKey:phoneKey,
+
+    status:
+    errors.length
+    ?
+    "error"
+    :
+    "pending",
+
+    message:
+    errors.join(", ")
+
+  };
 
 }
 
@@ -3405,155 +3689,155 @@ errors.join(", ")
 
 function renderBulkPreview(){
 
-const total =
-bulkRows.length;
+  const total =
+  bulkRows.length;
 
 
-const valid =
-bulkRows.filter(
-row =>
-row.status === "ok"
-).length;
+  const valid =
+  bulkRows.filter(
+    row =>
+    row.status === "ok"
+  ).length;
 
 
-const duplicate =
-bulkRows.filter(
-row =>
-row.status === "duplicate"
-).length;
+  const duplicate =
+  bulkRows.filter(
+    row =>
+    row.status === "duplicate"
+  ).length;
 
 
-const errorCount =
-bulkRows.filter(
-row =>
-row.status === "error"
-).length;
+  const errorCount =
+  bulkRows.filter(
+    row =>
+    row.status === "error"
+  ).length;
 
 
-$("bulkSummary")
-.classList
-.remove("hidden");
+  $("bulkSummary")
+  .classList
+  .remove("hidden");
 
 
-$("bulkSummary").innerHTML = `
+  $("bulkSummary").innerHTML = `
 
-<div class="bulk-summary-card">
-총 데이터
-<strong>${total}명</strong>
-</div>
+  <div class="bulk-summary-card">
+  총 데이터
+  <strong>${total}명</strong>
+  </div>
 
-<div class="bulk-summary-card">
-등록 가능
-<strong>${valid}명</strong>
-</div>
+  <div class="bulk-summary-card">
+  등록 가능
+  <strong>${valid}명</strong>
+  </div>
 
-<div class="bulk-summary-card">
-중복 제외
-<strong>${duplicate}명</strong>
-</div>
+  <div class="bulk-summary-card">
+  중복 제외
+  <strong>${duplicate}명</strong>
+  </div>
 
-<div class="bulk-summary-card">
-오류
-<strong>${errorCount}명</strong>
-</div>
+  <div class="bulk-summary-card">
+  오류
+  <strong>${errorCount}명</strong>
+  </div>
 
-`;
-
-
-$("bulkPreviewArea").innerHTML = `
-
-<div class="bulk-preview-wrap">
-
-<table class="bulk-preview-table">
-
-<thead>
-
-<tr>
-<th>행</th>
-<th>이름</th>
-<th>연락처</th>
-<th>지역</th>
-<th>판정</th>
-<th>내용</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-${bulkRows
-.slice(0,200)
-.map(
-row=>`
-
-<tr>
-
-<td>
-${row.rowNumber}
-</td>
-
-<td>
-${esc(row.data.name)}
-</td>
-
-<td>
-${esc(row.data.phone)}
-</td>
-
-<td>
-${esc(row.data.region)}
-</td>
-
-<td
-class="${
-row.status === "ok"
-?
-"bulk-status-ok"
-:
-row.status === "duplicate"
-?
-"bulk-status-dup"
-:
-"bulk-status-err"
-}">
-${
-row.status === "ok"
-?
-"등록 가능"
-:
-row.status === "duplicate"
-?
-"중복"
-:
-"오류"
-}
-</td>
-
-<td>
-${esc(row.message || "")}
-</td>
-
-</tr>
-
-`
-)
-.join("")}
-
-</tbody>
-
-</table>
-
-</div>
-
-<div class="bulk-note">
-최대 200행까지만 미리보기로 표시합니다.
-</div>
-
-`;
+  `;
 
 
-$("bulkRegisterButton").disabled =
-valid === 0;
+  $("bulkPreviewArea").innerHTML = `
+
+  <div class="bulk-preview-wrap">
+
+  <table class="bulk-preview-table">
+
+  <thead>
+
+  <tr>
+  <th>행</th>
+  <th>이름</th>
+  <th>연락처</th>
+  <th>지역</th>
+  <th>판정</th>
+  <th>내용</th>
+  </tr>
+
+  </thead>
+
+  <tbody>
+
+  ${bulkRows
+  .slice(0,200)
+  .map(
+    row=>`
+
+    <tr>
+
+    <td>
+    ${row.rowNumber}
+    </td>
+
+    <td>
+    ${esc(row.data.name)}
+    </td>
+
+    <td>
+    ${esc(formatPhone(row.data.phone))}
+    </td>
+
+    <td>
+    ${esc(row.data.region)}
+    </td>
+
+    <td
+    class="${
+      row.status === "ok"
+      ?
+      "bulk-status-ok"
+      :
+      row.status === "duplicate"
+      ?
+      "bulk-status-dup"
+      :
+      "bulk-status-err"
+    }">
+    ${
+      row.status === "ok"
+      ?
+      "등록 가능"
+      :
+      row.status === "duplicate"
+      ?
+      "중복"
+      :
+      "오류"
+    }
+    </td>
+
+    <td>
+    ${esc(row.message || "")}
+    </td>
+
+    </tr>
+
+    `
+  )
+  .join("")}
+
+  </tbody>
+
+  </table>
+
+  </div>
+
+  <div class="bulk-note">
+  최대 200행까지만 미리보기로 표시합니다.
+  </div>
+
+  `;
+
+
+  $("bulkRegisterButton").disabled =
+  valid === 0;
 
 }
 
@@ -3565,259 +3849,259 @@ valid === 0;
 $("bulkFileInput").onchange =
 async()=>{
 
-const file =
-$("bulkFileInput").files?.[0];
+  const file =
+  $("bulkFileInput").files?.[0];
 
 
-if(!file){
+  if(!file){
 
-return;
+    return;
 
-}
+  }
 
 
-try{
+  try{
 
-$("bulkPreviewArea").textContent =
-"파일 검사 중...";
+    $("bulkPreviewArea").textContent =
+    "파일 검사 중...";
 
 
-const buffer =
-await file.arrayBuffer();
+    const buffer =
+    await file.arrayBuffer();
 
 
-const workbook =
-XLSX.read(
-buffer,
-{
-type:"array",
-cellDates:false
-}
-);
+    const workbook =
+    XLSX.read(
+      buffer,
+      {
+        type:"array",
+        cellDates:false
+      }
+    );
 
 
-const sheetName =
-workbook.SheetNames.includes(
-"01_대량등록"
-)
-?
-"01_대량등록"
-:
-workbook.SheetNames[0];
+    const sheetName =
+    workbook.SheetNames.includes(
+      "01_대량등록"
+    )
+    ?
+    "01_대량등록"
+    :
+    workbook.SheetNames[0];
 
 
-const sheet =
-workbook.Sheets[
-sheetName
-];
+    const sheet =
+    workbook.Sheets[
+      sheetName
+    ];
 
 
-const matrix =
-XLSX.utils.sheet_to_json(
-sheet,
-{
-header:1,
-defval:"",
-raw:false
-}
-);
+    const matrix =
+    XLSX.utils.sheet_to_json(
+      sheet,
+      {
+        header:1,
+        defval:"",
+        raw:false
+      }
+    );
 
 
-let headerIndex = -1;
+    let headerIndex = -1;
 
 
-for(
-let index = 0;
-index < matrix.length;
-index++
-){
+    for(
+      let index = 0;
+      index < matrix.length;
+      index++
+    ){
 
-const headers =
-matrix[index]
-.map(
-normalizeHeader
-);
+      const headers =
+      matrix[index]
+      .map(
+        normalizeHeader
+      );
 
 
-if(
-headers.includes("이름")
-&&
-(
-headers.includes("연락처")
-||
-headers.includes("휴대전화")
-)
-){
+      if(
+        headers.includes("이름")
+        &&
+        (
+          headers.includes("연락처")
+          ||
+          headers.includes("휴대전화")
+        )
+      ){
 
-headerIndex =
-index;
+        headerIndex =
+        index;
 
-break;
+        break;
 
-}
+      }
 
-}
+    }
 
 
-if(
-headerIndex < 0
-){
+    if(
+      headerIndex < 0
+    ){
 
-throw new Error(
-"이름/연락처 헤더를 찾지 못했습니다."
-);
-
-}
+      throw new Error(
+        "이름/연락처 헤더를 찾지 못했습니다."
+      );
+
+    }
 
 
-const headers =
-matrix[
-headerIndex
-];
-
-
-const rows =
-matrix
-.slice(
-headerIndex + 1
-)
-.filter(
-row =>
-row.some(
-cell =>
-String(cell ?? "")
-.trim()
-!==
-""
-)
-)
-.map(
-row =>
-Object.fromEntries(
-headers.map(
-(header,index)=>[
-header,
-row[index]
-??
-""
-]
-)
-)
-);
+    const headers =
+    matrix[
+      headerIndex
+    ];
+
+
+    const rows =
+    matrix
+    .slice(
+      headerIndex + 1
+    )
+    .filter(
+      row =>
+      row.some(
+        cell =>
+        String(cell ?? "")
+        .trim()
+        !==
+        ""
+      )
+    )
+    .map(
+      row =>
+      Object.fromEntries(
+        headers.map(
+          (header,index)=>[
+            header,
+            row[index]
+            ??
+            ""
+          ]
+        )
+      )
+    );
 
 
-bulkRows =
-rows.map(
-(row,index)=>
-parseBulkRow(
-row,
-headerIndex + index + 2
-)
-);
+    bulkRows =
+    rows.map(
+      (row,index)=>
+      parseBulkRow(
+        row,
+        headerIndex + index + 2
+      )
+    );
 
 
-const seen =
-new Set();
+    const seen =
+    new Set();
 
 
-const existing =
-new Set(
-allMembers
-.map(
-member =>
-normalizePhone(
-member.phone
-)
-)
-.filter(Boolean)
-);
+    const existing =
+    new Set(
+      allMembers
+      .map(
+        member =>
+        normalizePhone(
+          member.phone
+        )
+      )
+      .filter(Boolean)
+    );
 
 
-for(
-const row of bulkRows
-){
+    for(
+      const row of bulkRows
+    ){
 
-if(
-row.status === "error"
-){
+      if(
+        row.status === "error"
+      ){
 
-continue;
+        continue;
 
-}
+      }
 
 
-if(
-seen.has(
-row.phoneKey
-)
-){
+      if(
+        seen.has(
+          row.phoneKey
+        )
+      ){
 
-row.status =
-"duplicate";
+        row.status =
+        "duplicate";
 
-row.message =
-"파일 내부 동일 연락처";
+        row.message =
+        "파일 내부 동일 연락처";
 
-continue;
+        continue;
 
-}
+      }
 
 
-seen.add(
-row.phoneKey
-);
+      seen.add(
+        row.phoneKey
+      );
 
 
-if(
-existing.has(
-row.phoneKey
-)
-){
+      if(
+        existing.has(
+          row.phoneKey
+        )
+      ){
 
-row.status =
-"duplicate";
+        row.status =
+        "duplicate";
 
-row.message =
-"기존 회원과 동일 연락처";
+        row.message =
+        "기존 회원과 동일 연락처";
 
-}else{
+      }else{
 
-row.status =
-"ok";
+        row.status =
+        "ok";
 
-}
+      }
 
-}
+    }
 
 
-renderBulkPreview();
+    renderBulkPreview();
 
 
-}catch(error){
+  }catch(error){
 
-bulkRows = [];
+    bulkRows = [];
 
 
-$("bulkSummary")
-.classList
-.add("hidden");
+    $("bulkSummary")
+    .classList
+    .add("hidden");
 
 
-$("bulkPreviewArea").innerHTML = `
+    $("bulkPreviewArea").innerHTML = `
 
-<div class="error">
+    <div class="error">
 
-파일을 읽지 못했습니다.
+    파일을 읽지 못했습니다.
 
-<br>
+    <br>
 
-${esc(error.message)}
+    ${esc(error.message)}
 
-</div>
+    </div>
 
-`;
+    `;
 
-}
+  }
 
 };
 
@@ -3827,149 +4111,159 @@ ${esc(error.message)}
 ========================================= */
 
 async function registerBulkMember(
-row
+  row
 ){
 
-const counterReference =
-doc(
-db,
-"counters",
-"memberNumbers"
-);
+  const counterReference =
+  doc(
+    db,
+    "counters",
+    "memberNumbers"
+  );
 
 
-const memberReference =
-doc(
-collection(
-db,
-"members"
-)
-);
+  const memberReference =
+  doc(
+    collection(
+      db,
+      "members"
+    )
+  );
 
 
-const phoneReference =
-doc(
-db,
-"memberPhones",
-row.phoneKey
-);
+  const phoneReference =
+  doc(
+    db,
+    "memberPhones",
+    row.phoneKey
+  );
 
 
-return runTransaction(
-db,
-async transaction=>{
+  return runTransaction(
+    db,
+    async transaction=>{
 
 
-const phoneSnapshot =
-await transaction.get(
-phoneReference
-);
+      const phoneSnapshot =
+      await transaction.get(
+        phoneReference
+      );
 
 
-const counterSnapshot =
-await transaction.get(
-counterReference
-);
+      const counterSnapshot =
+      await transaction.get(
+        counterReference
+      );
 
 
-if(
-phoneSnapshot.exists()
-){
+      if(
+        phoneSnapshot.exists()
+      ){
 
-throw new Error(
-"DUPLICATE"
-);
+        throw new Error(
+          "DUPLICATE"
+        );
 
-}
-
-
-const current =
-counterSnapshot.exists()
-?
-Number(
-counterSnapshot.data().consumer
-||
-0
-)
-:
-0;
+      }
 
 
-const next =
-current + 1;
+      const current =
+      counterSnapshot.exists()
+      ?
+      Number(
+        counterSnapshot.data().consumer
+        ||
+        0
+      )
+      :
+      0;
 
 
-const memberNumber =
-"NCC-C-"
-+
-String(next)
-.padStart(
-6,
-"0"
-);
+      const next =
+      current + 1;
 
 
-transaction.set(
-counterReference,
-{
-consumer:next
-},
-{
-merge:true
-}
-);
+      const memberNumber =
+      "NCC-C-"
+      +
+      String(next)
+      .padStart(
+        6,
+        "0"
+      );
 
 
-transaction.set(
-phoneReference,
-{
-memberId:
-memberReference.id,
-
-memberNumber:
-memberNumber,
-
-createdAt:
-serverTimestamp()
-}
-);
+      transaction.set(
+        counterReference,
+        {
+          consumer:next
+        },
+        {
+          merge:true
+        }
+      );
 
 
-transaction.set(
-memberReference,
-{
+      transaction.set(
+        phoneReference,
+        {
 
-...row.data,
+          memberId:
+          memberReference.id,
 
-memberNumber:
-memberNumber,
+          memberNumber:
+          memberNumber,
 
-memberType:
-"consumer",
+          createdAt:
+          serverTimestamp()
 
-status:
-"active",
-
-managementGrade:
-"general",
-
-adminMemo:
-"",
-
-joinDate:
-serverTimestamp(),
-
-updatedAt:
-serverTimestamp()
-
-}
-);
+        }
+      );
 
 
-return memberNumber;
+      transaction.set(
+        memberReference,
+        {
 
-}
-);
+          ...row.data,
+
+          phone:
+          formatPhone(
+            row.data.phone
+          ),
+
+          phoneKey:
+          row.phoneKey,
+
+          memberNumber:
+          memberNumber,
+
+          memberType:
+          "consumer",
+
+          status:
+          "active",
+
+          managementGrade:
+          "general",
+
+          adminMemo:
+          "",
+
+          joinDate:
+          serverTimestamp(),
+
+          updatedAt:
+          serverTimestamp()
+
+        }
+      );
+
+
+      return memberNumber;
+
+    }
+  );
 
 }
 
@@ -3982,114 +4276,112 @@ $("bulkRegisterButton").onclick =
 async()=>{
 
 
-const targets =
-bulkRows.filter(
-row =>
-row.status === "ok"
-);
+  const targets =
+  bulkRows.filter(
+    row =>
+    row.status === "ok"
+  );
 
 
-if(!targets.length){
+  if(!targets.length){
 
-return;
+    return;
 
-}
+  }
 
 
-if(
-!confirm(
-`${targets.length}명의 회원을 NCC 회원DB에 최종 등록하시겠습니까?
+  if(
+    !confirm(
+      `${targets.length}명의 회원을 NCC 회원DB에 최종 등록하시겠습니까?
 
 중복 연락처는 등록 과정에서도 다시 검사합니다.`
-)
-){
+    )
+  ){
 
-return;
+    return;
 
-}
-
-
-$("bulkRegisterButton").disabled =
-true;
+  }
 
 
-let success = 0;
-
-let duplicate = 0;
-
-let errors = 0;
-
-const issued = [];
+  $("bulkRegisterButton").disabled =
+  true;
 
 
-for(
-const row of targets
-){
+  let success = 0;
+  let duplicate = 0;
+  let errors = 0;
 
-try{
-
-const memberNumber =
-await registerBulkMember(
-row
-);
+  const issued = [];
 
 
-success++;
+  for(
+    const row of targets
+  ){
+
+    try{
+
+      const memberNumber =
+      await registerBulkMember(
+        row
+      );
 
 
-issued.push(
-`${memberNumber} ${row.data.name}`
-);
+      success++;
 
 
-}catch(error){
-
-if(
-error.message.includes(
-"DUPLICATE"
-)
-){
-
-duplicate++;
-
-}else{
-
-console.error(error);
-
-errors++;
-
-}
-
-}
-
-}
+      issued.push(
+        `${memberNumber} ${row.data.name}`
+      );
 
 
-alert(
-`NCC 회원 대량등록 완료
+    }catch(error){
+
+      if(
+        error.message.includes(
+          "DUPLICATE"
+        )
+      ){
+
+        duplicate++;
+
+      }else{
+
+        console.error(error);
+
+        errors++;
+
+      }
+
+    }
+
+  }
+
+
+  alert(
+    `NCC 회원 대량등록 완료
 
 성공: ${success}명
 중복 제외: ${duplicate}명
 오류: ${errors}명${
-issued.length
-?
-`
+      issued.length
+      ?
+      `
 
 [발급 회원번호]
 ${issued.slice(0,20).join("\n")}`
-:
-""
-}`
-);
+      :
+      ""
+    }`
+  );
 
 
-closeBulk();
+  closeBulk();
 
-await loadMembers();
+  await loadMembers();
 
 
-$("bulkRegisterButton").disabled =
-false;
+  $("bulkRegisterButton").disabled =
+  false;
 
 };
 
