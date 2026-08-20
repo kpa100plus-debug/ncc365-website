@@ -22,8 +22,12 @@
 
 *{box-sizing:border-box}
 
-body{
+html,body{
   margin:0;
+  min-height:100%;
+}
+
+body{
   font-family:Arial,"Noto Sans KR","Malgun Gothic",sans-serif;
   background:var(--bg);
   color:var(--text);
@@ -52,9 +56,7 @@ button,input,select,textarea{font:inherit}
 .login-box h2{margin:0 0 8px}
 .login-box p{margin:0 0 20px;color:var(--sub)}
 
-input,
-select,
-textarea{
+input,select,textarea{
   width:100%;
   border:1px solid var(--border);
   border-radius:10px;
@@ -65,8 +67,7 @@ textarea{
 
 .login-box input{margin-bottom:10px}
 
-.login-button,
-.save-button{
+.login-button,.save-button{
   width:100%;
   border:0;
   border-radius:10px;
@@ -251,6 +252,7 @@ tbody tr:last-child td{border-bottom:0}
 
 .modal{
   width:min(680px,96vw);
+  height:min(760px,88vh);
   max-height:88vh;
   background:#fff;
   border-radius:16px;
@@ -262,11 +264,16 @@ tbody tr:last-child td{border-bottom:0}
 
 .bulk-modal{
   width:min(980px,96vw);
+  height:auto;
+  max-height:88vh;
 }
 
 .modal-header{
+  flex:0 0 auto;
   padding:20px 22px 12px;
   border-bottom:1px solid var(--border);
+  background:#fff;
+  z-index:5;
 }
 
 .modal-title-row{
@@ -278,8 +285,7 @@ tbody tr:last-child td{border-bottom:0}
 
 .modal-title-row h2{margin:0 0 5px}
 
-.modal-desc,
-.section-note{
+.modal-desc,.section-note{
   font-size:12px;
   color:var(--sub);
 }
@@ -292,14 +298,19 @@ tbody tr:last-child td{border-bottom:0}
 }
 
 .crm-tabs{
+  flex:0 0 auto;
   display:flex;
   gap:3px;
   padding:8px 18px 0;
   border-bottom:1px solid var(--border);
-  overflow:auto;
+  overflow-x:auto;
+  overflow-y:hidden;
+  background:#fff;
+  z-index:5;
 }
 
 .crm-tab{
+  flex:0 0 auto;
   border:0;
   background:transparent;
   padding:11px 13px;
@@ -315,8 +326,12 @@ tbody tr:last-child td{border-bottom:0}
 }
 
 .modal-body{
-  padding:20px 22px;
-  overflow:auto;
+  flex:1 1 auto;
+  min-height:0;
+  padding:20px 22px 34px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
 }
 
 .tab-panel{display:none}
@@ -347,11 +362,21 @@ textarea{
   resize:vertical;
 }
 
+.auto-info{
+  margin-top:5px;
+  color:#3a785a;
+  font-size:11px;
+  line-height:1.4;
+}
+
 .modal-actions{
+  flex:0 0 auto;
   display:flex;
   gap:9px;
   padding:13px 22px;
   border-top:1px solid var(--border);
+  background:#fff;
+  z-index:6;
 }
 
 .modal-actions button{
@@ -467,7 +492,7 @@ textarea{
 .hidden{display:none!important}
 
 /* =========================================
-   MOBILE COMPACT
+   MOBILE
 ========================================= */
 
 @media(max-width:768px){
@@ -485,8 +510,6 @@ textarea{
   .info{
     margin-bottom:16px;
   }
-
-  /* SUMMARY 압축 */
 
   .summary-box{
     grid-template-columns:1fr 1fr;
@@ -506,8 +529,6 @@ textarea{
     font-size:24px;
   }
 
-  /* 검색/필터 */
-
   .tools{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -526,8 +547,6 @@ textarea{
     padding:11px;
   }
 
-  /* 4개 관리버튼 모바일 2x2 */
-
   .tools button{
     width:100%;
     min-width:0;
@@ -539,7 +558,7 @@ textarea{
     word-break:keep-all;
   }
 
-  /* 모바일 카드 */
+  /* MOBILE MEMBER CARDS */
 
   .table-wrap{
     background:transparent;
@@ -607,12 +626,6 @@ textarea{
   #memberArea tbody td:nth-child(10)::before{content:"상태"}
   #memberArea tbody td:nth-child(11)::before{content:"관리"}
 
-  /*
-    추천인 / 소속센터 / 가입일은
-    모바일 카드에서 숨김.
-    상세관리에서 확인 가능.
-  */
-
   #memberArea tbody td:nth-child(6),
   #memberArea tbody td:nth-child(7),
   #memberArea tbody td:nth-child(9){
@@ -633,46 +646,98 @@ textarea{
     margin-top:13px;
   }
 
-  /* 상세관리 */
+  /* MOBILE DETAIL MODAL */
 
-  .crm-grid{
-    grid-template-columns:1fr;
+  .modal-backdrop{
+    padding:8px;
+    align-items:center;
   }
 
-  .form-group.full{
-    grid-column:1;
+  #memberModal .modal{
+    width:calc(100vw - 16px);
+    height:calc(100dvh - 30px);
+    max-height:calc(100dvh - 30px);
+    border-radius:18px;
   }
 
-  .modal{
-    width:96vw;
-    max-height:92vh;
+  #memberModal .modal-header{
+    padding:15px 16px 10px;
   }
 
-  .modal-header{
-    padding:16px 16px 10px;
+  #memberModal .modal-title-row h2{
+    font-size:22px;
   }
 
-  .modal-body{
-    padding:17px 16px;
-  }
-
-  .modal-actions{
-    padding:11px 16px;
-  }
-
-  .crm-tabs{
-    padding-left:10px;
+  #memberModal .modal-desc{
+    font-size:11px;
+    line-height:1.45;
     padding-right:10px;
   }
 
-  .crm-tab{
-    padding:10px 11px;
-    font-size:13px;
+  #memberModal .crm-tabs{
+    padding:5px 8px 0;
+    gap:0;
+  }
+
+  #memberModal .crm-tab{
+    flex:1 0 auto;
+    padding:10px 9px;
+    font-size:12px;
+    text-align:center;
+  }
+
+  #memberModal .modal-body{
+    padding:15px 16px 42px;
+  }
+
+  #memberModal .crm-grid{
+    grid-template-columns:1fr;
+    gap:11px;
+  }
+
+  #memberModal .form-group.full{
+    grid-column:1;
+  }
+
+  #memberModal input,
+  #memberModal select,
+  #memberModal textarea{
+    min-height:48px;
+    font-size:15px;
+  }
+
+  #memberModal textarea{
+    min-height:100px;
+  }
+
+  #memberModal .modal-actions{
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    gap:8px;
+  }
+
+  #memberModal .modal-actions button{
+    min-height:46px;
+    padding:9px 12px;
+    font-size:14px;
+  }
+
+  #memberModal .save-button{
+    flex:1;
+  }
+
+  #memberModal .close-button{
+    flex:.65;
+  }
+
+  #memberModal .delete-button{
+    flex:1;
+    margin-left:0;
   }
 
   .bulk-summary{
     grid-template-columns:1fr 1fr;
   }
+
 }
 
 </style>
@@ -681,8 +746,6 @@ textarea{
 <body>
 
 <div class="wrap">
-
-<!-- LOGIN -->
 
 <div id="loginArea" class="login-box">
 
@@ -712,8 +775,6 @@ class="login-button">
 </div>
 
 
-<!-- ADMIN -->
-
 <div id="adminArea">
 
 <h1>전국소비자클럽 회원관리</h1>
@@ -721,6 +782,7 @@ class="login-button">
 <div class="info">
 NCC 회원 CRM 관리 시스템
 </div>
+
 
 <div class="summary-box">
 
@@ -819,13 +881,10 @@ class="logout-button">
 <div class="modal-title-row">
 
 <div>
-
 <h2>회원 상세관리</h2>
-
 <div class="modal-desc">
 회원 가입정보와 CRM 관리정보를 확인하고 수정합니다.
 </div>
-
 </div>
 
 <button
@@ -841,27 +900,19 @@ class="modal-x">
 
 <div class="crm-tabs">
 
-<button
-class="crm-tab active"
-data-tab="basic">
+<button class="crm-tab active" data-tab="basic">
 기본정보
 </button>
 
-<button
-class="crm-tab"
-data-tab="center">
+<button class="crm-tab" data-tab="center">
 추천 · 센터
 </button>
 
-<button
-class="crm-tab"
-data-tab="management">
+<button class="crm-tab" data-tab="management">
 CRM 관리
 </button>
 
-<button
-class="crm-tab"
-data-tab="agreement">
+<button class="crm-tab" data-tab="agreement">
 동의 · 시스템
 </button>
 
@@ -870,7 +921,6 @@ data-tab="agreement">
 
 <div class="modal-body">
 
-<!-- BASIC -->
 
 <div id="tab-basic" class="tab-panel active">
 
@@ -901,7 +951,6 @@ data-tab="agreement">
 </div>
 
 <div class="form-group">
-
 <label>성별</label>
 
 <select id="editGender">
@@ -909,32 +958,24 @@ data-tab="agreement">
 <option value="male">남성</option>
 <option value="female">여성</option>
 </select>
-
 </div>
 
 <div class="form-group">
-
 <label>회원 유형</label>
 <input id="editMemberType" disabled>
-
 </div>
 
 <div class="form-group full">
-
 <label>거주지역 / 주소</label>
 <input id="editRegion">
-
 </div>
 
 <div class="form-group">
-
 <label>관심 혜택</label>
 <input id="editBenefit">
-
 </div>
 
 <div class="form-group">
-
 <label>반려동물 보유 여부</label>
 
 <select id="editHasPet">
@@ -942,15 +983,11 @@ data-tab="agreement">
 <option value="yes">보유</option>
 <option value="no">미보유</option>
 </select>
-
 </div>
 
 </div>
-
 </div>
 
-
-<!-- CENTER -->
 
 <div id="tab-center" class="tab-panel">
 
@@ -968,6 +1005,7 @@ data-tab="agreement">
 <div class="form-group">
 <label>추천코드</label>
 <input id="editReferralCode">
+<div id="referralAutoInfo" class="auto-info"></div>
 </div>
 
 <div class="form-group full">
@@ -978,14 +1016,12 @@ data-tab="agreement">
 <div class="form-group full">
 <label>센터코드</label>
 <input id="editCenterCode">
+<div id="centerAutoInfo" class="auto-info"></div>
 </div>
 
 </div>
-
 </div>
 
-
-<!-- MANAGEMENT -->
 
 <div id="tab-management" class="tab-panel">
 
@@ -996,7 +1032,6 @@ data-tab="agreement">
 <div class="crm-grid">
 
 <div class="form-group">
-
 <label>회원 상태</label>
 
 <select id="editStatus">
@@ -1004,11 +1039,9 @@ data-tab="agreement">
 <option value="paused">정지</option>
 <option value="blocked">차단</option>
 </select>
-
 </div>
 
 <div class="form-group">
-
 <label>관리등급</label>
 
 <select id="editManagementGrade">
@@ -1017,22 +1050,16 @@ data-tab="agreement">
 <option value="vip">VIP</option>
 <option value="special">특별관리</option>
 </select>
-
 </div>
 
 <div class="form-group full">
-
 <label>관리자 메모</label>
 <textarea id="editAdminMemo"></textarea>
-
 </div>
 
 </div>
-
 </div>
 
-
-<!-- AGREEMENT -->
 
 <div id="tab-agreement" class="tab-panel">
 
@@ -1043,57 +1070,38 @@ data-tab="agreement">
 <div class="agree-list">
 
 <div class="agree-card">
-
 <div>
-
 <div class="agree-card-title">
 개인정보 수집 및 이용
 </div>
-
 <div class="agree-card-desc">
 회원가입 필수 동의
 </div>
-
 </div>
 
-<div id="viewAgreePrivacy" class="agree-badge">
--
-</div>
-
+<div id="viewAgreePrivacy" class="agree-badge">-</div>
 </div>
 
 
 <div class="agree-card">
-
 <div>
-
 <div class="agree-card-title">
 마케팅 정보 수신
 </div>
-
 </div>
 
-<div id="viewAgreeMarketing" class="agree-badge">
--
-</div>
-
+<div id="viewAgreeMarketing" class="agree-badge">-</div>
 </div>
 
 
 <div class="agree-card">
-
 <div>
-
 <div class="agree-card-title">
 개인정보 제3자 제공
 </div>
-
 </div>
 
-<div id="viewAgreeThirdParty" class="agree-badge">
--
-</div>
-
+<div id="viewAgreeThirdParty" class="agree-badge">-</div>
 </div>
 
 </div>
@@ -1167,9 +1175,7 @@ class="delete-button">
 
 <div>
 
-<h2>
-회원 대량등록
-</h2>
+<h2>회원 대량등록</h2>
 
 <div class="modal-desc">
 NCC 표준 XLSX/CSV 회원명부를 검사한 뒤 정상 회원만 등록합니다.
@@ -1200,12 +1206,9 @@ type="file"
 accept=".xlsx,.xls,.csv">
 
 <div class="bulk-note">
-
 필수 열: 이름, 연락처, 지역, 개인정보동의
 <br>
-
 회원번호·가입일·상태·관리등급은 자동 생성됩니다.
-
 </div>
 
 <div
@@ -1242,13 +1245,12 @@ class="close-button">
 
 <script type="module">
 
-/* REF-NCC-ADMIN-MOBILE-COMPACT-04 */
+/* REF-NCC-ADMIN-MODAL-STICKY-AUTO-09 */
 
 import {
   initializeApp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 
 import {
   getAuth,
@@ -1257,7 +1259,6 @@ import {
   signOut
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 
 import {
   getFirestore,
@@ -1329,12 +1330,10 @@ $("pagination");
 
 
 let allMembers = [];
-
 let filteredMembers = [];
-
 let selectedMember = null;
-
 let currentPage = 1;
+let bulkRows = [];
 
 const PAGE_SIZE = 20;
 
@@ -1360,14 +1359,10 @@ function formatPhone(value){
 
     return (
       number.slice(0,3)
-      +
-      "-"
-      +
-      number.slice(3,7)
-      +
-      "-"
-      +
-      number.slice(7)
+      + "-"
+      + number.slice(3,7)
+      + "-"
+      + number.slice(7)
     );
 
   }
@@ -1378,28 +1373,20 @@ function formatPhone(value){
 
       return (
         number.slice(0,2)
-        +
-        "-"
-        +
-        number.slice(2,6)
-        +
-        "-"
-        +
-        number.slice(6)
+        + "-"
+        + number.slice(2,6)
+        + "-"
+        + number.slice(6)
       );
 
     }
 
     return (
       number.slice(0,3)
-      +
-      "-"
-      +
-      number.slice(3,6)
-      +
-      "-"
-      +
-      number.slice(6)
+      + "-"
+      + number.slice(3,6)
+      + "-"
+      + number.slice(6)
     );
 
   }
@@ -1408,14 +1395,10 @@ function formatPhone(value){
 
     return (
       number.slice(0,2)
-      +
-      "-"
-      +
-      number.slice(2,5)
-      +
-      "-"
-      +
-      number.slice(5)
+      + "-"
+      + number.slice(2,5)
+      + "-"
+      + number.slice(5)
     );
 
   }
@@ -1449,10 +1432,8 @@ function typeText(value){
     corporate:"법인사업자",
     soleProprietor:"개인사업자"
   })[value]
-  ||
-  value
-  ||
-  "-";
+  || value
+  || "-";
 
 }
 
@@ -1464,23 +1445,17 @@ function statusText(value){
     paused:"정지",
     blocked:"차단"
   })[value]
-  ||
-  value
-  ||
-  "-";
+  || value
+  || "-";
 
 }
 
 
 function statusClass(value){
 
-  if(value === "paused"){
-    return "status-paused";
-  }
+  if(value === "paused") return "status-paused";
 
-  if(value === "blocked"){
-    return "status-blocked";
-  }
+  if(value === "blocked") return "status-blocked";
 
   return "status-active";
 
@@ -1495,10 +1470,8 @@ function gradeText(value){
     vip:"VIP",
     special:"특별관리"
   })[value]
-  ||
-  value
-  ||
-  "-";
+  || value
+  || "-";
 
 }
 
@@ -1635,6 +1608,7 @@ async function loadMembers(){
       )
     );
 
+
     allMembers =
     snapshot.docs
     .map(
@@ -1647,19 +1621,16 @@ async function loadMembers(){
       (a,b)=>{
 
         const timeA =
-        a.joinDate?.seconds
-        ||
-        0;
+        a.joinDate?.seconds || 0;
 
         const timeB =
-        b.joinDate?.seconds
-        ||
-        0;
+        b.joinDate?.seconds || 0;
 
         return timeB - timeA;
 
       }
     );
+
 
     applyFilters();
 
@@ -1667,8 +1638,8 @@ async function loadMembers(){
 
     memberArea.innerHTML =
     `<div class="error">
-    회원정보를 불러오지 못했습니다.<br>
-    ${esc(error.message)}
+      회원정보를 불러오지 못했습니다.<br>
+      ${esc(error.message)}
     </div>`;
 
   }
@@ -1688,11 +1659,14 @@ function applyFilters(){
   .trim()
   .toLowerCase();
 
+
   const type =
   $("memberTypeFilter").value;
 
+
   const status =
   $("statusFilter").value;
+
 
   const grade =
   $("gradeFilter").value;
@@ -1792,7 +1766,7 @@ function renderMembers(){
       text-align:center;
       color:#758078;
     ">
-    표시할 회원이 없습니다.
+      표시할 회원이 없습니다.
     </div>
     `;
 
@@ -1825,17 +1799,17 @@ function renderMembers(){
   <thead>
 
   <tr>
-  <th>NCC 회원번호</th>
-  <th>이름</th>
-  <th>회원유형</th>
-  <th>연락처</th>
-  <th>지역</th>
-  <th>추천인</th>
-  <th>소속센터</th>
-  <th>관리등급</th>
-  <th>가입일</th>
-  <th>상태</th>
-  <th>관리</th>
+    <th>NCC 회원번호</th>
+    <th>이름</th>
+    <th>회원유형</th>
+    <th>연락처</th>
+    <th>지역</th>
+    <th>추천인</th>
+    <th>소속센터</th>
+    <th>관리등급</th>
+    <th>가입일</th>
+    <th>상태</th>
+    <th>관리</th>
   </tr>
 
   </thead>
@@ -1847,55 +1821,55 @@ function renderMembers(){
 
     <tr>
 
-    <td class="member-number">
-    ${esc(member.memberNumber || "미발급")}
-    </td>
+      <td class="member-number">
+        ${esc(member.memberNumber || "미발급")}
+      </td>
 
-    <td>
-    ${esc(member.name)}
-    </td>
+      <td>
+        ${esc(member.name)}
+      </td>
 
-    <td>
-    ${esc(typeText(member.memberType || "consumer"))}
-    </td>
+      <td>
+        ${esc(typeText(member.memberType || "consumer"))}
+      </td>
 
-    <td>
-    ${esc(formatPhone(member.phone))}
-    </td>
+      <td>
+        ${esc(formatPhone(member.phone))}
+      </td>
 
-    <td>
-    ${esc(member.region)}
-    </td>
+      <td>
+        ${esc(member.region)}
+      </td>
 
-    <td>
-    ${esc(member.referrer || "")}
-    </td>
+      <td>
+        ${esc(member.referrer || "")}
+      </td>
 
-    <td class="center-cell">
-    ${esc(member.centerName || "")}
-    </td>
+      <td class="center-cell">
+        ${esc(member.centerName || "")}
+      </td>
 
-    <td>
-    ${esc(gradeText(member.managementGrade || "general"))}
-    </td>
+      <td>
+        ${esc(gradeText(member.managementGrade || "general"))}
+      </td>
 
-    <td>
-    ${esc(fmtDate(member.joinDate))}
-    </td>
+      <td>
+        ${esc(fmtDate(member.joinDate))}
+      </td>
 
-    <td class="${statusClass(member.status || "active")}">
-    ${esc(statusText(member.status || "active"))}
-    </td>
+      <td class="${statusClass(member.status || "active")}">
+        ${esc(statusText(member.status || "active"))}
+      </td>
 
-    <td>
+      <td>
 
-    <button
-    class="manage-button"
-    data-id="${esc(member.id)}">
-    상세관리
-    </button>
+        <button
+        class="manage-button"
+        data-id="${esc(member.id)}">
+        상세관리
+        </button>
 
-    </td>
+      </td>
 
     </tr>
 
@@ -1959,11 +1933,11 @@ function renderPagination(){
     {length:pages},
     (_,index)=>`
 
-    <button
-    class="${currentPage === index + 1 ? "current" : ""}"
-    data-page="${index + 1}">
-    ${index + 1}
-    </button>
+      <button
+      class="${currentPage === index + 1 ? "current" : ""}"
+      data-page="${index + 1}">
+      ${index + 1}
+      </button>
 
     `
   ).join("")}
@@ -1988,6 +1962,7 @@ function renderPagination(){
         const page =
         button.dataset.page;
 
+
         if(page === "prev"){
 
           currentPage--;
@@ -2003,7 +1978,9 @@ function renderPagination(){
 
         }
 
+
         renderMembers();
+
 
         window.scrollTo(
           {
@@ -2043,7 +2020,7 @@ function renderPagination(){
 
 
 /* =========================================
-   MEMBER MODAL
+   MEMBER DETAIL
 ========================================= */
 
 const memberModal =
@@ -2069,9 +2046,7 @@ function openMember(id){
 
 
   $("editName").value =
-  member.name
-  ||
-  "";
+  member.name || "";
 
 
   $("editPhone").value =
@@ -2081,89 +2056,61 @@ function openMember(id){
 
 
   $("editEmail").value =
-  member.email
-  ||
-  "";
+  member.email || "";
 
 
   $("editBirthDate").value =
-  member.birthDate
-  ||
-  "";
+  member.birthDate || "";
 
 
   $("editGender").value =
-  member.gender
-  ||
-  "";
+  member.gender || "";
 
 
   $("editMemberType").value =
   typeText(
-    member.memberType
-    ||
-    "consumer"
+    member.memberType || "consumer"
   );
 
 
   $("editRegion").value =
-  member.region
-  ||
-  "";
+  member.region || "";
 
 
   $("editBenefit").value =
-  member.benefit
-  ||
-  "";
+  member.benefit || "";
 
 
   $("editHasPet").value =
-  member.hasPet
-  ||
-  "";
+  member.hasPet || "";
 
 
   $("editReferrer").value =
-  member.referrer
-  ||
-  "";
+  member.referrer || "";
 
 
   $("editReferralCode").value =
-  member.referralCode
-  ||
-  "";
+  member.referralCode || "";
 
 
   $("editCenterName").value =
-  member.centerName
-  ||
-  "";
+  member.centerName || "";
 
 
   $("editCenterCode").value =
-  member.centerCode
-  ||
-  "";
+  member.centerCode || "";
 
 
   $("editStatus").value =
-  member.status
-  ||
-  "active";
+  member.status || "active";
 
 
   $("editManagementGrade").value =
-  member.managementGrade
-  ||
-  "general";
+  member.managementGrade || "general";
 
 
   $("editAdminMemo").value =
-  member.adminMemo
-  ||
-  "";
+  member.adminMemo || "";
 
 
   $("viewAgreePrivacy").textContent =
@@ -2195,9 +2142,7 @@ function openMember(id){
 
 
   $("viewMemberNumber").textContent =
-  member.memberNumber
-  ||
-  "미발급";
+  member.memberNumber || "미발급";
 
 
   $("viewJoinDate").textContent =
@@ -2212,13 +2157,31 @@ function openMember(id){
   );
 
 
+  $("referralAutoInfo").textContent = "";
+
+  $("centerAutoInfo").textContent = "";
+
+
   memberModal.style.display =
   "flex";
+
+
+  document.body.style.overflow =
+  "hidden";
 
 
   activateTab(
     "basic"
   );
+
+
+  const body =
+  memberModal.querySelector(
+    ".modal-body"
+  );
+
+
+  body.scrollTop = 0;
 
 }
 
@@ -2227,6 +2190,9 @@ function closeMember(){
 
   memberModal.style.display =
   "none";
+
+  document.body.style.overflow =
+  "";
 
   selectedMember = null;
 
@@ -2282,6 +2248,17 @@ function activateTab(tab){
     }
   );
 
+
+  const body =
+  memberModal.querySelector(
+    ".modal-body"
+  );
+
+
+  if(body){
+    body.scrollTop = 0;
+  }
+
 }
 
 
@@ -2296,6 +2273,164 @@ document
     );
 
   }
+);
+
+
+/* =========================================
+   AUTO REFERRER
+========================================= */
+
+function resolveReferrer(){
+
+  const code =
+  $("editReferralCode")
+  .value
+  .trim()
+  .toLowerCase();
+
+
+  if(!code){
+
+    $("referralAutoInfo").textContent = "";
+
+    return;
+
+  }
+
+
+  const found =
+  allMembers.find(
+    member=>{
+
+      const memberNumber =
+      String(
+        member.memberNumber || ""
+      )
+      .trim()
+      .toLowerCase();
+
+
+      const referralCode =
+      String(
+        member.referralCode || ""
+      )
+      .trim()
+      .toLowerCase();
+
+
+      return (
+        memberNumber === code
+        ||
+        referralCode === code
+      );
+
+    }
+  );
+
+
+  if(found){
+
+    $("editReferrer").value =
+    found.name || "";
+
+
+    $("referralAutoInfo").textContent =
+    `자동연결: ${found.name || "-"} / ${found.memberNumber || "-"}`;
+
+  }else{
+
+    $("referralAutoInfo").textContent =
+    "일치하는 기존 회원을 찾지 못했습니다.";
+
+  }
+
+}
+
+
+$("editReferralCode")
+.addEventListener(
+  "change",
+  resolveReferrer
+);
+
+
+$("editReferralCode")
+.addEventListener(
+  "blur",
+  resolveReferrer
+);
+
+
+/* =========================================
+   AUTO CENTER
+========================================= */
+
+function resolveCenter(){
+
+  const code =
+  $("editCenterCode")
+  .value
+  .trim()
+  .toLowerCase();
+
+
+  if(!code){
+
+    $("centerAutoInfo").textContent = "";
+
+    return;
+
+  }
+
+
+  const found =
+  allMembers.find(
+    member=>
+    String(
+      member.centerCode || ""
+    )
+    .trim()
+    .toLowerCase()
+    ===
+    code
+    &&
+    String(
+      member.centerName || ""
+    )
+    .trim()
+  );
+
+
+  if(found){
+
+    $("editCenterName").value =
+    found.centerName || "";
+
+
+    $("centerAutoInfo").textContent =
+    `자동연결: ${found.centerName}`;
+
+  }else{
+
+    $("centerAutoInfo").textContent =
+    "동일 센터코드의 기존 센터명을 찾지 못했습니다.";
+
+  }
+
+}
+
+
+$("editCenterCode")
+.addEventListener(
+  "change",
+  resolveCenter
+);
+
+
+$("editCenterCode")
+.addEventListener(
+  "blur",
+  resolveCenter
 );
 
 
@@ -2720,9 +2855,7 @@ async function issueOneMissing(member){
       counterSnapshot.exists()
       ?
       Number(
-        counterSnapshot.data().consumer
-        ||
-        0
+        counterSnapshot.data().consumer || 0
       )
       :
       0;
@@ -2782,9 +2915,7 @@ async()=>{
     "consumer"
     &&
     !/^NCC-C-\d{6}$/.test(
-      member.memberNumber
-      ||
-      ""
+      member.memberNumber || ""
     )
   );
 
@@ -2815,6 +2946,7 @@ async()=>{
 
   let success = 0;
   let errorCount = 0;
+
   const issued = [];
 
 
@@ -2951,9 +3083,7 @@ async()=>{
   .filter(
     item =>
     /^NCC-C-\d{6}$/.test(
-      item.member.memberNumber
-      ||
-      ""
+      item.member.memberNumber || ""
     )
   );
 
@@ -2974,9 +3104,7 @@ async()=>{
         phoneKey.length > 11
         ||
         !/^NCC-C-\d{6}$/.test(
-          member.memberNumber
-          ||
-          ""
+          member.memberNumber || ""
         )
       );
 
@@ -3083,7 +3211,6 @@ async()=>{
           transaction.update(
             memberReference,
             {
-
               phone:
               formatPhone(
                 item.member.phone
@@ -3094,7 +3221,6 @@ async()=>{
 
               updatedAt:
               serverTimestamp()
-
             }
           );
 
@@ -3149,9 +3275,6 @@ async()=>{
 
 const bulkModal =
 $("bulkImportModal");
-
-
-let bulkRows = [];
 
 
 $("bulkImportButton").onclick =
@@ -3227,9 +3350,7 @@ function valueByAlias(
 
 
   Object.keys(
-    row
-    ||
-    {}
+    row || {}
   )
   .forEach(
     key=>{
@@ -3753,12 +3874,12 @@ function renderBulkPreview(){
   <thead>
 
   <tr>
-  <th>행</th>
-  <th>이름</th>
-  <th>연락처</th>
-  <th>지역</th>
-  <th>판정</th>
-  <th>내용</th>
+    <th>행</th>
+    <th>이름</th>
+    <th>연락처</th>
+    <th>지역</th>
+    <th>판정</th>
+    <th>내용</th>
   </tr>
 
   </thead>
@@ -3772,50 +3893,42 @@ function renderBulkPreview(){
 
     <tr>
 
-    <td>
-    ${row.rowNumber}
-    </td>
+      <td>${row.rowNumber}</td>
 
-    <td>
-    ${esc(row.data.name)}
-    </td>
+      <td>${esc(row.data.name)}</td>
 
-    <td>
-    ${esc(formatPhone(row.data.phone))}
-    </td>
+      <td>${esc(formatPhone(row.data.phone))}</td>
 
-    <td>
-    ${esc(row.data.region)}
-    </td>
+      <td>${esc(row.data.region)}</td>
 
-    <td
-    class="${
-      row.status === "ok"
-      ?
-      "bulk-status-ok"
-      :
-      row.status === "duplicate"
-      ?
-      "bulk-status-dup"
-      :
-      "bulk-status-err"
-    }">
-    ${
-      row.status === "ok"
-      ?
-      "등록 가능"
-      :
-      row.status === "duplicate"
-      ?
-      "중복"
-      :
-      "오류"
-    }
-    </td>
+      <td
+      class="${
+        row.status === "ok"
+        ?
+        "bulk-status-ok"
+        :
+        row.status === "duplicate"
+        ?
+        "bulk-status-dup"
+        :
+        "bulk-status-err"
+      }">
+      ${
+        row.status === "ok"
+        ?
+        "등록 가능"
+        :
+        row.status === "duplicate"
+        ?
+        "중복"
+        :
+        "오류"
+      }
+      </td>
 
-    <td>
-    ${esc(row.message || "")}
-    </td>
+      <td>
+      ${esc(row.message || "")}
+      </td>
 
     </tr>
 
@@ -3981,9 +4094,7 @@ async()=>{
         headers.map(
           (header,index)=>[
             header,
-            row[index]
-            ??
-            ""
+            row[index] ?? ""
           ]
         )
       )
@@ -4171,9 +4282,7 @@ async function registerBulkMember(
       counterSnapshot.exists()
       ?
       Number(
-        counterSnapshot.data().consumer
-        ||
-        0
+        counterSnapshot.data().consumer || 0
       )
       :
       0;
@@ -4207,7 +4316,6 @@ async function registerBulkMember(
       transaction.set(
         phoneReference,
         {
-
           memberId:
           memberReference.id,
 
@@ -4216,7 +4324,6 @@ async function registerBulkMember(
 
           createdAt:
           serverTimestamp()
-
         }
       );
 
@@ -4224,7 +4331,6 @@ async function registerBulkMember(
       transaction.set(
         memberReference,
         {
-
           ...row.data,
 
           phone:
@@ -4255,7 +4361,6 @@ async function registerBulkMember(
 
           updatedAt:
           serverTimestamp()
-
         }
       );
 
