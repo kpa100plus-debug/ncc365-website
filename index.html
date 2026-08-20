@@ -1223,17 +1223,170 @@ footer{
   }
 }
 
+
+/* ==========================================================
+   REF-NCC-WEBSITE-V10-MOBILE-LINKS-38
+   ⑬ 이미지 배치 + ⑭ 메뉴/링크 + ⑮ 모바일 UX
+========================================================== */
+
+/* ⑬ IMAGE PRESENTATION */
+.hero-photo,.life-main,.life-side,.feature>div:first-child,.partner-box>div:first-child,.event-photo{
+  background:linear-gradient(135deg,#e9f2ec,#dce9e0);
+}
+.hero-photo img,.life-main img,.life-side img,.feature img,.partner-box img,.event-photo img,.recommend-visual img{
+  transition:transform .45s ease,filter .35s ease;
+}
+@media(hover:hover){
+  .hero-photo:hover img{transform:scale(1.018)}
+  .life-main:hover img,.life-side:hover img,.recommend-card:hover img{transform:scale(1.035)}
+  .feature:hover img,.partner-box:hover img,.event-box:hover img{transform:scale(1.025)}
+}
+.image-label{
+  position:absolute;z-index:3;left:16px;bottom:16px;
+  padding:7px 10px;border-radius:999px;
+  background:rgba(8,42,29,.72);backdrop-filter:blur(8px);
+  color:#fff;font-size:10px;font-weight:900;letter-spacing:.04em
+}
+
+/* ⑭ ACTIVE/NAVIGATION FEEDBACK */
+.nav-link.current{
+  color:var(--green);
+  background:#f1f7f3;
+}
+.nav-link.current::after{transform:scaleX(1)}
+.quick-item,.category-card,.service,.recommend-card{cursor:pointer}
+.skip-link{
+  position:fixed;left:12px;top:-80px;z-index:9000;
+  padding:10px 14px;border-radius:8px;background:var(--deep);color:#fff;font-weight:800
+}
+.skip-link:focus{top:10px}
+
+/* ⑮ MOBILE FINAL UX */
+.mobile-section-nav{display:none}
+@media(max-width:768px){
+  body{padding-bottom:74px}
+  .notice-strip{position:relative;z-index:2500}
+  .notice-inner{
+    gap:6px;justify-content:flex-start;overflow:hidden;
+    white-space:nowrap;padding-left:2px;padding-right:2px
+  }
+  .notice-inner span{overflow:hidden;text-overflow:ellipsis}
+  .notice-inner a{margin-left:auto;flex:0 0 auto}
+  .mobile-section-nav{
+    display:flex;gap:7px;overflow-x:auto;
+    padding:11px 17px 10px;background:#fff;
+    border-bottom:1px solid #edf1ee;
+    scrollbar-width:none;
+    position:sticky;top:70px;z-index:2200
+  }
+  .mobile-section-nav::-webkit-scrollbar{display:none}
+  .mobile-section-nav a{
+    flex:0 0 auto;padding:8px 11px;border-radius:999px;
+    background:#f2f7f4;color:#52635a;font-size:11px;font-weight:900
+  }
+  .mobile-section-nav a:first-child{background:var(--green);color:#fff}
+
+  section[id]{scroll-margin-top:125px}
+  .hero{padding-top:28px}
+  .hero h1 br{display:none}
+  .hero-desc strong{margin-top:6px}
+  .hero-photo img{object-position:center center}
+
+  .section-head h2 br{display:none}
+  .section-head p{font-size:13px}
+  .benefit-grid{gap:8px}
+  .benefit{border-radius:17px}
+  .benefit strong{line-height:1.35}
+  .life-main{min-height:290px}
+  .life-main img{object-position:center}
+  .life-side img{object-position:center}
+
+  .feature img,.partner-box img,.event-photo img{
+    object-position:center center;
+  }
+
+  .pagination-safe{max-width:100%;overflow-x:auto}
+  button,a{-webkit-tap-highlight-color:transparent}
+  .btn,.nav-link,.nav-toggle,.ncc-mobile-bottom a{touch-action:manipulation}
+
+  .ncc-mobile-bottom{
+    height:74px;
+    grid-template-columns:repeat(5,1fr);
+  }
+  .ncc-mobile-bottom a{
+    min-width:0;
+    padding-top:5px;
+    color:#617068;
+  }
+  .ncc-mobile-bottom a.active{color:var(--green)}
+  .ncc-mobile-bottom a.active::before{background:var(--green)}
+  .ncc-mobile-bottom a:first-child::before{background:transparent}
+  .ncc-mobile-bottom span{font-size:20px}
+}
+
+@media(max-width:390px){
+  .mobile-section-nav{padding-left:13px;padding-right:13px}
+  .notice-inner strong{font-size:10px}
+  .notice-inner span{display:none}
+  .category-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+
+/* ==========================================================
+   REF-NCC-LOGO-FIX-39
+   공식 원본 로고 비율 왜곡 방지
+========================================================== */
+.header{
+  min-height:112px;
+  height:112px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  height:100%;
+}
+.brand img{
+  width:auto !important;
+  height:94px !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  display:block;
+  flex:none;
+}
+@media(max-width:768px){
+  .header{
+    min-height:86px;
+    height:86px;
+  }
+  .brand img{
+    width:auto !important;
+    height:72px !important;
+    max-width:none !important;
+    max-height:none !important;
+  }
+  .header nav.header-nav{
+    top:86px !important;
+    max-height:calc(100dvh - 160px) !important;
+  }
+  .mobile-section-nav{
+    top:86px !important;
+  }
+}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#home">본문 바로가기</a>
 <header class="header">
-<a class="brand" href="index.html"><img src="images/NCC_official_logo.png" alt="전국소비자클럽 공식 로고"></a>
+<a class="brand" href="index.html"><img src="images/NCC_official_logo_web.png" alt="전국소비자클럽 공식 로고"></a>
 <button class="menu" id="menuButton" aria-label="메뉴 열기">☰</button>
 <nav id="mainNav" class="header-nav" aria-label="주요 메뉴">
 <div class="mobile-menu-title">NCC MAIN MENU</div>
 
 <div class="nav-item">
-  <a class="nav-link" href="index.html">전국소비자클럽</a>
+  <a class="nav-link current" href="index.html" aria-current="page">전국소비자클럽</a>
 </div>
 
 <div class="nav-item">
@@ -1288,6 +1441,16 @@ footer{
     <a href="join.html">지금 가입하기 →</a>
   </div>
 </div>
+<nav class="mobile-section-nav" aria-label="모바일 섹션 바로가기">
+  <a href="#home">홈</a>
+  <a href="#benefit">회원혜택</a>
+  <a href="#recommended">추천혜택</a>
+  <a href="#categories">분야별혜택</a>
+  <a href="#center">지역센터</a>
+  <a href="#service">콘텐츠</a>
+  <a href="#events">문화행사</a>
+  <a href="#partner">기업제휴</a>
+</nav>
 
 <main id="home">
 <section class="hero">
@@ -1299,7 +1462,7 @@ footer{
 <div class="buttons"><a class="btn" href="join.html">무료 회원가입</a><a class="btn ghost" href="#benefit">회원 혜택 보기</a></div>
 <div class="hero-badges"><div class="hero-badge"><strong>0원</strong>회원 가입비</div><div class="hero-badge"><strong>3,000+</strong>지역 커뮤니티</div><div class="hero-badge"><strong>전국</strong>지역 혜택 연결</div></div>
 </div>
-<div class="hero-photo"><img src="images/NCC_consumer.jpg" alt="전국소비자클럽 소비자 라이프스타일"></div>
+<div class="hero-photo"><img src="images/NCC_consumer.jpg" alt="전국소비자클럽 소비자 라이프스타일"><span class="image-label">NCC MEMBER LIFE</span></div>
 </div>
 </section>
 <section class="quick" aria-label="핵심 혜택 바로가기">
@@ -1413,7 +1576,7 @@ footer{
 <section class="contact"><div class="contact-box"><div class="contact-copy"><p class="eyebrow">CONTACT</p><h2>전국소비자클럽 상담·문의</h2><p>회원가입·전국소비자센터·기업제휴 관련 문의를 안내합니다.</p></div><div class="contact-actions"><div><a href="tel:15994202" class="phone">1599-4202</a><span class="contact-small">대표전화</span></div><a class="btn ghost" href="join.html">무료 회원가입</a></div></div></section>
 </main>
 <footer><div class="wrap footer-grid"><div class="footer-brand"><strong>전국소비자클럽</strong><p>함께하는 소비의 행복, 더 큰 가치를 만드는 NCC</p></div><div class="footer-links"><a href="index.html">전국소비자클럽</a><a href="join.html">무료 회원가입</a><a href="center.html">전국소비자센터</a><a href="consumer-on.html">소비자ON</a><a href="consumer-tv.html">NCC TV</a><a href="partner.html">기업·소상공인</a></div><div class="footer-bottom"><small>ncc365.com · 대표전화 1599-4202<br>© NCC National Consumer Club. All rights reserved.</small></div></div></footer>
-<nav class="ncc-mobile-bottom" aria-label="모바일 바로가기"><a href="index.html"><span>⌂</span>홈</a><a href="#benefit"><span>🎁</span>혜택</a><a href="center.html"><span>◎</span>센터</a><a href="consumer-on.html"><span>📢</span>콘텐츠</a><a href="join.html"><span>＋</span>가입</a></nav>
+<nav class="ncc-mobile-bottom" aria-label="모바일 바로가기"><a class="active" href="index.html" aria-current="page"><span>⌂</span>홈</a><a href="#benefit"><span>🎁</span>혜택</a><a href="center.html"><span>◎</span>센터</a><a href="consumer-on.html"><span>📢</span>콘텐츠</a><a href="join.html"><span>＋</span>가입</a></nav>
 <a class="desktop-join-shortcut" href="join.html">＋ 무료 회원가입</a>
 <script>
 const menuButton=document.getElementById('menuButton');
