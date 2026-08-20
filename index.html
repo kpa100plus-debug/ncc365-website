@@ -347,13 +347,174 @@ footer p,footer small{color:rgba(255,255,255,.65)}
   .hero h1{font-size:33px}
   .hero-photo img{height:215px}
 }
+
+/* ==========================================================
+   REF-NCC-CLEAN-FULL-59
+   1) 공식 로고 실제 표시 보정
+   2) PC 전체 균형
+   3) 모바일 첫 화면/하단메뉴 보정
+========================================================== */
+
+/* 1. 공식 로고 */
+.header .brand{
+  width:196px !important;
+  height:78px !important;
+  overflow:visible !important;
+}
+.header .brand img{
+  display:block !important;
+  width:auto !important;
+  height:auto !important;
+  max-width:196px !important;
+  max-height:72px !important;
+  object-fit:contain !important;
+  object-position:left center !important;
+  image-rendering:auto !important;
+}
+
+/* 2. PC 화면 균형 */
+@media(min-width:769px){
+  .header{
+    height:88px !important;
+  }
+  .hero{
+    padding-top:52px !important;
+    padding-bottom:48px !important;
+  }
+  .hero-inner{
+    width:min(1240px,calc(100% - 52px)) !important;
+    gap:52px !important;
+  }
+  .hero h1{
+    font-size:clamp(48px,4.7vw,68px) !important;
+  }
+  .hero-photo img{
+    height:400px !important;
+  }
+  .wrap{
+    width:min(1160px,calc(100% - 46px)) !important;
+  }
+  .benefits,.recommended,.visual-life,.categories,.center,.services,.events{
+    padding-top:54px !important;
+    padding-bottom:54px !important;
+  }
+  .section-head{
+    margin-bottom:24px !important;
+  }
+  .section-head h2{
+    font-size:34px !important;
+  }
+  .feature img,.partner-box img{
+    height:340px !important;
+  }
+  .event-photo{
+    min-height:320px !important;
+  }
+}
+
+/* 3. 모바일 첫 화면 */
+@media(max-width:768px){
+  .header{
+    height:72px !important;
+    padding:0 12px !important;
+  }
+  .header .brand{
+    width:144px !important;
+    height:62px !important;
+  }
+  .header .brand img{
+    max-width:144px !important;
+    max-height:58px !important;
+  }
+  .header nav.header-nav{
+    top:72px !important;
+  }
+
+  .hero{
+    padding-top:22px !important;
+    padding-bottom:24px !important;
+  }
+  .hero-inner{
+    width:calc(100% - 22px) !important;
+    gap:15px !important;
+  }
+  .hero h1{
+    font-size:33px !important;
+    line-height:1.09 !important;
+    margin-bottom:12px !important;
+  }
+  .hero-desc{
+    font-size:13px !important;
+    line-height:1.55 !important;
+  }
+  .hero .buttons{
+    margin-top:14px !important;
+    gap:7px !important;
+  }
+  .hero .btn{
+    min-height:46px !important;
+    font-size:12px !important;
+    border-radius:10px !important;
+  }
+  .hero-photo img{
+    height:205px !important;
+    border-radius:18px !important;
+  }
+  .hero-badges{
+    margin-top:10px !important;
+    gap:4px !important;
+  }
+  .hero-badge{
+    min-height:48px !important;
+    padding:6px 2px !important;
+  }
+
+  .quick{
+    padding:9px 0 !important;
+  }
+  .quick-grid{
+    gap:3px !important;
+  }
+  .quick-item{
+    min-height:64px !important;
+    padding:5px 1px !important;
+  }
+  .quick-icon{
+    width:35px !important;
+    height:35px !important;
+    font-size:17px !important;
+  }
+
+  .benefits,.recommended,.categories,.center,.services,.events{
+    padding-top:32px !important;
+    padding-bottom:32px !important;
+  }
+  .section-head{
+    margin-bottom:16px !important;
+  }
+  .section-head h2{
+    font-size:25px !important;
+  }
+
+  .ncc-mobile-bottom{
+    height:68px !important;
+  }
+  .ncc-mobile-bottom a{
+    font-size:10px !important;
+    gap:1px !important;
+  }
+  .ncc-mobile-bottom span{
+    font-size:18px !important;
+  }
+}
+
 </style>
 </head>
 <body>
 
 <header class="header">
   <a class="brand" href="index.html">
-    <img src="images/NCC_official_logo_web.png?v=20260821" alt="전국소비자클럽 공식 로고">
+    <img src="images/NCC_official_logo_web.png?v=20260821-2" alt="전국소비자클럽 공식 로고">
   </a>
   <button class="menu" id="menuButton" aria-label="메뉴 열기">☰</button>
   <nav id="mainNav" class="header-nav" aria-label="주요 메뉴">
