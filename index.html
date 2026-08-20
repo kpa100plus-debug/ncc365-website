@@ -821,6 +821,408 @@
   }
 }
 
+
+/* ==========================================================
+   REF-NCC-WEBSITE-V09-CENTER-CONTENT-37
+   ⑩ 전국소비자센터 + ⑪ 콘텐츠카드 + ⑫ Footer/CTA
+========================================================== */
+
+/* ⑩ CENTER UPGRADE */
+.center{
+  padding:88px 0;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(47,135,91,.06),transparent 28%),
+    #fff;
+}
+.feature{
+  position:relative;
+  grid-template-columns:1.05fr .95fr;
+  border-radius:30px;
+  overflow:hidden;
+  border:1px solid #dfe9e2;
+  box-shadow:0 22px 55px rgba(13,59,41,.11);
+}
+.feature::after{
+  content:"";
+  position:absolute;
+  right:-90px;
+  bottom:-90px;
+  width:240px;
+  height:240px;
+  border-radius:50%;
+  background:rgba(184,149,66,.07);
+  pointer-events:none;
+}
+.feature img{
+  height:470px;
+}
+.feature-copy{
+  position:relative;
+  z-index:1;
+  padding:58px;
+}
+.feature-copy .eyebrow{
+  color:var(--gold);
+}
+.feature-copy h2{
+  font-size:43px;
+  letter-spacing:-.045em;
+}
+.feature-copy p:not(.eyebrow){
+  font-size:16px;
+  line-height:1.8;
+}
+.center-points{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:22px 0 26px;
+}
+.center-point{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:12px 13px;
+  border-radius:12px;
+  background:#f4f8f5;
+  color:#42554a;
+  font-size:13px;
+}
+.center-point b{
+  color:var(--green);
+}
+
+/* NETWORK STATS */
+.network{
+  padding:66px 0;
+}
+.network-stats{
+  margin-top:26px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.network-stat{
+  padding:18px;
+  border:1px solid #dfe9e2;
+  border-radius:16px;
+  background:rgba(255,255,255,.78);
+}
+.network-stat strong{
+  display:block;
+  color:var(--deep);
+  font-size:17px;
+}
+.network-stat span{
+  display:block;
+  margin-top:3px;
+  color:var(--sub);
+  font-size:12px;
+}
+
+/* ⑪ CONTENT CARDS */
+.services{
+  padding:88px 0;
+  background:#fff;
+}
+.service-grid{
+  gap:20px;
+}
+.service{
+  position:relative;
+  overflow:hidden;
+  min-height:275px;
+  padding:30px;
+  border-radius:24px;
+  box-shadow:0 10px 32px rgba(13,59,41,.06);
+  transition:.25s ease;
+}
+.service::after{
+  content:"";
+  position:absolute;
+  right:-34px;
+  bottom:-34px;
+  width:105px;
+  height:105px;
+  border-radius:50%;
+  background:rgba(47,135,91,.055);
+}
+.service:hover{
+  transform:translateY(-5px);
+  box-shadow:0 20px 42px rgba(13,59,41,.11);
+}
+.service .icon{
+  width:58px;
+  height:58px;
+  font-size:28px;
+  border-radius:18px;
+}
+.service h3{
+  font-size:23px;
+}
+.service p{
+  position:relative;
+  z-index:1;
+  min-height:68px;
+  line-height:1.7;
+}
+.service .mini-link{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  padding:9px 12px;
+  border-radius:10px;
+  background:#edf6ef;
+}
+.service:nth-child(1) .icon{background:#eaf7ee}
+.service:nth-child(2) .icon{background:#edf2ff}
+.service:nth-child(3) .icon{background:#fff2dc}
+
+/* ⑫ JOIN / CONTACT / FOOTER */
+.join{
+  position:relative;
+  overflow:hidden;
+  padding:84px 20px;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(86,164,103,.14),transparent 27%),
+    radial-gradient(circle at 85% 0%,rgba(184,149,66,.10),transparent 26%),
+    #f4f8f5;
+}
+.join::before{
+  content:"NCC";
+  position:absolute;
+  left:50%;
+  top:12px;
+  transform:translateX(-50%);
+  font-size:130px;
+  font-weight:900;
+  color:rgba(23,107,66,.035);
+}
+.join>*{
+  position:relative;
+  z-index:1;
+}
+.join h2{
+  font-size:46px;
+}
+.join p:not(.eyebrow){
+  max-width:760px;
+  margin:0 auto;
+  line-height:1.75;
+}
+.join .buttons{
+  margin-top:27px;
+}
+.join .btn{
+  min-width:190px;
+  min-height:54px;
+  border-radius:13px;
+}
+
+.contact{
+  padding:58px 20px;
+  background:#fff;
+}
+.contact-box{
+  width:min(960px,100%);
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:20px;
+  align-items:center;
+  padding:28px 30px;
+  border:1px solid #dfe9e2;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 12px 32px rgba(13,59,41,.06);
+}
+.contact-copy{
+  text-align:left;
+}
+.contact-copy h2{
+  margin:0 0 5px;
+}
+.contact-copy p{
+  margin:0;
+  color:var(--sub);
+}
+.contact-actions{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:12px;
+}
+.phone{
+  font-size:34px;
+}
+.contact-small{
+  display:block;
+  color:var(--sub);
+  font-size:11px;
+  margin-top:3px;
+}
+
+footer{
+  padding:46px 0 34px;
+  background:
+    radial-gradient(circle at 85% 20%,rgba(184,149,66,.08),transparent 22%),
+    #0c2b1f;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:35px;
+}
+.footer-brand strong{
+  font-size:22px;
+}
+.footer-links{
+  display:flex;
+  justify-content:flex-end;
+  gap:18px;
+  flex-wrap:wrap;
+  align-items:flex-start;
+}
+.footer-links a{
+  color:rgba(255,255,255,.76);
+  font-size:12px;
+}
+.footer-links a:hover{
+  color:#fff;
+}
+.footer-bottom{
+  grid-column:1/-1;
+  padding-top:18px;
+  margin-top:8px;
+  border-top:1px solid rgba(255,255,255,.11);
+}
+.footer-bottom small{
+  line-height:1.7;
+}
+
+/* DESKTOP FLOAT */
+.desktop-join-shortcut{
+  border:1px solid rgba(255,255,255,.18);
+}
+
+@media(max-width:768px){
+  .center,.services{
+    padding:52px 0;
+  }
+  .feature{
+    grid-template-columns:1fr;
+    border-radius:21px;
+  }
+  .feature img{
+    height:250px;
+  }
+  .feature-copy{
+    padding:29px 21px 31px;
+  }
+  .feature-copy h2{
+    font-size:31px;
+  }
+  .feature-copy p:not(.eyebrow){
+    font-size:13px;
+  }
+  .center-points{
+    grid-template-columns:1fr;
+    gap:7px;
+    margin:17px 0 20px;
+  }
+  .center-point{
+    padding:10px 11px;
+    font-size:12px;
+  }
+
+  .network{
+    padding:43px 0;
+  }
+  .network-stats{
+    grid-template-columns:1fr;
+    gap:8px;
+    margin-top:20px;
+  }
+  .network-stat{
+    padding:14px;
+  }
+
+  .service{
+    min-height:0;
+    padding:21px;
+    border-radius:18px;
+  }
+  .service .icon{
+    width:48px;
+    height:48px;
+    font-size:23px;
+  }
+  .service h3{
+    font-size:19px;
+  }
+  .service p{
+    min-height:0;
+    font-size:13px;
+  }
+
+  .join{
+    padding:56px 18px;
+  }
+  .join::before{
+    font-size:82px;
+    top:18px;
+  }
+  .join h2{
+    font-size:33px;
+  }
+  .join p:not(.eyebrow){
+    font-size:13px;
+  }
+  .join .buttons{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .join .btn{
+    min-width:0;
+    width:100%;
+  }
+
+  .contact{
+    padding:42px 17px;
+  }
+  .contact-box{
+    grid-template-columns:1fr;
+    padding:21px 18px;
+    border-radius:18px;
+  }
+  .contact-copy{
+    text-align:center;
+  }
+  .contact-actions{
+    justify-content:center;
+    flex-direction:column;
+    gap:6px;
+  }
+  .phone{
+    font-size:30px;
+  }
+
+  footer{
+    padding:38px 0 92px;
+  }
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .footer-links{
+    justify-content:flex-start;
+    gap:13px;
+  }
+  .footer-bottom{
+    grid-column:auto;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -983,8 +1385,8 @@
 </section>
 
 <section class="free"><div class="wrap free-inner"><div class="free-visual"><div class="free-gift">🎁</div><strong>무료로 받아보고<br>직접 경험하세요.</strong><span>전국소비자클럽 회원을 위한<br>상품·서비스 무료 경험 기회</span></div><div class="free-copy"><p class="eyebrow">FREE EXPERIENCE</p><h2>회원에게 더 많은 혜택을<br>돌려주는 소비자 플랫폼</h2><p>기업이 무엇을 더 판매할 것인가만 생각하는 것이 아니라, 소비자가 어떤 혜택을 더 누릴 수 있을지를 먼저 생각합니다.</p><div class="free-points"><div>✓ 가입비 0원</div><div>✓ 상품 무료 경험</div><div>✓ 회원 전용 혜택</div><div>✓ 지역 혜택 연결</div></div></div></div></section>
-<section id="center" class="center"><div class="wrap"><div class="feature"><div><img src="images/NCC_local_store.jpg" alt="전국소비자센터 지역 혜택"></div><div class="feature-copy"><p class="eyebrow">NATIONAL CONSUMER CENTER</p><h2>전국소비자센터<br>우리 지역 혜택의 연결</h2><p>지역 소비자와 기업·소상공인을 연결하고, 가까운 곳의 좋은 상품과 서비스, 할인과 다양한 소비 혜택을 전달합니다.</p><div class="buttons"><a class="btn" href="center.html">전국소비자센터 보기</a></div></div></div></div></section>
-<section class="network"><div class="wrap"><p class="eyebrow">NCC NETWORK</p><b>3,000+</b><h2>전국 지역별 소비자 커뮤니티</h2><p>지역 소비자와 기업·소상공인을 연결하는 전국 네트워크를 확대합니다.</p></div></section>
+<section id="center" class="center"><div class="wrap"><div class="feature"><div><img src="images/NCC_local_store.jpg" alt="전국소비자센터 지역 혜택"></div><div class="feature-copy"><p class="eyebrow">NATIONAL CONSUMER CENTER</p><h2>전국소비자센터<br>우리 지역 혜택의 연결</h2><p>지역 소비자와 기업·소상공인을 연결하고, 가까운 곳의 좋은 상품과 서비스, 할인과 다양한 소비 혜택을 전달합니다.</p><div class="center-points"><div class="center-point"><b>✓</b><span>지역 소비자회원과 가까운 혜택 연결</span></div><div class="center-point"><b>✓</b><span>기업·소상공인 지역 파트너 발굴</span></div><div class="center-point"><b>✓</b><span>지역 행사·문화·공동구매 연계</span></div><div class="center-point"><b>✓</b><span>전국 네트워크와 지역 정보 공유</span></div></div><div class="buttons"><a class="btn" href="center.html">전국소비자센터 보기</a></div></div></div></div></section>
+<section class="network"><div class="wrap"><p class="eyebrow">NCC NETWORK</p><b>3,000+</b><h2>전국 지역별 소비자 커뮤니티</h2><p>지역 소비자와 기업·소상공인을 연결하는 전국 네트워크를 확대합니다.</p><div class="network-stats"><div class="network-stat"><strong>지역 중심 연결</strong><span>지역별 소비자 혜택과 생활정보 공유</span></div><div class="network-stat"><strong>빠른 혜택 전달</strong><span>새로운 제휴·행사·공동구매 정보 연결</span></div><div class="network-stat"><strong>전국 확장</strong><span>지역센터와 커뮤니티를 통한 네트워크 확대</span></div></div></div></section>
 <section id="service" class="services"><div class="wrap"><div class="section-head"><p class="eyebrow">NCC CONTENT & SERVICES</p><h2>혜택과 소비자 정보를<br>쉽고 빠르게</h2></div><div class="service-grid">
 <div class="service"><div class="icon">📢</div><h3>소비자ON</h3><p>회원 혜택, 공동구매, 새로운 상품과 유용한 소비 정보를 확인하세요.</p><a class="mini-link" href="consumer-on.html">소비자ON 보기 →</a></div>
 <div class="service"><div class="icon">📺</div><h3>NCC TV</h3><p>상품·서비스, 현장 이야기와 소비자 혜택을 영상 콘텐츠로 만나보세요.</p><a class="mini-link" href="consumer-tv.html">NCC TV 보기 →</a></div>
@@ -1008,9 +1410,9 @@
 
 <section id="partner" class="partner"><div class="wrap"><div class="partner-box"><div><img src="images/NCC_business.jpg" alt="기업 소상공인 파트너"></div><div class="partner-copy"><p class="eyebrow">NCC PARTNERSHIP</p><h2>판매보다 먼저,<br>소비자에게 더 많은 혜택을</h2><p>기업과 소상공인의 좋은 상품·서비스를 전국 소비자에게 알리고, 소비자에게는 새로운 혜택과 선택의 기회를 연결합니다.</p><div class="buttons"><a class="btn" href="partner.html">기업·소상공인 파트너 등록</a></div></div></div></div></section>
 <section id="join" class="join"><p class="eyebrow">JOIN NATIONAL CONSUMER CLUB</p><h2>가입비 0원.<br>전국소비자클럽 회원가입은 무료입니다.</h2><p>무료 경험 · 공동구매 · 회원 할인 · 여행 · 문화 · 건강 · 생활 · 우리 지역 혜택<br>더 많은 혜택을 지금부터 만나보세요.</p><div class="buttons"><a class="btn" href="join.html">무료 회원가입</a><a class="btn ghost" href="center.html">전국소비자센터</a></div></section>
-<section class="contact"><p class="eyebrow">CONTACT</p><h2>전국소비자클럽 상담·문의</h2><a href="tel:15994202" class="phone">1599-4202</a></section>
+<section class="contact"><div class="contact-box"><div class="contact-copy"><p class="eyebrow">CONTACT</p><h2>전국소비자클럽 상담·문의</h2><p>회원가입·전국소비자센터·기업제휴 관련 문의를 안내합니다.</p></div><div class="contact-actions"><div><a href="tel:15994202" class="phone">1599-4202</a><span class="contact-small">대표전화</span></div><a class="btn ghost" href="join.html">무료 회원가입</a></div></div></section>
 </main>
-<footer><div class="wrap"><strong>전국소비자클럽</strong><p>함께하는 소비의 행복, 더 큰 가치를 만드는 NCC</p><small>ncc365.com · 대표전화 1599-4202<br>© NCC National Consumer Club. All rights reserved.</small></div></footer>
+<footer><div class="wrap footer-grid"><div class="footer-brand"><strong>전국소비자클럽</strong><p>함께하는 소비의 행복, 더 큰 가치를 만드는 NCC</p></div><div class="footer-links"><a href="index.html">전국소비자클럽</a><a href="join.html">무료 회원가입</a><a href="center.html">전국소비자센터</a><a href="consumer-on.html">소비자ON</a><a href="consumer-tv.html">NCC TV</a><a href="partner.html">기업·소상공인</a></div><div class="footer-bottom"><small>ncc365.com · 대표전화 1599-4202<br>© NCC National Consumer Club. All rights reserved.</small></div></div></footer>
 <nav class="ncc-mobile-bottom" aria-label="모바일 바로가기"><a href="index.html"><span>⌂</span>홈</a><a href="#benefit"><span>🎁</span>혜택</a><a href="center.html"><span>◎</span>센터</a><a href="consumer-on.html"><span>📢</span>콘텐츠</a><a href="join.html"><span>＋</span>가입</a></nav>
 <a class="desktop-join-shortcut" href="join.html">＋ 무료 회원가입</a>
 <script>
