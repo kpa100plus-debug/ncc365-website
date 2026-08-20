@@ -355,21 +355,26 @@ footer p,footer small{color:rgba(255,255,255,.65)}
    3) 모바일 첫 화면/하단메뉴 보정
 ========================================================== */
 
-/* 1. 공식 로고 */
+/* REF-NCC-WEBSITE-HEADER-LOGO-FINAL-01 */
+
+/* PC 홈페이지 가로형 공식 로고 */
 .header .brand{
-  width:196px !important;
+  width:300px !important;
   height:78px !important;
+  display:flex !important;
+  align-items:center !important;
+  flex:0 0 auto !important;
   overflow:visible !important;
 }
+
 .header .brand img{
   display:block !important;
   width:auto !important;
-  height:auto !important;
-  max-width:196px !important;
-  max-height:72px !important;
+  height:58px !important;
+  max-width:300px !important;
+  max-height:58px !important;
   object-fit:contain !important;
   object-position:left center !important;
-  image-rendering:auto !important;
 }
 
 /* 2. PC 화면 균형 */
@@ -418,14 +423,24 @@ footer p,footer small{color:rgba(255,255,255,.65)}
     height:72px !important;
     padding:0 12px !important;
   }
-  .header .brand{
-    width:144px !important;
-    height:62px !important;
-  }
-  .header .brand img{
-    max-width:144px !important;
-    max-height:58px !important;
-  }
+/* REF-NCC-MOBILE-HEADER-LOGO-FINAL-01 */
+
+.header .brand{
+  width:205px !important;
+  height:62px !important;
+  display:flex !important;
+  align-items:center !important;
+}
+
+.header .brand img{
+  display:block !important;
+  width:auto !important;
+  height:46px !important;
+  max-width:205px !important;
+  max-height:46px !important;
+  object-fit:contain !important;
+  object-position:left center !important;
+}
   .header nav.header-nav{
     top:72px !important;
   }
@@ -514,7 +529,7 @@ footer p,footer small{color:rgba(255,255,255,.65)}
 
 <header class="header">
   <a class="brand" href="index.html">
-    <img src="images/NCCLOGOF.png?v=20260821-1" alt="전국소비자클럽 공식 로고">
+    <img src="images/NCCLOGOF2.png?v=20260821-02" alt="전국소비자클럽">
   </a>
   <button class="menu" id="menuButton" aria-label="메뉴 열기">☰</button>
   <nav id="mainNav" class="header-nav" aria-label="주요 메뉴">
