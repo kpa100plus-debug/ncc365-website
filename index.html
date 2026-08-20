@@ -1435,6 +1435,351 @@ footer{
   }
 }
 
+
+/* ==========================================================
+   REF-NCC-WEBSITE-V11-OVERALL-QA-41
+   PC/MOBILE 전체 화면 균형 · 중복 압축 · 가독성 최종 조율
+========================================================== */
+
+:root{
+  --section-gap:60px;
+}
+
+/* 전체 폭/리듬 */
+.wrap{width:min(1160px,calc(100% - 40px))}
+.section-head{margin-bottom:26px}
+.section-head h2{font-size:34px;letter-spacing:-.045em}
+.section-head p{font-size:14px;line-height:1.7}
+
+/* 헤더: 로고는 선명하게, 헤더는 너무 높지 않게 */
+.header{
+  min-height:94px !important;
+  height:94px !important;
+}
+.brand img{
+  height:78px !important;
+}
+.header-nav>.nav-join{
+  white-space:nowrap;
+}
+
+/* 첫 화면 압축 */
+.hero{
+  padding:50px 0 48px !important;
+}
+.hero-inner{
+  gap:54px !important;
+}
+.hero h1{
+  font-size:clamp(46px,4.9vw,70px) !important;
+}
+.hero-photo img{
+  height:410px !important;
+}
+.hero-badges{
+  margin-top:18px !important;
+}
+.hero-badge{
+  min-height:62px !important;
+}
+
+/* 핵심 바로가기 */
+.quick{
+  padding:18px 0 !important;
+}
+.quick-item{
+  min-height:88px !important;
+}
+.quick-icon{
+  width:44px !important;
+  height:44px !important;
+  font-size:21px !important;
+}
+
+/* 모든 주요 섹션 세로 길이 통일 */
+.benefits,
+.recommended,
+.visual-life,
+.categories,
+.center,
+.services,
+.events{
+  padding:var(--section-gap) 0 !important;
+}
+.free{
+  padding:56px 0 !important;
+}
+.network{
+  padding:48px 0 !important;
+}
+.partner{
+  padding-bottom:58px !important;
+}
+.join{
+  padding:58px 20px !important;
+}
+.contact{
+  padding:36px 20px !important;
+}
+
+/* 카드 밀도 */
+.benefit{
+  min-height:168px;
+  padding:21px !important;
+}
+.benefit strong{font-size:17px !important}
+.benefit span{font-size:13px !important}
+
+.recommend-visual{height:178px !important}
+.recommend-body{padding:19px !important}
+
+.category-card{
+  min-height:128px !important;
+  padding:16px 8px !important;
+}
+.category-icon{
+  width:50px !important;
+  height:50px !important;
+  font-size:23px !important;
+}
+
+.life-main{min-height:350px !important}
+.life-side{min-height:166px !important}
+
+.free-visual{min-height:280px !important}
+.free-copy h2{font-size:36px !important}
+
+.feature img{height:365px !important}
+.feature-copy{padding:40px !important}
+.feature-copy h2{font-size:35px !important}
+
+.network b{font-size:60px !important}
+
+.service{
+  min-height:220px !important;
+  padding:24px !important;
+}
+.service p{min-height:44px !important}
+
+.event-photo{min-height:340px !important}
+.event-copy{padding:40px !important}
+.event-copy h2{font-size:35px !important}
+
+.partner-box img{height:350px !important}
+.partner-copy{padding:40px !important}
+.partner-copy h2{font-size:35px !important}
+
+.join h2{font-size:38px !important}
+
+/* 데스크톱에서 너무 넓게 퍼지지 않게 */
+@media(min-width:1200px){
+  .hero-inner{width:min(1240px,calc(100% - 60px)) !important}
+}
+
+/* 모바일 전체 압축 및 중복 제거 */
+@media(max-width:768px){
+  :root{--section-gap:36px}
+
+  body{padding-bottom:70px !important}
+  .wrap{width:calc(100% - 28px) !important}
+
+  .header{
+    min-height:78px !important;
+    height:78px !important;
+  }
+  .brand img{
+    height:64px !important;
+  }
+  .header nav.header-nav{
+    top:78px !important;
+    max-height:calc(100dvh - 148px) !important;
+  }
+
+  /* 상단 가로 섹션 메뉴는 화면을 많이 차지하므로 모바일에서는 제거 */
+  .mobile-section-nav{display:none !important}
+
+  .notice-inner{
+    min-height:34px !important;
+    font-size:10px !important;
+    padding:5px 0 !important;
+  }
+
+  .hero{
+    padding:24px 0 26px !important;
+  }
+  .hero-inner{gap:18px !important}
+  .hero h1{
+    font-size:34px !important;
+    margin-bottom:13px !important;
+  }
+  .hero-desc{
+    font-size:13px !important;
+    line-height:1.6 !important;
+  }
+  .hero .buttons{
+    margin-top:16px !important;
+  }
+  .hero .btn{
+    min-height:46px !important;
+    font-size:12px !important;
+  }
+  .hero-badges{
+    margin-top:12px !important;
+  }
+  .hero-badge{
+    min-height:52px !important;
+    font-size:9px !important;
+  }
+  .hero-photo img{
+    height:215px !important;
+  }
+
+  .quick{
+    padding:12px 0 !important;
+  }
+  .quick-item{
+    min-height:70px !important;
+  }
+  .quick-icon{
+    width:38px !important;
+    height:38px !important;
+    font-size:18px !important;
+  }
+
+  .section-head{
+    margin-bottom:18px !important;
+  }
+  .section-head h2{
+    font-size:25px !important;
+  }
+  .section-head p{
+    font-size:12px !important;
+  }
+
+  .benefit{
+    min-height:130px !important;
+    padding:14px 11px !important;
+  }
+  .benefit .icon{
+    width:42px !important;
+    height:42px !important;
+    margin-bottom:9px !important;
+  }
+  .benefit strong{font-size:14px !important}
+  .benefit span{font-size:11px !important}
+
+  .recommend-card{
+    min-height:126px !important;
+    grid-template-columns:105px 1fr !important;
+  }
+  .recommend-visual{
+    min-height:126px !important;
+    height:100% !important;
+  }
+  .recommend-body{
+    padding:13px 12px !important;
+  }
+  .recommend-body h3{font-size:15px !important}
+  .recommend-body p{
+    font-size:11px !important;
+    line-height:1.5 !important;
+  }
+
+  /* 추천혜택과 내용이 겹치는 라이프스타일 3카드는 모바일에서 생략 */
+  .visual-life{
+    display:none !important;
+  }
+
+  .category-grid{
+    grid-template-columns:repeat(4,1fr) !important;
+    gap:6px !important;
+  }
+  .category-card{
+    min-height:92px !important;
+    padding:9px 3px !important;
+  }
+  .category-icon{
+    width:38px !important;
+    height:38px !important;
+    font-size:18px !important;
+    margin-bottom:5px !important;
+  }
+  .category-card strong{font-size:10px !important}
+  .category-card span{display:none !important}
+
+  .free{
+    padding:34px 0 !important;
+  }
+  .free-inner{gap:18px !important}
+  .free-visual{
+    min-height:170px !important;
+  }
+  .free-gift{font-size:40px !important}
+  .free-visual strong{font-size:21px !important}
+  .free-copy h2{font-size:25px !important}
+
+  .feature img{
+    height:210px !important;
+  }
+  .feature-copy{
+    padding:22px 18px !important;
+  }
+  .feature-copy h2{
+    font-size:25px !important;
+  }
+
+  .network{
+    padding:30px 0 !important;
+  }
+  .network b{font-size:46px !important}
+  .network h2{font-size:20px !important}
+
+  .service{
+    min-height:0 !important;
+    padding:17px !important;
+  }
+  .service h3{font-size:17px !important}
+  .service p{
+    min-height:0 !important;
+    font-size:12px !important;
+  }
+
+  .event-photo{
+    min-height:195px !important;
+  }
+  .event-copy{
+    padding:21px 18px !important;
+  }
+  .event-copy h2{
+    font-size:25px !important;
+  }
+
+  .partner-box img{
+    height:205px !important;
+  }
+  .partner-copy{
+    padding:21px 18px !important;
+  }
+  .partner-copy h2{
+    font-size:25px !important;
+  }
+
+  .join{
+    padding:38px 16px !important;
+  }
+  .join h2{
+    font-size:27px !important;
+  }
+
+  .contact-box{
+    padding:17px !important;
+  }
+
+  footer{
+    padding-top:28px !important;
+  }
+}
+
 </style>
 </head>
 <body>
