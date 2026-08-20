@@ -134,6 +134,381 @@
  .header-nav>.nav-join{display:block;margin-top:12px;padding:13px;text-align:center;border-radius:10px}
 }
 
+
+/* ==========================================================
+   REF-NCC-WEBSITE-V07-UX-35
+   ④ PC MENU + ⑤ MOBILE MENU + ⑥ HERO DETAIL UPGRADE
+========================================================== */
+
+/* HEADER / LOGO PROPORTION */
+.header{
+  height:86px;
+  padding:0 max(26px,4.5vw);
+  background:rgba(255,255,255,.975);
+  border-bottom:1px solid #e7eee9;
+  box-shadow:0 6px 24px rgba(13,59,41,.045);
+}
+.brand{
+  display:flex;
+  align-items:center;
+  flex:0 0 auto;
+}
+.brand img{
+  width:220px;
+  max-height:70px;
+  object-fit:contain;
+}
+
+/* PC NAV POLISH */
+.header-nav{
+  gap:4px;
+}
+.nav-link,.nav-toggle{
+  position:relative;
+  min-height:48px;
+  padding:0 11px;
+  border-radius:10px;
+  font-size:14px;
+  transition:.2s;
+}
+.nav-link:hover,.nav-toggle:hover{
+  background:#f3f8f4;
+  color:var(--green);
+}
+.nav-link::after,.nav-toggle::after{
+  content:"";
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:5px;
+  height:2px;
+  border-radius:2px;
+  background:var(--green);
+  transform:scaleX(0);
+  transition:.2s;
+}
+.nav-link:hover::after,.nav-toggle:hover::after,
+.nav-item.open>.nav-toggle::after{
+  transform:scaleX(1);
+}
+.dropdown{
+  top:calc(100% + 10px);
+  min-width:235px;
+  padding:10px;
+  border-radius:17px;
+}
+.dropdown::before{
+  content:"";
+  position:absolute;
+  top:-6px;
+  left:50%;
+  width:12px;
+  height:12px;
+  background:#fff;
+  border-left:1px solid var(--line);
+  border-top:1px solid var(--line);
+  transform:translateX(-50%) rotate(45deg);
+}
+.dropdown a{
+  position:relative;
+  z-index:1;
+  padding:12px 13px!important;
+  border-radius:11px!important;
+}
+.header-nav>.nav-join{
+  margin-left:6px;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 17px;
+  border-radius:12px;
+  box-shadow:0 7px 18px rgba(23,107,66,.16);
+}
+
+/* HERO DETAIL */
+.hero{
+  padding:78px 0 72px;
+  overflow:hidden;
+}
+.hero-inner{
+  grid-template-columns:1.02fr .98fr;
+  gap:72px;
+}
+.hero-copy{
+  position:relative;
+  z-index:2;
+}
+.hero .eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 12px;
+  border-radius:999px;
+  background:#eaf5ed;
+  border:1px solid #d8eadc;
+  margin-bottom:18px;
+}
+.hero .eyebrow::before{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green2);
+}
+.hero h1{
+  max-width:760px;
+  font-size:clamp(50px,5.35vw,78px);
+  line-height:1.03;
+  letter-spacing:-.06em;
+  margin-bottom:24px;
+}
+.hero h1 em{
+  background:linear-gradient(90deg,#318a55,#5ba84e);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.hero-desc{
+  font-size:18px;
+  line-height:1.75;
+  max-width:650px;
+}
+.hero .buttons{
+  margin-top:30px;
+  gap:12px;
+}
+.hero .btn{
+  min-height:56px;
+  padding:0 28px;
+  border-radius:14px;
+  font-size:15px;
+  box-shadow:0 8px 20px rgba(23,107,66,.11);
+}
+.hero .btn.ghost{
+  box-shadow:none;
+  background:rgba(255,255,255,.7);
+}
+.hero-badges{
+  margin-top:25px;
+  max-width:640px;
+}
+.hero-badge{
+  min-height:72px;
+  padding:13px 10px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border-radius:16px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 8px 20px rgba(13,59,41,.05);
+}
+.hero-badge strong{
+  font-size:18px;
+  margin-bottom:2px;
+}
+.hero-photo{
+  isolation:isolate;
+}
+.hero-photo::before{
+  right:-25px;
+  top:-62px;
+  font-size:128px;
+}
+.hero-photo::after{
+  content:"";
+  position:absolute;
+  left:-28px;
+  bottom:-28px;
+  width:145px;
+  height:145px;
+  border-radius:34px;
+  background:linear-gradient(135deg,rgba(184,149,66,.22),rgba(47,135,91,.12));
+  z-index:-1;
+}
+.hero-photo img{
+  height:485px;
+  border-radius:32px;
+  box-shadow:0 32px 72px rgba(19,76,48,.20);
+}
+
+/* QUICK NAV */
+.quick{
+  background:#fff;
+}
+.quick-item{
+  min-height:105px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.quick-icon{
+  box-shadow:inset 0 0 0 1px rgba(23,107,66,.05);
+}
+
+/* MOBILE UX */
+@media(max-width:768px){
+  .header{
+    height:70px;
+    padding:0 14px;
+  }
+  .brand img{
+    width:178px;
+    max-height:58px;
+  }
+  .menu{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:11px;
+    background:#f4f8f5;
+    font-size:26px;
+  }
+  .header nav.header-nav{
+    top:70px;
+    max-height:calc(100dvh - 138px);
+    padding:8px 14px 18px;
+  }
+  .mobile-menu-title{
+    padding:9px 5px 12px;
+  }
+  .nav-item{
+    border:1px solid #edf2ee;
+    border-radius:12px;
+    margin-bottom:7px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .nav-link,.nav-toggle{
+    min-height:50px;
+    padding:0 14px;
+    font-size:14px;
+    border-radius:0;
+  }
+  .nav-link::after,.nav-toggle::after{
+    display:none;
+  }
+  .dropdown{
+    background:#f6faf7;
+    padding:4px 0 6px;
+  }
+  .dropdown a{
+    padding:12px 16px!important;
+    font-size:13px!important;
+  }
+  .header-nav>.nav-join{
+    min-height:50px;
+    margin:9px 0 0;
+    display:flex;
+    justify-content:center;
+    border-radius:12px;
+  }
+
+  .hero{
+    padding:34px 0 34px;
+  }
+  .hero-inner{
+    gap:27px;
+  }
+  .hero .eyebrow{
+    margin-bottom:14px;
+    font-size:10px;
+  }
+  .hero h1{
+    font-size:39px;
+    line-height:1.06;
+    margin-bottom:18px;
+  }
+  .hero-desc{
+    font-size:15px;
+    line-height:1.68;
+  }
+  .hero .buttons{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:22px;
+  }
+  .hero .btn{
+    min-height:50px;
+    padding:0 8px;
+    border-radius:12px;
+    font-size:13px;
+  }
+  .hero-badges{
+    margin-top:16px;
+    gap:6px;
+  }
+  .hero-badge{
+    min-height:62px;
+    padding:8px 3px;
+    border-radius:12px;
+    font-size:9px;
+  }
+  .hero-badge strong{
+    font-size:14px;
+  }
+  .hero-photo{
+    margin-top:1px;
+  }
+  .hero-photo::after{
+    display:none;
+  }
+  .hero-photo img{
+    height:255px;
+    border-radius:21px;
+    box-shadow:0 17px 38px rgba(19,76,48,.14);
+  }
+
+  .quick{
+    padding:15px 0 19px;
+  }
+  .quick-grid{
+    gap:5px;
+  }
+  .quick-item{
+    min-height:83px;
+    padding:8px 2px;
+    border-radius:13px;
+  }
+  .quick-icon{
+    width:42px;
+    height:42px;
+    font-size:20px;
+    margin-bottom:6px;
+  }
+
+  .ncc-mobile-bottom{
+    height:70px;
+    padding:0 4px env(safe-area-inset-bottom);
+  }
+  .ncc-mobile-bottom a{
+    position:relative;
+    font-size:10px;
+  }
+  .ncc-mobile-bottom a::before{
+    content:"";
+    position:absolute;
+    top:4px;
+    width:30px;
+    height:3px;
+    border-radius:3px;
+    background:transparent;
+  }
+  .ncc-mobile-bottom a:first-child::before{
+    background:var(--green);
+  }
+  .ncc-mobile-bottom span{
+    font-size:19px;
+  }
+}
+
+@media(max-width:390px){
+  .brand img{width:164px}
+  .hero h1{font-size:35px}
+  .hero-photo img{height:225px}
+}
+
 </style>
 </head>
 <body>
@@ -188,7 +563,7 @@
   </div>
 </div>
 
-<a class="nav-join" href="join.html">무료가입</a>
+<a class="nav-join" href="join.html">무료 회원가입</a>
 </nav>
 </header>
 
