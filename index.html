@@ -1375,6 +1375,66 @@ footer{
   }
 }
 
+
+/* ==========================================================
+   REF-NCC-DROPDOWN-HOVER-FIX-40
+   드롭다운 이동 중 사라짐 방지
+========================================================== */
+
+/* 핵심: 메뉴 버튼과 드롭다운 사이의 hover 공백 제거 */
+.nav-item{
+  position:relative;
+  padding-bottom:12px; /* hover bridge */
+  margin-bottom:-12px;
+}
+
+/* 드롭다운을 버튼에 더 붙임 */
+.dropdown{
+  top:100% !important;
+  margin-top:0 !important;
+}
+
+/* 투명 hover bridge 추가 */
+.nav-item.has-dropdown::after,
+.nav-item:has(.dropdown)::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:100%;
+  height:14px;
+  background:transparent;
+  z-index:4999;
+}
+
+/* PC에서는 hover 유지 */
+@media(min-width:769px){
+  .nav-item:hover > .dropdown,
+  .nav-item.open > .dropdown{
+    display:block !important;
+  }
+
+  .dropdown:hover{
+    display:block !important;
+  }
+}
+
+/* 모바일에서는 기존 아코디언 방식 유지 */
+@media(max-width:768px){
+  .nav-item{
+    padding-bottom:0;
+    margin-bottom:7px;
+  }
+
+  .nav-item::after{
+    display:none !important;
+  }
+
+  .dropdown{
+    top:auto !important;
+  }
+}
+
 </style>
 </head>
 <body>
