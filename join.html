@@ -237,7 +237,9 @@ label{
   color:var(--danger);
 }
 
-input{
+input,
+select,
+textarea{
   width:100%;
 
   height:50px;
@@ -257,6 +259,13 @@ input{
 
   outline:none;
 }
+
+select{cursor:pointer;}
+textarea{height:auto;min-height:92px;padding-top:14px;resize:vertical;}
+.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.check-option{display:flex;align-items:center;gap:9px;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fafcfb;}
+.check-option input{width:18px;height:18px;flex:0 0 auto;}
+.check-option label{margin:0;font-size:14px;}
 
 input:focus{
   border-color:#7ea68f;
@@ -1007,6 +1016,64 @@ value="">
 </section>
 
 
+
+<!-- REF-NCC-EXTENDED-PROFILE-01 -->
+<section class="section">
+<h2 class="section-title">추가정보 <small>(선택)</small></h2>
+<p class="section-desc">맞춤 혜택 추천을 위한 정보이며 입력하지 않아도 가입할 수 있습니다.</p>
+<div class="form-grid">
+<div class="form-group"><label for="job">직업</label><input id="job" maxlength="60" placeholder="예: 회사원, 자영업"></div>
+<div class="form-group"><label for="maritalStatus">결혼 여부</label><select id="maritalStatus"><option value="">선택 안 함</option><option value="single">미혼</option><option value="married">기혼</option><option value="other">기타</option></select></div>
+<div class="form-group"><label for="familyComposition">가족 구성</label><input id="familyComposition" maxlength="100" placeholder="예: 자녀 포함 4인"></div>
+<div class="form-group"><label for="preferredPriceRange">선호 가격대</label><select id="preferredPriceRange"><option value="">선택 안 함</option><option value="value">실속형</option><option value="mid">중간 가격대</option><option value="premium">프리미엄</option></select></div>
+<div class="form-group full"><label>관심 분야</label><div class="check-grid" id="interestFields">
+<span class="check-option"><input id="interestBeauty" type="checkbox" value="beauty-health"><label for="interestBeauty">건강·뷰티</label></span>
+<span class="check-option"><input id="interestGroupbuy" type="checkbox" value="groupbuy"><label for="interestGroupbuy">공동구매</label></span>
+<span class="check-option"><input id="interestLocal" type="checkbox" value="local-benefit"><label for="interestLocal">지역 혜택</label></span>
+<span class="check-option"><input id="interestCulture" type="checkbox" value="culture-leisure"><label for="interestCulture">문화·여가</label></span>
+</div></div>
+<div class="form-group full"><label for="preferredProducts">선호 상품</label><input id="preferredProducts" maxlength="200" placeholder="예: 건강식품, 생활용품, 화장품"></div>
+<div class="form-group full"><label for="preferredServices">선호 서비스</label><input id="preferredServices" maxlength="200" placeholder="예: 건강검진, 미용, 여행, 외식"></div>
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">특별정보 <small>(선택)</small></h2>
+<p class="section-desc">더 적합한 생활 혜택 안내에만 활용합니다.</p>
+<div class="form-grid">
+<div class="form-group"><label for="petType">반려동물 종류</label><input id="petType" maxlength="80" placeholder="예: 강아지, 고양이"></div>
+<div class="form-group"><label for="hasVehicle">차량 보유 여부</label><select id="hasVehicle"><option value="">선택 안 함</option><option value="yes">보유</option><option value="no">미보유</option></select></div>
+<div class="form-group"><label for="housingType">주거 형태</label><select id="housingType"><option value="">선택 안 함</option><option value="apartment">아파트</option><option value="house">주택</option><option value="officetel">오피스텔</option><option value="other">기타</option></select></div>
+<div class="form-group"><label for="travelInterests">여행 관심 분야</label><input id="travelInterests" maxlength="150" placeholder="예: 국내여행, 호텔, 캠핑"></div>
+<div class="form-group full"><label for="healthInterests">건강 관심 분야</label><input id="healthInterests" maxlength="150" placeholder="예: 검진, 관절, 영양, 운동"></div>
+<div class="form-group full"><label for="lifeServiceInterests">생활서비스 관심 분야</label><input id="lifeServiceInterests" maxlength="150" placeholder="예: 청소, 세탁, 이사, 돌봄"></div>
+</div>
+<div class="agree"><input id="agreeProfileUse" type="checkbox"><label for="agreeProfileUse">[선택] 추가 프로필을 맞춤 혜택 안내에 활용하는 데 동의합니다.</label></div>
+</section>
+
+<section class="section">
+<h2 class="section-title">소비정보 <small>(선택)</small></h2>
+<p class="section-desc">NCC 혜택과 공동구매 기획을 위한 선택정보입니다.</p>
+<div class="form-grid">
+<div class="form-group"><label for="frequentPurchases">자주 구매하는 품목</label><input id="frequentPurchases" maxlength="200" placeholder="예: 식품, 생활용품"></div>
+<div class="form-group"><label for="onlineMalls">주 이용 온라인몰</label><input id="onlineMalls" maxlength="150" placeholder="복수 입력 가능"></div>
+<div class="form-group"><label for="monthlySpendRange">월평균 소비구간</label><select id="monthlySpendRange"><option value="">선택 안 함</option><option value="under-300k">30만원 미만</option><option value="300k-700k">30~70만원</option><option value="700k-1500k">70~150만원</option><option value="over-1500k">150만원 이상</option></select></div>
+<div class="form-group"><label for="purchaseMethod">선호 구매방식</label><select id="purchaseMethod"><option value="">선택 안 함</option><option value="online">온라인</option><option value="offline">오프라인</option><option value="both">온라인·오프라인 모두</option></select></div>
+<div class="form-group"><label for="experienceInterests">무료 경험 관심 분야</label><input id="experienceInterests" maxlength="150" placeholder="예: 뷰티, 건강, 생활"></div>
+<div class="form-group"><label for="reviewAvailable">후기 참여 가능 여부</label><select id="reviewAvailable"><option value="">선택 안 함</option><option value="yes">가능</option><option value="no">어려움</option></select></div>
+</div>
+</section>
+
+<section class="section">
+<h2 class="section-title">기본 배송지</h2>
+<p class="section-desc">공동구매 신청 시 자동입력됩니다. 상세주소는 외부에 공개되지 않습니다.</p>
+<div class="form-grid">
+<div class="form-group"><label for="postalCode">우편번호</label><input id="postalCode" inputmode="numeric" maxlength="10" placeholder="우편번호"></div>
+<div class="form-group"><label for="recipientName">수령인</label><input id="recipientName" maxlength="50" autocomplete="name" placeholder="회원 본인과 다를 때 입력"></div>
+<div class="form-group full"><label for="address">도로명주소</label><input id="address" maxlength="200" autocomplete="address-line1" placeholder="도로명주소"></div>
+<div class="form-group full"><label for="addressDetail">상세주소</label><input id="addressDetail" maxlength="150" autocomplete="address-line2" placeholder="동·호수 등 상세주소"></div>
+</div>
+</section>
 
 <!-- =========================
      추천 / 센터
@@ -1884,7 +1951,8 @@ number
 ================================ */
 
 async function saveMember(
-memberData
+memberData,
+profileData
 ){
 
 const phoneKey =
@@ -1923,6 +1991,13 @@ doc(
 db,
 "memberPhones",
 phoneKey
+);
+
+const profileRef =
+doc(
+db,
+"memberProfiles",
+memberRef.id
 );
 
 
@@ -2058,6 +2133,21 @@ serverTimestamp(),
 updatedAt:
 serverTimestamp()
 
+}
+);
+
+// 4. 기존 members 스키마와 분리된 확장 프로필 저장
+transaction.set(
+profileRef,
+{
+...profileData,
+memberId:memberRef.id,
+memberNumber:memberNumber,
+email:memberData.email,
+phoneKey:phoneKey,
+profileVersion:1,
+createdAt:serverTimestamp(),
+updatedAt:serverTimestamp()
 }
 );
 
@@ -2321,12 +2411,21 @@ document
 
 };
 
+const value = id => document.getElementById(id).value.trim();
+const profileData = {
+basic:{postalCode:value("postalCode"),address:value("address"),addressDetail:value("addressDetail"),recipientName:value("recipientName")||name},
+additional:{job:value("job"),maritalStatus:value("maritalStatus"),familyComposition:value("familyComposition"),interests:Array.from(document.querySelectorAll("#interestFields input:checked")).map(item=>item.value),preferredProducts:value("preferredProducts"),preferredServices:value("preferredServices"),preferredPriceRange:value("preferredPriceRange")},
+special:{petType:value("petType"),hasVehicle:value("hasVehicle"),housingType:value("housingType"),healthInterests:value("healthInterests"),travelInterests:value("travelInterests"),lifeServiceInterests:value("lifeServiceInterests"),agreeProfileUse:document.getElementById("agreeProfileUse").checked},
+consumer:{frequentPurchases:value("frequentPurchases"),onlineMalls:value("onlineMalls"),monthlySpendRange:value("monthlySpendRange"),purchaseMethod:value("purchaseMethod"),experienceInterests:value("experienceInterests"),reviewAvailable:value("reviewAvailable")}
+};
+
 
 
 const memberNumber =
 
 await saveMember(
-memberData
+memberData,
+profileData
 );
 
 

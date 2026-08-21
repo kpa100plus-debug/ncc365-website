@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>내 정보·배송지 | NCC 월렛</title><link rel="stylesheet" href="css/platform.css"><link rel="stylesheet" href="css/profile.css"></head>
+<body data-page="wallet"><main id="mainContent" class="platform-main">
+<section class="page-hero compact"><p class="hero-kicker">NCC MEMBER PROFILE</p><h1>내 정보와 배송지 관리</h1><p class="lead">회원정보와 공동구매에 사용할 배송지를 안전하게 관리합니다.</p></section>
+<section class="platform-section paper profile-layout">
+<aside class="profile-nav" aria-label="마이페이지 메뉴"><a href="wallet.html">NCC 월렛</a><a class="active" href="profile.html">내 정보·배송지</a><a href="benefits.html">혜택 신청</a><a href="groupbuy.html">공동구매</a></aside>
+<div class="profile-content"><div id="profileStatus" class="empty-state">회원정보를 확인하고 있습니다.</div>
+<form id="profileForm" class="form-panel" hidden><div class="section-head small"><div><p class="eyebrow">MEMBER PROFILE</p><h2>추가·특별·소비정보</h2><p>선택정보는 언제든 수정할 수 있습니다.</p></div></div>
+<div class="form-grid">
+<div class="field"><label>직업</label><input name="job" maxlength="60"></div><div class="field"><label>가족 구성</label><input name="familyComposition" maxlength="100"></div>
+<div class="field wide"><label>관심 분야</label><input name="interests" maxlength="250" placeholder="쉼표로 구분: 건강·뷰티, 공동구매, 여행"></div>
+<div class="field"><label>선호 상품</label><input name="preferredProducts" maxlength="200"></div><div class="field"><label>선호 서비스</label><input name="preferredServices" maxlength="200"></div>
+<div class="field"><label>건강 관심 분야</label><input name="healthInterests" maxlength="150"></div><div class="field"><label>여행 관심 분야</label><input name="travelInterests" maxlength="150"></div>
+<div class="field"><label>자주 구매하는 품목</label><input name="frequentPurchases" maxlength="200"></div><div class="field"><label>주 이용 온라인몰</label><input name="onlineMalls" maxlength="150"></div>
+</div><button class="ncc-button gold" type="submit">내 정보 저장</button><p id="profileMessage" role="status"></p></form>
+<section id="addressSection" class="form-panel" hidden><div class="section-head small"><div><p class="eyebrow">SAVED ADDRESS</p><h2>저장된 배송지</h2><p>기본 배송지는 공동구매 신청서에 자동입력됩니다.</p></div><button id="addAddress" class="ncc-button" type="button">배송지 추가</button></div><div id="addressList" class="address-list"></div>
+<form id="addressForm" class="address-editor" hidden><input name="addressId" type="hidden"><div class="form-grid"><div class="field"><label>배송지명 *</label><input name="label" required maxlength="30" placeholder="예: 집"></div><div class="field"><label>수령인 *</label><input name="recipient" required maxlength="50"></div><div class="field"><label>연락처 *</label><input name="phone" required maxlength="30"></div><div class="field"><label>우편번호</label><input name="postalCode" maxlength="10"></div><div class="field wide"><label>도로명주소 *</label><input name="address" required maxlength="200"></div><div class="field wide"><label>상세주소</label><input name="addressDetail" maxlength="150"></div><div class="field wide check-line"><input name="isDefault" id="addressDefault" type="checkbox"><label for="addressDefault">기본 배송지로 지정</label></div></div><div class="button-row"><button class="ncc-button gold" type="submit">배송지 저장</button><button id="cancelAddress" class="ncc-button" type="button">취소</button></div><p id="addressMessage" role="status"></p></form></section></div>
+</section></main><script src="js/platform-shell.js"></script><script type="module" src="js/profile.js"></script></body></html>

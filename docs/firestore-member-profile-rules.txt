@@ -1,0 +1,97 @@
+// REF-NCC-FIRESTORE-MEMBER-PROFILE-01
+// 기존 DEFAULT DENY 바로 위에 추가합니다.
+
+function ownsMember(memberId) {
+  return request.auth != null
+    && request.auth.token.email != null
+    && get(/databases/$(database)/documents/members/$(memberId)).data.email
+       == request.auth.token.email;
+}
+
+match /memberProfiles/{memberId} {
+  // 공개 회원가입 transaction 안에서 members와 동시에 최초 생성
+  allow create: if
+    request.resource.data.keys().hasAll([
+      "memberId", "memberNumber", "email", "phoneKey",
+      "profileVersion", "basic", "additional", "special", "consumer",
+      "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "memberNumber", "email", "phoneKey",
+      "profileVersion", "basic", "additional", "special", "consumer",
+      "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId == memberId
+    && request.resource.data.profileVersion == 1
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time
+    && getAfter(/databases/$(database)/documents/members/$(memberId)).data.memberNumber
+       == request.resource.data.memberNumber
+    && getAfter(/databases/$(database)/documents/members/$(memberId)).data.email
+       == request.resource.data.email
+    && getAfter(/databases/$(database)/documents/members/$(memberId)).data.phoneKey
+       == request.resource.data.phoneKey;
+
+  allow read: if isAdmin() || ownsMember(memberId);
+
+  allow update: if
+    isAdmin()
+    || (
+      ownsMember(memberId)
+      && request.resource.data.memberId == resource.data.memberId
+      && request.resource.data.memberNumber == resource.data.memberNumber
+      && request.resource.data.email == resource.data.email
+      && request.resource.data.phoneKey == resource.data.phoneKey
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.updatedAt == request.time
+    );
+
+  allow delete: if isAdmin();
+}
+
+match /memberAddresses/{addressId} {
+  allow create: if
+    request.auth != null
+    && request.resource.data.memberId is string
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.keys().hasAll([
+      "memberId", "label", "recipient", "phone", "postalCode",
+      "address", "addressDetail", "isDefault", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "label", "recipient", "phone", "postalCode",
+      "address", "addressDetail", "isDefault", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.label is string
+    && request.resource.data.label.size() >= 1
+    && request.resource.data.label.size() <= 30
+    && request.resource.data.recipient is string
+    && request.resource.data.recipient.size() >= 1
+    && request.resource.data.recipient.size() <= 50
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 9
+    && request.resource.data.phone.size() <= 30
+    && request.resource.data.postalCode is string
+    && request.resource.data.postalCode.size() <= 10
+    && request.resource.data.address is string
+    && request.resource.data.address.size() >= 1
+    && request.resource.data.address.size() <= 200
+    && request.resource.data.addressDetail is string
+    && request.resource.data.addressDetail.size() <= 150
+    && request.resource.data.isDefault is bool
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin() || ownsMember(resource.data.memberId);
+
+  allow update: if
+    isAdmin()
+    || (
+      ownsMember(resource.data.memberId)
+      && request.resource.data.memberId == resource.data.memberId
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.updatedAt == request.time
+    );
+
+  allow delete: if isAdmin() || ownsMember(resource.data.memberId);
+}

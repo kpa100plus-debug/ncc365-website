@@ -61,6 +61,12 @@ Existing public URLs remain as compatibility entry points until migration is com
 ### reviews
 `reviewNumber, memberId, experienceId, groupBuyId, rating, content, imageUrls, reviewStatus, createdAt, updatedAt`
 
+### memberProfiles (compatibility extension)
+Document ID equals the existing `members` document ID. Optional signup/profile fields are grouped into `basic`, `additional`, `special`, and `consumer` maps so the strict production `members` schema and existing CRM remain intact.
+
+### memberAddresses
+`memberId, label, recipient, phone, postalCode, address, addressDetail, isDefault, createdAt, updatedAt`. A member may own multiple addresses; authorization is derived from the linked `members.email` and Firebase Authentication email.
+
 ### centers
 `centerCode, centerName, centerLevel, parentCenterCode, regionCode, leaderMemberId, leaderName, phone, status, createdAt, updatedAt`
 

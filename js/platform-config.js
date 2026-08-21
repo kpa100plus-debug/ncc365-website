@@ -8,3 +8,5 @@ export const NCC_PLATFORM={
   applicationStatuses:{new:"신규",checking:"확인중",contacted:"연락완료",approved:"승인",hold:"보류"},
   centerLevels:{HEADQUARTERS:"본사",PROVINCE:"시·도 센터",CITY_COUNTY:"시·군·구 센터",TOWN:"읍·면·동 센터"}
 };
+
+export const firebaseConfig={apiKey:"AIzaSyBHL7qCPUwcp9Vp_1dYWfCk2qBvRgJ9mcM",authDomain:"ncc-member.firebaseapp.com",projectId:"ncc-member",storageBucket:"ncc-member.firebasestorage.app",messagingSenderId:"772423138834",appId:"1:772423138834:web:753b6d6dc6f394904822cb"};
