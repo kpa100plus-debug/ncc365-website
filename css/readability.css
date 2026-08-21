@@ -1,0 +1,10 @@
+body{font-size:18px!important;line-height:1.75!important}
+p,li,label{font-size:17px!important;line-height:1.75!important}
+input,select,textarea,button{font-size:17px!important;min-height:48px}
+.header{min-height:88px!important;height:auto!important}
+.header a{font-size:16px}
+.logo img,.brand img{max-height:68px!important;width:auto!important;max-width:230px!important;object-fit:contain!important}
+h1{line-height:1.22!important}h2{line-height:1.35!important}
+.container,.page,.consumer-page,.tv-page{width:min(100% - 36px,1280px)!important}
+.card,.info-card,.benefit-card{line-height:1.7}
+@media(max-width:700px){body{font-size:17px!important}p,li,label{font-size:16px!important}.header{min-height:76px!important}.logo img,.brand img{max-width:180px!important}input,select,textarea,button{font-size:16px!important}}
