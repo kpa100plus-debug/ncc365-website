@@ -1,460 +1,419 @@
-*{
-  box-sizing:border-box;
+/* ===================================
+   NCC WEBSITE MAIN STYLE
+   REF-NCC-WEBSITE-CSS-01
+=================================== */
+
+
+:root {
+
+    --ncc-navy:#0b1f3a;
+    --ncc-gold:#c8a24a;
+    --ncc-green:#1d8f5a;
+    --text:#222;
+    --white:#ffffff;
+    --light:#f7f8fa;
+
 }
 
-html{
-  scroll-behavior:smooth;
+
+* {
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
 }
 
-body{
-  margin:0;
-  font-family:Arial,"Noto Sans KR",sans-serif;
-  color:#13291d;
-  background:#fff;
-  overflow-x:hidden;
-}
 
-a{
-  color:inherit;
-  text-decoration:none;
-}
+body {
 
-img{
-  display:block;
-  width:100%;
-}
+    font-family:
+    "Pretendard",
+    "Noto Sans KR",
+    sans-serif;
 
-.header{
-  height:76px;
-  padding:0 5%;
-  display:flex;
-  align-items:center;
-  background:#fff;
-  border-bottom:1px solid #e6ebe7;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-
-.brand img{
-  width:205px;
-  height:auto;
-}
-
-.header nav{
-  display:flex;
-  gap:22px;
-  margin-left:auto;
-  font-size:14px;
-  font-weight:800;
-}
-
-.menu{
-  display:none;
-  margin-left:auto;
-  padding:0;
-  border:0;
-  background:none;
-  font-size:34px;
-}
-
-.eyebrow{
-  margin:0 0 10px;
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:1.5px;
-  color:#478460;
-}
-
-.hero{
-  min-height:520px;
-  padding:55px 6%;
-  display:grid;
-  grid-template-columns:1fr .9fr;
-  align-items:center;
-  gap:42px;
-  background:linear-gradient(135deg,#f5faf6,#eaf4ec);
-}
-
-.hero h1{
-  margin:0;
-  font-size:clamp(42px,5vw,65px);
-  line-height:1.08;
-  letter-spacing:-2px;
-}
-
-.hero h1 em{
-  display:block;
-  margin-top:8px;
-  color:#50a94b;
-  font-style:normal;
-}
-
-.hero-desc{
-  margin:22px 0 0;
-  color:#5d6962;
-  font-size:18px;
-  line-height:1.65;
-}
-
-.hero-desc strong{
-  display:block;
-  margin-top:5px;
-  color:#344d3e;
-}
-
-.hero-photo img{
-  height:350px;
-  object-fit:cover;
-  border-radius:24px;
-}
-
-.buttons{
-  display:flex;
-  gap:10px;
-  margin-top:25px;
-}
-
-.buttons a,
-.feature-button{
-  display:inline-block;
-  padding:15px 23px;
-  background:#176b42;
-  color:#fff;
-  font-weight:900;
-  border-radius:10px;
-  text-align:center;
-}
-
-.buttons .outline{
-  background:transparent;
-  color:#176b42;
-  border:2px solid #176b42;
-}
-
-.benefits{
-  padding:55px 6%;
-}
-
-.section-title{
-  text-align:center;
-}
-
-.section-title h2{
-  margin:0 0 30px;
-  font-size:38px;
-  line-height:1.2;
-}
-
-.benefit-grid{
-  max-width:1100px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-
-.benefit-card{
-  padding:25px 18px;
-  border:1px solid #e0e6e2;
-  border-radius:18px;
-  background:#fff;
-  text-align:center;
-}
-
-.benefit-card b{
-  display:block;
-  font-size:30px;
-  margin-bottom:9px;
-}
-
-.benefit-card strong{
-  display:block;
-  font-size:20px;
-  margin-bottom:8px;
-}
-
-.benefit-card span{
-  color:#69756d;
-  font-size:15px;
-  line-height:1.5;
-}
-
-.feature{
-  max-width:1180px;
-  margin:0 auto 55px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  overflow:hidden;
-  border-radius:24px;
-  background:#f4f7f5;
-}
-
-.feature > img{
-  height:380px;
-  object-fit:cover;
-}
-
-.feature-copy{
-  padding:45px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-
-.feature-copy h2{
-  margin:0 0 18px;
-  font-size:38px;
-  line-height:1.15;
-}
-
-.feature-copy > p:not(.eyebrow){
-  margin:0;
-  color:#68756d;
-  font-size:17px;
-  line-height:1.7;
-}
-
-.feature-dark{
-  background:#103c2b;
-  color:#fff;
-}
-
-.feature-dark .eyebrow{
-  color:#8bc89d;
-}
-
-.feature-dark .feature-copy > p:not(.eyebrow){
-  color:#d0ddd5;
-}
-
-.feature-dark .feature-button{
-  margin-top:22px;
-  align-self:flex-start;
-  background:#1a7749;
-}
-
-.service-list{
-  display:grid;
-  gap:8px;
-}
-
-.service-list div{
-  padding:14px 16px;
-  background:#fff;
-  border-radius:10px;
-}
-
-.service-list strong{
-  display:block;
-  margin-bottom:3px;
-  font-size:18px;
-}
-
-.service-list span{
-  color:#6b776f;
-  font-size:15px;
-}
-
-.join{
-  padding:60px 6%;
-  text-align:center;
-  background:#f4f7f5;
-}
-
-.join h2{
-  margin:0 0 18px;
-  font-size:40px;
-  line-height:1.18;
-}
-
-.join > p:not(.eyebrow){
-  margin:0;
-  font-size:17px;
-  line-height:1.7;
-}
-
-.join .buttons{
-  justify-content:center;
-}
-
-footer{
-  padding:35px 6%;
-  background:#113123;
-  color:#fff;
-}
-
-footer strong{
-  display:block;
-  font-size:23px;
-}
-
-footer span{
-  display:block;
-  margin-top:8px;
-  color:#c6d2ca;
-  font-size:14px;
-}
-
-footer small{
-  display:block;
-  margin-top:15px;
-  color:#93a39a;
-}
-
-@media(max-width:768px){
-
-  .header{
-    height:68px;
-    padding:0 18px;
-  }
-
-  .brand img{
-    width:180px;
-  }
-
-  .header nav{
-    display:none;
-    position:absolute;
-    top:68px;
-    left:0;
-    right:0;
-    padding:20px;
+    color:var(--text);
+    line-height:1.6;
     background:#fff;
-    flex-direction:column;
-    border-bottom:1px solid #ddd;
-  }
 
-  .header nav.open{
-    display:flex;
-  }
+}
 
-  .menu{
-    display:block;
-  }
 
-  .hero{
-    min-height:auto;
-    display:block;
-    padding:38px 18px 30px;
-  }
+a {
 
-  .hero-copy{
-    text-align:left;
-  }
+    text-decoration:none;
+    color:inherit;
 
-  .hero h1{
-    font-size:38px;
-    line-height:1.1;
-    letter-spacing:-1.5px;
-  }
+}
 
-  .hero-desc{
-    margin-top:18px;
-    font-size:16px;
-  }
 
-  .buttons{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-top:20px;
-  }
+/* HEADER */
 
-  .buttons a{
-    padding:14px 8px;
-    font-size:15px;
-  }
+.header {
 
-  .hero-photo{
-    margin-top:24px;
-  }
-
-  .hero-photo img{
-    height:215px;
-    border-radius:17px;
-  }
-
-  .benefits{
-    padding:38px 14px;
-  }
-
-  .section-title h2{
-    margin-bottom:22px;
-    font-size:29px;
-  }
-
-  .benefit-grid{
-    grid-template-columns:1fr 1fr;
-    gap:9px;
-  }
-
-  .benefit-card{
-    min-height:145px;
-    padding:17px 10px;
-    border-radius:14px;
-  }
-
-  .benefit-card b{
-    font-size:25px;
-  }
-
-  .benefit-card strong{
-    font-size:17px;
-  }
-
-  .benefit-card span{
-    font-size:13px;
-  }
-
-  .feature{
-    margin:0 12px 38px;
-    display:block;
-    border-radius:18px;
-  }
-
-  .feature > img{
-    height:210px;
-  }
-
-  .feature-copy{
-    padding:27px 20px;
-  }
-
-  .feature-copy h2{
-    font-size:29px;
-  }
-
-  .feature-copy > p:not(.eyebrow){
-    font-size:15px;
-  }
-
-  .feature-button{
     width:100%;
-    margin-top:18px;
-  }
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
-  .service-list div{
-    padding:12px 14px;
-  }
+    padding:0 5%;
 
-  .join{
-    padding:42px 18px;
-  }
+    background:#fff;
 
-  .join h2{
-    font-size:30px;
-  }
+    border-bottom:1px solid #eee;
 
-  .join > p:not(.eyebrow){
-    font-size:15px;
-  }
+}
 
-  .join .buttons{
-    grid-template-columns:1fr;
-  }
 
-  footer{
-    padding:30px 20px;
-  }
+.logo-area img {
+
+    height:55px;
+
+}
+
+
+nav {
+
+    display:flex;
+    gap:28px;
+
+}
+
+
+nav a {
+
+    font-size:16px;
+    font-weight:600;
+
+}
+
+
+.join-btn {
+
+    background:var(--ncc-green);
+
+    color:#fff;
+
+    padding:12px 25px;
+
+    border-radius:30px;
+
+    font-weight:700;
+
+}
+
+
+
+/* HERO */
+
+
+.hero {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:80px 5%;
+
+    background:
+    linear-gradient(
+    135deg,
+    #ffffff,
+    #f3f7f5
+    );
+
+}
+
+
+.hero-text {
+
+    width:50%;
+
+}
+
+
+.hero-text h1 {
+
+    font-size:48px;
+
+    line-height:1.3;
+
+    color:var(--ncc-navy);
+
+    margin-bottom:25px;
+
+}
+
+
+.hero-text p {
+
+    font-size:20px;
+
+    margin-bottom:35px;
+
+}
+
+
+.hero-buttons {
+
+    display:flex;
+
+    gap:15px;
+
+}
+
+
+.hero-buttons a {
+
+    padding:16px 30px;
+
+    border-radius:35px;
+
+    background:var(--ncc-green);
+
+    color:white;
+
+    font-weight:700;
+
+}
+
+
+.hero-buttons a:last-child {
+
+    background:var(--ncc-navy);
+
+}
+
+
+
+.hero-image {
+
+    width:40%;
+
+}
+
+
+.hero-image img {
+
+    width:100%;
+
+    border-radius:25px;
+
+}
+
+
+
+/* COMMON SECTION */
+
+
+section {
+
+    padding:80px 5%;
+
+}
+
+
+section h2 {
+
+    text-align:center;
+
+    font-size:36px;
+
+    color:var(--ncc-navy);
+
+    margin-bottom:40px;
+
+}
+
+
+
+/* BENEFIT CARD */
+
+
+.card-grid {
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:25px;
+
+}
+
+
+.card {
+
+    padding:35px 25px;
+
+    background:white;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.08);
+
+}
+
+
+.card h3 {
+
+    color:var(--ncc-green);
+
+    margin-bottom:15px;
+
+}
+
+
+/* EXPERIENCE */
+
+
+.experience {
+
+    background:var(--light);
+
+    text-align:center;
+
+}
+
+
+.experience a,
+.groupbuy a,
+.center a,
+.partner a,
+.signup a {
+
+    display:inline-block;
+
+    margin-top:25px;
+
+    padding:15px 35px;
+
+    border-radius:30px;
+
+    background:var(--ncc-green);
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+
+
+/* GROUPBUY */
+
+
+.groupbuy {
+
+    text-align:center;
+
+}
+
+
+
+/* CENTER */
+
+
+.center {
+
+    background:#f8f8f8;
+
+    text-align:center;
+
+}
+
+
+
+/* PARTNER */
+
+
+.partner {
+
+    text-align:center;
+
+}
+
+
+
+/* CHANNEL */
+
+
+.channel {
+
+    background:var(--ncc-navy);
+
+    color:#fff;
+
+    text-align:center;
+
+}
+
+
+.channel h2 {
+
+    color:white;
+
+}
+
+
+.channel a {
+
+    display:inline-block;
+
+    padding:20px 40px;
+
+    background:white;
+
+    color:var(--ncc-navy);
+
+    margin:10px;
+
+    border-radius:20px;
+
+}
+
+
+
+/* SIGNUP */
+
+
+.signup {
+
+    text-align:center;
+
+    background:
+    linear-gradient(
+    135deg,
+    #0b1f3a,
+    #174b6b
+    );
+
+}
+
+
+.signup h2 {
+
+    color:white;
+
+}
+
+
+
+/* FOOTER */
+
+
+footer {
+
+    padding:40px 5%;
+
+    background:#111;
+
+    color:#ddd;
+
+    text-align:center;
+
 }
