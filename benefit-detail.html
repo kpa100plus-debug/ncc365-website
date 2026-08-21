@@ -23,11 +23,11 @@
       <form id="demoApplicationForm">
         <div class="form-grid"><label>신청 구분<select id="appType" name="type" required></select></label><label>이름·담당자명<input name="name" required maxlength="30" placeholder="홍길동"></label><label>연락처<input name="phone" required inputmode="tel" placeholder="010-0000-0000"></label><label>지역<select name="region" required><option value="">지역 선택</option><option>서울</option><option>경기</option><option>인천</option><option>부산</option><option>대구</option><option>대전</option><option>광주</option><option>울산</option><option>세종</option><option>강원</option><option>충북</option><option>충남</option><option>전북</option><option>전남</option><option>경북</option><option>경남</option><option>제주</option></select></label><label class="wide">신청 내용<textarea name="message" rows="4" placeholder="관심 있는 혜택이나 등록할 서비스 내용을 적어주세요."></textarea></label></div>
         <label class="consent"><input type="checkbox" required> 예시 신청임을 확인했으며 입력 정보의 이 기기 내 임시 저장에 동의합니다.</label>
-        <button class="submit-demo" type="submit">예시 신청 접수하기</button>
+        <p class="form-message" id="formMessage" role="status"></p><button class="submit-demo" type="submit">예시 신청 접수하기</button>
       </form>
       <div class="success-box" id="successBox" hidden><span>✓</span><h3>예시 신청이 접수되었습니다</h3><p>접수번호 <b id="receiptNo"></b></p><p>현재는 기능 확인용이며 실제 담당자에게 전송되지 않습니다.</p><div><button type="button" id="newApplication">다시 신청하기</button><a href="index.html#offers">다른 혜택 보기</a></div></div>
     </section>
   </main>
   <footer><div><strong>전국소비자클럽</strong><span>NATIONAL CONSUMER CLUB</span></div><p>소비자에게 더 많은 혜택을</p></footer>
-  <script src="js/main.js"></script><script src="js/benefit-detail.js"></script>
+  <script src="js/main.js"></script><script type="module" src="js/benefit-detail.js"></script>
 </body></html>
