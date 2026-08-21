@@ -1,0 +1,126 @@
+// REF-NCC-FIRESTORE-GROUPBUY-PRODUCTION-01
+// 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 아래 두 match 블록을 넣습니다.
+
+match /groupBuyProducts/{productId} {
+  allow read: if isAdmin() || resource.data.published == true;
+
+  allow create: if
+    isAdmin()
+    && request.resource.data.keys().hasAll([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 120
+    && request.resource.data.category is string
+    && request.resource.data.category.size() >= 1
+    && request.resource.data.category.size() <= 80
+    && request.resource.data.subtitle is string
+    && request.resource.data.subtitle.size() <= 200
+    && request.resource.data.description is string
+    && request.resource.data.description.size() >= 1
+    && request.resource.data.description.size() <= 2000
+    && request.resource.data.price is int
+    && request.resource.data.price >= 0
+    && request.resource.data.regularPrice is int
+    && request.resource.data.regularPrice >= 0
+    && request.resource.data.minParticipants is int
+    && request.resource.data.minParticipants >= 1
+    && request.resource.data.stock is int
+    && request.resource.data.stock >= 0
+    && request.resource.data.startDate is string
+    && request.resource.data.endDate is string
+    && request.resource.data.status in ["draft", "recruiting", "confirmed", "closed"]
+    && request.resource.data.published is bool
+    && request.resource.data.image is string
+    && request.resource.data.image.size() <= 500
+    && request.resource.data.supplier is string
+    && request.resource.data.supplier.size() <= 120
+    && request.resource.data.shipping is string
+    && request.resource.data.shipping.size() <= 200
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow update: if
+    isAdmin()
+    && request.resource.data.keys().hasAll([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.createdAt == resource.data.createdAt
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
+
+match /groupBuyOrders/{orderId} {
+  allow create: if
+    request.resource.data.keys().hasAll([
+      "productId", "productTitle", "name", "phone", "phoneKey", "quantity",
+      "region", "address", "message", "receipt", "totalPrice", "status",
+      "source", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "productId", "productTitle", "name", "phone", "phoneKey", "quantity",
+      "region", "address", "message", "receipt", "totalPrice", "status",
+      "source", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.productId is string
+    && request.resource.data.productId.size() >= 1
+    && request.resource.data.productId.size() <= 100
+    && request.resource.data.productTitle is string
+    && request.resource.data.productTitle.size() >= 1
+    && request.resource.data.productTitle.size() <= 120
+    && request.resource.data.name is string
+    && request.resource.data.name.size() >= 1
+    && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 9
+    && request.resource.data.phone.size() <= 30
+    && request.resource.data.phoneKey is string
+    && request.resource.data.phoneKey.matches('^[0-9]{9,11}$')
+    && request.resource.data.quantity is int
+    && request.resource.data.quantity >= 1
+    && request.resource.data.quantity <= 20
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.address is string
+    && request.resource.data.address.size() >= 1
+    && request.resource.data.address.size() <= 300
+    && request.resource.data.message is string
+    && request.resource.data.message.size() <= 500
+    && request.resource.data.receipt is string
+    && request.resource.data.receipt.matches('^NCC-G-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.totalPrice is int
+    && request.resource.data.totalPrice >= 0
+    && request.resource.data.status == "new"
+    && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin();
+
+  allow update: if
+    isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"])
+    && request.resource.data.status in [
+      "new", "checking", "confirmed", "paid", "shipping", "completed", "cancelled"
+    ]
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
