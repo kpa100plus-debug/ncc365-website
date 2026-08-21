@@ -276,6 +276,7 @@ input::placeholder{
 
 .birth-wrap{
   display:grid;
+  position:relative;
 
   grid-template-columns:1fr 54px;
 
@@ -300,6 +301,7 @@ input::placeholder{
   font-size:20px;
 
   cursor:pointer;
+  pointer-events:none;
 }
 
 /*
@@ -308,15 +310,14 @@ input::placeholder{
 달력버튼을 눌러 선택할 수 있다.
 */
 #birthCalendar{
-  position:fixed;
-
-  left:-10000px;
-  top:-10000px;
-
-  width:1px;
-  height:1px;
-
+  position:absolute;
+  right:0;
+  top:0;
+  z-index:3;
+  width:54px;
+  height:50px;
   opacity:0;
+  cursor:pointer;
 }
 
 
@@ -784,8 +785,7 @@ title="달력에서 선택">
 <input
 id="birthCalendar"
 type="date"
-tabindex="-1"
-aria-hidden="true">
+title="달력에서 생년월일 선택">
 
 
 </div>

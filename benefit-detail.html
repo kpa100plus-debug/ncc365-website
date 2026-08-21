@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>혜택 상세 | 전국소비자클럽</title>
+  <meta name="description" content="전국소비자클럽 상품·서비스 혜택 상세 안내 및 예시 신청">
+  <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/mobile.css"><link rel="stylesheet" href="css/benefit-detail.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="index.html"><img src="images/NCC_HEADER.png?v=20260821-1" alt="전국소비자클럽 공식 로고"></a><nav id="mainNav"><a href="index.html#offers">혜택목록</a><a href="benefit.html">회원혜택</a><a href="center.html">전국소비자센터</a><a href="partner.html">기업제휴</a><a class="nav-join" href="join.html">무료 회원가입</a></nav><button class="menu" id="menuButton" aria-expanded="false" aria-label="메뉴 열기">☰</button></header>
+  <main class="detail-page">
+    <nav class="breadcrumb" aria-label="현재 위치"><a href="index.html">홈</a><span>›</span><a href="index.html#offers">혜택</a><span>›</span><b id="crumbTitle">상세안내</b></nav>
+    <section class="detail-hero">
+      <div class="detail-visual" id="detailVisual"></div>
+      <div class="detail-summary"><span class="detail-status" id="detailStatus"></span><p class="category" id="detailCategory"></p><h1 id="detailTitle"></h1><p class="detail-lead" id="detailLead"></p><dl class="quick-info"><div><dt>대상</dt><dd id="detailTarget"></dd></div><div><dt>운영지역</dt><dd id="detailArea"></dd></div><div><dt>진행상태</dt><dd id="detailPeriod"></dd></div></dl><a class="button primary" href="#application" id="heroAction">신청해보기</a><p class="demo-label">예시 페이지 · 실제 결제나 계약은 진행되지 않습니다.</p></div>
+    </section>
+    <section class="detail-content">
+      <article class="content-main"><p class="eyebrow">PROGRAM GUIDE</p><h2>무엇을 제공하나요?</h2><div class="point-grid" id="pointGrid"></div><h2>참여 방법</h2><ol class="steps" id="stepList"></ol><div class="notice-box"><b>꼭 확인해 주세요</b><ul><li>현재 홈페이지 기능 확인을 위한 예시 프로그램입니다.</li><li>실제 상품·가격·모집인원·일정은 파트너 협의 후 별도로 공지합니다.</li><li>정식 운영 시 개인정보 처리방침과 신청 조건에 따라 접수됩니다.</li></ul></div></article>
+      <aside class="side-card"><b>NCC 회원이라면</b><p>무료 회원가입 후 새로운 혜택과 모집 일정을 먼저 안내받을 수 있습니다.</p><a href="join.html">무료 회원가입 →</a></aside>
+    </section>
+    <section class="application" id="application">
+      <div class="application-head"><p class="eyebrow">TRY APPLICATION</p><h2 id="formTitle">예시 신청서</h2><p>아래 내용을 입력하면 홈페이지 신청 절차를 시험해볼 수 있습니다.</p></div>
+      <form id="demoApplicationForm">
+        <div class="form-grid"><label>신청 구분<select id="appType" name="type" required></select></label><label>이름·담당자명<input name="name" required maxlength="30" placeholder="홍길동"></label><label>연락처<input name="phone" required inputmode="tel" placeholder="010-0000-0000"></label><label>지역<select name="region" required><option value="">지역 선택</option><option>서울</option><option>경기</option><option>인천</option><option>부산</option><option>대구</option><option>대전</option><option>광주</option><option>울산</option><option>세종</option><option>강원</option><option>충북</option><option>충남</option><option>전북</option><option>전남</option><option>경북</option><option>경남</option><option>제주</option></select></label><label class="wide">신청 내용<textarea name="message" rows="4" placeholder="관심 있는 혜택이나 등록할 서비스 내용을 적어주세요."></textarea></label></div>
+        <label class="consent"><input type="checkbox" required> 예시 신청임을 확인했으며 입력 정보의 이 기기 내 임시 저장에 동의합니다.</label>
+        <button class="submit-demo" type="submit">예시 신청 접수하기</button>
+      </form>
+      <div class="success-box" id="successBox" hidden><span>✓</span><h3>예시 신청이 접수되었습니다</h3><p>접수번호 <b id="receiptNo"></b></p><p>현재는 기능 확인용이며 실제 담당자에게 전송되지 않습니다.</p><div><button type="button" id="newApplication">다시 신청하기</button><a href="index.html#offers">다른 혜택 보기</a></div></div>
+    </section>
+  </main>
+  <footer><div><strong>전국소비자클럽</strong><span>NATIONAL CONSUMER CLUB</span></div><p>소비자에게 더 많은 혜택을</p></footer>
+  <script src="js/main.js"></script><script src="js/benefit-detail.js"></script>
+</body></html>
