@@ -502,7 +502,7 @@ NATIONAL CONSUMER CENTER
 
 
 
-<form>
+<form id="centerApplicationForm">
 
 
 <div class="form-group">
@@ -511,7 +511,7 @@ NATIONAL CONSUMER CENTER
 이름 *
 </label>
 
-<input placeholder="이름">
+<input name="name" maxlength="50" required placeholder="이름">
 
 </div>
 
@@ -523,7 +523,7 @@ NATIONAL CONSUMER CENTER
 연락처 *
 </label>
 
-<input placeholder="010-0000-0000">
+<input name="phone" inputmode="tel" maxlength="30" required placeholder="010-0000-0000">
 
 </div>
 
@@ -535,7 +535,7 @@ NATIONAL CONSUMER CENTER
 희망 활동지역 *
 </label>
 
-<input placeholder="예) 서울 강남구">
+<input name="region" maxlength="100" required placeholder="예) 서울 강남구">
 
 </div>
 
@@ -548,7 +548,7 @@ NATIONAL CONSUMER CENTER
 </label>
 
 
-<select>
+<select name="category" required>
 
 <option>
 센터장 참여
@@ -576,14 +576,14 @@ NATIONAL CONSUMER CENTER
 소개 및 문의사항
 </label>
 
-<textarea></textarea>
+<textarea name="message" maxlength="1000" placeholder="활동 경력이나 문의사항을 입력해 주세요"></textarea>
 
 </div>
 
 
 
-<button type="button"
-onclick="alert('전국소비자센터 참여 신청이 접수되었습니다. 상담 후 안내드립니다.')">
+<p id="applicationMessage" role="status" aria-live="polite"></p>
+<button type="submit">
 
 전국소비자센터 참여 신청
 
@@ -620,6 +620,8 @@ onclick="alert('전국소비자센터 참여 신청이 접수되었습니다. �
 소비자에게 더 많은 혜택을
 
 </footer>
+
+<script type="module" src="js/inquiry-application.js" data-kind="center"></script>
 
 
 

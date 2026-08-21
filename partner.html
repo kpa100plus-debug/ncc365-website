@@ -487,7 +487,7 @@ BUSINESS PARTNERSHIP
 
 
 
-<form>
+<form id="partnerApplicationForm">
 
 
 <div class="form-group">
@@ -496,7 +496,7 @@ BUSINESS PARTNERSHIP
 기업명 / 매장명 *
 </label>
 
-<input placeholder="상호명을 입력하세요">
+<input name="organization" maxlength="100" required placeholder="상호명을 입력하세요">
 
 </div>
 
@@ -508,7 +508,7 @@ BUSINESS PARTNERSHIP
 담당자명 *
 </label>
 
-<input placeholder="담당자 이름">
+<input name="name" maxlength="50" required placeholder="담당자 이름">
 
 </div>
 
@@ -520,7 +520,7 @@ BUSINESS PARTNERSHIP
 연락처 *
 </label>
 
-<input placeholder="010-0000-0000">
+<input name="phone" inputmode="tel" maxlength="30" required placeholder="010-0000-0000">
 
 </div>
 
@@ -532,7 +532,7 @@ BUSINESS PARTNERSHIP
 지역
 </label>
 
-<input placeholder="예) 서울 강남구">
+<input name="region" maxlength="100" required placeholder="예) 서울 강남구">
 
 </div>
 
@@ -544,7 +544,7 @@ BUSINESS PARTNERSHIP
 업종
 </label>
 
-<select>
+<select name="category" required>
 
 <option>
 식품·외식
@@ -580,14 +580,14 @@ BUSINESS PARTNERSHIP
 제공 가능한 혜택 및 문의내용
 </label>
 
-<textarea placeholder="상품, 할인, 공동구매 등 내용을 입력하세요"></textarea>
+<textarea name="message" maxlength="1000" placeholder="상품, 회원 혜택, 무료 경험, 공동구매 등 내용을 입력하세요"></textarea>
 
 </div>
 
 
 
-<button type="button"
-onclick="alert('제휴 문의가 접수되었습니다. 상담 후 안내드립니다.')">
+<p id="applicationMessage" role="status" aria-live="polite"></p>
+<button type="submit">
 
 기업·소상공인 제휴 신청
 
@@ -624,6 +624,8 @@ onclick="alert('제휴 문의가 접수되었습니다. 상담 후 안내드립�
 소비자에게 더 많은 혜택을
 
 </footer>
+
+<script type="module" src="js/inquiry-application.js" data-kind="partner"></script>
 
 
 

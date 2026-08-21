@@ -1,0 +1,47 @@
+// REF-NCC-FIRESTORE-INQUIRY-PRODUCTION-01
+// 아래 match 블록을 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 넣습니다.
+
+match /inquiryApplications/{applicationId} {
+  allow create: if
+    request.resource.data.keys().hasAll([
+      "kind", "organization", "name", "phone", "region", "category",
+      "message", "receipt", "status", "source", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "kind", "organization", "name", "phone", "region", "category",
+      "message", "receipt", "status", "source", "createdAt", "updatedAt"
+    ])
+    && (request.resource.data.kind == "partner" || request.resource.data.kind == "center")
+    && request.resource.data.organization is string
+    && request.resource.data.organization.size() <= 100
+    && request.resource.data.name is string
+    && request.resource.data.name.size() >= 1
+    && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 9
+    && request.resource.data.phone.size() <= 30
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.category is string
+    && request.resource.data.category.size() >= 1
+    && request.resource.data.category.size() <= 100
+    && request.resource.data.message is string
+    && request.resource.data.message.size() <= 1000
+    && request.resource.data.receipt is string
+    && request.resource.data.receipt.matches('^NCC-[PC]-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.status == "new"
+    && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin();
+
+  allow update: if
+    isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"])
+    && request.resource.data.status in ["new", "checking", "contacted", "approved", "hold"]
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
