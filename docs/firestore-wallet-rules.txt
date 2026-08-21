@@ -1,0 +1,12 @@
+// REF-NCC-FIRESTORE-WALLET-PRODUCTION-01
+// 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 추가합니다.
+// 기존 members 규칙은 삭제하거나 수정하지 않습니다.
+
+match /members/{memberId} {
+  allow read: if
+    request.auth != null
+    && request.auth.token.email != null
+    && request.auth.token.email_verified == true
+    && resource.data.email is string
+    && resource.data.email == request.auth.token.email;
+}
