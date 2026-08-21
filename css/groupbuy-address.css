@@ -1,0 +1,1 @@
+.address-check{display:flex;flex-direction:row;flex-wrap:wrap;gap:24px;padding:14px;border-radius:10px;background:#f2f6f3}.address-check label{display:flex;align-items:center;gap:8px}.address-check input{width:19px;height:19px}.field small{color:var(--muted)}
