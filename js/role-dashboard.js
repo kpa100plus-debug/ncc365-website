@@ -4,12 +4,14 @@ import{getFirestore,collection,getDocs,query,where,limit}from"https://www.gstati
 import{firebaseConfig}from"./platform-config.js";
 
 const app=getApps()[0]||initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),dashboard=document.body.dataset.dashboard;
+const ADMIN_EMAIL="kpa100plus@gmail.com";
 const centerRoles=["center_manager","center_staff"],partnerRoles=["partner","corporate","soleProprietor"];
 const roleLabels={center_manager:"센터장",center_staff:"센터 팀원",partner:"파트너회원",corporate:"법인 파트너",soleProprietor:"개인사업자 파트너"};
 const routes={consumer:"wallet.html",center_manager:"center-dashboard.html",center_staff:"center-dashboard.html",partner:"partner-dashboard.html",corporate:"partner-dashboard.html",soleProprietor:"partner-dashboard.html",admin:"admin.html"};
 
 onAuthStateChanged(auth,async user=>{
   if(!user){location.replace(`wallet.html?next=${encodeURIComponent(location.pathname.split("/").pop())}`);return}
+  if(user.email?.toLowerCase()===ADMIN_EMAIL){location.replace("admin.html");return}
   try{
     const snap=await getDocs(query(collection(db,"members"),where("email","==",user.email),limit(1)));
     if(snap.empty)throw new Error("연결된 NCC 회원정보가 없습니다.");
