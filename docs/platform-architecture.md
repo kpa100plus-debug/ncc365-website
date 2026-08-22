@@ -61,6 +61,9 @@ Existing public URLs remain as compatibility entry points until migration is com
 ### reviews
 `reviewNumber, memberId, experienceId, groupBuyId, rating, content, imageUrls, reviewStatus, createdAt, updatedAt`
 
+### expectationComments / expectationLikes / reviewReports
+`expectationComments` stores pre-use member messages by `targetKey`; `expectationLikes` enforces one like per Firebase UID; `reviewReports` keeps member reports for administrator moderation. Public readers only receive records whose status is `visible`.
+
 ### memberProfiles (compatibility extension)
 Document ID equals the existing `members` document ID. Optional signup/profile fields are grouped into `basic`, `additional`, `special`, and `consumer` maps so the strict production `members` schema and existing CRM remain intact.
 

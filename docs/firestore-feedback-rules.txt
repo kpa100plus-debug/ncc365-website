@@ -1,0 +1,123 @@
+// REF-NCC-FIRESTORE-FEEDBACK-PRODUCTION-02
+// 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 전체를 붙여넣습니다.
+
+match /benefitApplications/{applicationId} {
+  allow create: if request.auth != null
+    && request.resource.data.keys().hasAll(["type","name","phone","region","message","memberId","memberEmail","offerId","offerTitle","receipt","status","source","createdAt","updatedAt"])
+    && request.resource.data.keys().hasOnly(["type","name","phone","region","message","memberId","memberEmail","offerId","offerTitle","receipt","status","source","createdAt","updatedAt"])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.memberEmail == request.auth.token.email
+    && request.resource.data.type is string && request.resource.data.type.size() >= 1 && request.resource.data.type.size() <= 100
+    && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string && request.resource.data.phone.size() >= 9 && request.resource.data.phone.size() <= 30
+    && request.resource.data.region is string && request.resource.data.region.size() >= 1 && request.resource.data.region.size() <= 100
+    && request.resource.data.message is string && request.resource.data.message.size() <= 1000
+    && request.resource.data.offerId is string && request.resource.data.offerId.size() >= 1 && request.resource.data.offerId.size() <= 100
+    && request.resource.data.offerTitle is string && request.resource.data.offerTitle.size() >= 1 && request.resource.data.offerTitle.size() <= 200
+    && request.resource.data.receipt is string && request.resource.data.receipt.matches('^NCC-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.status == "new" && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
+  allow read: if isAdmin() || (request.auth != null && ownsMember(resource.data.memberId));
+}
+
+match /groupBuyOrders/{orderId} {
+  allow create: if request.auth != null
+    && request.resource.data.keys().hasAll(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
+    && request.resource.data.keys().hasOnly(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.memberEmail == request.auth.token.email
+    && request.resource.data.productId is string && request.resource.data.productId.size() >= 1 && request.resource.data.productId.size() <= 100
+    && request.resource.data.productTitle is string && request.resource.data.productTitle.size() >= 1 && request.resource.data.productTitle.size() <= 120
+    && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string && request.resource.data.phone.size() >= 9 && request.resource.data.phone.size() <= 30
+    && request.resource.data.phoneKey is string && request.resource.data.phoneKey.matches('^[0-9]{9,11}$')
+    && request.resource.data.quantity is int && request.resource.data.quantity >= 1 && request.resource.data.quantity <= 20
+    && request.resource.data.region is string && request.resource.data.region.size() >= 1 && request.resource.data.region.size() <= 100
+    && request.resource.data.address is string && request.resource.data.address.size() >= 1 && request.resource.data.address.size() <= 300
+    && request.resource.data.message is string && request.resource.data.message.size() <= 500
+    && request.resource.data.receipt is string && request.resource.data.receipt.matches('^NCC-G-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.totalPrice is int && request.resource.data.totalPrice >= 0
+    && request.resource.data.status == "new" && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
+  allow read: if isAdmin() || (request.auth != null && ownsMember(resource.data.memberId));
+}
+
+function validNewLike(commentId) {
+  let likeId = commentId + "_" + request.auth.uid;
+  return !exists(/databases/$(database)/documents/expectationLikes/$(likeId))
+    && existsAfter(/databases/$(database)/documents/expectationLikes/$(likeId));
+}
+
+match /expectationComments/{commentId} {
+  allow read: if isAdmin() || resource.data.status == "visible";
+  allow create: if request.auth != null && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasOnly(["targetType","targetId","targetKey","memberId","authorEmail","authorMasked","content","likeCount","status","createdAt","updatedAt"])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.authorEmail == request.auth.token.email
+    && request.resource.data.targetType in ["benefit","groupbuy"]
+    && request.resource.data.targetId is string && request.resource.data.targetId.size() >= 1 && request.resource.data.targetId.size() <= 100
+    && request.resource.data.targetKey is string && request.resource.data.targetKey.size() <= 220
+    && request.resource.data.authorMasked is string && request.resource.data.authorMasked.size() <= 20
+    && request.resource.data.content is string && request.resource.data.content.size() >= 2 && request.resource.data.content.size() <= 180
+    && request.resource.data.likeCount == 0 && request.resource.data.status == "visible"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
+  allow update: if isAdmin() || (request.auth != null
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["likeCount","updatedAt"])
+    && request.resource.data.likeCount == resource.data.likeCount + 1
+    && request.resource.data.updatedAt == request.time
+    && validNewLike(commentId));
+  allow delete: if isAdmin();
+}
+
+match /expectationLikes/{likeId} {
+  allow read: if request.auth != null;
+  allow create: if request.auth != null
+    && likeId == request.resource.data.commentId + "_" + request.auth.uid
+    && !exists(/databases/$(database)/documents/expectationLikes/$(likeId))
+    && request.resource.data.keys().hasOnly(["commentId","userId","createdAt"])
+    && request.resource.data.userId == request.auth.uid
+    && request.resource.data.createdAt == request.time;
+  allow update, delete: if false;
+}
+
+match /reviews/{reviewId} {
+  allow read: if isAdmin() || resource.data.status == "visible";
+  allow create: if request.auth != null && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasOnly(["targetType","targetId","targetKey","verificationCollection","verificationId","memberId","authorEmail","authorMasked","rating","title","content","verified","status","createdAt","updatedAt"])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.authorEmail == request.auth.token.email
+    && request.resource.data.targetType in ["benefit","groupbuy"]
+    && reviewId == request.resource.data.targetType + "_" + request.resource.data.verificationId
+    && request.resource.data.targetId is string && request.resource.data.targetId.size() >= 1 && request.resource.data.targetId.size() <= 100
+    && request.resource.data.targetKey is string && request.resource.data.targetKey.size() <= 220
+    && request.resource.data.verificationId is string && request.resource.data.verificationId.size() >= 1
+    && request.resource.data.authorMasked is string && request.resource.data.authorMasked.size() <= 20
+    && request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+    && request.resource.data.title is string && request.resource.data.title.size() >= 2 && request.resource.data.title.size() <= 80
+    && request.resource.data.content is string && request.resource.data.content.size() >= 10 && request.resource.data.content.size() <= 1500
+    && request.resource.data.verified == true && request.resource.data.status == "visible"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time
+    && ((request.resource.data.targetType == "groupbuy"
+      && request.resource.data.verificationCollection == "groupBuyOrders"
+      && get(/databases/$(database)/documents/groupBuyOrders/$(request.resource.data.verificationId)).data.memberId == request.resource.data.memberId
+      && get(/databases/$(database)/documents/groupBuyOrders/$(request.resource.data.verificationId)).data.productId == request.resource.data.targetId
+      && get(/databases/$(database)/documents/groupBuyOrders/$(request.resource.data.verificationId)).data.status == "completed")
+    || (request.resource.data.targetType == "benefit"
+      && request.resource.data.verificationCollection == "benefitApplications"
+      && get(/databases/$(database)/documents/benefitApplications/$(request.resource.data.verificationId)).data.memberId == request.resource.data.memberId
+      && get(/databases/$(database)/documents/benefitApplications/$(request.resource.data.verificationId)).data.offerId == request.resource.data.targetId
+      && get(/databases/$(database)/documents/benefitApplications/$(request.resource.data.verificationId)).data.status == "approved"));
+  allow update, delete: if isAdmin();
+}
+
+match /reviewReports/{reportId} {
+  allow create: if request.auth != null
+    && request.resource.data.keys().hasOnly(["contentType","targetDocId","reporterEmail","reason","status","createdAt","updatedAt"])
+    && request.resource.data.contentType in ["comment","review"]
+    && request.resource.data.targetDocId is string && request.resource.data.targetDocId.size() >= 1
+    && request.resource.data.reporterEmail == request.auth.token.email
+    && request.resource.data.reason is string && request.resource.data.reason.size() >= 1 && request.resource.data.reason.size() <= 300
+    && request.resource.data.status == "new"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
+  allow read, update, delete: if isAdmin();
+}
