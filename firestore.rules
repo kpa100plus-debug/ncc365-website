@@ -144,18 +144,18 @@ service cloud.firestore {
 
     // ==========================================
     // PHONE UNIQUE LOCK
-    // 같은 전화번호 중복가입 방지용
+    // ê°ì ì íë²í¸ ì¤ë³µê°ì ë°©ì§ì©
     // ==========================================
 
     match /memberPhones/{phoneKey} {
 
-      // 가입 과정에서 해당 전화번호 존재 여부 확인
+      // ê°ì ê³¼ì ìì í´ë¹ ì íë²í¸ ì¡´ì¬ ì¬ë¶ íì¸
       allow get: if true;
 
-      // 전체 전화번호 목록 조회 금지
+      // ì ì²´ ì íë²í¸ ëª©ë¡ ì¡°í ê¸ì§
       allow list: if isAdmin();
 
-      // 신규 전화번호는 최초 1회만 생성
+      // ì ê· ì íë²í¸ë ìµì´ 1íë§ ìì±
       allow create: if
         !exists(/databases/$(database)/documents/memberPhones/$(phoneKey))
         && request.resource.data.keys().hasOnly([
@@ -214,12 +214,12 @@ service cloud.firestore {
 
 // ==========================================
 // BENEFIT / SERVICE APPLICATIONS
-// 홈페이지 혜택·서비스 실제 신청관리
+// ííì´ì§ ííÂ·ìë¹ì¤ ì¤ì  ì ì²­ê´ë¦¬
 // ==========================================
 
 match /benefitApplications/{applicationId} {
 
-  // 홈페이지 방문자는 신청서 등록만 가능
+  // ííì´ì§ ë°©ë¬¸ìë ì ì²­ì ë±ë¡ë§ ê°ë¥
   allow create: if
     request.resource.data.keys().hasAll([
       "type",
@@ -289,10 +289,10 @@ match /benefitApplications/{applicationId} {
     && request.resource.data.createdAt == request.time
     && request.resource.data.updatedAt == request.time;
 
-  // 신청내역 조회는 관리자만 가능
+  // ì ì²­ë´ì­ ì¡°íë ê´ë¦¬ìë§ ê°ë¥
   allow read: if isAdmin();
 
-  // 처리상태 변경도 관리자만 가능
+  // ì²ë¦¬ìí ë³ê²½ë ê´ë¦¬ìë§ ê°ë¥
   allow update: if
     isAdmin()
     &&
@@ -318,7 +318,7 @@ match /benefitApplications/{applicationId} {
 }
 
 // REF-NCC-FIRESTORE-INQUIRY-PRODUCTION-01
-// 아래 match 블록을 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 넣습니다.
+// ìë match ë¸ë¡ì ê¸°ì¡´ Firestore ê·ì¹ì DEFAULT DENY ë°ë¡ ìì ë£ìµëë¤.
 
 match /inquiryApplications/{applicationId} {
   allow create: if
@@ -491,8 +491,8 @@ match /groupBuyOrders/{orderId} {
     // DEFAULT DENY
     // ==========================================
 // REF-NCC-FIRESTORE-WALLET-PRODUCTION-01
-// 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 추가합니다.
-// 기존 members 규칙은 삭제하거나 수정하지 않습니다.
+// ê¸°ì¡´ Firestore ê·ì¹ì DEFAULT DENY ë°ë¡ ìì ì¶ê°í©ëë¤.
+// ê¸°ì¡´ members ê·ì¹ì ì­ì íê±°ë ìì íì§ ììµëë¤.
 
 match /members/{memberId} {
   allow read: if
@@ -509,8 +509,13 @@ function ownsMember(memberId) {
        == request.auth.token.email;
 }
 
+function isActiveMember(memberId) {
+  return get(/databases/$(database)/documents/members/$(memberId)).data.status
+     == "active";
+}
+
 match /memberProfiles/{memberId} {
-  // 공개 회원가입 transaction 안에서 members와 동시에 최초 생성
+  // ê³µê° íìê°ì transaction ììì membersì ëìì ìµì´ ìì±
   allow create: if
     request.resource.data.keys().hasAll([
       "memberId", "memberNumber", "email", "phoneKey",
@@ -766,6 +771,7 @@ match /reviewReports/{reportId} {
     ])
     && request.resource.data.memberId is string
     && ownsMember(request.resource.data.memberId)
+    && isActiveMember(request.resource.data.memberId)
     && get(/databases/$(database)/documents/members/$(request.resource.data.memberId)).data.memberType in ["partner", "corporate", "soleProprietor"]
     && request.resource.data.partnerId is string
     && request.resource.data.partnerId.size() <= 100
@@ -806,7 +812,7 @@ match /reviewReports/{reportId} {
     && request.resource.data.updatedAt == request.time;
 
   allow read: if isAdmin()
-    || (request.auth != null && ownsMember(resource.data.memberId));
+    || (request.auth != null && ownsMember(resource.data.memberId) && isActiveMember(resource.data.memberId));
 
   allow update: if isAdmin()
     && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
@@ -837,6 +843,7 @@ match /centerActivities/{activityId} {
     ])
     && request.resource.data.memberId is string
     && ownsMember(request.resource.data.memberId)
+    && isActiveMember(request.resource.data.memberId)
     && get(/databases/$(database)/documents/members/$(request.resource.data.memberId)).data.memberType in ["center_manager", "center_staff"]
     && request.resource.data.centerCode is string
     && request.resource.data.centerCode.size() <= 100
@@ -867,7 +874,7 @@ match /centerActivities/{activityId} {
     && request.resource.data.updatedAt == request.time;
 
   allow read: if isAdmin()
-    || (request.auth != null && ownsMember(resource.data.memberId));
+    || (request.auth != null && ownsMember(resource.data.memberId) && isActiveMember(resource.data.memberId));
 
   allow update: if isAdmin()
     && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
