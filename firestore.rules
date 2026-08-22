@@ -1,0 +1,889 @@
+// REF-NCC-FIRESTORE-DUPLICATE-BLOCK-04
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email.lower()
+           == "kpa100plus@gmail.com";
+    }
+
+    function validMemberFields() {
+      return request.resource.data.keys().hasAll([
+        "name",
+        "phone",
+        "phoneKey",
+        "email",
+        "birthDate",
+        "gender",
+        "region",
+        "benefit",
+        "hasPet",
+        "referrer",
+        "referralCode",
+        "centerName",
+        "centerCode",
+        "agreePrivacy",
+        "agreeMarketing",
+        "agreeThirdParty",
+        "memberNumber",
+        "memberType",
+        "status",
+        "managementGrade",
+        "adminMemo",
+        "joinDate",
+        "updatedAt"
+      ])
+      &&
+      request.resource.data.keys().hasOnly([
+        "name",
+        "phone",
+        "phoneKey",
+        "email",
+        "birthDate",
+        "gender",
+        "region",
+        "benefit",
+        "hasPet",
+        "referrer",
+        "referralCode",
+        "centerName",
+        "centerCode",
+        "agreePrivacy",
+        "agreeMarketing",
+        "agreeThirdParty",
+        "memberNumber",
+        "memberType",
+        "status",
+        "managementGrade",
+        "adminMemo",
+        "joinDate",
+        "updatedAt"
+      ]);
+    }
+
+    function validMemberValues() {
+      return
+        request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 50
+
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 1
+        && request.resource.data.phone.size() <= 30
+
+        && request.resource.data.phoneKey is string
+        && request.resource.data.phoneKey.matches('^[0-9]{9,11}$')
+
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+
+        && request.resource.data.birthDate is string
+        && request.resource.data.birthDate.size() <= 20
+
+        && request.resource.data.gender is string
+        && (
+          request.resource.data.gender == ""
+          || request.resource.data.gender == "male"
+          || request.resource.data.gender == "female"
+        )
+
+        && request.resource.data.region is string
+        && request.resource.data.region.size() >= 1
+        && request.resource.data.region.size() <= 200
+
+        && request.resource.data.benefit is string
+
+        && request.resource.data.hasPet is string
+        && (
+          request.resource.data.hasPet == ""
+          || request.resource.data.hasPet == "yes"
+          || request.resource.data.hasPet == "no"
+        )
+
+        && request.resource.data.referrer is string
+        && request.resource.data.referralCode is string
+
+        && request.resource.data.centerName is string
+        && request.resource.data.centerCode is string
+
+        && request.resource.data.agreePrivacy == true
+        && request.resource.data.agreeMarketing is bool
+        && request.resource.data.agreeThirdParty is bool
+
+        && request.resource.data.memberNumber is string
+        && request.resource.data.memberNumber.matches(
+          '^NCC-C-[0-9]{6}$'
+        )
+
+        && request.resource.data.memberType == "consumer"
+        && request.resource.data.status == "active"
+        && request.resource.data.managementGrade == "general"
+        && request.resource.data.adminMemo == ""
+
+        && request.resource.data.joinDate == request.time
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    // ==========================================
+    // MEMBERS
+    // ==========================================
+
+    match /members/{memberId} {
+
+      allow create: if
+        validMemberFields()
+        && validMemberValues();
+
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // PHONE UNIQUE LOCK
+    // 같은 전화번호 중복가입 방지용
+    // ==========================================
+
+    match /memberPhones/{phoneKey} {
+
+      // 가입 과정에서 해당 전화번호 존재 여부 확인
+      allow get: if true;
+
+      // 전체 전화번호 목록 조회 금지
+      allow list: if isAdmin();
+
+      // 신규 전화번호는 최초 1회만 생성
+      allow create: if
+        !exists(/databases/$(database)/documents/memberPhones/$(phoneKey))
+        && request.resource.data.keys().hasOnly([
+          "memberId",
+          "memberNumber",
+          "createdAt"
+        ])
+        && request.resource.data.memberId is string
+        && request.resource.data.memberNumber is string
+        && request.resource.data.memberNumber.matches(
+          '^NCC-C-[0-9]{6}$'
+        )
+        && request.resource.data.createdAt == request.time;
+
+      allow update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // MEMBER NUMBER COUNTER
+    // ==========================================
+
+    match /counters/memberNumbers {
+
+      allow read: if true;
+
+      allow create: if
+        isAdmin()
+        && request.resource.data.keys().hasOnly([
+          "consumer"
+        ])
+        && request.resource.data.consumer is int
+        && request.resource.data.consumer >= 1;
+
+      allow update: if
+        request.resource.data.keys().hasOnly([
+          "consumer"
+        ])
+        && request.resource.data.consumer is int
+        && (
+          (
+            isAdmin()
+            && request.resource.data.consumer
+               > resource.data.consumer
+          )
+          ||
+          (
+            !isAdmin()
+            && request.resource.data.consumer
+               == resource.data.consumer + 1
+          )
+        );
+
+      allow delete: if isAdmin();
+    }
+// REF-NCC-BENEFIT-APPLICATION-PRODUCTION-10
+
+// ==========================================
+// BENEFIT / SERVICE APPLICATIONS
+// 홈페이지 혜택·서비스 실제 신청관리
+// ==========================================
+
+match /benefitApplications/{applicationId} {
+
+  // 홈페이지 방문자는 신청서 등록만 가능
+  allow create: if
+    request.resource.data.keys().hasAll([
+      "type",
+      "name",
+      "phone",
+      "region",
+      "message",
+      "offerId",
+      "offerTitle",
+      "receipt",
+      "status",
+      "source",
+      "createdAt",
+      "updatedAt"
+    ])
+    &&
+    request.resource.data.keys().hasOnly([
+      "type",
+      "name",
+      "phone",
+      "region",
+      "message",
+      "offerId",
+      "offerTitle",
+      "receipt",
+      "status",
+      "source",
+      "createdAt",
+      "updatedAt"
+    ])
+
+    && request.resource.data.type is string
+    && request.resource.data.type.size() >= 1
+    && request.resource.data.type.size() <= 100
+
+    && request.resource.data.name is string
+    && request.resource.data.name.size() >= 1
+    && request.resource.data.name.size() <= 50
+
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 9
+    && request.resource.data.phone.size() <= 30
+
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+
+    && request.resource.data.message is string
+    && request.resource.data.message.size() <= 1000
+
+    && request.resource.data.offerId is string
+    && request.resource.data.offerId.size() >= 1
+    && request.resource.data.offerId.size() <= 100
+
+    && request.resource.data.offerTitle is string
+    && request.resource.data.offerTitle.size() >= 1
+    && request.resource.data.offerTitle.size() <= 200
+
+    && request.resource.data.receipt is string
+    && request.resource.data.receipt.matches(
+      '^NCC-[0-9]{6}-[0-9]{5}$'
+    )
+
+    && request.resource.data.status == "new"
+    && request.resource.data.source == "website"
+
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  // 신청내역 조회는 관리자만 가능
+  allow read: if isAdmin();
+
+  // 처리상태 변경도 관리자만 가능
+  allow update: if
+    isAdmin()
+    &&
+    request.resource.data
+      .diff(resource.data)
+      .affectedKeys()
+      .hasOnly([
+        "status",
+        "updatedAt"
+      ])
+    &&
+    (
+      request.resource.data.status == "new"
+      || request.resource.data.status == "checking"
+      || request.resource.data.status == "contacted"
+      || request.resource.data.status == "approved"
+      || request.resource.data.status == "hold"
+    )
+    &&
+    request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
+
+// REF-NCC-FIRESTORE-INQUIRY-PRODUCTION-01
+// 아래 match 블록을 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 넣습니다.
+
+match /inquiryApplications/{applicationId} {
+  allow create: if
+    request.resource.data.keys().hasAll([
+      "kind", "organization", "name", "phone", "region", "category",
+      "message", "receipt", "status", "source", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "kind", "organization", "name", "phone", "region", "category",
+      "message", "receipt", "status", "source", "createdAt", "updatedAt"
+    ])
+    && (request.resource.data.kind == "partner" || request.resource.data.kind == "center")
+    && request.resource.data.organization is string
+    && request.resource.data.organization.size() <= 100
+    && request.resource.data.name is string
+    && request.resource.data.name.size() >= 1
+    && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 9
+    && request.resource.data.phone.size() <= 30
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.category is string
+    && request.resource.data.category.size() >= 1
+    && request.resource.data.category.size() <= 100
+    && request.resource.data.message is string
+    && request.resource.data.message.size() <= 1000
+    && request.resource.data.receipt is string
+    && request.resource.data.receipt.matches('^NCC-[PC]-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.status == "new"
+    && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin();
+
+  allow update: if
+    isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"])
+    && request.resource.data.status in ["new", "checking", "contacted", "approved", "hold"]
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+  }
+  match /groupBuyProducts/{productId} {
+  allow read: if isAdmin() || resource.data.published == true;
+
+  allow create: if
+    isAdmin()
+    && request.resource.data.keys().hasAll([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 120
+    && request.resource.data.category is string
+    && request.resource.data.category.size() >= 1
+    && request.resource.data.category.size() <= 80
+    && request.resource.data.subtitle is string
+    && request.resource.data.subtitle.size() <= 200
+    && request.resource.data.description is string
+    && request.resource.data.description.size() >= 1
+    && request.resource.data.description.size() <= 2000
+    && request.resource.data.price is int
+    && request.resource.data.price >= 0
+    && request.resource.data.regularPrice is int
+    && request.resource.data.regularPrice >= 0
+    && request.resource.data.minParticipants is int
+    && request.resource.data.minParticipants >= 1
+    && request.resource.data.stock is int
+    && request.resource.data.stock >= 0
+    && request.resource.data.startDate is string
+    && request.resource.data.endDate is string
+    && request.resource.data.status in ["draft", "recruiting", "confirmed", "closed"]
+    && request.resource.data.published is bool
+    && request.resource.data.image is string
+    && request.resource.data.image.size() <= 500
+    && request.resource.data.supplier is string
+    && request.resource.data.supplier.size() <= 120
+    && request.resource.data.shipping is string
+    && request.resource.data.shipping.size() <= 200
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow update: if
+    isAdmin()
+    && request.resource.data.keys().hasAll([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "title", "category", "subtitle", "description", "price", "regularPrice",
+      "minParticipants", "stock", "startDate", "endDate", "status", "published",
+      "image", "supplier", "shipping", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.createdAt == resource.data.createdAt
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
+
+match /groupBuyOrders/{orderId} {
+  allow create: if
+    request.resource.data.keys().hasAll([
+      "productId", "productTitle", "name", "phone", "phoneKey", "quantity",
+      "region", "address", "message", "receipt", "totalPrice", "status",
+      "source", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "productId", "productTitle", "name", "phone", "phoneKey", "quantity",
+      "region", "address", "message", "receipt", "totalPrice", "status",
+      "source", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.productId is string
+    && request.resource.data.productId.size() >= 1
+    && request.resource.data.productId.size() <= 100
+    && request.resource.data.productTitle is string
+    && request.resource.data.productTitle.size() >= 1
+    && request.resource.data.productTitle.size() <= 120
+    && request.resource.data.name is string
+    && request.resource.data.name.size() >= 1
+    && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 9
+    && request.resource.data.phone.size() <= 30
+    && request.resource.data.phoneKey is string
+    && request.resource.data.phoneKey.matches('^[0-9]{9,11}$')
+    && request.resource.data.quantity is int
+    && request.resource.data.quantity >= 1
+    && request.resource.data.quantity <= 20
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.address is string
+    && request.resource.data.address.size() >= 1
+    && request.resource.data.address.size() <= 300
+    && request.resource.data.message is string
+    && request.resource.data.message.size() <= 500
+    && request.resource.data.receipt is string
+    && request.resource.data.receipt.matches('^NCC-G-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.totalPrice is int
+    && request.resource.data.totalPrice >= 0
+    && request.resource.data.status == "new"
+    && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin();
+
+  allow update: if
+    isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"])
+    && request.resource.data.status in [
+      "new", "checking", "confirmed", "paid", "shipping", "completed", "cancelled"
+    ]
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
+    // ==========================================
+    // DEFAULT DENY
+    // ==========================================
+// REF-NCC-FIRESTORE-WALLET-PRODUCTION-01
+// 기존 Firestore 규칙의 DEFAULT DENY 바로 위에 추가합니다.
+// 기존 members 규칙은 삭제하거나 수정하지 않습니다.
+
+match /members/{memberId} {
+  allow read: if
+    request.auth != null
+    && request.auth.token.email != null
+    && request.auth.token.email_verified == true
+    && resource.data.email is string
+    && resource.data.email == request.auth.token.email;
+} 
+function ownsMember(memberId) {
+  return request.auth != null
+    && request.auth.token.email != null
+    && get(/databases/$(database)/documents/members/$(memberId)).data.email
+       == request.auth.token.email;
+}
+
+match /memberProfiles/{memberId} {
+  // 공개 회원가입 transaction 안에서 members와 동시에 최초 생성
+  allow create: if
+    request.resource.data.keys().hasAll([
+      "memberId", "memberNumber", "email", "phoneKey",
+      "profileVersion", "basic", "additional", "special", "consumer",
+      "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "memberNumber", "email", "phoneKey",
+      "profileVersion", "basic", "additional", "special", "consumer",
+      "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId == memberId
+    && request.resource.data.profileVersion == 1
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time
+    && getAfter(/databases/$(database)/documents/members/$(memberId)).data.memberNumber
+       == request.resource.data.memberNumber
+    && getAfter(/databases/$(database)/documents/members/$(memberId)).data.email
+       == request.resource.data.email
+    && getAfter(/databases/$(database)/documents/members/$(memberId)).data.phoneKey
+       == request.resource.data.phoneKey;
+
+  allow read: if isAdmin() || ownsMember(memberId);
+
+  allow update: if
+    isAdmin()
+    || (
+      ownsMember(memberId)
+      && request.resource.data.memberId == resource.data.memberId
+      && request.resource.data.memberNumber == resource.data.memberNumber
+      && request.resource.data.email == resource.data.email
+      && request.resource.data.phoneKey == resource.data.phoneKey
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.updatedAt == request.time
+    );
+
+  allow delete: if isAdmin();
+}
+
+match /memberAddresses/{addressId} {
+  allow create: if
+    request.auth != null
+    && request.resource.data.memberId is string
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.keys().hasAll([
+      "memberId", "label", "recipient", "phone", "postalCode",
+      "address", "addressDetail", "isDefault", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "label", "recipient", "phone", "postalCode",
+      "address", "addressDetail", "isDefault", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.label is string
+    && request.resource.data.label.size() >= 1
+    && request.resource.data.label.size() <= 30
+    && request.resource.data.recipient is string
+    && request.resource.data.recipient.size() >= 1
+    && request.resource.data.recipient.size() <= 50
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 9
+    && request.resource.data.phone.size() <= 30
+    && request.resource.data.postalCode is string
+    && request.resource.data.postalCode.size() <= 10
+    && request.resource.data.address is string
+    && request.resource.data.address.size() >= 1
+    && request.resource.data.address.size() <= 200
+    && request.resource.data.addressDetail is string
+    && request.resource.data.addressDetail.size() <= 150
+    && request.resource.data.isDefault is bool
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin() || ownsMember(resource.data.memberId);
+
+  allow update: if
+    isAdmin()
+    || (
+      ownsMember(resource.data.memberId)
+      && request.resource.data.memberId == resource.data.memberId
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.updatedAt == request.time
+    );
+
+  allow delete: if isAdmin() || ownsMember(resource.data.memberId);
+}match /benefitApplications/{applicationId} {
+  allow create: if request.auth != null
+    && request.resource.data.keys().hasAll(["type","name","phone","region","message","memberId","memberEmail","offerId","offerTitle","receipt","status","source","createdAt","updatedAt"])
+    && request.resource.data.keys().hasOnly(["type","name","phone","region","message","memberId","memberEmail","offerId","offerTitle","receipt","status","source","createdAt","updatedAt"])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.memberEmail == request.auth.token.email
+    && request.resource.data.type is string && request.resource.data.type.size() >= 1 && request.resource.data.type.size() <= 100
+    && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string && request.resource.data.phone.size() >= 9 && request.resource.data.phone.size() <= 30
+    && request.resource.data.region is string && request.resource.data.region.size() >= 1 && request.resource.data.region.size() <= 100
+    && request.resource.data.message is string && request.resource.data.message.size() <= 1000
+    && request.resource.data.offerId is string && request.resource.data.offerId.size() >= 1 && request.resource.data.offerId.size() <= 100
+    && request.resource.data.offerTitle is string && request.resource.data.offerTitle.size() >= 1 && request.resource.data.offerTitle.size() <= 200
+    && request.resource.data.receipt is string && request.resource.data.receipt.matches('^NCC-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.status == "new" && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
+  allow read: if isAdmin() || (request.auth != null && ownsMember(resource.data.memberId));
+}
+
+match /groupBuyOrders/{orderId} {
+  allow create: if request.auth != null
+    && request.resource.data.keys().hasAll(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
+    && request.resource.data.keys().hasOnly(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.memberEmail == request.auth.token.email
+    && request.resource.data.productId is string && request.resource.data.productId.size() >= 1 && request.resource.data.productId.size() <= 100
+    && request.resource.data.productTitle is string && request.resource.data.productTitle.size() >= 1 && request.resource.data.productTitle.size() <= 120
+    && request.resource.data.name is string && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string && request.resource.data.phone.size() >= 9 && request.resource.data.phone.size() <= 30
+    && request.resource.data.phoneKey is string && request.resource.data.phoneKey.matches('^[0-9]{9,11}$')
+    && request.resource.data.quantity is int && request.resource.data.quantity >= 1 && request.resource.data.quantity <= 20
+    && request.resource.data.region is string && request.resource.data.region.size() >= 1 && request.resource.data.region.size() <= 100
+    && request.resource.data.address is string && request.resource.data.address.size() >= 1 && request.resource.data.address.size() <= 300
+    && request.resource.data.message is string && request.resource.data.message.size() <= 500
+    && request.resource.data.receipt is string && request.resource.data.receipt.matches('^NCC-G-[0-9]{6}-[0-9]{5}$')
+    && request.resource.data.totalPrice is int && request.resource.data.totalPrice >= 0
+    && request.resource.data.status == "new" && request.resource.data.source == "website"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
+  allow read: if isAdmin() || (request.auth != null && ownsMember(resource.data.memberId));
+}
+
+function validNewLike(commentId) {
+  let likeId = commentId + "_" + request.auth.uid;
+  return !exists(/databases/$(database)/documents/expectationLikes/$(likeId))
+    && existsAfter(/databases/$(database)/documents/expectationLikes/$(likeId));
+}
+
+match /expectationComments/{commentId} {
+  allow read: if isAdmin() || resource.data.status == "visible";
+
+  allow create: if request.auth != null
+    && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasOnly([
+      "targetType",
+      "targetId",
+      "targetKey",
+      "memberId",
+      "authorEmail",
+      "authorMasked",
+      "content",
+      "likeCount",
+      "status",
+      "createdAt",
+      "updatedAt"
+    ])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.authorEmail == request.auth.token.email
+    && request.resource.data.targetType in ["benefit", "groupbuy"]
+    && request.resource.data.targetId is string
+    && request.resource.data.targetId.size() >= 1
+    && request.resource.data.targetId.size() <= 100
+    && request.resource.data.targetKey is string
+    && request.resource.data.targetKey.size() <= 220
+    && request.resource.data.authorMasked is string
+    && request.resource.data.authorMasked.size() <= 20
+    && request.resource.data.content is string
+    && request.resource.data.content.size() >= 2
+    && request.resource.data.content.size() <= 180
+    && request.resource.data.likeCount == 0
+    && request.resource.data.status == "visible"
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow update: if isAdmin()
+    || (
+      request.auth != null
+      && request.resource.data
+        .diff(resource.data)
+        .affectedKeys()
+        .hasOnly([
+          "likeCount",
+          "updatedAt"
+        ])
+      && request.resource.data.likeCount
+        == resource.data.likeCount + 1
+      && request.resource.data.updatedAt == request.time
+      && validNewLike(commentId)
+    );
+
+  allow delete: if isAdmin();
+}
+
+match /expectationLikes/{likeId} {
+  allow read: if request.auth != null;
+  allow create: if request.auth != null
+    && likeId == request.resource.data.commentId + "_" + request.auth.uid
+    && !exists(/databases/$(database)/documents/expectationLikes/$(likeId))
+    && request.resource.data.keys().hasOnly(["commentId","userId","createdAt"])
+    && request.resource.data.userId == request.auth.uid
+    && request.resource.data.createdAt == request.time;
+  allow update, delete: if false;
+}
+
+match /reviews/{reviewId} {
+  allow read: if isAdmin() || resource.data.status == "visible";
+  allow create: if request.auth != null && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasOnly(["targetType","targetId","targetKey","verificationCollection","verificationId","memberId","authorEmail","authorMasked","rating","title","content","verified","status","createdAt","updatedAt"])
+    && ownsMember(request.resource.data.memberId)
+    && request.resource.data.authorEmail == request.auth.token.email
+    && request.resource.data.targetType in ["benefit","groupbuy"]
+    && reviewId == request.resource.data.targetType + "_" + request.resource.data.verificationId
+    && request.resource.data.targetId is string && request.resource.data.targetId.size() >= 1 && request.resource.data.targetId.size() <= 100
+    && request.resource.data.targetKey is string && request.resource.data.targetKey.size() <= 220
+    && request.resource.data.verificationId is string && request.resource.data.verificationId.size() >= 1
+    && request.resource.data.authorMasked is string && request.resource.data.authorMasked.size() <= 20
+    && request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+    && request.resource.data.title is string && request.resource.data.title.size() >= 2 && request.resource.data.title.size() <= 80
+    && request.resource.data.content is string && request.resource.data.content.size() >= 10 && request.resource.data.content.size() <= 1500
+    && request.resource.data.verified == true && request.resource.data.status == "visible"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time
+    && ((request.resource.data.targetType == "groupbuy"
+      && request.resource.data.verificationCollection == "groupBuyOrders"
+      && get(/databases/$(database)/documents/groupBuyOrders/$(request.resource.data.verificationId)).data.memberId == request.resource.data.memberId
+      && get(/databases/$(database)/documents/groupBuyOrders/$(request.resource.data.verificationId)).data.productId == request.resource.data.targetId
+      && get(/databases/$(database)/documents/groupBuyOrders/$(request.resource.data.verificationId)).data.status == "completed")
+    || (request.resource.data.targetType == "benefit"
+      && request.resource.data.verificationCollection == "benefitApplications"
+      && get(/databases/$(database)/documents/benefitApplications/$(request.resource.data.verificationId)).data.memberId == request.resource.data.memberId
+      && get(/databases/$(database)/documents/benefitApplications/$(request.resource.data.verificationId)).data.offerId == request.resource.data.targetId
+      && get(/databases/$(database)/documents/benefitApplications/$(request.resource.data.verificationId)).data.status == "approved"));
+  allow update, delete: if isAdmin();
+}
+
+match /reviewReports/{reportId} {
+  allow create: if request.auth != null
+    && request.resource.data.keys().hasOnly(["contentType","targetDocId","reporterEmail","reason","status","createdAt","updatedAt"])
+    && request.resource.data.contentType in ["comment","review"]
+    && request.resource.data.targetDocId is string && request.resource.data.targetDocId.size() >= 1
+    && request.resource.data.reporterEmail == request.auth.token.email
+    && request.resource.data.reason is string && request.resource.data.reason.size() >= 1 && request.resource.data.reason.size() <= 300
+    && request.resource.data.status == "new"
+    && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
+  allow read, update, delete: if isAdmin();
+  }
+  match /partnerSubmissions/{submissionId} {
+  allow create: if request.auth != null
+    && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasAll([
+      "memberId", "partnerId", "partnerName", "submissionType", "title",
+      "benefitClass", "category", "region", "summary", "quantity",
+      "regularPrice", "memberPrice", "deliveryFee", "startDate", "endDate",
+      "reviewRequirement", "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "partnerId", "partnerName", "submissionType", "title",
+      "benefitClass", "category", "region", "summary", "quantity",
+      "regularPrice", "memberPrice", "deliveryFee", "startDate", "endDate",
+      "reviewRequirement", "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId is string
+    && ownsMember(request.resource.data.memberId)
+    && get(/databases/$(database)/documents/members/$(request.resource.data.memberId)).data.memberType in ["partner", "corporate", "soleProprietor"]
+    && request.resource.data.partnerId is string
+    && request.resource.data.partnerId.size() <= 100
+    && request.resource.data.partnerName is string
+    && request.resource.data.partnerName.size() >= 1
+    && request.resource.data.partnerName.size() <= 100
+    && request.resource.data.submissionType in ["benefit", "experience", "groupbuy"]
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 120
+    && request.resource.data.benefitClass in ["FIRST", "PREMIUM", "DAILY"]
+    && request.resource.data.category is string
+    && request.resource.data.category.size() >= 1
+    && request.resource.data.category.size() <= 80
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.summary is string
+    && request.resource.data.summary.size() >= 1
+    && request.resource.data.summary.size() <= 1000
+    && request.resource.data.quantity is int
+    && request.resource.data.quantity >= 0
+    && request.resource.data.regularPrice is int
+    && request.resource.data.regularPrice >= 0
+    && request.resource.data.memberPrice is int
+    && request.resource.data.memberPrice >= 0
+    && request.resource.data.deliveryFee is int
+    && request.resource.data.deliveryFee >= 0
+    && request.resource.data.startDate is string
+    && request.resource.data.startDate.size() <= 20
+    && request.resource.data.endDate is string
+    && request.resource.data.endDate.size() <= 20
+    && request.resource.data.reviewRequirement is string
+    && request.resource.data.reviewRequirement.size() <= 300
+    && request.resource.data.status == "pending"
+    && request.resource.data.adminMemo == ""
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin()
+    || (request.auth != null && ownsMember(resource.data.memberId));
+
+  allow update: if isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "status", "adminMemo", "updatedAt"
+    ])
+    && request.resource.data.status in [
+      "pending", "reviewing", "approved", "rejected", "published"
+    ]
+    && request.resource.data.adminMemo is string
+    && request.resource.data.adminMemo.size() <= 1000
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
+
+match /centerActivities/{activityId} {
+  allow create: if request.auth != null
+    && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasAll([
+      "memberId", "centerCode", "centerName", "activityType", "title",
+      "partnerName", "region", "startDate", "endDate", "description",
+      "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "centerCode", "centerName", "activityType", "title",
+      "partnerName", "region", "startDate", "endDate", "description",
+      "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId is string
+    && ownsMember(request.resource.data.memberId)
+    && get(/databases/$(database)/documents/members/$(request.resource.data.memberId)).data.memberType in ["center_manager", "center_staff"]
+    && request.resource.data.centerCode is string
+    && request.resource.data.centerCode.size() <= 100
+    && request.resource.data.centerName is string
+    && request.resource.data.centerName.size() >= 1
+    && request.resource.data.centerName.size() <= 100
+    && request.resource.data.activityType in [
+      "local_benefit", "partner_link", "event", "member_support"
+    ]
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 120
+    && request.resource.data.partnerName is string
+    && request.resource.data.partnerName.size() <= 100
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.startDate is string
+    && request.resource.data.startDate.size() <= 20
+    && request.resource.data.endDate is string
+    && request.resource.data.endDate.size() <= 20
+    && request.resource.data.description is string
+    && request.resource.data.description.size() >= 1
+    && request.resource.data.description.size() <= 1000
+    && request.resource.data.status == "pending"
+    && request.resource.data.adminMemo == ""
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin()
+    || (request.auth != null && ownsMember(resource.data.memberId));
+
+  allow update: if isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "status", "adminMemo", "updatedAt"
+    ])
+    && request.resource.data.status in [
+      "pending", "reviewing", "approved", "rejected", "published"
+    ]
+    && request.resource.data.adminMemo is string
+    && request.resource.data.adminMemo.size() <= 1000
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
