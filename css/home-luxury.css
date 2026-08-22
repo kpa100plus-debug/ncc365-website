@@ -4,3 +4,7 @@
 .activity-luxury{background:linear-gradient(135deg,#e4ebe6,#f3eee4)}.activity-visual-grid .platform-card{padding:0;border-color:rgba(164,126,45,.25);background:#fdfbf6}.activity-photo{position:relative;height:250px;overflow:hidden}.activity-copy{padding:30px}.activity-visual-grid h3{font-size:27px}.activity-visual-grid .arrow{padding-top:4px;border-top:1px solid #e7dfce}
 @media(max-width:900px){.home-luxury-hero{grid-template-columns:1fr;gap:38px}.home-luxury-hero .hero-photo{height:430px;max-width:620px;width:100%;border-radius:160px 160px 20px 20px}.benefit-visual-grid .class-card{min-height:490px}.activity-photo{height:310px}}
 @media(max-width:600px){.home-luxury-hero{padding:52px 20px}.home-luxury-hero .hero-photo{height:360px;border-radius:120px 120px 16px 16px}.benefit-visual-grid .class-card{min-height:460px;padding:235px 24px 28px}.benefit-visual-grid .class-card:before{top:192px}.card-photo{height:205px}.activity-photo{height:240px}.activity-copy{padding:25px}}
+
+/* Compact numbered medallions: prevents the number/badge collision. */
+.benefit-visual-grid .class-card:before{z-index:3;left:30px;top:190px;width:48px;height:48px;display:grid;place-items:center;border:1px solid rgba(239,216,153,.7);border-radius:50%;background:rgba(4,28,25,.92);color:#f1d995;font-size:18px;font-weight:800;line-height:1;box-shadow:0 8px 22px rgba(0,0,0,.22);text-shadow:none}
+@media(max-width:600px){.benefit-visual-grid .class-card:before{top:181px;left:24px}}
