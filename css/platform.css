@@ -2,32 +2,34 @@
 @media(max-width:1150px){.platform-nav{gap:15px;font-size:14px}.platform-logo{width:185px}}@media(max-width:900px){.platform-header-inner{height:76px;padding:0 20px}.platform-logo{width:170px}.platform-logo img{height:55px}.platform-menu{display:block}.platform-nav{display:none;position:absolute;left:0;right:0;top:76px;padding:14px 20px 24px;flex-direction:column;align-items:stretch;gap:0;background:var(--ncc-950)}.platform-nav.open{display:flex}.platform-nav a{padding:13px 5px;border-bottom:1px solid rgba(255,255,255,.1)}.platform-nav .wallet-link,.platform-nav .join-link{margin-top:8px;text-align:center}.card-grid{grid-template-columns:1fr}.process{grid-template-columns:1fr 1fr}.data-strip{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column}.class-card{min-height:auto}.footer-grid{grid-template-columns:1fr}.footer-links{flex-wrap:wrap}}@media(max-width:600px){body{font-size:17px}.page-hero{padding:70px 20px}.page-hero h1{font-size:40px}.page-hero .lead{font-size:18px}.platform-section{padding:65px 20px}.process,.data-strip,.form-grid{grid-template-columns:1fr}.form-grid .wide{grid-column:auto}.form-panel{padding:28px 20px}.footer-brand{align-items:flex-start;flex-direction:column}.footer-brand img{width:190px}}
 
 /* Premium subpage system */
-.page-hero{min-height:470px;display:flex;flex-direction:column;justify-content:center;padding-right:max(46%,calc((100% - 1240px)/2 + 500px));isolation:isolate}
-.page-hero:before{content:"";position:absolute;z-index:-2;inset:0 0 0 54%;background-position:center;background-size:cover;opacity:.94;filter:saturate(.82) contrast(1.04)}
-.page-hero:after{z-index:-1;inset:0;background:linear-gradient(90deg,var(--ncc-950) 0%,rgba(4,28,25,.97) 43%,rgba(4,28,25,.55) 72%,rgba(4,28,25,.15) 100%);color:transparent;font-size:0}
-body[data-page="benefits"] .page-hero:before{background-image:url('../images/NCC_consumer.jpg')}
-body[data-page="groupbuy"] .page-hero:before{background-image:url('../images/NCC_consumer(1).jpg')}
-body[data-page="centers"] .page-hero:before{background-image:url('../images/NCC_local_store.jpg')}
-body[data-page="partners"] .page-hero:before{background-image:url('../images/NCC_business.jpg')}
-body[data-page="channel"] .page-hero:before{background-image:url('../images/NCC_business(1).jpg')}
-body[data-page="wallet"] .page-hero:before{background-image:url('../images/NCC_consumer.jpg')}
+body:not([data-page="home"]) .page-hero{min-height:470px;display:flex;flex-direction:column;justify-content:center;padding-right:max(46%,calc((100% - 1240px)/2 + 500px));isolation:isolate}
+body:not([data-page="home"]) .page-hero:before{content:"";position:absolute;z-index:-2;inset:0 0 0 54%;background-position:center;background-size:cover;opacity:.94;filter:saturate(.82) contrast(1.04)}
+body:not([data-page="home"]) .page-hero:after{z-index:-1;inset:0;background:linear-gradient(90deg,var(--ncc-950) 0%,rgba(4,28,25,.97) 43%,rgba(4,28,25,.55) 72%,rgba(4,28,25,.15) 100%);color:transparent;font-size:0}
+body[data-page="benefits"] .page-hero:before{background-image:url('../images/hero-benefits-2026.webp')}
+body[data-page="groupbuy"] .page-hero:before{background-image:url('../images/hero-groupbuy-2026.webp')}
+body[data-page="centers"] .page-hero:before{background-image:url('../images/hero-centers-2026.webp')}
+body[data-page="partners"] .page-hero:before{background-image:url('../images/hero-partners-2026.webp')}
+body[data-page="channel"] .page-hero:before{background-image:url('../images/hero-channel-2026.webp')}
+body[data-page="wallet"] .page-hero:before{background-image:url('../images/hero-wallet-2026.webp')}
+body:not([data-page="home"]) .page-hero h1{color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.38)}
+body:not([data-page="home"]) .page-hero .lead{color:#f0f5f2;text-shadow:0 2px 12px rgba(0,0,0,.5)}
 .platform-card{transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
-.card-grid>.platform-card{padding-top:225px;min-height:465px;background-color:#fdfbf6;background-repeat:no-repeat;background-size:100% 205px;background-position:center top}
-body[data-page="benefits"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_consumer.jpg')}
-body[data-page="benefits"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_business.jpg')}
-body[data-page="benefits"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_local_store.jpg')}
-body[data-page="centers"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_consumer(1).jpg')}
-body[data-page="centers"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_local_store(1).jpg')}
-body[data-page="centers"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_business(1).jpg')}
-body[data-page="partners"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_local_store.jpg')}
-body[data-page="partners"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_consumer.jpg')}
-body[data-page="partners"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_business.jpg')}
-body[data-page="channel"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_local_store(1).jpg')}
-body[data-page="channel"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_business(1).jpg')}
-body[data-page="channel"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/NCC_consumer(1).jpg')}
+body:not([data-page="home"]) .card-grid>.platform-card{padding-top:225px;min-height:465px;background-color:#fdfbf6;background-repeat:no-repeat;background-size:100% 205px,auto 205px;background-position:center top,center top}
+body[data-page="benefits"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-benefit-beauty.webp')}
+body[data-page="benefits"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-benefit-health.webp')}
+body[data-page="benefits"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-benefit-local.webp')}
+body[data-page="centers"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-center-members.webp')}
+body[data-page="centers"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-center-market.webp')}
+body[data-page="centers"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-center-community.webp')}
+body[data-page="partners"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-partner-store.webp')}
+body[data-page="partners"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-partner-experience.webp')}
+body[data-page="partners"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-partner-groupbuy.webp')}
+body[data-page="channel"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-channel-article.webp')}
+body[data-page="channel"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-channel-video.webp')}
+body[data-page="channel"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-channel-review.webp')}
 body[data-page="wallet"] .wallet-services>.platform-card{padding-top:32px;min-height:260px;background-image:none}
-.process{gap:16px}.process div{overflow:hidden;min-height:175px;padding:58px 24px 24px;border-color:rgba(164,126,45,.24);background:linear-gradient(145deg,#fff,#f6f1e6);box-shadow:0 12px 28px rgba(7,42,37,.06)}.process div:before{position:absolute;left:20px;top:17px;width:30px;height:30px;display:grid;place-items:center;margin:0;border-radius:50%;background:var(--ncc-900);color:var(--gold-soft);font-size:12px}.process div:after{content:"";position:absolute;left:0;top:0;width:4px;height:100%;background:linear-gradient(var(--gold),transparent)}
-.platform-section:not(.paper){background:linear-gradient(145deg,#e5ece7,#f2ede2)}
+body:not([data-page="home"]) .process{gap:16px}body:not([data-page="home"]) .process div{overflow:hidden;min-height:175px;padding:58px 24px 24px;border-color:rgba(164,126,45,.24);background:linear-gradient(145deg,#fff,#f6f1e6);box-shadow:0 12px 28px rgba(7,42,37,.06)}body:not([data-page="home"]) .process div:before{position:absolute;left:20px;top:17px;width:30px;height:30px;display:grid;place-items:center;margin:0;border-radius:50%;background:var(--ncc-900);color:var(--gold-soft);font-size:12px}body:not([data-page="home"]) .process div:after{content:"";position:absolute;left:0;top:0;width:4px;height:100%;background:linear-gradient(var(--gold),transparent)}
+body:not([data-page="home"]) .platform-section:not(.paper){background:linear-gradient(145deg,#e5ece7,#f2ede2)}
 body[data-page="wallet"] .platform-section.paper{background:radial-gradient(circle at 85% 10%,rgba(210,170,80,.16),transparent 24%),linear-gradient(145deg,#f3efe5,#e6ede8)}
-@media(max-width:900px){.page-hero{min-height:560px;padding:280px 28px 66px}.page-hero:before{inset:0 0 auto 0;height:250px}.page-hero:after{background:linear-gradient(180deg,rgba(4,28,25,.12),var(--ncc-950) 250px)}.card-grid>.platform-card{min-height:auto;background-size:100% 300px;padding-top:330px}}
-@media(max-width:600px){.page-hero{min-height:520px;padding:240px 20px 54px}.page-hero:before{height:215px}.page-hero h1{font-size:38px}.card-grid>.platform-card{background-size:100% 220px;padding-top:248px}.process div{min-height:140px}}
+@media(max-width:900px){body:not([data-page="home"]) .page-hero{min-height:560px;padding:280px 28px 66px}body:not([data-page="home"]) .page-hero:before{inset:0 0 auto 0;height:250px}body:not([data-page="home"]) .page-hero:after{background:linear-gradient(180deg,rgba(4,28,25,.12),var(--ncc-950) 250px)}body:not([data-page="home"]) .card-grid>.platform-card{min-height:auto;background-size:cover;padding-top:330px}}
+@media(max-width:600px){body:not([data-page="home"]) .page-hero{min-height:520px;padding:240px 20px 54px}body:not([data-page="home"]) .page-hero:before{height:215px}body:not([data-page="home"]) .page-hero h1{font-size:38px}body:not([data-page="home"]) .card-grid>.platform-card{background-size:cover;padding-top:248px}body:not([data-page="home"]) .process div{min-height:140px}}
