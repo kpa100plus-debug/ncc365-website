@@ -5,17 +5,23 @@ Reference: `REF-NCC-FIREBASE-AUTO-DEPLOY-50`
 The production Firestore rules are maintained in `firestore.rules` and deployed
 to the Firebase project `ncc-member` by GitHub Actions.
 
-## Required repository secret
+## Authentication
 
-- Name: `FIREBASE_SERVICE_ACCOUNT_NCC_MEMBER`
-- Value: the complete JSON key for the dedicated deployment service account
+The workflow uses Google Cloud Workload Identity Federation. It does not use
+or store a long-lived service-account JSON key.
+
+- Workload Identity Pool: `ncc-github-actions`
+- Provider: `github`
+- Repository restriction: `kpa100plus-debug/ncc365-website`
+- Branch restriction: `refs/heads/main`
+- Service account: `ncc-firestore-rules-deployer@ncc-member.iam.gserviceaccount.com`
 
 The service account should have only these project roles:
 
 - Firebase Rules Admin (`roles/firebaserules.admin`)
 - Service Usage Consumer (`roles/serviceusage.serviceUsageConsumer`)
 
-Never commit the JSON key to the repository or paste it into a chat message.
+Do not create or commit a JSON key for this deployment workflow.
 
 ## Deployment trigger
 
