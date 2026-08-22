@@ -1,0 +1,17 @@
+.profile-group {
+  margin: 0 0 22px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f8faf8;
+}
+.profile-group legend {
+  padding: 0 10px;
+  color: var(--ncc-900);
+  font-size: 20px;
+  font-weight: 800;
+}
+.profile-group .check-line { margin-top: 4px; }
+@media (max-width: 600px) {
+  .profile-group { padding: 17px 14px; }
+}
