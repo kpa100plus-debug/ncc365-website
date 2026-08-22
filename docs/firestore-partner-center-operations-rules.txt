@@ -1,0 +1,136 @@
+// REF-NCC-PARTNER-CENTER-OPERATIONS-RULES-49
+// 최종 DEFAULT DENY의 match /{document=**} 바로 위에 추가
+
+match /partnerSubmissions/{submissionId} {
+  allow create: if request.auth != null
+    && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasAll([
+      "memberId", "partnerId", "partnerName", "submissionType", "title",
+      "benefitClass", "category", "region", "summary", "quantity",
+      "regularPrice", "memberPrice", "deliveryFee", "startDate", "endDate",
+      "reviewRequirement", "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "partnerId", "partnerName", "submissionType", "title",
+      "benefitClass", "category", "region", "summary", "quantity",
+      "regularPrice", "memberPrice", "deliveryFee", "startDate", "endDate",
+      "reviewRequirement", "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId is string
+    && ownsMember(request.resource.data.memberId)
+    && get(/databases/$(database)/documents/members/$(request.resource.data.memberId)).data.memberType in ["partner", "corporate", "soleProprietor"]
+    && request.resource.data.partnerId is string
+    && request.resource.data.partnerId.size() <= 100
+    && request.resource.data.partnerName is string
+    && request.resource.data.partnerName.size() >= 1
+    && request.resource.data.partnerName.size() <= 100
+    && request.resource.data.submissionType in ["benefit", "experience", "groupbuy"]
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 120
+    && request.resource.data.benefitClass in ["FIRST", "PREMIUM", "DAILY"]
+    && request.resource.data.category is string
+    && request.resource.data.category.size() >= 1
+    && request.resource.data.category.size() <= 80
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.summary is string
+    && request.resource.data.summary.size() >= 1
+    && request.resource.data.summary.size() <= 1000
+    && request.resource.data.quantity is int
+    && request.resource.data.quantity >= 0
+    && request.resource.data.regularPrice is int
+    && request.resource.data.regularPrice >= 0
+    && request.resource.data.memberPrice is int
+    && request.resource.data.memberPrice >= 0
+    && request.resource.data.deliveryFee is int
+    && request.resource.data.deliveryFee >= 0
+    && request.resource.data.startDate is string
+    && request.resource.data.startDate.size() <= 20
+    && request.resource.data.endDate is string
+    && request.resource.data.endDate.size() <= 20
+    && request.resource.data.reviewRequirement is string
+    && request.resource.data.reviewRequirement.size() <= 300
+    && request.resource.data.status == "pending"
+    && request.resource.data.adminMemo == ""
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin()
+    || (request.auth != null && ownsMember(resource.data.memberId));
+
+  allow update: if isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "status", "adminMemo", "updatedAt"
+    ])
+    && request.resource.data.status in [
+      "pending", "reviewing", "approved", "rejected", "published"
+    ]
+    && request.resource.data.adminMemo is string
+    && request.resource.data.adminMemo.size() <= 1000
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}
+
+match /centerActivities/{activityId} {
+  allow create: if request.auth != null
+    && request.auth.token.email_verified == true
+    && request.resource.data.keys().hasAll([
+      "memberId", "centerCode", "centerName", "activityType", "title",
+      "partnerName", "region", "startDate", "endDate", "description",
+      "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "centerCode", "centerName", "activityType", "title",
+      "partnerName", "region", "startDate", "endDate", "description",
+      "status", "adminMemo", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId is string
+    && ownsMember(request.resource.data.memberId)
+    && get(/databases/$(database)/documents/members/$(request.resource.data.memberId)).data.memberType in ["center_manager", "center_staff"]
+    && request.resource.data.centerCode is string
+    && request.resource.data.centerCode.size() <= 100
+    && request.resource.data.centerName is string
+    && request.resource.data.centerName.size() >= 1
+    && request.resource.data.centerName.size() <= 100
+    && request.resource.data.activityType in [
+      "local_benefit", "partner_link", "event", "member_support"
+    ]
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 120
+    && request.resource.data.partnerName is string
+    && request.resource.data.partnerName.size() <= 100
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 100
+    && request.resource.data.startDate is string
+    && request.resource.data.startDate.size() <= 20
+    && request.resource.data.endDate is string
+    && request.resource.data.endDate.size() <= 20
+    && request.resource.data.description is string
+    && request.resource.data.description.size() >= 1
+    && request.resource.data.description.size() <= 1000
+    && request.resource.data.status == "pending"
+    && request.resource.data.adminMemo == ""
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin()
+    || (request.auth != null && ownsMember(resource.data.memberId));
+
+  allow update: if isAdmin()
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "status", "adminMemo", "updatedAt"
+    ])
+    && request.resource.data.status in [
+      "pending", "reviewing", "approved", "rejected", "published"
+    ]
+    && request.resource.data.adminMemo is string
+    && request.resource.data.adminMemo.size() <= 1000
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
+}

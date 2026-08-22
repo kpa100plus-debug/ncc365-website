@@ -28,6 +28,7 @@ function render(member,role){
   document.querySelector("#roleRegion").textContent=member.region||"지역 미등록";
   document.querySelector("#roleOrganization").textContent=dashboard==="center"?(member.centerName||"소속 센터 확인 중"):(member.partnerName||"파트너 업체 확인 중");
   document.querySelector("#logoutButton").onclick=()=>signOut(auth).then(()=>location.replace("wallet.html"));
+  window.dispatchEvent(new CustomEvent("ncc:role-ready",{detail:{member,role,dashboard}}));
 }
 
 function showDenied(message,target){const loading=document.querySelector("#roleLoading");loading.className="role-denied";loading.innerHTML=`<h2>접근 권한을 확인해 주세요</h2><p>${escapeHtml(message)}</p><a class="role-button" href="${target}">내 페이지로 이동</a>`}

@@ -1,1 +1,49 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>센터회원 대시보드 | 전국소비자클럽</title><link rel="stylesheet" href="css/platform.css"><link rel="stylesheet" href="css/role-dashboard.css"></head><body class="role-page" data-dashboard="center"><main class="role-shell"><div id="roleLoading" class="role-loading">센터회원 권한을 확인하고 있습니다.</div><div id="roleContent" hidden><section class="role-hero"><div><p class="role-kicker">NCC LOCAL NETWORK</p><h1>전국소비자센터<br>운영 대시보드</h1><p class="role-lead">소속 센터와 관할지역의 회원·파트너·혜택 연결 업무를 한곳에서 확인합니다.</p></div><div class="role-member-card"><span id="roleLabel"></span><strong id="roleName"></strong><p id="roleNumber"></p><p id="roleOrganization"></p><p id="roleRegion"></p></div></section><div class="role-toolbar"><p>센터 운영 기능은 본사 승인 권한에 따라 단계적으로 제공됩니다.</p><button id="logoutButton" class="role-button light" type="button">로그아웃</button></div><section class="role-grid"><article class="role-card"><span class="role-badge">CENTER PROFILE</span><h2>센터 정보</h2><p>소속 센터명·센터코드·관할지역과 담당자 정보를 확인합니다.</p><a href="center.html">센터 정보·참여 문의 →</a></article><article class="role-card"><span class="role-badge">LOCAL MEMBER</span><h2>관할 회원</h2><p>관할 소비자회원 연결과 회원 지원 업무는 본사 승인 후 열립니다.</p><a href="centers.html">센터 네트워크 보기 →</a></article><article class="role-card"><span class="role-badge">LOCAL BENEFIT</span><h2>지역 혜택</h2><p>우리 지역의 혜택과 파트너 연결 현황을 확인하고 새 혜택을 제안합니다.</p><a href="benefits.html">지역 혜택 확인 →</a></article><article class="role-card"><span class="role-badge">PARTNER LINK</span><h2>지역 파트너</h2><p>지역 기업·소상공인의 NCC 참여와 혜택 등록을 안내합니다.</p><a href="partner-center.html">파트너센터 보기 →</a></article><article class="role-card"><span class="role-badge">ACTIVITY</span><h2>센터 활동</h2><p>지역 행사·상담·회원 연결 활동 기록 모듈을 준비합니다.</p><a href="consumer-channel.html">소비자채널 보기 →</a></article><article class="role-card"><span class="role-badge">HEAD OFFICE</span><h2>본사 문의</h2><p>직책·관할지역·팀원 권한 변경은 본사 관리자에게 요청합니다.</p><a href="center.html#centerApplicationForm">운영 문의 접수 →</a></article></section></div></main><script type="module" src="js/role-dashboard.js"></script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>센터회원 대시보드 | 전국소비자클럽</title>
+  <link rel="stylesheet" href="css/platform.css">
+  <link rel="stylesheet" href="css/role-dashboard.css">
+</head>
+<body class="role-page" data-dashboard="center">
+<main class="role-shell">
+  <div id="roleLoading" class="role-loading">센터회원 권한을 확인하고 있습니다.</div>
+  <div id="roleContent" hidden>
+    <section class="role-hero">
+      <div><p class="role-kicker">NCC LOCAL NETWORK</p><h1>전국소비자센터<br>운영 대시보드</h1><p class="role-lead">소속 센터와 관할지역의 회원·파트너·혜택 연결 업무를 한곳에서 확인합니다.</p></div>
+      <div class="role-member-card"><span id="roleLabel"></span><strong id="roleName"></strong><p id="roleNumber"></p><p id="roleOrganization"></p><p id="roleRegion"></p></div>
+    </section>
+    <div class="role-toolbar"><p>센터 운영 내용은 본사 확인 후 공식 지역 활동에 반영됩니다.</p><button id="logoutButton" class="role-button light" type="button">로그아웃</button></div>
+    <section class="role-grid">
+      <article class="role-card"><span class="role-badge">CENTER PROFILE</span><h2>센터 정보</h2><p>소속 센터명·센터코드·관할지역과 담당자 정보를 확인합니다.</p><a href="center.html">센터 정보·참여 문의 →</a></article>
+      <article class="role-card"><span class="role-badge">LOCAL MEMBER</span><h2>관할 회원</h2><p>관할 소비자회원 연결과 회원 지원 업무를 관리합니다.</p><a href="centers.html">센터 네트워크 보기 →</a></article>
+      <article class="role-card"><span class="role-badge">LOCAL BENEFIT</span><h2>지역 혜택</h2><p>우리 지역의 혜택과 파트너 연결 현황을 확인하고 새 혜택을 제안합니다.</p><a href="#operationForm">지역 혜택 제안 →</a></article>
+      <article class="role-card"><span class="role-badge">PARTNER LINK</span><h2>지역 파트너</h2><p>지역 기업·소상공인의 NCC 참여와 혜택 등록을 연결합니다.</p><a href="#operationForm">파트너 연결 등록 →</a></article>
+      <article class="role-card"><span class="role-badge">ACTIVITY</span><h2>센터 활동</h2><p>지역 행사·상담·회원 지원 활동을 기록하고 본사에 보고합니다.</p><a href="#operationForm">활동 기록하기 →</a></article>
+      <article class="role-card"><span class="role-badge">HEAD OFFICE</span><h2>본사 문의</h2><p>직책·관할지역·팀원 권한 변경은 본사 관리자에게 요청합니다.</p><a href="center.html#centerApplicationForm">운영 문의 접수 →</a></article>
+    </section>
+    <section class="role-operation">
+      <div class="operation-head"><div><p class="role-kicker">CENTER ACTIVITY</p><h2>지역 활동·파트너 연결 등록</h2></div><p>관할 지역에서 진행한 업무를 본사에 공유합니다.</p></div>
+      <form id="operationForm" class="operation-form">
+        <label>활동 구분<select name="activityType" required><option value="local_benefit">지역 혜택</option><option value="partner_link">파트너 연결</option><option value="event">지역 행사</option><option value="member_support">회원 지원</option></select></label>
+        <label>활동명<input name="title" maxlength="120" required></label>
+        <label>연결 파트너명<input name="partnerName" maxlength="100" placeholder="해당 시 입력"></label>
+        <label>관할·진행 지역<input name="region" maxlength="100" required></label>
+        <label>시작일<input name="startDate" type="date"></label>
+        <label>종료일<input name="endDate" type="date"></label>
+        <label class="wide">상세 활동 내용<textarea name="description" maxlength="1000" required placeholder="진행 내용, 참여 대상, 성과와 본사 지원 요청을 입력해 주세요."></textarea></label>
+        <div class="operation-actions"><button class="role-button" type="submit">센터 활동 등록</button><p id="operationMessage" class="operation-message" aria-live="polite"></p></div>
+      </form>
+    </section>
+    <section class="role-operation">
+      <div class="operation-head"><div><p class="role-kicker">ACTIVITY HISTORY</p><h2>내 활동·검토 현황</h2></div><p>본사 확인 상태와 보완 안내를 확인합니다.</p></div>
+      <div id="operationList" class="operation-list"><div class="role-empty">활동 내역을 준비하고 있습니다.</div></div>
+    </section>
+  </div>
+</main>
+<script type="module" src="js/role-operations.js"></script>
+<script type="module" src="js/role-dashboard.js"></script>
+</body>
+</html>
