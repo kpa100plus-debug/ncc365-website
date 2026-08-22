@@ -8,6 +8,7 @@ on:
       - "firestore.rules"
       - "firebase.json"
       - ".firebaserc"
+      - ".github/workflows/firebase-rules.yml"
   workflow_dispatch:
 
 permissions:
