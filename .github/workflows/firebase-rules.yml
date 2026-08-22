@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: firebase-rules-production
@@ -26,20 +27,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Confirm deployment credential
-        env:
-          FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_NCC_MEMBER }}
-        run: |
-          if [ -z "$FIREBASE_CREDENTIALS" ]; then
-            echo "::error::Missing FIREBASE_SERVICE_ACCOUNT_NCC_MEMBER repository secret."
-            exit 1
-          fi
-
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v3
         with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_NCC_MEMBER }}
           project_id: ncc-member
+          workload_identity_provider: projects/772423138834/locations/global/workloadIdentityPools/ncc-github-actions/providers/github
+          service_account: ncc-firestore-rules-deployer@ncc-member.iam.gserviceaccount.com
           create_credentials_file: true
           export_environment_variables: true
 
