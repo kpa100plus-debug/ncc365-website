@@ -1,0 +1,23 @@
+:root{--role-ink:#062c28;--role-green:#0b4c43;--role-gold:#d9ad49;--role-paper:#f5f0e5;--role-muted:#61706b}
+.role-page{min-height:100vh;background:linear-gradient(135deg,#e7ede9 0%,#f2ede2 55%,#e3eae5 100%)}
+.role-shell{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:60px 0 90px}
+.role-loading,.role-denied{padding:54px;border:1px solid rgba(6,44,40,.12);border-radius:28px;background:#fff;box-shadow:0 22px 60px rgba(6,44,40,.1);text-align:center}
+.role-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);gap:34px;padding:54px;border:1px solid rgba(217,173,73,.38);border-radius:30px;background:radial-gradient(circle at 86% 12%,rgba(217,173,73,.2),transparent 30%),linear-gradient(130deg,#052f2a,#0b5147);color:#fff;box-shadow:0 24px 60px rgba(4,37,33,.2)}
+.role-hero:after{content:"NCC";position:absolute;right:-20px;bottom:-80px;font:800 220px/1 Arial;color:rgba(255,255,255,.035)}
+.role-kicker{margin:0 0 10px;color:#e4bf69;font-size:13px;font-weight:800;letter-spacing:.18em}
+.role-hero h1{position:relative;z-index:1;margin:0 0 14px;font-size:clamp(34px,5vw,58px);line-height:1.12;letter-spacing:-.04em}
+.role-lead{position:relative;z-index:1;margin:0;color:#d9e5e1;font-size:18px;line-height:1.75}
+.role-member-card{position:relative;z-index:1;align-self:center;padding:28px;border:1px solid rgba(255,255,255,.18);border-radius:22px;background:rgba(255,255,255,.08);backdrop-filter:blur(12px)}
+.role-member-card span{display:block;color:#b9d0ca;font-size:14px}.role-member-card strong{display:block;margin:8px 0;color:#f2ce79;font-size:24px}.role-member-card p{margin:5px 0;color:#fff}
+.role-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:28px 0}.role-toolbar p{margin:0;color:var(--role-muted)}
+.role-button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border:1px solid var(--role-ink);border-radius:12px;background:var(--role-ink);color:#fff;font:700 16px/1 inherit;text-decoration:none;cursor:pointer}.role-button.light{background:#fff;color:var(--role-ink)}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.role-card{position:relative;overflow:hidden;min-height:235px;padding:32px;border:1px solid rgba(6,44,40,.12);border-radius:22px;background:rgba(255,255,255,.9);box-shadow:0 16px 42px rgba(6,44,40,.08)}
+.role-card:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(var(--role-gold),transparent)}
+.role-card .role-badge{display:inline-block;padding:8px 11px;border-radius:999px;background:#e8f0ec;color:#0a6558;font-size:12px;font-weight:800;letter-spacing:.08em}
+.role-card h2{margin:24px 0 10px;color:var(--role-ink);font-size:25px;letter-spacing:-.03em}.role-card p{margin:0 0 22px;color:var(--role-muted);line-height:1.65}.role-card a{color:#9a6a0c;font-weight:800;text-decoration:none}
+.role-admin-panel{margin-top:24px;padding:30px;border-radius:24px;background:#fff;box-shadow:0 14px 40px rgba(6,44,40,.08)}
+.role-filter{display:grid;grid-template-columns:1fr 220px auto;gap:12px;margin-bottom:20px}.role-filter input,.role-filter select,.role-editor input,.role-editor select{width:100%;min-height:48px;padding:0 14px;border:1px solid #c9d3ce;border-radius:11px;background:#fff;font:inherit;color:var(--role-ink)}
+.role-list{display:grid;gap:14px}.role-editor{display:grid;grid-template-columns:1.2fr 180px 1fr 1fr auto;gap:12px;align-items:end;padding:20px;border:1px solid #d8dfdb;border-radius:16px;background:#faf9f5}.role-editor label{display:grid;gap:7px;color:#586863;font-size:13px}.role-person b{display:block;color:var(--role-ink);font-size:18px}.role-person small{display:block;margin-top:5px;color:#71807b}.role-status{min-height:24px;margin:12px 0;color:#9a6a0c}.role-empty{padding:38px;text-align:center;color:#6c7975;background:#f5f7f5;border-radius:16px}
+@media(max-width:900px){.role-shell{width:min(100% - 28px,1180px);padding-top:30px}.role-hero{grid-template-columns:1fr;padding:36px}.role-grid{grid-template-columns:1fr 1fr}.role-editor{grid-template-columns:1fr 1fr}.role-person{grid-column:1/-1}.role-editor .role-button{width:100%}}
+@media(max-width:620px){.role-shell{width:min(100% - 20px,1180px)}.role-hero{padding:28px 22px;border-radius:22px}.role-hero h1{font-size:36px}.role-lead{font-size:16px}.role-toolbar{align-items:flex-start;flex-direction:column}.role-grid{grid-template-columns:1fr}.role-card{min-height:0;padding:26px}.role-filter,.role-editor{grid-template-columns:1fr}.role-admin-panel{padding:18px}.role-loading,.role-denied{padding:34px 20px}}
