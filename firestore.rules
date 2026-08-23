@@ -44,6 +44,7 @@ service cloud.firestore {
         "phone",
         "phoneKey",
         "email",
+        "authUid",
         "birthDate",
         "gender",
         "region",
@@ -81,6 +82,15 @@ service cloud.firestore {
 
         && request.resource.data.email is string
         && request.resource.data.email.size() <= 254
+
+        && (
+          !("authUid" in request.resource.data)
+          || (
+            request.auth != null
+            && request.resource.data.authUid is string
+            && request.resource.data.authUid == request.auth.uid
+          )
+        )
 
         && request.resource.data.birthDate is string
         && request.resource.data.birthDate.size() <= 20
@@ -499,7 +509,13 @@ match /members/{memberId} {
     request.auth != null
     && request.auth.token.email is string
     && request.auth.token.email_verified == true
-    && resource.data.email == request.auth.token.email;
+    && (
+      (
+        "authUid" in resource.data
+        && resource.data.authUid == request.auth.uid
+      )
+      || resource.data.email == request.auth.token.email
+    );
 } 
 function ownsMember(memberId) {
   return request.auth != null
