@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="NCC 회원 탈퇴요청과 계정변경 이력을 관리합니다.">
+  <meta name="description" content="NCC 회원 탈퇴·재가입과 주의·블랙리스트 및 계정변경 이력을 관리합니다.">
   <title>회원 계정관리 | NCC 통합관리자</title>
   <link rel="stylesheet" href="css/platform.css">
   <link rel="stylesheet" href="css/role-dashboard.css">
@@ -14,8 +14,8 @@
   <section class="role-hero">
     <div>
       <p class="role-kicker">NCC MEMBER ACCOUNT CONTROL</p>
-      <h1>회원 탈퇴요청·<br>계정변경 기록</h1>
-      <p class="role-lead">탈퇴요청을 승인·반려하고 회원정보 변경 이력을 안전하게 확인합니다.</p>
+      <h1>회원 탈퇴·재가입·<br>제한회원 관리</h1>
+      <p class="role-lead">일반 탈퇴와 주의·블랙리스트를 분리하고 계정변경 이력을 안전하게 확인합니다.</p>
     </div>
     <div class="role-member-card">
       <span>개인정보 처리·관리 주체</span>
@@ -38,19 +38,21 @@
 
     <div id="adminAccountArea" hidden>
       <div class="role-toolbar">
-        <p>탈퇴 승인 시 회원계정은 즉시 차단됩니다. Firebase Authentication 최종 삭제는 별도 보안처리가 필요합니다.</p>
+        <p>일반 탈퇴는 블랙리스트가 아닙니다. 탈퇴 승인 후 최종 개인정보 파기를 완료하면 재가입할 수 있습니다.</p>
         <div><a class="role-button light" href="admin.html">통합관리</a> <button id="adminLogoutButton" class="role-button" type="button">로그아웃</button></div>
       </div>
 
       <div class="account-summary" aria-label="탈퇴요청 요약">
         <article><span>전체 요청</span><strong id="totalRequests">0</strong></article>
         <article><span>처리 대기</span><strong id="pendingRequests">0</strong></article>
-        <article><span>승인</span><strong id="approvedRequests">0</strong></article>
-        <article><span>반려</span><strong id="rejectedRequests">0</strong></article>
+        <article><span>파기 대기</span><strong id="approvedRequests">0</strong></article>
+        <article><span>파기 완료</span><strong id="completedRequests">0</strong></article>
+        <article><span>주의·차단</span><strong id="restrictedMembers">0</strong></article>
       </div>
 
       <div class="account-tabs" role="tablist" aria-label="회원 계정관리 메뉴">
         <button class="account-tab active" type="button" data-account-tab="requests">탈퇴요청 처리</button>
+        <button class="account-tab" type="button" data-account-tab="restrictions">주의·블랙리스트</button>
         <button class="account-tab" type="button" data-account-tab="logs">계정변경 로그</button>
       </div>
 
@@ -62,12 +64,31 @@
             <option value="requested">접수</option>
             <option value="reviewing">검토 중</option>
             <option value="approved">승인</option>
+            <option value="completed">파기 완료</option>
             <option value="rejected">반려</option>
           </select>
           <button id="accountRefresh" class="role-button light" type="button">새로고침</button>
         </div>
         <p id="requestMessage" class="role-status" aria-live="polite"></p>
         <div id="requestList" class="account-list"><div class="role-empty">탈퇴요청을 불러오고 있습니다.</div></div>
+      </section>
+
+      <section id="restrictionPanel" class="account-panel" hidden>
+        <div class="account-filter">
+          <input id="restrictionSearch" type="search" placeholder="회원명·회원번호·이메일·연락처 검색">
+          <select id="restrictionStatus">
+            <option value="">등록된 주의·차단회원</option>
+            <option value="all">전체 회원</option>
+            <option value="watchlist">주의회원</option>
+            <option value="paused">일시 정지</option>
+            <option value="blacklist">블랙리스트</option>
+            <option value="none">제한 없음</option>
+          </select>
+          <button id="restrictionRefresh" class="role-button light" type="button">새로고침</button>
+        </div>
+        <p id="restrictionMessage" class="role-status" aria-live="polite"></p>
+        <div class="restriction-guide"><b>구분 기준</b><span>주의회원: 별도 표시, 이용 가능</span><span>일시 정지: 로그인 제한</span><span>블랙리스트: 로그인·동일 연락처 재가입 차단</span></div>
+        <div id="restrictionList" class="account-list"><div class="role-empty">회원 제한정보를 불러오고 있습니다.</div></div>
       </section>
 
       <section id="logPanel" class="account-panel" hidden>
@@ -82,7 +103,12 @@
             <option value="deletion_requested">탈퇴 요청</option>
             <option value="deletion_reviewing">탈퇴 검토</option>
             <option value="deletion_approved">탈퇴 승인</option>
+            <option value="deletion_completed">탈퇴·파기 완료</option>
             <option value="deletion_rejected">탈퇴 반려</option>
+            <option value="restriction_watchlist">주의회원 지정</option>
+            <option value="restriction_paused">회원 일시 정지</option>
+            <option value="restriction_blacklisted">블랙리스트 차단</option>
+            <option value="restriction_released">회원 제한 해제</option>
             <option value="admin_role_updated">관리자 역할·소속 변경</option>
           </select>
           <button id="logRefresh" class="role-button light" type="button">새로고침</button>
@@ -92,6 +118,6 @@
     </div>
   </section>
 </main>
-<script type="module" src="js/admin-accounts.js?v=20260823-01"></script>
+<script type="module" src="js/admin-accounts.js?v=20260823-02"></script>
 </body>
 </html>
