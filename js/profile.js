@@ -49,8 +49,9 @@ onAuthStateChanged(auth, async user => {
   try {
     member = await findMember(user);
     if (!member) throw new Error("회원정보를 찾을 수 없습니다.");
-    if (["paused", "blocked"].includes(member.status || "active")) {
-      throw new Error("현재 이용이 제한된 회원계정입니다. 본사 관리자에게 문의해 주세요.");
+    if (["paused", "blocked", "withdrawal_pending", "withdrawn"].includes(member.status || "active")) {
+      const statusLabel = { paused: "일시 정지", blocked: "블랙리스트 차단", withdrawal_pending: "탈퇴 처리 중", withdrawn: "탈퇴 완료" }[member.status];
+      throw new Error(`현재 ${statusLabel} 회원계정입니다. 본사 관리자에게 문의해 주세요.`);
     }
     await syncVerifiedEmail(user);
     await loadProfile();
