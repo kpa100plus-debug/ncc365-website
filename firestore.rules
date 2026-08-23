@@ -497,9 +497,8 @@ match /groupBuyOrders/{orderId} {
 match /members/{memberId} {
   allow read: if
     request.auth != null
-    && request.auth.token.email != null
+    && request.auth.token.email is string
     && request.auth.token.email_verified == true
-    && resource.data.email is string
     && resource.data.email == request.auth.token.email;
 } 
 function ownsMember(memberId) {
