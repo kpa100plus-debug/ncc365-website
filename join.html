@@ -749,6 +749,10 @@ required>
 
 <label for="email">
 이메일
+
+<span class="required">
+*
+</span>
 </label>
 
 <input
@@ -756,7 +760,50 @@ id="email"
 type="email"
 inputmode="email"
 placeholder="이메일을 입력하세요"
-autocomplete="email">
+autocomplete="email"
+required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="password">
+비밀번호
+
+<span class="required">
+*
+</span>
+</label>
+
+<input
+id="password"
+type="password"
+minlength="8"
+placeholder="영문·숫자 포함 8자 이상"
+autocomplete="new-password"
+required>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="passwordConfirm">
+비밀번호 확인
+
+<span class="required">
+*
+</span>
+</label>
+
+<input
+id="passwordConfirm"
+type="password"
+minlength="8"
+placeholder="비밀번호를 다시 입력하세요"
+autocomplete="new-password"
+required>
 
 </div>
 
@@ -1332,10 +1379,20 @@ import {
 getFirestore,
 collection,
 doc,
+getDoc,
 runTransaction,
 serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+sendEmailVerification,
+deleteUser
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 
@@ -1374,6 +1431,12 @@ firebaseConfig
 
 const db =
 getFirestore(
+app
+);
+
+
+const auth =
+getAuth(
 app
 );
 
@@ -2199,6 +2262,35 @@ document
 .trim();
 
 
+const email =
+
+document
+.getElementById(
+"email"
+)
+.value
+.trim()
+.toLowerCase();
+
+
+const password =
+
+document
+.getElementById(
+"password"
+)
+.value;
+
+
+const passwordConfirm =
+
+document
+.getElementById(
+"passwordConfirm"
+)
+.value;
+
+
 const region =
 
 document
@@ -2224,12 +2316,58 @@ if(
 ||
 !phone
 ||
+!email
+||
+!password
+||
 !region
 ){
 
 alert(
-"이름, 연락처, 거주지역은 필수입니다."
+"이름, 연락처, 이메일, 비밀번호, 거주지역은 필수입니다."
 );
+
+return;
+
+}
+
+
+if(
+password.length < 8
+||
+!/[A-Za-z]/.test(password)
+||
+!/\d/.test(password)
+){
+
+alert(
+"비밀번호는 영문과 숫자를 포함해 8자 이상으로 입력해주세요."
+);
+
+document
+.getElementById(
+"password"
+)
+.focus();
+
+return;
+
+}
+
+
+if(
+password !== passwordConfirm
+){
+
+alert(
+"비밀번호와 비밀번호 확인이 일치하지 않습니다."
+);
+
+document
+.getElementById(
+"passwordConfirm"
+)
+.focus();
 
 return;
 
@@ -2288,7 +2426,58 @@ submitButton.textContent =
 
 
 
+let createdAuthUser =
+null;
+
+
+
 try{
+
+
+const existingPhone =
+await getDoc(
+doc(
+db,
+"memberPhones",
+phone.replace(/\D/g,"")
+)
+);
+
+
+if(
+existingPhone.exists()
+){
+
+const duplicateError =
+new Error(
+"이미 가입된 연락처입니다."
+);
+
+
+duplicateError.code =
+"NCC_DUPLICATE_PHONE";
+
+
+throw duplicateError;
+
+}
+
+
+const credential =
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+
+createdAuthUser =
+credential.user;
+
+
+await sendEmailVerification(
+createdAuthUser
+);
 
 
 const memberData = {
@@ -2303,13 +2492,7 @@ phone,
 
 
 email:
-
-document
-.getElementById(
-"email"
-)
-.value
-.trim(),
+email,
 
 
 birthDate:
@@ -2432,7 +2615,7 @@ profileData
 
 alert(
 
-"전국소비자클럽 회원가입이 완료되었습니다."
+"전국소비자클럽 회원가입이 완료되었습니다.\n\n이메일로 전송된 인증 링크를 눌러주세요."
 
 +
 
@@ -2447,7 +2630,7 @@ memberNumber
 
 
 window.location.href =
-"index.html";
+"wallet.html";
 
 
 }catch(
@@ -2461,11 +2644,59 @@ error
 
 
 if(
+createdAuthUser
+){
+
+try{
+
+await deleteUser(
+createdAuthUser
+);
+
+}catch(
+cleanupError
+){
+
+console.error(
+"가입 실패 계정 정리 오류",
+cleanupError
+);
+
+}
+
+}
+
+
+if(
 error.code === "NCC_DUPLICATE_PHONE"
 ){
 
 alert(
 "이미 전국소비자클럽에 가입된 연락처입니다.\n\n중복 회원가입은 할 수 없습니다.\n기존 회원정보 확인이 필요한 경우 관리자에게 문의해주세요."
+);
+
+}else if(
+error.code === "auth/email-already-in-use"
+){
+
+alert(
+"이미 월렛 계정으로 등록된 이메일입니다.\n\nNCC 월렛에서 로그인하거나 비밀번호 재설정을 이용해주세요."
+);
+
+}else if(
+error.code === "auth/weak-password"
+){
+
+alert(
+"비밀번호는 영문과 숫자를 포함해 8자 이상으로 입력해주세요."
+);
+
+}else if(
+error.code === "auth/invalid-email"
+){
+
+alert(
+"이메일 주소를 정확하게 입력해주세요."
 );
 
 }else{
