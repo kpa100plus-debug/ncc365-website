@@ -1,6 +1,6 @@
 import{initializeApp,getApps}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,collection,getDocs,doc,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import{getFirestore,collection,getDocs,doc,updateDoc,addDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import{firebaseConfig}from"./platform-config.js";
 
 const app=getApps()[0]||initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),ADMIN_EMAIL="kpa100plus@gmail.com",$=selector=>document.querySelector(selector);
@@ -50,7 +50,13 @@ async function saveRole(event){
   }
   const payload={memberType,centerName:center?organization:"",centerCode:center?organizationId:"",partnerName:memberType==="partner"?organization:"",partnerId:memberType==="partner"?organizationId:"",roleUpdatedAt:serverTimestamp(),updatedAt:serverTimestamp()};
   event.currentTarget.disabled=true;$("#roleSaveMessage").textContent=`${member.name||"회원"} 권한을 저장하고 있습니다.`;
-  try{await updateDoc(doc(db,"members",id),payload);Object.assign(member,payload);$("#roleSaveMessage").textContent=`${member.name||"회원"}을(를) ${labels[memberType]}으로 저장했습니다.`}catch(error){console.error(error);$("#roleSaveMessage").textContent="권한을 저장하지 못했습니다. Firestore 관리자 수정 권한을 확인해 주세요."}finally{event.currentTarget.disabled=false}
+  try{
+    const before={memberType:member.memberType||"consumer",organization:member.centerName||member.partnerName||"",organizationId:member.centerCode||member.partnerId||""};
+    const after={memberType,organization,organizationId};
+    await updateDoc(doc(db,"members",id),payload);
+    try{await addDoc(collection(db,"accountChangeLogs"),{memberId:id,memberNumber:member.memberNumber||"",memberName:member.name||"회원",actorUid:auth.currentUser.uid,actorEmail:auth.currentUser.email,actorType:"admin",eventType:"admin_role_updated",changedFields:["회원 역할","소속명","소속코드"],before,after,description:"관리자 역할·소속 변경",createdAt:serverTimestamp()})}catch(logError){console.error("권한 변경 로그 저장 실패",logError)}
+    Object.assign(member,payload);$("#roleSaveMessage").textContent=`${member.name||"회원"}을(를) ${labels[memberType]}으로 저장했습니다.`
+  }catch(error){console.error(error);$("#roleSaveMessage").textContent="권한을 저장하지 못했습니다. Firestore 관리자 수정 권한을 확인해 주세요."}finally{event.currentTarget.disabled=false}
 }
 
 function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}
