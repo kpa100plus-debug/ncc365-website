@@ -92,11 +92,11 @@ async function loadMember(user){
     }
     const member={id:snap.docs[0].id,...snap.docs[0].data()};
     const accountStatus=member.status||"active";
-    if(["paused","blocked"].includes(accountStatus)){
-      const statusLabel=accountStatus==="blocked"?"차단":"정지";
+    if(["paused","blocked","withdrawal_pending","withdrawn"].includes(accountStatus)){
+      const statusLabel={paused:"일시 정지",blocked:"블랙리스트 차단",withdrawal_pending:"탈퇴 처리 중",withdrawn:"탈퇴 완료"}[accountStatus];
       sessionStorage.removeItem("nccMemberProfile");
       $("#memberArea").hidden=false;
-      $("#memberArea").innerHTML=`<div class="empty-state"><h2>현재 ${statusLabel}된 회원계정입니다.</h2><p>본사 관리자에게 회원상태 확인을 요청해 주세요.</p><button id="restrictedLogout" class="text-button logout-button" type="button">다른 계정으로 로그인</button></div>`;
+      $("#memberArea").innerHTML=`<div class="empty-state"><h2>현재 ${statusLabel} 회원계정입니다.</h2><p>${accountStatus==="withdrawn"?"최종 탈퇴 처리된 계정입니다. 새 회원가입을 이용해 주세요.":"본사 관리자에게 회원상태 확인을 요청해 주세요."}</p><button id="restrictedLogout" class="text-button logout-button" type="button">다른 계정으로 로그인</button></div>`;
       $("#restrictedLogout").onclick=()=>signOut(auth);
       return;
     }
