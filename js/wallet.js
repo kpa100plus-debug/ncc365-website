@@ -33,6 +33,7 @@ onAuthStateChanged(auth,async user=>{
     location.replace("admin.html");
     return;
   }
+  await user.getIdToken(true);
   await loadMember(user);
 });
 
@@ -68,7 +69,10 @@ $("#resendVerification").onclick=async()=>{
 $("#checkVerification").onclick=async()=>{
   if(!currentUser)return;
   await reload(currentUser);
-  if(currentUser.emailVerified)location.reload();
+  if(currentUser.emailVerified){
+    await currentUser.getIdToken(true);
+    location.reload();
+  }
   else $("#verifyMessage").textContent="아직 인증되지 않았습니다. 이메일의 인증 링크를 먼저 눌러주세요.";
 };
 
