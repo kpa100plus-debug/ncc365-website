@@ -5,7 +5,7 @@ import{firebaseConfig}from"./platform-config.js";
 
 const app=getApps()[0]||initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),ADMIN_EMAIL="kpa100plus@gmail.com",$=selector=>document.querySelector(selector);
 const labels={consumer:"소비자회원",center_manager:"센터장",center_staff:"센터 팀원",partner:"파트너회원",corporate:"법인 파트너",soleProprietor:"개인사업자 파트너",admin:"본사 관리자"};
-const statusLabels={active:"활성",paused:"정지",blocked:"차단"};
+const statusLabels={active:"활성",paused:"일시 정지",blocked:"블랙리스트 차단",withdrawal_pending:"탈퇴 처리 중",withdrawn:"탈퇴 완료"};
 let members=[];
 
 $("#adminLoginButton").onclick=async()=>{
