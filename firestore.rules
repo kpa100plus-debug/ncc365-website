@@ -664,7 +664,8 @@ match /accountDeletionRequests/{memberId} {
     ])
     && request.resource.data.keys().hasOnly([
       "memberId", "memberNumber", "name", "email", "reason",
-      "status", "createdAt", "updatedAt"
+      "status", "privacyDisposalStatus", "adminMemo", "reviewedBy",
+      "reviewedAt", "createdAt", "updatedAt"
     ])
     && request.resource.data.memberId == memberId
     && request.resource.data.memberNumber
@@ -676,6 +677,13 @@ match /accountDeletionRequests/{memberId} {
     && request.resource.data.reason is string
     && request.resource.data.reason.size() <= 500
     && request.resource.data.status == "requested"
+    && (
+      !("privacyDisposalStatus" in request.resource.data)
+      || request.resource.data.privacyDisposalStatus == "not_started"
+    )
+    && (!("adminMemo" in request.resource.data) || request.resource.data.adminMemo == "")
+    && (!("reviewedBy" in request.resource.data) || request.resource.data.reviewedBy == "")
+    && (!("reviewedAt" in request.resource.data) || request.resource.data.reviewedAt == null)
     && request.resource.data.createdAt == request.time
     && request.resource.data.updatedAt == request.time;
 
@@ -686,7 +694,8 @@ match /accountDeletionRequests/{memberId} {
     || (
       ownsMember(memberId)
       && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-        "name", "email", "reason", "status", "updatedAt"
+        "name", "email", "reason", "status", "privacyDisposalStatus",
+        "adminMemo", "reviewedBy", "reviewedAt", "updatedAt"
       ])
       && request.resource.data.memberId == resource.data.memberId
       && request.resource.data.memberNumber == resource.data.memberNumber
@@ -697,11 +706,58 @@ match /accountDeletionRequests/{memberId} {
       && request.resource.data.reason is string
       && request.resource.data.reason.size() <= 500
       && request.resource.data.status == "requested"
+      && request.resource.data.privacyDisposalStatus == "not_started"
+      && request.resource.data.adminMemo == ""
+      && request.resource.data.reviewedBy == ""
+      && request.resource.data.reviewedAt == null
       && request.resource.data.createdAt == resource.data.createdAt
       && request.resource.data.updatedAt == request.time
     );
 
   allow delete: if isAdmin();
+}
+
+match /accountChangeLogs/{logId} {
+  allow create: if
+    isAdmin()
+    || (
+      request.auth != null
+      && request.auth.token.email_verified == true
+      && request.resource.data.keys().hasAll([
+        "memberId", "memberNumber", "memberName", "actorUid", "actorEmail",
+        "actorType", "eventType", "changedFields", "before", "after",
+        "description", "createdAt"
+      ])
+      && request.resource.data.keys().hasOnly([
+        "memberId", "memberNumber", "memberName", "actorUid", "actorEmail",
+        "actorType", "eventType", "changedFields", "before", "after",
+        "description", "createdAt"
+      ])
+      && ownsMember(request.resource.data.memberId)
+      && request.resource.data.actorUid == request.auth.uid
+      && request.resource.data.actorEmail == request.auth.token.email
+      && request.resource.data.actorType == "member"
+      && request.resource.data.eventType in [
+        "basic_profile_updated", "email_synced", "email_change_requested",
+        "password_reset_requested", "deletion_requested"
+      ]
+      && request.resource.data.memberNumber is string
+      && request.resource.data.memberNumber.size() <= 30
+      && request.resource.data.memberName is string
+      && request.resource.data.memberName.size() >= 1
+      && request.resource.data.memberName.size() <= 50
+      && request.resource.data.changedFields is list
+      && request.resource.data.changedFields.size() >= 1
+      && request.resource.data.changedFields.size() <= 10
+      && request.resource.data.before is map
+      && request.resource.data.after is map
+      && request.resource.data.description is string
+      && request.resource.data.description.size() <= 500
+      && request.resource.data.createdAt == request.time
+    );
+
+  allow read: if isAdmin();
+  allow update, delete: if false;
 }
 
 match /benefitApplications/{applicationId} {
