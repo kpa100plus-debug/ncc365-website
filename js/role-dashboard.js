@@ -17,8 +17,9 @@ onAuthStateChanged(auth,async user=>{
     if(snap.empty)throw new Error("연결된 NCC 회원정보가 없습니다.");
     const member={id:snap.docs[0].id,...snap.docs[0].data()},role=member.memberType||"consumer";
     const accountStatus=member.status||"active";
-    if(["paused","blocked"].includes(accountStatus)){
-      showDenied(`현재 ${accountStatus==="blocked"?"차단":"정지"}된 회원계정입니다. 본사 관리자에게 확인을 요청해 주세요.`,"wallet.html");
+    if(["paused","blocked","withdrawal_pending","withdrawn"].includes(accountStatus)){
+      const statusLabel={paused:"일시 정지",blocked:"블랙리스트 차단",withdrawal_pending:"탈퇴 처리 중",withdrawn:"탈퇴 완료"}[accountStatus];
+      showDenied(`현재 ${statusLabel} 회원계정입니다. 본사 관리자에게 확인을 요청해 주세요.`,"wallet.html");
       return;
     }
     const allowed=dashboard==="center"?centerRoles.includes(role):partnerRoles.includes(role);
