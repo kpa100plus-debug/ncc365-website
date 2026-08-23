@@ -516,12 +516,41 @@ match /members/{memberId} {
       )
       || resource.data.email == request.auth.token.email
     );
+
+  allow update: if
+    ownsMember(memberId)
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "name", "phone", "phoneKey", "email", "region", "updatedAt"
+    ])
+    && request.resource.data.name is string
+    && request.resource.data.name.size() >= 1
+    && request.resource.data.name.size() <= 50
+    && request.resource.data.phone is string
+    && request.resource.data.phone.size() >= 1
+    && request.resource.data.phone.size() <= 30
+    && request.resource.data.phoneKey is string
+    && request.resource.data.phoneKey.matches('^[0-9]{9,11}$')
+    && request.resource.data.email == request.auth.token.email
+    && request.resource.data.region is string
+    && request.resource.data.region.size() >= 1
+    && request.resource.data.region.size() <= 200
+    && request.resource.data.updatedAt == request.time;
 } 
 function ownsMember(memberId) {
   return request.auth != null
-    && request.auth.token.email != null
-    && get(/databases/$(database)/documents/members/$(memberId)).data.email
-       == request.auth.token.email;
+    && request.auth.token.email_verified == true
+    && (
+      (
+        "authUid" in get(/databases/$(database)/documents/members/$(memberId)).data
+        && get(/databases/$(database)/documents/members/$(memberId)).data.authUid
+           == request.auth.uid
+      )
+      || (
+        request.auth.token.email != null
+        && get(/databases/$(database)/documents/members/$(memberId)).data.email
+           == request.auth.token.email
+      )
+    );
 }
 
 function isActiveMember(memberId) {
@@ -561,8 +590,10 @@ match /memberProfiles/{memberId} {
       ownsMember(memberId)
       && request.resource.data.memberId == resource.data.memberId
       && request.resource.data.memberNumber == resource.data.memberNumber
-      && request.resource.data.email == resource.data.email
-      && request.resource.data.phoneKey == resource.data.phoneKey
+      && request.resource.data.email
+         == getAfter(/databases/$(database)/documents/members/$(memberId)).data.email
+      && request.resource.data.phoneKey
+         == getAfter(/databases/$(database)/documents/members/$(memberId)).data.phoneKey
       && request.resource.data.createdAt == resource.data.createdAt
       && request.resource.data.updatedAt == request.time
     );
@@ -615,7 +646,65 @@ match /memberAddresses/{addressId} {
     );
 
   allow delete: if isAdmin() || ownsMember(resource.data.memberId);
-}match /benefitApplications/{applicationId} {
+}
+
+match /memberPhones/{phoneKey} {
+  allow delete: if
+    request.auth != null
+    && resource.data.memberId is string
+    && ownsMember(resource.data.memberId);
+}
+
+match /accountDeletionRequests/{memberId} {
+  allow create: if
+    ownsMember(memberId)
+    && request.resource.data.keys().hasAll([
+      "memberId", "memberNumber", "name", "email", "reason",
+      "status", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "memberNumber", "name", "email", "reason",
+      "status", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId == memberId
+    && request.resource.data.memberNumber
+       == get(/databases/$(database)/documents/members/$(memberId)).data.memberNumber
+    && request.resource.data.email == request.auth.token.email
+    && request.resource.data.name is string
+    && request.resource.data.name.size() >= 1
+    && request.resource.data.name.size() <= 50
+    && request.resource.data.reason is string
+    && request.resource.data.reason.size() <= 500
+    && request.resource.data.status == "requested"
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin() || ownsMember(memberId);
+
+  allow update: if
+    isAdmin()
+    || (
+      ownsMember(memberId)
+      && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        "name", "email", "reason", "status", "updatedAt"
+      ])
+      && request.resource.data.memberId == resource.data.memberId
+      && request.resource.data.memberNumber == resource.data.memberNumber
+      && request.resource.data.email == request.auth.token.email
+      && request.resource.data.name is string
+      && request.resource.data.name.size() >= 1
+      && request.resource.data.name.size() <= 50
+      && request.resource.data.reason is string
+      && request.resource.data.reason.size() <= 500
+      && request.resource.data.status == "requested"
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.updatedAt == request.time
+    );
+
+  allow delete: if isAdmin();
+}
+
+match /benefitApplications/{applicationId} {
   allow create: if request.auth != null
     && request.resource.data.keys().hasAll(["type","name","phone","region","message","memberId","memberEmail","offerId","offerTitle","receipt","status","source","createdAt","updatedAt"])
     && request.resource.data.keys().hasOnly(["type","name","phone","region","message","memberId","memberEmail","offerId","offerTitle","receipt","status","source","createdAt","updatedAt"])
