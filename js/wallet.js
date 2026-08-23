@@ -80,7 +80,10 @@ document.querySelectorAll(".logout-button").forEach(button=>button.onclick=()=>s
 
 async function loadMember(user){
   try{
-    const snap=await getDocs(query(collection(db,"members"),where("email","==",user.email),limit(1)));
+    let snap=await getDocs(query(collection(db,"members"),where("authUid","==",user.uid),limit(1)));
+    if(snap.empty){
+      snap=await getDocs(query(collection(db,"members"),where("email","==",user.email),limit(1)));
+    }
     if(snap.empty){
       $("#memberArea").hidden=false;
       $("#memberArea").innerHTML='<div class="empty-state"><h2>연결할 NCC 회원정보가 없습니다.</h2><p>회원가입 때 등록한 이메일과 현재 인증한 이메일이 같은지 확인해 주세요.</p><button id="unmatchedLogout" class="text-button logout-button" type="button">다른 계정으로 로그인</button></div>';
