@@ -76,12 +76,32 @@ async function syncVerifiedEmail(user) {
   if (!member.authUid || member.authUid !== user.uid || !user.email || member.email === user.email) return;
   const memberRef = doc(db, "members", member.id);
   const profileRef = doc(db, "memberProfiles", member.id);
+  const logRef = doc(collection(db, "accountChangeLogs"));
+  const previousEmail = member.email || "";
   await runTransaction(db, async transaction => {
     const profileSnapshot = await transaction.get(profileRef);
     transaction.update(memberRef, { email: user.email, updatedAt: serverTimestamp() });
     if (profileSnapshot.exists()) transaction.update(profileRef, { email: user.email, updatedAt: serverTimestamp() });
+    transaction.set(logRef, accountLog("email_synced", ["이메일"], { email: previousEmail }, { email: user.email }, "이메일 변경 인증 완료"));
   });
   member.email = user.email;
+}
+
+function accountLog(eventType, changedFields, before, after, description = "") {
+  return {
+    memberId: member.id,
+    memberNumber: member.memberNumber || "",
+    memberName: member.name || "회원",
+    actorUid: currentUser.uid,
+    actorEmail: currentUser.email,
+    actorType: "member",
+    eventType,
+    changedFields,
+    before,
+    after,
+    description,
+    createdAt: serverTimestamp()
+  };
 }
 
 function fillBasicForm() {
@@ -109,8 +129,13 @@ $("#basicForm").addEventListener("submit", async event => {
   try {
     const memberRef = doc(db, "members", member.id);
     const profileRef = doc(db, "memberProfiles", member.id);
+    const logRef = doc(collection(db, "accountChangeLogs"));
     const oldPhoneKey = member.phoneKey || phoneKey(member.phone);
     const phoneChanged = oldPhoneKey !== nextPhoneKey;
+    const before = { name: member.name || "", phone: member.phone || "", region: member.region || "" };
+    const after = { name: nextName, phone: nextPhone, region: nextRegion };
+    const changedFields = Object.keys(after).filter(key => before[key] !== after[key]).map(key => ({ name: "이름", phone: "연락처", region: "지역" }[key]));
+    if (!changedFields.length) { message.textContent = "변경된 기본정보가 없습니다."; return; }
     await runTransaction(db, async transaction => {
       const memberSnapshot = await transaction.get(memberRef);
       if (!memberSnapshot.exists()) throw new Error("회원정보를 찾을 수 없습니다.");
@@ -129,6 +154,7 @@ $("#basicForm").addEventListener("submit", async event => {
         transaction.set(nextPhoneLock, { memberId: member.id, memberNumber: member.memberNumber, createdAt: serverTimestamp() });
       }
       if (phoneChanged && oldPhoneKey) transaction.delete(doc(db, "memberPhones", oldPhoneKey));
+      transaction.set(logRef, accountLog("basic_profile_updated", changedFields, before, after, "회원 본인 기본정보 변경"));
     });
     member = { ...member, name: nextName, phone: nextPhone, phoneKey: nextPhoneKey, region: nextRegion };
     sessionStorage.setItem("nccMemberProfile", JSON.stringify({ id: member.id, name: member.name, phone: member.phone, region: member.region, email: member.email, memberNumber: member.memberNumber, memberType: member.memberType || "consumer" }));
@@ -262,6 +288,9 @@ $("#sendPasswordReset").addEventListener("click", async () => {
   message.textContent = "발송 중입니다.";
   try {
     await sendPasswordResetEmail(auth, currentUser.email);
+    try {
+      await addDoc(collection(db, "accountChangeLogs"), accountLog("password_reset_requested", ["비밀번호"], { status: "기존 비밀번호 유지" }, { status: "재설정 메일 발송" }, "회원 본인 요청"));
+    } catch (logError) { console.error("비밀번호 재설정 로그 저장 실패", logError); }
     message.textContent = `${currentUser.email}로 비밀번호 재설정 메일을 보냈습니다.`;
   } catch (error) {
     console.error(error);
@@ -281,6 +310,9 @@ $("#emailChangeForm").addEventListener("submit", async event => {
     const credential = EmailAuthProvider.credential(currentUser.email, data.currentPassword);
     await reauthenticateWithCredential(currentUser, credential);
     await verifyBeforeUpdateEmail(currentUser, nextEmail);
+    try {
+      await addDoc(collection(db, "accountChangeLogs"), accountLog("email_change_requested", ["이메일"], { email: currentUser.email }, { email: nextEmail }, "새 이메일 인증 대기"));
+    } catch (logError) { console.error("이메일 변경 로그 저장 실패", logError); }
     form.elements.currentPassword.value = "";
     message.textContent = `${nextEmail}로 변경 인증메일을 보냈습니다. 인증 링크를 누른 뒤 다시 로그인해 주세요.`;
   } catch (error) {
@@ -300,11 +332,15 @@ $("#withdrawForm").addEventListener("submit", async event => {
   if (!confirm("회원탈퇴를 요청하시겠습니까? 본사 확인 전까지 계정은 유지됩니다.")) return;
   message.textContent = "탈퇴 요청을 접수하고 있습니다.";
   const requestRef = doc(db, "accountDeletionRequests", member.id);
+  const logRef = doc(collection(db, "accountChangeLogs"));
   try {
-    const existing = await getDoc(requestRef);
-    const payload = { memberId: member.id, memberNumber: member.memberNumber, name: member.name, email: currentUser.email, reason: data.reason.trim(), status: "requested", updatedAt: serverTimestamp() };
-    if (existing.exists()) await updateDoc(requestRef, payload);
-    else await setDoc(requestRef, { ...payload, createdAt: serverTimestamp() });
+    await runTransaction(db, async transaction => {
+      const existing = await transaction.get(requestRef);
+      const payload = { memberId: member.id, memberNumber: member.memberNumber, name: member.name, email: currentUser.email, reason: data.reason.trim(), status: "requested", privacyDisposalStatus: "not_started", adminMemo: "", reviewedBy: "", reviewedAt: null, updatedAt: serverTimestamp() };
+      if (existing.exists()) transaction.update(requestRef, payload);
+      else transaction.set(requestRef, { ...payload, createdAt: serverTimestamp() });
+      transaction.set(logRef, accountLog("deletion_requested", ["탈퇴요청 상태"], { status: existing.exists() ? existing.data().status : "없음" }, { status: "requested" }, data.reason.trim() || "사유 미입력"));
+    });
     form.elements.reason.value = "";
     form.elements.confirm.checked = false;
     message.textContent = "회원탈퇴 요청이 접수되었습니다. 본사 확인 후 처리됩니다.";
