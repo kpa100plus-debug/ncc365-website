@@ -655,6 +655,17 @@ match /memberPhones/{phoneKey} {
     && ownsMember(resource.data.memberId);
 }
 
+// 주의회원·일시정지·블랙리스트는 일반 탈퇴와 분리하여 관리자만 관리한다.
+match /memberRestrictions/{memberId} {
+  allow read, create, update, delete: if isAdmin();
+}
+
+// 블랙리스트 이메일 원문을 공개하지 않고 SHA-256 문서 키로 재가입을 차단한다.
+match /memberEmailBlocks/{emailHash} {
+  allow get: if true;
+  allow list, create, update, delete: if isAdmin();
+}
+
 match /accountDeletionRequests/{memberId} {
   allow create: if
     ownsMember(memberId)
