@@ -120,7 +120,7 @@ async function saveRegion(page, region) {
   await page.waitForFunction(
     () => {
       const node = document.querySelector("#basicMessage");
-      return node && /저장|변경/.test(node.textContent || "");
+      return node && (node.textContent || "").trim() === "기본정보가 저장되었습니다.";
     },
     undefined,
     { timeout: 30_000 },
