@@ -1,10 +1,25 @@
 .home-luxury-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr);align-items:center;gap:58px;min-height:650px;padding-top:70px;padding-bottom:70px;background:linear-gradient(90deg,rgba(4,28,25,.98),rgba(7,55,47,.95) 50%,rgba(8,54,47,.3)),linear-gradient(135deg,var(--ncc-950),var(--ncc-800))}
 .home-luxury-hero .hero-content{position:relative;z-index:2}.home-luxury-hero .hero-photo{height:510px;border:1px solid rgba(239,216,153,.45);border-radius:210px 210px 24px 24px;overflow:hidden;box-shadow:0 35px 80px rgba(0,0,0,.34)}.home-luxury-hero .hero-photo img{width:100%;height:100%;object-fit:cover}
-.benefit-visual-grid .class-card{min-height:500px;padding:250px 30px 30px}.benefit-visual-grid .class-card:before{z-index:2;top:205px;color:#f1d995;text-shadow:0 2px 12px rgba(0,0,0,.3)}.card-photo{position:absolute;inset:0 0 auto;height:220px;overflow:hidden}.card-photo:after,.activity-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(4,28,25,.68),transparent 58%)}.card-photo img,.activity-photo img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease}.platform-card:hover img{transform:scale(1.045)}.benefit-visual-grid .class-card.premium,.benefit-visual-grid .class-card.daily{background:linear-gradient(180deg,#fff,#f8f4e9)}
-.activity-luxury{background:linear-gradient(135deg,#e4ebe6,#f3eee4)}.activity-visual-grid .platform-card{padding:0;border-color:rgba(164,126,45,.25);background:#fdfbf6}.activity-photo{position:relative;height:250px;overflow:hidden}.activity-copy{padding:30px}.activity-visual-grid h3{font-size:27px}.activity-visual-grid .arrow{padding-top:4px;border-top:1px solid #e7dfce}
-@media(max-width:900px){.home-luxury-hero{grid-template-columns:1fr;gap:38px}.home-luxury-hero .hero-photo{height:430px;max-width:620px;width:100%;border-radius:160px 160px 20px 20px}.benefit-visual-grid .class-card{min-height:490px}.activity-photo{height:310px}}
-@media(max-width:600px){.home-luxury-hero{padding:52px 20px}.home-luxury-hero .hero-photo{height:360px;border-radius:120px 120px 16px 16px}.benefit-visual-grid .class-card{min-height:460px;padding:235px 24px 28px}.benefit-visual-grid .class-card:before{top:192px}.card-photo{height:205px}.activity-photo{height:240px}.activity-copy{padding:25px}}
 
-/* Compact numbered medallions: prevents the number/badge collision. */
-.benefit-visual-grid .class-card:before{z-index:3;left:30px;top:190px;width:48px;height:48px;display:grid;place-items:center;border:1px solid rgba(239,216,153,.7);border-radius:50%;background:rgba(4,28,25,.92);color:#f1d995;font-size:18px;font-weight:800;line-height:1;box-shadow:0 8px 22px rgba(0,0,0,.22);text-shadow:none}
-@media(max-width:600px){.benefit-visual-grid .class-card:before{top:181px;left:24px}}
+/* REF-NCC-HOME-BENEFIT-CARD-REDESIGN-01 */
+.benefit-visual-grid{gap:24px}
+.benefit-visual-grid .class-card{min-height:510px;padding:252px 30px 32px;border:1px solid rgba(210,170,80,.52);box-shadow:0 18px 42px rgba(4,28,25,.15);isolation:isolate;transition:transform .34s ease,border-color .34s ease,box-shadow .34s ease}
+.benefit-visual-grid .class-card:hover{transform:translateY(-8px);border-color:rgba(239,216,153,.9);box-shadow:0 28px 60px rgba(4,28,25,.25)}
+.benefit-visual-grid .class-card:after{content:"";position:absolute;z-index:-1;inset:220px 0 0;pointer-events:none;background:radial-gradient(circle at 88% 4%,rgba(255,255,255,.11),transparent 32%)}
+.benefit-visual-grid .class-card.first{background:linear-gradient(155deg,#0b4439 0%,#062b26 55%,#041d1a 100%)}
+.benefit-visual-grid .class-card.premium{background:linear-gradient(155deg,#173f4d 0%,#0d2e39 55%,#071f28 100%)}
+.benefit-visual-grid .class-card.daily{background:linear-gradient(155deg,#59451f 0%,#3d3019 56%,#281f12 100%)}
+.benefit-visual-grid .class-card h3{margin-top:20px;color:#fff;font-size:27px;letter-spacing:-.025em;text-shadow:0 2px 12px rgba(0,0,0,.18)}
+.benefit-visual-grid .class-card p{color:rgba(241,247,244,.82);font-size:17px;line-height:1.7;word-break:keep-all}
+.benefit-visual-grid .class-card .badge{border:1px solid rgba(239,216,153,.28);background:rgba(255,255,255,.11);color:#f7e8b8;backdrop-filter:blur(8px)}
+.benefit-visual-grid .class-card .arrow{color:#f1cd76;border-top:1px solid rgba(239,216,153,.18);padding-top:16px}
+.benefit-visual-grid .class-card:before{z-index:4;left:30px;top:190px;width:50px;height:50px;display:grid;place-items:center;border:1px solid rgba(239,216,153,.88);border-radius:50%;background:rgba(4,28,25,.94);color:#f5d77d;font-size:18px;font-weight:800;line-height:1;box-shadow:0 9px 24px rgba(0,0,0,.3),0 0 0 5px rgba(210,170,80,.09);text-shadow:none}
+.card-photo{position:absolute;inset:0 0 auto;height:220px;overflow:hidden;background:#102e29}
+.card-photo:after,.activity-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(4,28,25,.78) 0%,rgba(4,28,25,.16) 46%,transparent 72%)}
+.card-photo img,.activity-photo img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease,filter .45s ease}
+.benefit-visual-grid .class-card:hover .card-photo img{transform:scale(1.035);filter:saturate(1.06) contrast(1.03)}
+.benefit-visual-grid .class-card.daily .card-photo img{object-position:68% center}
+
+.activity-luxury{background:linear-gradient(135deg,#e4ebe6,#f3eee4)}.activity-visual-grid .platform-card{padding:0;border-color:rgba(164,126,45,.25);background:#fdfbf6}.activity-photo{position:relative;height:250px;overflow:hidden}.activity-copy{padding:30px}.activity-visual-grid h3{font-size:27px}.activity-visual-grid .arrow{padding-top:4px;border-top:1px solid #e7dfce}
+@media(max-width:900px){.home-luxury-hero{grid-template-columns:1fr;gap:38px}.home-luxury-hero .hero-photo{height:430px;max-width:620px;width:100%;border-radius:160px 160px 20px 20px}.benefit-visual-grid .class-card{min-height:500px}.activity-photo{height:310px}}
+@media(max-width:600px){.home-luxury-hero{padding:52px 20px}.home-luxury-hero .hero-photo{height:360px;border-radius:120px 120px 16px 16px}.benefit-visual-grid .class-card{min-height:470px;padding:237px 24px 28px}.benefit-visual-grid .class-card:before{top:181px;left:24px}.card-photo{height:205px}.activity-photo{height:240px}.activity-copy{padding:25px}}
