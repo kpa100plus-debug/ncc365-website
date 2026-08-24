@@ -11,8 +11,46 @@ const ADMIN_EMAIL="kpa100plus@gmail.com";
 const ROLE_ROUTES={center_manager:"center-dashboard.html",center_staff:"center-dashboard.html",partner:"partner-dashboard.html",corporate:"partner-dashboard.html",soleProprietor:"partner-dashboard.html",admin:"admin.html"};
 let currentUser;
 
+const memberCard=$("#memberCard");
+const memberCardFront=$("#memberCardFront");
+const memberCardBack=$("#memberCardBack");
+const flipMemberCard=$("#flipMemberCard");
+const cardFlipStatus=$("#cardFlipStatus");
+
+function setMemberCardSide(showBack){
+  if(!memberCard||!flipMemberCard)return;
+  memberCard.classList.toggle("is-flipped",showBack);
+  memberCard.setAttribute("aria-pressed",String(showBack));
+  memberCard.setAttribute("aria-label",showBack
+    ?"NCC 디지털 회원카드 뒷면. 누르면 앞면을 볼 수 있습니다."
+    :"NCC 디지털 회원카드 앞면. 누르면 뒷면을 볼 수 있습니다.");
+  memberCardFront?.setAttribute("aria-hidden",String(showBack));
+  memberCardBack?.setAttribute("aria-hidden",String(!showBack));
+  flipMemberCard.innerHTML=showBack
+    ?'<span aria-hidden="true">↻</span> 카드 앞면 보기'
+    :'<span aria-hidden="true">↻</span> 카드 뒷면 보기';
+  if(cardFlipStatus)cardFlipStatus.textContent=showBack
+    ?"카드 뒷면이 표시되었습니다."
+    :"카드 앞면이 표시되었습니다.";
+}
+
+function toggleMemberCard(){
+  setMemberCardSide(!memberCard?.classList.contains("is-flipped"));
+}
+
+if(memberCard&&flipMemberCard){
+  memberCard.addEventListener("click",toggleMemberCard);
+  memberCard.addEventListener("keydown",event=>{
+    if(event.key!=="Enter"&&event.key!==" ")return;
+    event.preventDefault();
+    toggleMemberCard();
+  });
+  flipMemberCard.addEventListener("click",toggleMemberCard);
+}
+
 onAuthStateChanged(auth,async user=>{
   currentUser=user;
+  setMemberCardSide(false);
   $("#walletLoading").hidden=true;
   $("#authArea").hidden=true;
   $("#authArea").style.display="none";
