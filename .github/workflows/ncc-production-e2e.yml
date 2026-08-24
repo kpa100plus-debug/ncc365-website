@@ -1,0 +1,73 @@
+name: NCC Production E2E
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_member_number:
+        description: "안전 확인용 테스트 회원번호"
+        required: true
+        default: "NCC-C-000016"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ncc-production-e2e
+  cancel-in-progress: false
+
+jobs:
+  test-member-d:
+    if: ${{ inputs.confirm_member_number == 'NCC-C-000016' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NCC_BASE_URL: https://ncc365.com
+      NCC_E2E_D_EMAIL: ${{ secrets.NCC_E2E_D_EMAIL }}
+      NCC_E2E_D_PASSWORD: ${{ secrets.NCC_E2E_D_PASSWORD }}
+      NCC_E2E_ADMIN_EMAIL: ${{ secrets.NCC_E2E_ADMIN_EMAIL }}
+      NCC_E2E_ADMIN_PASSWORD: ${{ secrets.NCC_E2E_ADMIN_PASSWORD }}
+      NCC_E2E_D_MEMBER_NUMBER: NCC-C-000016
+      NCC_E2E_D_MEMBER_NAME: 테스트회원D
+      NCC_E2E_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate secret configuration
+        shell: bash
+        run: |
+          missing=0
+          for secret_name in NCC_E2E_D_EMAIL NCC_E2E_D_PASSWORD NCC_E2E_ADMIN_EMAIL NCC_E2E_ADMIN_PASSWORD; do
+            if [ -z "${!secret_name}" ]; then
+              echo "::error::Required GitHub Actions secret is missing: ${secret_name}"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Install pinned browser test runtime
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Run protected NCC member lifecycle test
+        run: node .github/scripts/ncc-d-e2e.mjs
+
+      - name: Upload redacted test result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ncc-e2e-result-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/ncc-e2e-result.json
+          if-no-files-found: warn
+          retention-days: 7
+
