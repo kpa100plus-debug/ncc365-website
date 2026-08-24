@@ -1082,12 +1082,7 @@ match /centerActivities/{activityId} {
         ])
         && request.resource.data.certificateNumber == certificateId
         && request.resource.data.certificateNumber is string
-        && request.resource.data.certificateNumber.matches('^NCC-[A-Z0-9]+(-[A-Z0-9]+){2,6}
-      allow read, write: if false;
-    }
-  }
-}
-)
+        && request.resource.data.certificateNumber.matches('^NCC-[A-Z0-9]+(-[A-Z0-9]+){2,6}$')
         && request.resource.data.certificateType in [
           "excellent_company", "excellent_product_service",
           "official_partner", "center_appointment"
@@ -1107,21 +1102,11 @@ match /centerActivities/{activityId} {
         && request.resource.data.evaluationGroup is string
         && request.resource.data.evaluationGroup.size() <= 120
         && request.resource.data.issuedAt is string
-        && request.resource.data.issuedAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}
-      allow read, write: if false;
-    }
-  }
-}
-)
+        && request.resource.data.issuedAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         && request.resource.data.validUntil is string
         && (
           request.resource.data.validUntil == ""
-          || request.resource.data.validUntil.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}
-      allow read, write: if false;
-    }
-  }
-}
-)
+          || request.resource.data.validUntil.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         )
         && request.resource.data.issuer is string
         && request.resource.data.issuer.size() >= 1
@@ -1135,6 +1120,12 @@ match /centerActivities/{activityId} {
 
       allow update: if
         isAdmin()
+        && request.resource.data.keys().hasAll([
+          "certificateNumber", "certificateType", "title", "recipientName",
+          "representativeName", "category", "region", "evaluationGroup",
+          "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
+          "createdAt", "updatedAt"
+        ])
         && request.resource.data.keys().hasOnly([
           "certificateNumber", "certificateType", "title", "recipientName",
           "representativeName", "category", "region", "evaluationGroup",
@@ -1162,21 +1153,11 @@ match /centerActivities/{activityId} {
         && request.resource.data.evaluationGroup is string
         && request.resource.data.evaluationGroup.size() <= 120
         && request.resource.data.issuedAt is string
-        && request.resource.data.issuedAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}
-      allow read, write: if false;
-    }
-  }
-}
-)
+        && request.resource.data.issuedAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         && request.resource.data.validUntil is string
         && (
           request.resource.data.validUntil == ""
-          || request.resource.data.validUntil.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}
-      allow read, write: if false;
-    }
-  }
-}
-)
+          || request.resource.data.validUntil.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         )
         && request.resource.data.issuer is string
         && request.resource.data.issuer.size() >= 1
