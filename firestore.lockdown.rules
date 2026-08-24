@@ -1,0 +1,12 @@
+// REF-NCC-SECURITY-EMERGENCY-LOCKDOWN-01
+// Emergency-only rules. Deploying this file blocks every client read and write.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
