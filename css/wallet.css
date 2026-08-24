@@ -155,7 +155,7 @@
   border-radius: 999px;
   background: rgba(0, 0, 0, .17);
   color: #f3dda2;
-  font-size: clamp(5.5px, .72cqw, 7px);
+  font-size: clamp(7px, .95cqw, 9px);
   font-weight: 800;
   letter-spacing: .13em;
   line-height: 1;
@@ -236,7 +236,7 @@
 .member-card-label {
   margin: 0 0 2.2cqw;
   color: #efd899;
-  font-size: clamp(6px, .78cqw, 8px);
+  font-size: clamp(7px, 1.08cqw, 10px);
   font-weight: 800;
   letter-spacing: .24em;
   line-height: 1;
@@ -260,7 +260,7 @@
   max-width: 100%;
   overflow: hidden;
   color: #f0cf75;
-  font-size: clamp(8px, 1.45cqw, 13px);
+  font-size: clamp(9px, 1.7cqw, 15px);
   font-weight: 800;
   letter-spacing: .11em;
   line-height: 1.2;
@@ -309,7 +309,7 @@
   top: 5.1cqw;
   color: #e9c86d;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(10px, 2.3cqw, 21px);
+  font-size: clamp(11px, 2.75cqw, 24px);
   font-weight: 700;
   letter-spacing: .04em;
 }
@@ -317,7 +317,7 @@
 .member-shield small {
   top: 9.3cqw;
   color: rgba(239, 216, 153, .86);
-  font-size: clamp(4px, .54cqw, 6px);
+  font-size: clamp(5px, .78cqw, 8px);
   font-weight: 800;
   letter-spacing: .16em;
 }
@@ -335,7 +335,7 @@
   padding-top: 1.8cqw;
   border-top: 1px solid rgba(255, 255, 255, .18);
   color: #d9e5e0;
-  font-size: clamp(7px, 1.05cqw, 10px);
+  font-size: clamp(8px, 1.28cqw, 12px);
   line-height: 1;
   white-space: nowrap;
 }
@@ -370,7 +370,7 @@
 
 .member-verification > div {
   display: flex;
-  min-height: 2.75cqw;
+  min-height: 3.15cqw;
   align-items: center;
   justify-content: space-between;
   gap: 1cqw;
@@ -383,7 +383,7 @@
 
 .member-verification small {
   color: #9bb5ab;
-  font-size: clamp(4.5px, .6cqw, 6px);
+  font-size: clamp(5.5px, 1.02cqw, 9px);
   font-weight: 700;
   letter-spacing: .1em;
 }
@@ -392,7 +392,7 @@
   min-width: 0;
   overflow: hidden;
   color: #f2f6f4;
-  font-size: clamp(5.5px, .73cqw, 7px);
+  font-size: clamp(6px, 1.12cqw, 10px);
   font-weight: 800;
   letter-spacing: .06em;
   text-overflow: ellipsis;
@@ -406,7 +406,7 @@
   bottom: 2.25cqw;
   margin: 0;
   color: rgba(239, 216, 153, .78);
-  font-size: clamp(4px, .5cqw, 5px);
+  font-size: clamp(4.5px, .7cqw, 7px);
   font-weight: 800;
   letter-spacing: .12em;
   line-height: 1;
@@ -460,7 +460,7 @@
   justify-content: space-between;
   gap: 2cqw;
   color: #efd477;
-  font-size: clamp(5px, .75cqw, 7px);
+  font-size: clamp(6px, .95cqw, 9px);
   font-weight: 800;
   letter-spacing: .2em;
   line-height: 1;
@@ -487,7 +487,7 @@
   top: 21.45cqw;
   margin: 0;
   color: rgba(232, 195, 105, .5);
-  font-size: clamp(4px, .55cqw, 5px);
+  font-size: clamp(4.5px, .72cqw, 6px);
   font-weight: 700;
   letter-spacing: .25em;
   line-height: 1;
@@ -510,7 +510,7 @@
   display: block;
   margin-bottom: 1cqw;
   color: #efd477;
-  font-size: clamp(5px, .76cqw, 7px);
+  font-size: clamp(6px, .95cqw, 9px);
   font-weight: 800;
   letter-spacing: .14em;
   line-height: 1;
@@ -529,7 +529,7 @@
     repeating-radial-gradient(ellipse at 0 100%, transparent 0 .8cqw, rgba(31, 58, 50, .08) .85cqw .95cqw),
     #f1eee5;
   color: rgba(64, 76, 71, .42);
-  font-size: clamp(7px, 1.2cqw, 11px);
+  font-size: clamp(8px, 1.45cqw, 13px);
   font-weight: 800;
   letter-spacing: .08em;
   white-space: nowrap;
@@ -555,7 +555,7 @@
 
 .member-security-panel small {
   color: #6d7e77;
-  font-size: clamp(5px, .7cqw, 7px);
+  font-size: clamp(6px, .92cqw, 8px);
   font-style: normal;
   font-weight: 800;
   letter-spacing: .12em;
@@ -634,21 +634,21 @@
 .member-back-copy strong {
   margin-top: 1.25cqw;
   color: #eef4f1;
-  font-size: clamp(6px, 1.1cqw, 10px);
+  font-size: clamp(7px, 1.35cqw, 12px);
   letter-spacing: .2em;
 }
 
 .member-back-copy span {
   margin-top: 2.15cqw;
   color: #d8e2de;
-  font-size: clamp(5px, .85cqw, 8px);
+  font-size: clamp(6px, 1.05cqw, 10px);
   letter-spacing: .06em;
 }
 
 .member-back-copy small {
   margin-top: 1.1cqw;
   color: #d8e2de;
-  font-size: clamp(5px, .75cqw, 7px);
+  font-size: clamp(6px, .92cqw, 9px);
 }
 
 .member-back-emblem {
@@ -703,7 +703,7 @@
   justify-content: space-between;
   gap: 2cqw;
   color: #d8e2de;
-  font-size: clamp(4.5px, .66cqw, 6px);
+  font-size: clamp(5px, .82cqw, 8px);
   font-weight: 700;
   letter-spacing: .08em;
   line-height: 1;

@@ -3,7 +3,7 @@
 
 /* Premium subpage system */
 body:not([data-page="home"]) .page-hero{min-height:470px;display:flex;flex-direction:column;justify-content:center;padding-right:max(46%,calc((100% - 1240px)/2 + 500px));isolation:isolate}
-body:not([data-page="home"]) .page-hero:before{content:"";position:absolute;z-index:-2;inset:0 0 0 54%;background-position:center;background-size:cover;opacity:.94;filter:saturate(.82) contrast(1.04)}
+body:not([data-page="home"]) .page-hero:before{content:"";position:absolute;z-index:-2;inset:0 0 0 54%;background-position:center 28%;background-size:cover;opacity:.94;filter:saturate(.82) contrast(1.04)}
 body:not([data-page="home"]) .page-hero:after{z-index:-1;inset:0;background:linear-gradient(90deg,var(--ncc-950) 0%,rgba(4,28,25,.97) 43%,rgba(4,28,25,.55) 72%,rgba(4,28,25,.15) 100%);color:transparent;font-size:0}
 body[data-page="benefits"] .page-hero:before{background-image:url('../images/hero-benefits-2026.webp')}
 body[data-page="groupbuy"] .page-hero:before{background-image:url('../images/hero-groupbuy-2026.webp')}
@@ -14,7 +14,7 @@ body[data-page="wallet"] .page-hero:before{background-image:url('../images/hero-
 body:not([data-page="home"]) .page-hero h1{color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.38)}
 body:not([data-page="home"]) .page-hero .lead{color:#f0f5f2;text-shadow:0 2px 12px rgba(0,0,0,.5)}
 .platform-card{transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
-body:not([data-page="home"]) .card-grid>.platform-card{padding-top:225px;min-height:465px;background-color:#fdfbf6;background-repeat:no-repeat;background-size:100% 205px,auto 205px;background-position:center top,center top}
+body:not([data-page="home"]) .card-grid>.platform-card{padding-top:225px;min-height:465px;background-color:#fdfbf6;background-repeat:no-repeat;background-size:100% 205px,auto 205px;background-position:center top,center 24%}
 body[data-page="benefits"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-benefit-beauty.webp')}
 body[data-page="benefits"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-benefit-health.webp')}
 body[data-page="benefits"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-benefit-local.webp')}
@@ -45,4 +45,26 @@ body[data-page="wallet"] .platform-section.paper{background:radial-gradient(circ
   .platform-nav .nav-priority{font-weight:800}
   .platform-nav .nav-secondary{color:#d2ddd9}
   .platform-nav .nav-secondary-start{margin-top:12px;padding-top:20px;border-top:1px solid rgba(210,170,80,.55)}
+}
+
+/* REF-NCC-WALLET-READABILITY-IMAGE-QA-03 */
+.home-luxury-hero .hero-photo img,
+.card-photo img,
+.activity-photo img,
+.benefit-offer-photo img,
+.lead-cover img,
+.issue img,
+.featured-main img,
+.side-video img,
+.thumb img {
+  object-position: center 24%;
+}
+
+img[src*="NCC_consumer"],
+img[src*="NCC_business"] {
+  object-position: center 38% !important;
+}
+
+img[src*="NCC_local_store"] {
+  object-position: center 18% !important;
 }
