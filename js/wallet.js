@@ -1,7 +1,8 @@
 import{initializeApp,getApps}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail,signOut,reload}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,collection,getDocs,query,where,limit}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import{getFirestore,collection,doc,getDoc,getDocs,query,where,limit}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import{firebaseConfig}from"./platform-config.js";
+import{formatCardholderName,formatCardRegion,formatCardMemberType}from"./member-card-english.js?v=20260824-1";
 
 const app=getApps()[0]||initializeApp(firebaseConfig);
 const auth=getAuth(app);
@@ -153,11 +154,24 @@ async function loadMember(user){
       location.replace(ROLE_ROUTES[role]);
       return;
     }
-    sessionStorage.setItem("nccMemberProfile",JSON.stringify({id:member.id,name:member.name||"",phone:member.phone||"",region:member.region||"",email:member.email||"",memberNumber:member.memberNumber||"",memberType:role}));
-    $("#memberName").textContent=member.name||"NCC 회원";
-    $("#memberNumber").textContent=member.memberNumber||"회원번호 확인중";
-    $("#memberRegion").textContent=member.region||"지역 미등록";
-    $("#memberType").textContent="소비자회원";
+    let cardEnglish={};
+    try{
+      const profileSnapshot=await getDoc(doc(db,"memberProfiles",member.id));
+      if(profileSnapshot.exists())cardEnglish=profileSnapshot.data()?.basic||{};
+    }catch(error){
+      console.warn("Optional card English profile could not be loaded.",error);
+    }
+    const cardMember={...member,cardNameEn:cardEnglish.cardNameEn||member.cardNameEn||"",cardRegionEn:cardEnglish.cardRegionEn||member.cardRegionEn||""};
+    sessionStorage.setItem("nccMemberProfile",JSON.stringify({id:member.id,name:member.name||"",phone:member.phone||"",region:member.region||"",email:member.email||"",memberNumber:member.memberNumber||"",memberType:role,cardNameEn:cardMember.cardNameEn,cardRegionEn:cardMember.cardRegionEn}));
+    const cardName=formatCardholderName(cardMember);
+    const cardNameElement=$("#memberName");
+    cardNameElement.textContent=cardName;
+    cardNameElement.classList.toggle("is-long",cardName.length>20);
+    cardNameElement.classList.toggle("is-very-long",cardName.length>32);
+    cardNameElement.title=cardName;
+    $("#memberNumber").textContent=member.memberNumber||"NUMBER PENDING";
+    $("#memberRegion").textContent=formatCardRegion(cardMember);
+    $("#memberType").textContent=formatCardMemberType(role);
     $("#memberContact").textContent=`${member.phone||"연락처 미등록"} · ${member.email}`;
     const since=$("#memberSince");
     if(since)since.textContent=memberSince(member.joinDate||member.createdAt);

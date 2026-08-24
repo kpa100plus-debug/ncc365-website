@@ -39,6 +39,8 @@ const safe = value => String(value ?? "").replace(/[&<>"']/g, character => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[character]));
 const phoneKey = value => String(value || "").replace(/\D/g, "");
+const cardEnglishPattern = /^[A-Za-z0-9 .,'’&()·-]*$/;
+const normalizeCardEnglish = value => String(value || "").normalize("NFKC").replace(/\s*·\s*/g, " · ").replace(/\s+/g, " ").trim().toUpperCase();
 
 onAuthStateChanged(auth, async user => {
   currentUser = user;
@@ -110,6 +112,8 @@ function fillBasicForm() {
   form.elements.name.value = member.name || "";
   form.elements.phone.value = member.phone || "";
   form.elements.region.value = member.region || "";
+  form.elements.cardNameEn.value = profile.basic?.cardNameEn || "";
+  form.elements.cardRegionEn.value = profile.basic?.cardRegionEn || "";
   form.elements.email.value = currentUser.email || member.email || "";
 }
 
@@ -121,9 +125,15 @@ $("#basicForm").addEventListener("submit", async event => {
   const nextPhone = data.phone.trim();
   const nextPhoneKey = phoneKey(nextPhone);
   const nextRegion = data.region.trim();
+  const nextCardNameEn = normalizeCardEnglish(data.cardNameEn);
+  const nextCardRegionEn = normalizeCardEnglish(data.cardRegionEn);
   const message = $("#basicMessage");
   if (!nextName || !nextRegion || !/^[0-9]{9,11}$/.test(nextPhoneKey)) {
     message.textContent = "이름·지역과 9~11자리 연락처를 정확히 입력해 주세요.";
+    return;
+  }
+  if (!cardEnglishPattern.test(nextCardNameEn) || !cardEnglishPattern.test(nextCardRegionEn)) {
+    message.textContent = "카드 영문 이름과 지역은 영문·숫자·기본 문장부호만 입력해 주세요.";
     return;
   }
   message.textContent = "저장 중입니다.";
@@ -133,9 +143,9 @@ $("#basicForm").addEventListener("submit", async event => {
     const logRef = doc(collection(db, "accountChangeLogs"));
     const oldPhoneKey = member.phoneKey || phoneKey(member.phone);
     const phoneChanged = oldPhoneKey !== nextPhoneKey;
-    const before = { name: member.name || "", phone: member.phone || "", region: member.region || "" };
-    const after = { name: nextName, phone: nextPhone, region: nextRegion };
-    const changedFields = Object.keys(after).filter(key => before[key] !== after[key]).map(key => ({ name: "이름", phone: "연락처", region: "지역" }[key]));
+    const before = { name: member.name || "", phone: member.phone || "", region: member.region || "", cardNameEn: profile.basic?.cardNameEn || "", cardRegionEn: profile.basic?.cardRegionEn || "" };
+    const after = { name: nextName, phone: nextPhone, region: nextRegion, cardNameEn: nextCardNameEn, cardRegionEn: nextCardRegionEn };
+    const changedFields = Object.keys(after).filter(key => before[key] !== after[key]).map(key => ({ name: "이름", phone: "연락처", region: "지역", cardNameEn: "카드 영문 이름", cardRegionEn: "카드 영문 지역" }[key]));
     if (!changedFields.length) { message.textContent = "변경된 기본정보가 없습니다."; return; }
     await runTransaction(db, async transaction => {
       const memberSnapshot = await transaction.get(memberRef);
@@ -150,7 +160,9 @@ $("#basicForm").addEventListener("submit", async event => {
         nextPhoneLockExists = lockSnapshot.exists();
       }
       transaction.update(memberRef, { name: nextName, phone: nextPhone, phoneKey: nextPhoneKey, region: nextRegion, updatedAt: serverTimestamp() });
-      if (profileSnapshot.exists()) transaction.update(profileRef, { phoneKey: nextPhoneKey, updatedAt: serverTimestamp() });
+      const nextProfileBasic = { ...(profileSnapshot.data()?.basic || {}), cardNameEn: nextCardNameEn, cardRegionEn: nextCardRegionEn };
+      if (profileSnapshot.exists()) transaction.update(profileRef, { basic: nextProfileBasic, phoneKey: nextPhoneKey, updatedAt: serverTimestamp() });
+      else transaction.set(profileRef, { memberId: member.id, memberNumber: member.memberNumber, email: currentUser.email, phoneKey: nextPhoneKey, profileVersion: 1, basic: nextProfileBasic, additional: {}, special: {}, consumer: {}, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
       if (phoneChanged && nextPhoneLock && !nextPhoneLockExists) {
         transaction.set(nextPhoneLock, { memberId: member.id, memberNumber: member.memberNumber, createdAt: serverTimestamp() });
       }
@@ -158,7 +170,8 @@ $("#basicForm").addEventListener("submit", async event => {
       transaction.set(logRef, accountLog("basic_profile_updated", changedFields, before, after, "회원 본인 기본정보 변경"));
     });
     member = { ...member, name: nextName, phone: nextPhone, phoneKey: nextPhoneKey, region: nextRegion };
-    sessionStorage.setItem("nccMemberProfile", JSON.stringify({ id: member.id, name: member.name, phone: member.phone, region: member.region, email: member.email, memberNumber: member.memberNumber, memberType: member.memberType || "consumer" }));
+    profile = { ...profile, basic: { ...(profile.basic || {}), cardNameEn: nextCardNameEn, cardRegionEn: nextCardRegionEn } };
+    sessionStorage.setItem("nccMemberProfile", JSON.stringify({ id: member.id, name: member.name, phone: member.phone, region: member.region, email: member.email, memberNumber: member.memberNumber, memberType: member.memberType || "consumer", cardNameEn: nextCardNameEn, cardRegionEn: nextCardRegionEn }));
     message.textContent = "기본정보가 저장되었습니다.";
   } catch (error) {
     console.error(error);

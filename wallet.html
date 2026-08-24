@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>NCC 월렛 | 전국소비자클럽</title>
   <link rel="stylesheet" href="css/platform.css?v=20260824-4">
-  <link rel="stylesheet" href="css/wallet.css?v=20260824-5">
+  <link rel="stylesheet" href="css/wallet.css?v=20260824-6">
 </head>
 <body data-page="wallet">
   <main id="mainContent" class="platform-main">
@@ -104,6 +104,10 @@
                   <p class="member-card-label">NCC DIGITAL MEMBER CARD</p>
                   <h2 id="memberName"></h2>
                   <strong id="memberNumber"></strong>
+                  <div class="member-identity-details">
+                    <span id="memberType"></span>
+                    <span id="memberRegion"></span>
+                  </div>
                 </div>
 
                 <div class="member-shield" aria-hidden="true">
@@ -112,12 +116,12 @@
                 </div>
 
                 <div class="member-card-meta">
-                  <span id="memberRegion"></span>
+                  <span>DIGITAL IDENTITY</span>
                   <i aria-hidden="true"></i>
-                  <span id="memberType"></span>
+                  <span>NCC 365</span>
                 </div>
 
-                <div class="member-verification" aria-label="NCC 회원 인증 정보">
+                <div class="member-verification" aria-label="NCC member verification details">
                   <div><small>MEMBERSHIP</small><b>CONSUMER</b></div>
                   <div><small>VERIFICATION</small><b>EMAIL VERIFIED</b></div>
                   <div><small>MEMBER SINCE</small><b id="memberSince">NCC MEMBER</b></div>
@@ -137,7 +141,7 @@
 
                 <div class="member-signature-area">
                   <div class="member-signature-panel">
-                    <span>AUTHORIZED SIGNATURE / 서명</span>
+                    <span>AUTHORIZED SIGNATURE</span>
                     <div>CARDHOLDER SIGNATURE</div>
                   </div>
                   <div class="member-security-panel">
@@ -203,6 +207,6 @@
   </main>
 
   <script src="js/platform-shell.js?v=20260824-5"></script>
-  <script type="module" src="js/wallet.js?v=20260824-4"></script>
+  <script type="module" src="js/wallet.js?v=20260824-5"></script>
 </body>
 </html>

@@ -369,6 +369,21 @@
   white-space: nowrap;
 }
 
+.member-identity h2.is-long {
+  font-size: clamp(12px, 2.55cqw, 23px);
+  letter-spacing: .015em;
+}
+
+.member-identity h2.is-very-long {
+  display: -webkit-box;
+  max-height: 2.15em;
+  font-size: clamp(10px, 2.05cqw, 19px);
+  line-height: 1.05;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .member-identity strong {
   display: block;
   max-width: 100%;
@@ -377,6 +392,36 @@
   font-size: clamp(9px, 1.7cqw, 15px);
   font-weight: 800;
   letter-spacing: .11em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-identity-details {
+  display: grid;
+  width: 36cqw;
+  gap: .75cqw;
+  margin-top: 2.2cqw;
+  padding-top: 1.35cqw;
+  border-top: 1px solid rgba(239, 216, 153, .35);
+  text-transform: uppercase;
+}
+
+.member-identity-details span:first-child {
+  color: #efd899;
+  font-size: clamp(7px, 1.05cqw, 10px);
+  font-weight: 800;
+  letter-spacing: .18em;
+  line-height: 1.1;
+}
+
+.member-identity-details span:last-child {
+  max-width: 100%;
+  overflow: hidden;
+  color: #d8e6e1;
+  font-size: clamp(7px, 1.15cqw, 11px);
+  font-weight: 700;
+  letter-spacing: .09em;
   line-height: 1.2;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -442,7 +487,7 @@
   left: 4.5cqw;
   bottom: 3.7cqw;
   display: flex;
-  width: 40cqw;
+  width: 31cqw;
   min-width: 0;
   align-items: center;
   gap: 1.7cqw;
@@ -450,6 +495,8 @@
   border-top: 1px solid rgba(255, 255, 255, .18);
   color: #d9e5e0;
   font-size: clamp(8px, 1.28cqw, 12px);
+  font-weight: 800;
+  letter-spacing: .11em;
   line-height: 1;
   white-space: nowrap;
 }
