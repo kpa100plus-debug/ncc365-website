@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NCC 인증서 발급관리</title>
+  <link rel="stylesheet" href="css/admin-applications.css">
+  <link rel="stylesheet" href="css/certificate-verify.css?v=20260824-1">
+</head>
+<body>
+<main class="admin-shell">
+  <section class="login-panel" id="loginArea">
+    <img src="images/NCC_HEADER.png" alt="전국소비자클럽">
+    <p>NCC ADMINISTRATION</p>
+    <h1>인증서 발급관리</h1>
+    <input id="adminEmail" type="email" autocomplete="username" placeholder="관리자 이메일">
+    <input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호">
+    <button id="loginButton">관리자 로그인</button>
+    <p class="error" id="loginError"></p>
+    <a href="admin.html">← 통합 관리자로 돌아가기</a>
+  </section>
+
+  <section id="adminArea" hidden>
+    <header class="admin-head">
+      <div><p>NCC CERTIFICATION</p><h1>인증서 발급·공개 관리</h1><span>인증번호별 공개 조회 기록과 현재 효력상태를 관리합니다.</span></div>
+      <div><a href="certificate-verify.html" target="_blank">공개 조회</a><a href="admin.html">통합관리</a><button id="logoutButton">로그아웃</button></div>
+    </header>
+
+    <p class="admin-certificate-note">정식 심사·승인이 끝나기 전에는 상태를 <b>검토용 샘플</b>로 저장하세요. 실제 발급 확정 후에만 <b>정상 발급</b>으로 변경합니다.</p>
+
+    <div class="stats">
+      <article><span>전체 기록</span><b id="totalCount">0</b></article>
+      <article><span>정상 발급</span><b id="activeCount">0</b></article>
+      <article><span>효력 정지</span><b id="revokedCount">0</b></article>
+      <article><span>검토용 샘플</span><b id="sampleCount">0</b></article>
+    </div>
+
+    <button id="newCertificateButton">+ 인증서 기록 등록</button>
+    <form id="certificateForm" class="admin-form" hidden>
+      <input type="hidden" name="originalNumber">
+      <div class="admin-form-grid">
+        <label>인증번호 *<input name="certificateNumber" maxlength="50" required placeholder="NCC-EC-2026-FD-0001"></label>
+        <label>현재상태 *<select name="status" required><option value="sample">검토용 샘플</option><option value="active">정상 발급</option><option value="revoked">효력 정지</option><option value="expired">유효기간 만료</option></select></label>
+        <label>문서종류 *<select name="certificateType" required><option value="excellent_company">소비자선정 우수기업</option><option value="excellent_product_service">소비자선정 우수상품·서비스</option><option value="official_partner">공식 파트너</option><option value="center_appointment">센터장 임명장</option></select></label>
+        <label>홈페이지 공개 *<select name="public" required><option value="true">공개</option><option value="false">비공개</option></select></label>
+        <label class="wide">인증서명 *<input name="title" maxlength="120" required value="소비자선정 우수기업 인증서"></label>
+        <label class="wide">기업명·선정대상 *<input name="recipientName" maxlength="120" required></label>
+        <label>대표자명<input name="representativeName" maxlength="60"></label>
+        <label>선정부문<input name="category" maxlength="100" placeholder="외식·식품"></label>
+        <label>선정지역<input name="region" maxlength="120"></label>
+        <label>참여평가단<input name="evaluationGroup" maxlength="120"></label>
+        <label>발급일 *<input name="issuedAt" type="date" required></label>
+        <label>유효기한<input name="validUntil" type="date"></label>
+        <label class="wide">발급기관 *<input name="issuer" maxlength="120" required value="전국소비자클럽 소비자선정위원회"></label>
+        <label class="wide">인증서 이미지 URL<input name="imageUrl" maxlength="500" placeholder="images/certificates/NCC-EC-2026-FD-0001.png"></label>
+      </div>
+      <button type="submit">발급 기록 저장</button>
+      <button type="button" id="cancelCertificateButton">취소</button>
+      <p id="certificateMessage"></p>
+    </form>
+
+    <div class="toolbar">
+      <select id="statusFilter"><option value="all">전체 상태</option><option value="active">정상 발급</option><option value="sample">검토용 샘플</option><option value="revoked">효력 정지</option><option value="expired">유효기간 만료</option></select>
+      <input id="certificateSearch" placeholder="인증번호·기업명·부문 검색">
+      <button id="refreshButton">새로고침</button>
+    </div>
+    <div id="certificateList" class="application-list"></div>
+  </section>
+</main>
+<script type="module" src="js/admin-certificates.js?v=20260824-1"></script>
+</body>
+</html>
