@@ -1,0 +1,4 @@
+reference=REF-NCC-CI-E2E-RUN-222
+member=NCC-C-000016
+requested_at=2026-08-24T18:06:00+09:00
+mode=protected-reversible
