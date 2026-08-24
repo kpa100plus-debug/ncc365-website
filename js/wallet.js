@@ -88,7 +88,7 @@ $("#signupForm").onsubmit=async event=>{
     const result=await createUserWithEmailAndPassword(auth,data.email.trim(),data.password);
     await sendEmailVerification(result.user);
     return result;
-  },"계정을 만들지 못했습니다. 이미 등록된 이메일이면 로그인 또는 비밀번호 재설정을 이용해 주세요.");
+  },"계정 연결을 시작하지 못했습니다. 이미 온라인 계정이 있는 이메일이면 회원 로그인 또는 비밀번호 재설정을 이용해 주세요.");
 };
 
 $("#resetPassword").onclick=async()=>{

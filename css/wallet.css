@@ -1,7 +1,121 @@
 .wallet-auth {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
   gap: 24px;
+}
+
+.wallet-auth .form-panel {
+  margin: 0;
+}
+
+.wallet-login-panel > p,
+.wallet-access-panel > p {
+  max-width: 610px;
+}
+
+.wallet-account-note {
+  display: grid;
+  gap: 3px;
+  margin: 22px 0;
+  padding: 15px 17px;
+  border-left: 4px solid #c79b3c;
+  border-radius: 0 10px 10px 0;
+  background: #f7f3e8;
+  color: #173b34;
+}
+
+.wallet-account-note strong {
+  font-size: 16px;
+}
+
+.wallet-account-note span {
+  color: #5b6c66;
+  font-size: 14px;
+}
+
+.wallet-access-panel {
+  border-color: rgba(177, 133, 44, .28);
+  background: linear-gradient(145deg, #fffdf7, #f3eee1);
+}
+
+.wallet-join-button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.wallet-access-help {
+  margin: 13px 0 0;
+  color: #5f6e68;
+  font-size: 14px;
+}
+
+.wallet-legacy {
+  margin-top: 27px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(7, 42, 37, .14);
+}
+
+.wallet-legacy summary {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  color: #765719;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+
+.wallet-legacy summary::-webkit-details-marker {
+  display: none;
+}
+
+.wallet-legacy summary::after {
+  content: "+";
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(140, 105, 30, .3);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .72);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.wallet-legacy[open] summary::after {
+  content: "−";
+}
+
+.wallet-legacy-content {
+  padding-top: 12px;
+}
+
+.wallet-legacy-content > p {
+  margin: 0 0 18px;
+  color: #5b6b65;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.wallet-legacy-confirm {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  align-items: start;
+  color: #4f6059;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.wallet-legacy-confirm input {
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  accent-color: #0b4038;
 }
 
 .wallet-form {
@@ -779,6 +893,7 @@
 @media (max-width: 800px) {
   .wallet-auth {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 
   .wide-message {

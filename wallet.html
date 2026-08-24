@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>NCC 월렛 | 전국소비자클럽</title>
   <link rel="stylesheet" href="css/platform.css?v=20260824-4">
-  <link rel="stylesheet" href="css/wallet.css?v=20260824-4">
+  <link rel="stylesheet" href="css/wallet.css?v=20260824-5">
 </head>
 <body data-page="wallet">
   <main id="mainContent" class="platform-main">
@@ -19,10 +19,14 @@
       <div id="walletLoading" class="empty-state">회원 로그인 상태를 확인하고 있습니다.</div>
 
       <div class="wallet-auth" id="authArea" hidden>
-        <div class="form-panel">
+        <div class="form-panel wallet-login-panel">
           <p class="eyebrow">MEMBER LOGIN</p>
-          <h2>NCC 월렛 로그인</h2>
-          <p>회원가입 때 등록한 이메일을 사용하세요.</p>
+          <h2>NCC 회원 로그인</h2>
+          <p>전국소비자클럽 회원가입 때 등록한 이메일과 비밀번호를 사용하세요.</p>
+          <div class="wallet-account-note">
+            <strong>하나의 NCC 회원 계정</strong>
+            <span>별도의 월렛 계정이나 월렛 비밀번호는 없습니다.</span>
+          </div>
           <form id="loginForm" class="wallet-form">
             <div class="field">
               <label>이메일</label>
@@ -32,27 +36,40 @@
               <label>비밀번호</label>
               <input name="password" type="password" minlength="6" autocomplete="current-password" required>
             </div>
-            <button class="ncc-button gold" type="submit">로그인</button>
+            <button class="ncc-button gold" type="submit">회원 로그인</button>
           </form>
-          <button class="text-button" id="resetPassword" type="button">비밀번호 재설정</button>
+          <button class="text-button" id="resetPassword" type="button">비밀번호 찾기·재설정</button>
         </div>
 
-        <div class="form-panel">
+        <aside class="form-panel wallet-access-panel" aria-labelledby="firstAccessTitle">
           <p class="eyebrow">FIRST ACCESS</p>
-          <h2>월렛 처음 이용하기</h2>
-          <p>기존 NCC 회원이 월렛용 비밀번호를 처음 만드는 절차입니다. 이메일 인증 후 기존 회원정보와 연결됩니다.</p>
-          <form id="signupForm" class="wallet-form">
-            <div class="field">
-              <label>회원가입 때 등록한 이메일</label>
-              <input name="email" type="email" autocomplete="email" required>
+          <h2 id="firstAccessTitle">처음 방문하셨나요?</h2>
+          <p>무료 회원가입을 완료하면 같은 계정으로 월렛·혜택·공동구매·마이페이지를 모두 이용할 수 있습니다.</p>
+          <a class="ncc-button gold wallet-join-button" href="join.html">무료 회원가입</a>
+          <p class="wallet-access-help">가입 완료 후 별도의 월렛 계정을 다시 만들 필요가 없습니다.</p>
+
+          <details class="wallet-legacy" id="legacyAccess">
+            <summary>기존 오프라인 회원 계정 연결</summary>
+            <div class="wallet-legacy-content">
+              <p>이미 회원번호를 발급받았지만 온라인 로그인 비밀번호를 만든 적이 없는 기존 회원만 이용하세요.</p>
+              <form id="signupForm" class="wallet-form">
+                <div class="field">
+                  <label>기존 회원 등록 이메일</label>
+                  <input name="email" type="email" autocomplete="email" required>
+                </div>
+                <div class="field">
+                  <label>온라인 로그인용 새 비밀번호</label>
+                  <input name="password" type="password" minlength="6" autocomplete="new-password" required>
+                </div>
+                <label class="wallet-legacy-confirm">
+                  <input name="legacyConfirm" type="checkbox" required>
+                  <span>기존 NCC 회원번호를 이미 발급받았으며, 온라인 로그인 계정을 만든 적이 없습니다.</span>
+                </label>
+                <button class="ncc-button" type="submit">기존 회원 계정 연결</button>
+              </form>
             </div>
-            <div class="field">
-              <label>새 비밀번호</label>
-              <input name="password" type="password" minlength="6" autocomplete="new-password" required>
-            </div>
-            <button class="ncc-button gold" type="submit">월렛 계정 만들기</button>
-          </form>
-        </div>
+          </details>
+        </aside>
         <p id="authMessage" class="wide-message" role="status"></p>
       </div>
 
@@ -180,12 +197,12 @@
             <span class="arrow">공동구매 →</span>
           </a>
         </div>
-        <button class="text-button logout-button" type="button">월렛 로그아웃</button>
+        <button class="text-button logout-button" type="button">회원 로그아웃</button>
       </section>
     </section>
   </main>
 
-  <script src="js/platform-shell.js"></script>
-  <script type="module" src="js/wallet.js?v=20260824-3"></script>
+  <script src="js/platform-shell.js?v=20260824-5"></script>
+  <script type="module" src="js/wallet.js?v=20260824-4"></script>
 </body>
 </html>

@@ -6,12 +6,17 @@ document.body.insertAdjacentHTML("afterbegin",header);document.body.insertAdjace
 
 // REF-NCC-NAV-AUTH-STATE-02
 const joinLink=nav?.querySelector(".join-link");
+const walletLink=nav?.querySelector(".wallet-link");
 let shellAuth=null;
 let shellSignOut=null;
 
 function updateMemberNav(user){
-  if(!joinLink)return;
   const signedIn=Boolean(user);
+  if(walletLink){
+    walletLink.textContent=signedIn?"NCC 월렛":"회원 로그인";
+    walletLink.setAttribute("aria-label",signedIn?"NCC 월렛 열기":"NCC 회원 로그인");
+  }
+  if(!joinLink)return;
   joinLink.removeAttribute("aria-busy");
   joinLink.dataset.authState=signedIn?"signed-in":"signed-out";
   joinLink.classList.toggle("is-logout",signedIn);
