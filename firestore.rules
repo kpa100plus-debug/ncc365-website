@@ -1060,6 +1060,139 @@ match /centerActivities/{activityId} {
 
   allow delete: if isAdmin();
 }
+    // REF-NCC-CERTIFICATE-VERIFICATION-PRODUCTION-01
+    // Public records contain only certificate display metadata.
+    match /certificates/{certificateId} {
+      allow get: if isAdmin() || resource.data.public == true;
+      allow list: if isAdmin();
+
+      allow create: if
+        isAdmin()
+        && request.resource.data.keys().hasAll([
+          "certificateNumber", "certificateType", "title", "recipientName",
+          "representativeName", "category", "region", "evaluationGroup",
+          "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
+          "createdAt", "updatedAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "certificateNumber", "certificateType", "title", "recipientName",
+          "representativeName", "category", "region", "evaluationGroup",
+          "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
+          "createdAt", "updatedAt"
+        ])
+        && request.resource.data.certificateNumber == certificateId
+        && request.resource.data.certificateNumber is string
+        && request.resource.data.certificateNumber.matches('^NCC-[A-Z0-9]+(-[A-Z0-9]+){2,6}$')
+        && request.resource.data.certificateType in [
+          "excellent_company", "excellent_product_service",
+          "official_partner", "center_appointment"
+        ]
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 1
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.recipientName is string
+        && request.resource.data.recipientName.size() >= 1
+        && request.resource.data.recipientName.size() <= 120
+        && request.resource.data.representativeName is string
+        && request.resource.data.representativeName.size() <= 60
+        && request.resource.data.category is string
+        && request.resource.data.category.size() <= 100
+        && request.resource.data.region is string
+        && request.resource.data.region.size() <= 120
+        && request.resource.data.evaluationGroup is string
+        && request.resource.data.evaluationGroup.size() <= 120
+        && request.resource.data.issuedAt is string
+        && request.resource.data.issuedAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.validUntil is string
+        && (
+          request.resource.data.validUntil == ""
+          || request.resource.data.validUntil.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        )
+        && request.resource.data.issuer is string
+        && request.resource.data.issuer.size() >= 1
+        && request.resource.data.issuer.size() <= 120
+        && request.resource.data.imageUrl is string
+        && request.resource.data.imageUrl.size() <= 500
+        && request.resource.data.status in ["active", "revoked", "expired", "sample"]
+        && request.resource.data.public is bool
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      allow update: if
+        isAdmin()
+        && request.resource.data.keys().hasAll([
+          "certificateNumber", "certificateType", "title", "recipientName",
+          "representativeName", "category", "region", "evaluationGroup",
+          "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
+          "createdAt", "updatedAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "certificateNumber", "certificateType", "title", "recipientName",
+          "representativeName", "category", "region", "evaluationGroup",
+          "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
+          "createdAt", "updatedAt"
+        ])
+        && request.resource.data.certificateNumber == certificateId
+        && request.resource.data.certificateNumber == resource.data.certificateNumber
+        && request.resource.data.certificateType in [
+          "excellent_company", "excellent_product_service",
+          "official_partner", "center_appointment"
+        ]
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 1
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.recipientName is string
+        && request.resource.data.recipientName.size() >= 1
+        && request.resource.data.recipientName.size() <= 120
+        && request.resource.data.representativeName is string
+        && request.resource.data.representativeName.size() <= 60
+        && request.resource.data.category is string
+        && request.resource.data.category.size() <= 100
+        && request.resource.data.region is string
+        && request.resource.data.region.size() <= 120
+        && request.resource.data.evaluationGroup is string
+        && request.resource.data.evaluationGroup.size() <= 120
+        && request.resource.data.issuedAt is string
+        && request.resource.data.issuedAt.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.validUntil is string
+        && (
+          request.resource.data.validUntil == ""
+          || request.resource.data.validUntil.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        )
+        && request.resource.data.issuer is string
+        && request.resource.data.issuer.size() >= 1
+        && request.resource.data.issuer.size() <= 120
+        && request.resource.data.imageUrl is string
+        && request.resource.data.imageUrl.size() <= 500
+        && request.resource.data.status in ["active", "revoked", "expired", "sample"]
+        && request.resource.data.public is bool
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if false;
+    }
+
+    match /certificateLogs/{logId} {
+      allow create: if
+        isAdmin()
+        && request.resource.data.keys().hasAll([
+          "certificateNumber", "eventType", "status", "public",
+          "actorEmail", "createdAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "certificateNumber", "eventType", "status", "public",
+          "actorEmail", "createdAt"
+        ])
+        && request.resource.data.certificateNumber is string
+        && request.resource.data.eventType in ["created", "updated"]
+        && request.resource.data.status in ["active", "revoked", "expired", "sample"]
+        && request.resource.data.public is bool
+        && request.resource.data.actorEmail == request.auth.token.email
+        && request.resource.data.createdAt == request.time;
+      allow read: if isAdmin();
+      allow update, delete: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
