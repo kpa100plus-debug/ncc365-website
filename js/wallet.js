@@ -78,6 +78,16 @@ $("#checkVerification").onclick=async()=>{
 
 document.querySelectorAll(".logout-button").forEach(button=>button.onclick=()=>signOut(auth));
 
+function memberSince(value){
+  if(!value)return"NCC MEMBER";
+  let date=null;
+  if(typeof value?.toDate==="function")date=value.toDate();
+  else if(value instanceof Date)date=value;
+  else if(typeof value==="string"||typeof value==="number")date=new Date(value);
+  if(!date||Number.isNaN(date.getTime()))return"NCC MEMBER";
+  return `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}`;
+}
+
 async function loadMember(user){
   try{
     let snap=await getDocs(query(collection(db,"members"),where("authUid","==",user.uid),limit(1)));
@@ -111,6 +121,8 @@ async function loadMember(user){
     $("#memberRegion").textContent=member.region||"지역 미등록";
     $("#memberType").textContent="소비자회원";
     $("#memberContact").textContent=`${member.phone||"연락처 미등록"} · ${member.email}`;
+    const since=$("#memberSince");
+    if(since)since.textContent=memberSince(member.joinDate||member.createdAt);
     $("#memberArea").hidden=false;
   }catch(error){
     console.error(error);
