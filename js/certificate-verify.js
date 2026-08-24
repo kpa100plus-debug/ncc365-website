@@ -124,7 +124,9 @@ async function verifyCertificate(rawValue, updateUrl = true) {
     showResult(data);
   } catch (error) {
     console.error(error);
-    message.textContent = "조회 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+    message.textContent = error?.code === "permission-denied"
+      ? "일치하는 공개 발급 기록이 없습니다. 번호를 다시 확인하거나 전국소비자클럽에 문의해 주세요."
+      : "조회 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
     message.classList.add("error");
   }
 }
@@ -136,4 +138,3 @@ form.addEventListener("submit", event => {
 
 const initialId = new URLSearchParams(location.search).get("id");
 if (initialId) verifyCertificate(initialId, false);
-
