@@ -8,6 +8,11 @@ on:
         required: true
         default: "NCC-C-000016"
         type: string
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/e2e-triggers/ncc-member-d.txt"
 
 permissions:
   contents: read
@@ -18,7 +23,7 @@ concurrency:
 
 jobs:
   test-member-d:
-    if: ${{ inputs.confirm_member_number == 'NCC-C-000016' }}
+    if: ${{ github.event_name == 'push' || inputs.confirm_member_number == 'NCC-C-000016' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -70,4 +75,3 @@ jobs:
           path: artifacts/ncc-e2e-result.json
           if-no-files-found: warn
           retention-days: 7
-

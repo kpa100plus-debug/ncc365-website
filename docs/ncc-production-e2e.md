@@ -28,3 +28,4 @@
 
 저장소 `Actions` → `NCC Production E2E` → `Run workflow`에서 안전 확인용 회원번호 `NCC-C-000016`을 입력합니다. 다른 회원번호를 입력하면 작업이 실행되지 않습니다.
 
+GitHub 연결 자동화에서는 Secrets 저장 확인 후 `.github/e2e-triggers/ncc-member-d.txt` 파일만 생성하거나 갱신해 같은 검사를 실행할 수 있습니다. 이 경로 이외의 일반 소스 변경은 자동검사를 시작하지 않습니다.
