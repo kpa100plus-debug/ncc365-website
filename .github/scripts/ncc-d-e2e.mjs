@@ -154,7 +154,7 @@ async function submitWithdrawalRequest(page) {
   await page.waitForFunction(
     () => {
       const node = document.querySelector("#withdrawMessage");
-      return node && /접수|요청/.test(node.textContent || "");
+      return node && (node.textContent || "").trim() === "회원탈퇴 요청이 접수되었습니다. 본사 확인 후 처리됩니다.";
     },
     undefined,
     { timeout: 30_000 },
