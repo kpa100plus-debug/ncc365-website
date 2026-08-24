@@ -1,5 +1,5 @@
-reference=REF-NCC-CI-E2E-AUDIT-FIX-235
+reference=REF-NCC-CI-E2E-AUTH-SETUP-02
 member=NCC-C-000016
-requested_at=2026-08-24T18:31:00+09:00
+requested_at=2026-08-24T18:39:00+09:00
 mode=protected-reversible
-reason=rejection-audit-targeting-fixed
+reason=member-d-password-reset-and-secrets-updated
