@@ -33,3 +33,16 @@ body:not([data-page="home"]) .platform-section:not(.paper){background:linear-gra
 body[data-page="wallet"] .platform-section.paper{background:radial-gradient(circle at 85% 10%,rgba(210,170,80,.16),transparent 24%),linear-gradient(145deg,#f3efe5,#e6ede8)}
 @media(max-width:900px){body:not([data-page="home"]) .page-hero{min-height:560px;padding:280px 28px 66px}body:not([data-page="home"]) .page-hero:before{inset:0 0 auto 0;height:250px}body:not([data-page="home"]) .page-hero:after{background:linear-gradient(180deg,rgba(4,28,25,.12),var(--ncc-950) 250px)}body:not([data-page="home"]) .card-grid>.platform-card{min-height:auto;background-size:cover;padding-top:330px}}
 @media(max-width:600px){body:not([data-page="home"]) .page-hero{min-height:520px;padding:240px 20px 54px}body:not([data-page="home"]) .page-hero:before{height:215px}body:not([data-page="home"]) .page-hero h1{font-size:38px}body:not([data-page="home"]) .card-grid>.platform-card{background-size:cover;padding-top:248px}body:not([data-page="home"]) .process div{min-height:140px}}
+
+/* REF-NCC-NAV-PRIORITY-REORDER-01 */
+@media(min-width:901px){
+  .platform-nav .nav-priority{color:#f5faf7;font-weight:800}
+  .platform-nav .nav-secondary{color:#c4d2cd;font-size:15px}
+  .platform-nav .nav-secondary-start{position:relative;margin-left:8px;padding-left:24px}
+  .platform-nav .nav-secondary-start:before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:1px;background:linear-gradient(transparent,rgba(210,170,80,.72),transparent)}
+}
+@media(max-width:900px){
+  .platform-nav .nav-priority{font-weight:800}
+  .platform-nav .nav-secondary{color:#d2ddd9}
+  .platform-nav .nav-secondary-start{margin-top:12px;padding-top:20px;border-top:1px solid rgba(210,170,80,.55)}
+}
