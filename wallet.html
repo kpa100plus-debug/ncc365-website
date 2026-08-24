@@ -1,1 +1,191 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NCC 월렛 | 전국소비자클럽</title><link rel="stylesheet" href="css/platform.css"><link rel="stylesheet" href="css/wallet.css?v=20260824-2"></head><body data-page="wallet"><main id="mainContent" class="platform-main"><section class="page-hero"><p class="hero-kicker">NCC WALLET</p><h1>내 회원카드와 혜택을<br>한곳에서 관리합니다</h1><p class="lead">이메일 본인인증으로 회원정보를 안전하게 연결하고 공동구매·혜택 신청서에 기본정보를 자동입력합니다.</p></section><section class="platform-section paper"><div id="walletLoading" class="empty-state">회원 로그인 상태를 확인하고 있습니다.</div><div class="wallet-auth" id="authArea" hidden><div class="form-panel"><p class="eyebrow">MEMBER LOGIN</p><h2>NCC 월렛 로그인</h2><p>회원가입 때 등록한 이메일을 사용하세요.</p><form id="loginForm" class="wallet-form"><div class="field"><label>이메일</label><input name="email" type="email" autocomplete="username" required></div><div class="field"><label>비밀번호</label><input name="password" type="password" minlength="6" autocomplete="current-password" required></div><button class="ncc-button gold" type="submit">로그인</button></form><button class="text-button" id="resetPassword" type="button">비밀번호 재설정</button></div><div class="form-panel"><p class="eyebrow">FIRST ACCESS</p><h2>월렛 처음 이용하기</h2><p>기존 NCC 회원이 월렛용 비밀번호를 처음 만드는 절차입니다. 이메일 인증 후 기존 회원정보와 연결됩니다.</p><form id="signupForm" class="wallet-form"><div class="field"><label>회원가입 때 등록한 이메일</label><input name="email" type="email" autocomplete="email" required></div><div class="field"><label>새 비밀번호</label><input name="password" type="password" minlength="6" autocomplete="new-password" required></div><button class="ncc-button gold" type="submit">월렛 계정 만들기</button></form></div><p id="authMessage" class="wide-message" role="status"></p></div><section id="verifyArea" class="form-panel" hidden><p class="eyebrow">EMAIL VERIFICATION</p><h2>이메일 인증이 필요합니다</h2><p><b id="verifyEmail"></b>로 인증메일을 보냈습니다. 메일의 인증 링크를 누른 뒤 아래 버튼을 눌러주세요.</p><button class="ncc-button gold" id="checkVerification">인증 완료 확인</button> <button class="ncc-button" id="resendVerification">인증메일 다시 보내기</button> <button class="text-button logout-button" type="button">로그아웃</button><p id="verifyMessage" role="status"></p></section><section id="memberArea" hidden><div class="member-card"><div class="member-card-left"><img src="images/NCC_HEADER.png" alt="전국소비자클럽"><p class="member-card-label">NCC DIGITAL MEMBER CARD</p><h2 id="memberName"></h2><strong id="memberNumber"></strong><div class="member-card-meta"><span id="memberRegion"></span><span id="memberType"></span></div></div><div class="member-card-right" aria-label="NCC 회원 인증 정보"><div class="member-card-topline"><span class="member-status"><i></i>ACTIVE MEMBER</span><span class="member-chip" aria-hidden="true"><i></i></span></div><div class="member-seal" aria-hidden="true"><span>NCC</span><small>365</small></div><div class="member-verification"><div><small>MEMBERSHIP</small><b>CONSUMER</b></div><div><small>VERIFICATION</small><b>EMAIL VERIFIED</b></div><div><small>MEMBER SINCE</small><b id="memberSince">NCC MEMBER</b></div></div><p class="member-signature">ISEA GROUP · NATIONAL CONSUMER CLUB</p></div></div><div class="card-grid wallet-services"><article class="platform-card"><span class="badge">MEMBER PROFILE</span><h3>내 기본정보</h3><p id="memberContact"></p><small>정보 변경은 관리자에게 요청해 주세요.</small></article><a class="platform-card" href="benefits.html"><span class="badge">MY BENEFIT</span><h3>혜택 신청</h3><p>무료 경험과 회원 혜택을 확인하고 신청합니다.</p><span class="arrow">혜택센터 →</span></a><a class="platform-card" href="groupbuy.html"><span class="badge">GROUP BUY</span><h3>공동구매</h3><p>회원 기본정보가 신청서에 자동으로 입력됩니다.</p><span class="arrow">공동구매 →</span></a></div><button class="text-button logout-button" type="button">월렛 로그아웃</button></section></section></main><script src="js/platform-shell.js"></script><script type="module" src="js/wallet.js?v=20260824-2"></script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NCC 월렛 | 전국소비자클럽</title>
+  <link rel="stylesheet" href="css/platform.css">
+  <link rel="stylesheet" href="css/wallet.css?v=20260824-3">
+</head>
+<body data-page="wallet">
+  <main id="mainContent" class="platform-main">
+    <section class="page-hero">
+      <p class="hero-kicker">NCC WALLET</p>
+      <h1>내 회원카드와 혜택을<br>한곳에서 관리합니다</h1>
+      <p class="lead">이메일 본인인증으로 회원정보를 안전하게 연결하고 공동구매·혜택 신청서에 기본정보를 자동입력합니다.</p>
+    </section>
+
+    <section class="platform-section paper">
+      <div id="walletLoading" class="empty-state">회원 로그인 상태를 확인하고 있습니다.</div>
+
+      <div class="wallet-auth" id="authArea" hidden>
+        <div class="form-panel">
+          <p class="eyebrow">MEMBER LOGIN</p>
+          <h2>NCC 월렛 로그인</h2>
+          <p>회원가입 때 등록한 이메일을 사용하세요.</p>
+          <form id="loginForm" class="wallet-form">
+            <div class="field">
+              <label>이메일</label>
+              <input name="email" type="email" autocomplete="username" required>
+            </div>
+            <div class="field">
+              <label>비밀번호</label>
+              <input name="password" type="password" minlength="6" autocomplete="current-password" required>
+            </div>
+            <button class="ncc-button gold" type="submit">로그인</button>
+          </form>
+          <button class="text-button" id="resetPassword" type="button">비밀번호 재설정</button>
+        </div>
+
+        <div class="form-panel">
+          <p class="eyebrow">FIRST ACCESS</p>
+          <h2>월렛 처음 이용하기</h2>
+          <p>기존 NCC 회원이 월렛용 비밀번호를 처음 만드는 절차입니다. 이메일 인증 후 기존 회원정보와 연결됩니다.</p>
+          <form id="signupForm" class="wallet-form">
+            <div class="field">
+              <label>회원가입 때 등록한 이메일</label>
+              <input name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label>새 비밀번호</label>
+              <input name="password" type="password" minlength="6" autocomplete="new-password" required>
+            </div>
+            <button class="ncc-button gold" type="submit">월렛 계정 만들기</button>
+          </form>
+        </div>
+        <p id="authMessage" class="wide-message" role="status"></p>
+      </div>
+
+      <section id="verifyArea" class="form-panel" hidden>
+        <p class="eyebrow">EMAIL VERIFICATION</p>
+        <h2>이메일 인증이 필요합니다</h2>
+        <p><b id="verifyEmail"></b>로 인증메일을 보냈습니다. 메일의 인증 링크를 누른 뒤 아래 버튼을 눌러주세요.</p>
+        <button class="ncc-button gold" id="checkVerification">인증 완료 확인</button>
+        <button class="ncc-button" id="resendVerification">인증메일 다시 보내기</button>
+        <button class="text-button logout-button" type="button">로그아웃</button>
+        <p id="verifyMessage" role="status"></p>
+      </section>
+
+      <section id="memberArea" hidden>
+        <div class="member-card-stage">
+          <div
+            id="memberCard"
+            class="member-card"
+            role="button"
+            tabindex="0"
+            aria-pressed="false"
+            aria-label="NCC 디지털 회원카드 앞면. 누르면 뒷면을 볼 수 있습니다."
+          >
+            <div class="member-card-inner">
+              <article id="memberCardFront" class="member-card-face member-card-front" aria-label="NCC 디지털 회원카드 앞면">
+                <div class="member-front-art" aria-hidden="true"></div>
+                <img class="member-card-logo" src="images/NCC_HEADER.png" alt="전국소비자클럽 NCC">
+                <span class="member-status"><i></i>ACTIVE MEMBER</span>
+                <span class="member-chip" aria-hidden="true"><i></i></span>
+
+                <div class="member-identity">
+                  <p class="member-card-label">NCC DIGITAL MEMBER CARD</p>
+                  <h2 id="memberName"></h2>
+                  <strong id="memberNumber"></strong>
+                </div>
+
+                <div class="member-shield" aria-hidden="true">
+                  <span>NCC</span>
+                  <small>MEMBER 365</small>
+                </div>
+
+                <div class="member-card-meta">
+                  <span id="memberRegion"></span>
+                  <i aria-hidden="true"></i>
+                  <span id="memberType"></span>
+                </div>
+
+                <div class="member-verification" aria-label="NCC 회원 인증 정보">
+                  <div><small>MEMBERSHIP</small><b>CONSUMER</b></div>
+                  <div><small>VERIFICATION</small><b>EMAIL VERIFIED</b></div>
+                  <div><small>MEMBER SINCE</small><b id="memberSince">NCC MEMBER</b></div>
+                </div>
+                <p class="member-signature">ISEA GROUP · NATIONAL CONSUMER CLUB</p>
+              </article>
+
+              <article id="memberCardBack" class="member-card-face member-card-back" aria-label="NCC 디지털 회원카드 뒷면" aria-hidden="true">
+                <div class="member-back-art" aria-hidden="true"></div>
+                <div class="member-back-topline">
+                  <span>NCC 365 · ISEA GROUP</span>
+                  <span>NATIONAL CONSUMER CLUB · NCC365.COM</span>
+                </div>
+
+                <div class="member-magnetic-stripe" aria-hidden="true"></div>
+                <p class="member-secure-band">NCC 365 · ISEA GROUP · NATIONAL CONSUMER CLUB · SECURE CARD BAND</p>
+
+                <div class="member-signature-area">
+                  <div class="member-signature-panel">
+                    <span>AUTHORIZED SIGNATURE / 서명</span>
+                    <div>CARDHOLDER SIGNATURE</div>
+                  </div>
+                  <div class="member-security-panel">
+                    <span>SECURITY CODE</span>
+                    <div><i></i><small>CVC</small></div>
+                  </div>
+                  <div class="member-back-diamond" aria-hidden="true"><i></i></div>
+                </div>
+
+                <div class="member-back-brand">
+                  <div class="member-back-logo-wrap">
+                    <img src="images/NCC_HEADER.png" alt="전국소비자클럽 NCC">
+                  </div>
+                  <div class="member-back-copy">
+                    <b>NCC 365</b>
+                    <strong>PREMIUM MEMBERSHIP</strong>
+                    <span>NATIONAL CONSUMER CLUB</span>
+                    <small>ncc365.com</small>
+                  </div>
+                  <div class="member-back-emblem" aria-hidden="true"><i></i></div>
+                </div>
+
+                <div class="member-back-footer">
+                  <span>© 2026 ISEA GROUP. ALL RIGHTS RESERVED.</span>
+                  <span>ISEA GROUP · NATIONAL CONSUMER CLUB</span>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="member-card-controls">
+            <button id="flipMemberCard" class="member-card-flip-button" type="button" aria-controls="memberCard">
+              <span aria-hidden="true">↻</span> 카드 뒷면 보기
+            </button>
+            <p>카드 자체를 눌러도 앞·뒷면이 전환됩니다.</p>
+          </div>
+          <p id="cardFlipStatus" class="wallet-sr-only" aria-live="polite">카드 앞면이 표시되었습니다.</p>
+        </div>
+
+        <div class="card-grid wallet-services">
+          <article class="platform-card">
+            <span class="badge">MEMBER PROFILE</span>
+            <h3>내 기본정보</h3>
+            <p id="memberContact"></p>
+            <small>정보 변경은 관리자에게 요청해 주세요.</small>
+          </article>
+          <a class="platform-card" href="benefits.html">
+            <span class="badge">MY BENEFIT</span>
+            <h3>혜택 신청</h3>
+            <p>무료 경험과 회원 혜택을 확인하고 신청합니다.</p>
+            <span class="arrow">혜택센터 →</span>
+          </a>
+          <a class="platform-card" href="groupbuy.html">
+            <span class="badge">GROUP BUY</span>
+            <h3>공동구매</h3>
+            <p>회원 기본정보가 신청서에 자동으로 입력됩니다.</p>
+            <span class="arrow">공동구매 →</span>
+          </a>
+        </div>
+        <button class="text-button logout-button" type="button">월렛 로그아웃</button>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/platform-shell.js"></script>
+  <script type="module" src="js/wallet.js?v=20260824-3"></script>
+</body>
+</html>
