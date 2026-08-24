@@ -1,0 +1,48 @@
+name: NCC Security Checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ncc-security-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-and-rules:
+    name: Static controls and Firestore rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Set up Java for Firestore emulator
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install pinned test dependencies
+        run: npm ci
+
+      - name: Check tracked files and security controls
+        run: npm run test:security
+
+      - name: Install pinned Firebase emulator CLI
+        run: npm install --global firebase-tools@15.28.1
+
+      - name: Compile and test Firestore rules
+        run: npm run test:rules

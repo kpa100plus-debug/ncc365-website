@@ -1,0 +1,15 @@
+{
+  "name": "ncc365-website-security-checks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:security": "node scripts/security-static-check.mjs",
+    "test:rules": "firebase emulators:exec --only firestore --project ncc-security-test \"node --test tests/firestore-rules.test.mjs\"",
+    "test": "npm run test:security && npm run test:rules"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "5.0.2",
+    "firebase": "12.18.0"
+  }
+}

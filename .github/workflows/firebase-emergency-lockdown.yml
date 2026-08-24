@@ -1,0 +1,67 @@
+name: Emergency Firestore Lockdown
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "LOCKDOWN blocks all client access; RESTORE deploys the reviewed production rules"
+        required: true
+        type: choice
+        options:
+          - LOCKDOWN
+          - RESTORE
+      confirmation:
+        description: "Type NCC-PRODUCTION-CONFIRMED"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: firebase-rules-production
+  cancel-in-progress: false
+
+jobs:
+  emergency-rules:
+    name: Deploy selected emergency ruleset
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - name: Validate deliberate confirmation
+        shell: bash
+        run: |
+          if [ "${{ inputs.confirmation }}" != "NCC-PRODUCTION-CONFIRMED" ]; then
+            echo "::error::Confirmation text did not match. No rules were deployed."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ncc-member
+          workload_identity_provider: projects/772423138834/locations/global/workloadIdentityPools/ncc-github-actions/providers/github
+          service_account: ncc-firestore-rules-deployer@ncc-member.iam.gserviceaccount.com
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Install Firebase CLI
+        run: npm install --global firebase-tools@15.28.1
+
+      - name: Deploy complete client lockdown
+        if: ${{ inputs.mode == 'LOCKDOWN' }}
+        run: firebase deploy --only firestore:rules --config firebase.lockdown.json --project ncc-member --non-interactive
+
+      - name: Restore reviewed production rules
+        if: ${{ inputs.mode == 'RESTORE' }}
+        run: firebase deploy --only firestore:rules --config firebase.json --project ncc-member --non-interactive
