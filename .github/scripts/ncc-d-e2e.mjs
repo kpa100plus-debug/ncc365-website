@@ -232,10 +232,15 @@ async function rejectWithdrawalRequest(page) {
     throw new Error("Safety stop: account disposal controls appeared after rejection.");
   }
   result.checks.withdrawalRejected = true;
+  requestNeedsRejection = false;
 
   await page.locator('[data-account-tab="logs"]').click();
   await page.locator("#logSearch").fill(config.memberNumber);
-  const log = page.locator("#logList .audit-item", { hasText: config.memberNumber }).first();
+  const log = page
+    .locator("#logList .audit-item")
+    .filter({ hasText: config.memberNumber })
+    .filter({ hasText: "탈퇴 반려" })
+    .first();
   await log.waitFor({ state: "visible", timeout: 30_000 });
   const logText = (await log.textContent()) || "";
   if (!/탈퇴.*반려|반려.*탈퇴/.test(logText)) {
