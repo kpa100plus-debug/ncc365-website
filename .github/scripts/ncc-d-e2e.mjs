@@ -30,6 +30,8 @@ const result = {
   checks: {
     memberIdentityMatched: false,
     walletLoaded: false,
+    consumerNavAuthenticated: false,
+    benefitDetailLoaded: false,
     myPageLoaded: false,
     memberInfoTemporarilyChanged: false,
     memberInfoRestored: false,
@@ -118,6 +120,31 @@ async function loginMember(page) {
   }
   result.checks.memberIdentityMatched = true;
   result.checks.walletLoaded = true;
+}
+
+async function verifyConsumerNavigationAndBenefit(page) {
+  const logoutLink = page.locator('.join-link[data-auth-state="signed-in"]');
+  await logoutLink.waitFor({ state: "visible", timeout: 30_000 });
+  if ((await logoutLink.textContent())?.trim() !== "로그아웃") {
+    throw new Error("Authenticated navigation did not replace the signup link with logout.");
+  }
+  result.checks.consumerNavAuthenticated = true;
+
+  await goto(page, "/benefits.html");
+  const firstOffer = page.locator('.benefit-offer a[href*="benefit-detail.html?id="]').first();
+  await firstOffer.waitFor({ state: "visible", timeout: 30_000 });
+  const href = await firstOffer.getAttribute("href");
+  if (!href || !href.includes("benefit-detail.html?id=")) {
+    throw new Error("Benefit list did not expose a valid detail link.");
+  }
+  await firstOffer.click();
+  await page.waitForURL(/\/benefit-detail\.html\?id=[a-z0-9-]+/i, { timeout: 30_000 });
+  const detailTitle = page.locator("#detailTitle");
+  await detailTitle.waitFor({ state: "visible", timeout: 30_000 });
+  if (!(await detailTitle.textContent())?.trim()) {
+    throw new Error("Benefit detail page loaded without a title.");
+  }
+  result.checks.benefitDetailLoaded = true;
 }
 
 async function openProfile(page) {
@@ -292,6 +319,9 @@ try {
   memberPage = await memberContext.newPage();
   await loginMember(memberPage);
   stage("Wallet login and member identity verified.");
+
+  await verifyConsumerNavigationAndBenefit(memberPage);
+  stage("Authenticated navigation and benefit detail routing verified.");
 
   await openProfile(memberPage);
   originalRegion = await memberPage.locator("#basicRegion").inputValue();
