@@ -1,5 +1,5 @@
-reference=REF-NCC-E2E-COVERAGE-04
+reference=REF-NCC-E2E-ROUTE-WAIT-FIX-05
 member=NCC-C-000016
-requested_at=2026-08-25T22:41:00+09:00
+requested_at=2026-08-25T22:45:00+09:00
 mode=protected-reversible
-reason=verify-auth-navigation-and-benefit-detail-routing
+reason=stabilize-benefit-detail-navigation-verification
