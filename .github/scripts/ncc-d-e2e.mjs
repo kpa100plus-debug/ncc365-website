@@ -138,17 +138,16 @@ async function verifyConsumerNavigationAndBenefit(page) {
     throw new Error("Benefit list did not expose a valid detail link.");
   }
   await goto(page, `/${href}`);
-  const currentUrl = new URL(page.url());
-  if (
-    currentUrl.pathname !== "/benefit-detail.html" ||
-    !/^[a-z0-9-]+$/i.test(currentUrl.searchParams.get("id") || "")
-  ) {
-    throw new Error("Benefit detail navigation did not preserve a valid offer id.");
-  }
   const detailTitle = page.locator("#detailTitle");
+  const applicationForm = page.locator("#demoApplicationForm");
+  const breadcrumbTitle = page.locator("#crumbTitle");
   await detailTitle.waitFor({ state: "visible", timeout: 30_000 });
-  if (!(await detailTitle.textContent())?.trim()) {
-    throw new Error("Benefit detail page loaded without a title.");
+  await applicationForm.waitFor({ state: "visible", timeout: 30_000 });
+  await breadcrumbTitle.waitFor({ state: "visible", timeout: 30_000 });
+  const titleText = (await detailTitle.textContent())?.trim();
+  const breadcrumbText = (await breadcrumbTitle.textContent())?.trim();
+  if (!titleText || breadcrumbText !== titleText) {
+    throw new Error("Benefit detail page did not render a consistent title and application form.");
   }
   result.checks.benefitDetailLoaded = true;
 }
