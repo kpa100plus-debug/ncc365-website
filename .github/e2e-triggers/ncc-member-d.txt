@@ -1,5 +1,5 @@
-reference=REF-NCC-E2E-IDENTITY-FIX-03
+reference=REF-NCC-E2E-COVERAGE-04
 member=NCC-C-000016
-requested_at=2026-08-25T22:38:00+09:00
+requested_at=2026-08-25T22:41:00+09:00
 mode=protected-reversible
-reason=verify-raw-member-identity-after-English-card-rendering
+reason=verify-auth-navigation-and-benefit-detail-routing
