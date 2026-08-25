@@ -448,10 +448,20 @@ match /groupBuyOrders/{orderId} {
 
   allow update: if
     isAdmin()
-    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"])
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "status", "paymentGuide", "carrier", "trackingNumber", "adminMemo", "updatedAt"
+    ])
     && request.resource.data.status in [
       "new", "checking", "confirmed", "paid", "shipping", "completed", "cancelled"
     ]
+    && request.resource.data.paymentGuide is string
+    && request.resource.data.paymentGuide.size() <= 500
+    && request.resource.data.carrier is string
+    && request.resource.data.carrier.size() <= 60
+    && request.resource.data.trackingNumber is string
+    && request.resource.data.trackingNumber.size() <= 80
+    && request.resource.data.adminMemo is string
+    && request.resource.data.adminMemo.size() <= 500
     && request.resource.data.updatedAt == request.time;
 
   allow delete: if isAdmin();
@@ -751,8 +761,8 @@ match /benefitApplications/{applicationId} {
 
 match /groupBuyOrders/{orderId} {
   allow create: if request.auth != null
-    && request.resource.data.keys().hasAll(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
-    && request.resource.data.keys().hasOnly(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
+    && request.resource.data.keys().hasAll(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","paymentGuide","carrier","trackingNumber","adminMemo","status","source","createdAt","updatedAt"])
+    && request.resource.data.keys().hasOnly(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","paymentGuide","carrier","trackingNumber","adminMemo","status","source","createdAt","updatedAt"])
     && ownsMember(request.resource.data.memberId)
     && isActiveMember(request.resource.data.memberId)
     && request.resource.data.memberEmail == request.auth.token.email
@@ -767,6 +777,10 @@ match /groupBuyOrders/{orderId} {
     && request.resource.data.message is string && request.resource.data.message.size() <= 500
     && request.resource.data.receipt is string && request.resource.data.receipt.matches('^NCC-G-[0-9]{6}-[0-9]{5}$')
     && request.resource.data.totalPrice is int && request.resource.data.totalPrice >= 0
+    && request.resource.data.paymentGuide == ""
+    && request.resource.data.carrier == ""
+    && request.resource.data.trackingNumber == ""
+    && request.resource.data.adminMemo == ""
     && request.resource.data.status == "new" && request.resource.data.source == "website"
     && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
   allow read: if isAdmin() || (request.auth != null && ownsMember(resource.data.memberId));
