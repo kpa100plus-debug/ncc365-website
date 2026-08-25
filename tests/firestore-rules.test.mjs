@@ -175,6 +175,10 @@ const groupBuyOrder = (memberId, email, overrides = {}) => ({
   message: "",
   receipt: "NCC-G-260825-12345",
   totalPrice: 10000,
+  paymentGuide: "",
+  carrier: "",
+  trackingNumber: "",
+  adminMemo: "",
   status: "new",
   source: "website",
   createdAt: serverTimestamp(),
@@ -249,4 +253,37 @@ test("active member can create a group-buy order but paused member cannot", asyn
       receipt: "NCC-G-260825-67890"
     })
   ));
+});
+
+test("admin alone can update group-buy payment and delivery progress", async () => {
+  await seedMember("order-member");
+  const memberDb = testEnv.authenticatedContext("order-member", {
+    email: "order-member@example.com",
+    email_verified: true
+  }).firestore();
+  const adminDb = testEnv.authenticatedContext("admin-1", adminClaims).firestore();
+  const order = await assertSucceeds(addDoc(
+    collection(memberDb, "groupBuyOrders"),
+    groupBuyOrder("order-member", "order-member@example.com", {
+      receipt: "NCC-G-260825-24680"
+    })
+  ));
+
+  await assertFails(updateDoc(doc(memberDb, "groupBuyOrders", order.id), {
+    status: "confirmed",
+    paymentGuide: "회원의 무단 변경",
+    updatedAt: serverTimestamp()
+  }));
+  await assertSucceeds(updateDoc(doc(adminDb, "groupBuyOrders", order.id), {
+    status: "shipping",
+    paymentGuide: "관리자 결제 안내",
+    carrier: "테스트택배",
+    trackingNumber: "TEST-1234",
+    adminMemo: "배송 시작",
+    updatedAt: serverTimestamp()
+  }));
+  await assertFails(updateDoc(doc(adminDb, "groupBuyOrders", order.id), {
+    trackingNumber: "X".repeat(81),
+    updatedAt: serverTimestamp()
+  }));
 });

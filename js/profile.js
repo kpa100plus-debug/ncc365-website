@@ -34,6 +34,7 @@ let currentUser = null;
 let member = null;
 let profile = {};
 let addresses = [];
+let groupBuyOrders = [];
 
 const safe = value => String(value ?? "").replace(/[&<>"']/g, character => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -58,9 +59,10 @@ onAuthStateChanged(auth, async user => {
     await syncVerifiedEmail(user);
     await loadProfile();
     await loadAddresses();
+    await loadGroupBuyOrders();
     fillBasicForm();
     $("#profileStatus").hidden = true;
-    for (const selector of ["#basicForm", "#profileForm", "#addressSection", "#securitySection", "#withdrawSection"]) {
+    for (const selector of ["#basicForm", "#profileForm", "#groupBuyOrderSection", "#addressSection", "#securitySection", "#withdrawSection"]) {
       $(selector).hidden = false;
     }
   } catch (error) {
@@ -221,6 +223,39 @@ $("#profileForm").addEventListener("submit", async event => {
     $("#profileMessage").textContent = "저장하지 못했습니다. 권한을 확인해 주세요.";
   }
 });
+
+function renderGroupBuyOrders() {
+  const labels = {
+    new: "신규 접수", checking: "확인중", confirmed: "주문확정",
+    paid: "결제확인", shipping: "배송중", completed: "완료", cancelled: "취소"
+  };
+  const list = $("#groupBuyOrderList");
+  list.innerHTML = groupBuyOrders.length ? groupBuyOrders.map(order => {
+    const delivery = [order.carrier, order.trackingNumber].filter(Boolean).join(" · ");
+    return `
+      <article class="groupbuy-order-card" data-order-receipt="${safe(order.receipt)}">
+        <div class="groupbuy-order-head">
+          <div><span class="order-status status-${safe(order.status)}">${safe(labels[order.status] || order.status)}</span><h3>${safe(order.productTitle)}</h3></div>
+          <b>${safe(order.quantity)}개 · ${new Intl.NumberFormat("ko-KR").format(Number(order.totalPrice || 0))}원</b>
+        </div>
+        <dl>
+          <div><dt>접수번호</dt><dd>${safe(order.receipt)}</dd></div>
+          <div><dt>배송지</dt><dd>${safe(order.address)}</dd></div>
+          ${order.paymentGuide ? `<div><dt>결제 안내</dt><dd>${safe(order.paymentGuide)}</dd></div>` : ""}
+          ${delivery ? `<div><dt>배송 조회</dt><dd>${safe(delivery)}</dd></div>` : ""}
+          ${order.adminMemo ? `<div><dt>관리자 안내</dt><dd>${safe(order.adminMemo)}</dd></div>` : ""}
+        </dl>
+        <a href="groupbuy-detail.html?id=${encodeURIComponent(order.productId)}">상품 상세 보기</a>
+      </article>`;
+  }).join("") : '<div class="empty-state">접수된 공동구매 주문이 없습니다.</div>';
+}
+
+async function loadGroupBuyOrders() {
+  const snapshot = await getDocs(query(collection(db, "groupBuyOrders"), where("memberId", "==", member.id)));
+  groupBuyOrders = snapshot.docs.map(orderDocument => ({ id: orderDocument.id, ...orderDocument.data() }))
+    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  renderGroupBuyOrders();
+}
 
 async function loadAddresses() {
   const snapshot = await getDocs(query(collection(db, "memberAddresses"), where("memberId", "==", member.id)));
