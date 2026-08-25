@@ -33,6 +33,9 @@ const result = {
     consumerNavAuthenticated: false,
     benefitDetailLoaded: false,
     myPageLoaded: false,
+    deliveryAddressSaved: false,
+    groupBuyAddressPrefilled: false,
+    deliveryAddressRemoved: false,
     memberInfoTemporarilyChanged: false,
     memberInfoRestored: false,
     withdrawalRequested: false,
@@ -156,6 +159,97 @@ async function openProfile(page) {
   await goto(page, "/profile.html");
   await page.locator("#basicForm").waitFor({ state: "visible", timeout: 30_000 });
   result.checks.myPageLoaded = true;
+}
+
+async function createTemporaryAddress(page) {
+  const label = `CI 배송지 ${String(config.runId).slice(-12)}`.slice(0, 30);
+  const recipient = config.memberName;
+  const phone = await page.locator("#basicPhone").inputValue();
+  const postalCode = "04524";
+  const address = "서울특별시 중구 세종대로 110";
+  const addressDetail = `자동검사 ${String(config.runId).slice(-12)}`.slice(0, 150);
+
+  await page.locator("#addAddress").click();
+  const form = page.locator("#addressForm");
+  await form.waitFor({ state: "visible", timeout: 30_000 });
+  await form.locator('[name="label"]').fill(label);
+  await form.locator('[name="recipient"]').fill(recipient);
+  await form.locator('[name="phone"]').fill(phone);
+  await form.locator('[name="postalCode"]').fill(postalCode);
+  await form.locator('[name="address"]').fill(address);
+  await form.locator('[name="addressDetail"]').fill(addressDetail);
+  await form.locator('[name="isDefault"]').uncheck();
+  await form.locator('button[type="submit"]').click();
+
+  const card = page.locator("#addressList .address-card", { hasText: label }).first();
+  await card.waitFor({ state: "visible", timeout: 30_000 });
+  const cardText = (await card.textContent()) || "";
+  if (!cardText.includes(recipient) || !cardText.includes(address)) {
+    throw new Error("Temporary delivery address was not rendered with the expected values.");
+  }
+  temporaryAddressNeedsRemoval = true;
+  result.checks.deliveryAddressSaved = true;
+  return { label, recipient, phone, postalCode, address, addressDetail };
+}
+
+async function verifyGroupBuyAddressPrefill(page, temporaryAddress) {
+  await goto(page, "/groupbuy.html");
+  const productLink = page.locator('.product-card[href*="groupbuy-detail.html?id="]').first();
+  await productLink.waitFor({ state: "visible", timeout: 30_000 });
+  const href = await productLink.getAttribute("href");
+  if (!href) throw new Error("No published group-buy detail link was available for address verification.");
+
+  await goto(page, `/${href}`);
+  const addressField = page.locator("#savedAddressField");
+  await addressField.waitFor({ state: "visible", timeout: 30_000 });
+  const option = page.locator("#savedAddress option", { hasText: temporaryAddress.label }).first();
+  await option.waitFor({ state: "attached", timeout: 30_000 });
+  const optionValue = await option.getAttribute("value");
+  if (!optionValue) throw new Error("Temporary delivery address was missing from the group-buy selector.");
+  await page.locator("#savedAddress").selectOption(optionValue);
+
+  const form = page.locator("#orderForm");
+  const values = {
+    recipient: await form.locator('[name="recipient"]').inputValue(),
+    phone: await form.locator('[name="deliveryPhone"]').inputValue(),
+    postalCode: await form.locator('[name="postalCode"]').inputValue(),
+    address: await form.locator('[name="address"]').inputValue(),
+    addressDetail: await form.locator('[name="addressDetail"]').inputValue(),
+  };
+  if (
+    values.recipient !== temporaryAddress.recipient ||
+    values.phone !== temporaryAddress.phone ||
+    values.postalCode !== temporaryAddress.postalCode ||
+    values.address !== temporaryAddress.address ||
+    values.addressDetail !== temporaryAddress.addressDetail
+  ) {
+    throw new Error("Saved delivery address did not prefill the group-buy form exactly.");
+  }
+  result.checks.groupBuyAddressPrefilled = true;
+}
+
+async function removeTemporaryAddress(page, label) {
+  await openProfile(page);
+  const card = page.locator("#addressList .address-card", { hasText: label }).first();
+  if ((await card.count()) === 0) {
+    temporaryAddressNeedsRemoval = false;
+    result.checks.deliveryAddressRemoved = true;
+    return;
+  }
+  let confirmationAccepted = false;
+  page.once("dialog", async dialog => {
+    if (!dialog.message().includes("삭제")) {
+      await dialog.dismiss();
+      return;
+    }
+    confirmationAccepted = true;
+    await dialog.accept();
+  });
+  await card.locator("[data-delete]").click();
+  await card.waitFor({ state: "detached", timeout: 30_000 });
+  if (!confirmationAccepted) throw new Error("Temporary delivery address deletion was not confirmed.");
+  temporaryAddressNeedsRemoval = false;
+  result.checks.deliveryAddressRemoved = true;
 }
 
 async function saveRegion(page, region) {
@@ -308,6 +402,8 @@ let memberContext;
 let adminContext;
 let memberPage;
 let originalRegion = null;
+let temporaryAddress = null;
+let temporaryAddressNeedsRemoval = false;
 let profileNeedsRestore = false;
 let requestNeedsRejection = false;
 let fatalError = null;
@@ -329,6 +425,15 @@ try {
   stage("Authenticated navigation and benefit detail routing verified.");
 
   await openProfile(memberPage);
+  temporaryAddress = await createTemporaryAddress(memberPage);
+  stage("Temporary delivery address saved.");
+
+  await verifyGroupBuyAddressPrefill(memberPage, temporaryAddress);
+  stage("Saved delivery address prefilled the group-buy form.");
+
+  await removeTemporaryAddress(memberPage, temporaryAddress.label);
+  stage("Temporary delivery address removed.");
+
   originalRegion = await memberPage.locator("#basicRegion").inputValue();
   if (!originalRegion.trim()) {
     throw new Error("Safety stop: the original region is empty, so reversible profile testing was skipped.");
@@ -376,6 +481,17 @@ try {
   result.status = "failed";
   result.failure = redact(error?.message || error);
 } finally {
+  if (temporaryAddressNeedsRemoval && temporaryAddress && memberPage) {
+    try {
+      await removeTemporaryAddress(memberPage, temporaryAddress.label);
+      stage("Emergency temporary delivery-address cleanup completed.");
+    } catch (error) {
+      fatalError ||= new Error(`Emergency delivery-address cleanup failed: ${redact(error?.message || error)}`);
+      result.status = "failed";
+      result.failure = redact(fatalError.message);
+    }
+  }
+
   if (profileNeedsRestore && memberPage && originalRegion !== null) {
     try {
       await openProfile(memberPage);
