@@ -1,5 +1,5 @@
-reference=REF-NCC-E2E-RECOVERY-EXEC-02
+reference=REF-NCC-E2E-IDENTITY-FIX-03
 member=NCC-C-000016
-requested_at=2026-08-25T22:33:00+09:00
+requested_at=2026-08-25T22:38:00+09:00
 mode=protected-reversible
-reason=verify-latest-main-after-auth-wallet-benefit-security-updates
+reason=verify-raw-member-identity-after-English-card-rendering
