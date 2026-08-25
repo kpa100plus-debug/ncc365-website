@@ -1,5 +1,5 @@
-reference=REF-NCC-E2E-ROUTE-WAIT-FIX-05
+reference=REF-NCC-E2E-BENEFIT-RENDER-06
 member=NCC-C-000016
-requested_at=2026-08-25T22:45:00+09:00
+requested_at=2026-08-25T22:49:00+09:00
 mode=protected-reversible
-reason=stabilize-benefit-detail-navigation-verification
+reason=verify-rendered-benefit-detail-and-auth-navigation
