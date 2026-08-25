@@ -100,8 +100,20 @@ async function loginMember(page) {
   await page.locator("#memberNumber").waitFor({ state: "visible", timeout: 30_000 });
 
   const number = (await page.locator("#memberNumber").textContent())?.trim();
-  const name = (await page.locator("#memberName").textContent())?.trim();
-  if (number !== config.memberNumber || !name?.includes(config.memberName)) {
+  const storedProfile = await page.evaluate(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem("nccMemberProfile") || "null");
+    } catch {
+      return null;
+    }
+  });
+  const storedNumber = String(storedProfile?.memberNumber || "").trim();
+  const storedName = String(storedProfile?.name || "").trim();
+  if (
+    number !== config.memberNumber ||
+    storedNumber !== config.memberNumber ||
+    !storedName.includes(config.memberName)
+  ) {
     throw new Error("Safety stop: the signed-in account does not match approved test member D.");
   }
   result.checks.memberIdentityMatched = true;
