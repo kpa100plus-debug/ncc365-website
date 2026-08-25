@@ -1,5 +1,5 @@
-reference=REF-NCC-E2E-BENEFIT-RENDER-06
+reference=REF-NCC-ADDRESS-E2E-08
 member=NCC-C-000016
-requested_at=2026-08-25T22:49:00+09:00
+requested_at=2026-08-25T22:58:00+09:00
 mode=protected-reversible
-reason=verify-rendered-benefit-detail-and-auth-navigation
+reason=verify-delivery-address-save-groupbuy-prefill-and-cleanup
