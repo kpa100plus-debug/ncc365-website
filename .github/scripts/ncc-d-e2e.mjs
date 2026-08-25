@@ -21,7 +21,8 @@ const secrets = [
 ].filter(Boolean);
 
 const result = {
-  referenceCode: "REF-NCC-CI-E2E-AUTH-SETUP-01",
+  referenceCode: "REF-NCC-GROUPBUY-LIFECYCLE-E2E-10",
+  safetyReferenceCode: "REF-NCC-CI-E2E-AUTH-SETUP-01",
   runId: config.runId,
   memberNumber: config.memberNumber,
   startedAt: new Date().toISOString(),
@@ -35,6 +36,14 @@ const result = {
     myPageLoaded: false,
     deliveryAddressSaved: false,
     groupBuyAddressPrefilled: false,
+    groupBuyOrderSubmitted: false,
+    groupBuyOrderConfirmed: false,
+    groupBuyPaymentConfirmed: false,
+    groupBuyOrderShipping: false,
+    groupBuyOrderCompleted: false,
+    memberOrderTrackingVerified: false,
+    groupBuyOrderCancelled: false,
+    groupBuyOrderRemoved: false,
     deliveryAddressRemoved: false,
     memberInfoTemporarilyChanged: false,
     memberInfoRestored: false,
@@ -228,6 +237,153 @@ async function verifyGroupBuyAddressPrefill(page, temporaryAddress) {
   result.checks.groupBuyAddressPrefilled = true;
 }
 
+async function submitGroupBuyOrder(page) {
+  const form = page.locator("#orderForm");
+  const marker = `CI 자동검사 ${config.runId}`.slice(0, 200);
+  await form.locator('[name="message"]').fill(marker);
+  await form.locator('[name="saveAddress"]').uncheck();
+  await form.locator('[name="agree"]').check();
+  await page.locator("#orderButton").click();
+  const resultBox = page.locator("#orderResult");
+  await resultBox.waitFor({ state: "visible", timeout: 30_000 });
+  const resultText = (await resultBox.textContent()) || "";
+  const receipt = resultText.match(/NCC-G-[0-9-]+/)?.[0] || "";
+  if (!receipt || !resultText.includes("참여 신청이 접수되었습니다")) {
+    throw new Error("Group-buy test order was not submitted with a valid receipt.");
+  }
+  testOrderReceipt = receipt;
+  testOrderNeedsCleanup = true;
+  result.testOrderReceipt = receipt;
+  result.checks.groupBuyOrderSubmitted = true;
+}
+
+async function loginGroupBuyAdmin(page) {
+  await goto(page, "/admin-groupbuy.html");
+  await page.waitForTimeout(1_500);
+  if (!(await page.locator("#adminArea").isVisible())) {
+    await page.locator("#loginArea").waitFor({ state: "visible", timeout: 30_000 });
+    await page.locator("#adminEmail").fill(config.adminEmail);
+    await page.locator("#adminPassword").fill(config.adminPassword);
+    await page.locator("#loginButton").click();
+  }
+  await page.locator("#adminArea").waitFor({ state: "visible", timeout: 30_000 });
+  await page.locator('[data-tab="orders"]').click();
+  await page.locator("#ordersPanel").waitFor({ state: "visible", timeout: 30_000 });
+}
+
+async function locateGroupBuyOrder(page) {
+  await page.locator("#orderStatusFilter").selectOption("all");
+  await page.locator("#orderSearch").fill(testOrderReceipt);
+  const card = page.locator("#orderList .application-card", { hasText: testOrderReceipt }).first();
+  await card.waitFor({ state: "visible", timeout: 30_000 });
+  const text = (await card.textContent()) || "";
+  if (!text.includes("CI 자동검사")) {
+    throw new Error("Safety stop: located order is not marked as an automation order.");
+  }
+  return card;
+}
+
+async function saveGroupBuyOrderState(page, status, values = {}) {
+  let card = await locateGroupBuyOrder(page);
+  await card.locator('select[id^="order-"]').selectOption(status);
+  if (values.paymentGuide !== undefined) {
+    await card.locator('textarea[id^="payment-"]').fill(values.paymentGuide);
+  }
+  if (values.carrier !== undefined) {
+    await card.locator('input[id^="carrier-"]').fill(values.carrier);
+  }
+  if (values.trackingNumber !== undefined) {
+    await card.locator('input[id^="tracking-"]').fill(values.trackingNumber);
+  }
+  if (values.adminMemo !== undefined) {
+    await card.locator('textarea[id^="memo-"]').fill(values.adminMemo);
+  }
+  const saveButton = card.locator("button[data-order-save]");
+  await saveButton.click();
+  await page.waitForFunction(
+    receipt => {
+      const cards = Array.from(document.querySelectorAll("#orderList .application-card"));
+      const target = cards.find(node => (node.textContent || "").includes(receipt));
+      const button = target?.querySelector("button[data-order-save]");
+      return Boolean(button && !button.disabled);
+    },
+    testOrderReceipt,
+    { timeout: 30_000 },
+  );
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.locator("#adminArea").waitFor({ state: "visible", timeout: 30_000 });
+  await page.locator('[data-tab="orders"]').click();
+  await page.locator("#ordersPanel").waitFor({ state: "visible", timeout: 30_000 });
+  card = await locateGroupBuyOrder(page);
+  await card.locator('select[id^="order-"]').waitFor({ state: "visible", timeout: 30_000 });
+  if ((await card.locator('select[id^="order-"]').inputValue()) !== status) {
+    throw new Error(`Group-buy order status did not persist as ${status}.`);
+  }
+}
+
+async function verifyGroupBuyLifecycle(page) {
+  await loginGroupBuyAdmin(page);
+  const paymentGuide = `CI 결제 안내 ${config.runId}`.slice(0, 200);
+  const carrier = "CI택배";
+  const trackingNumber = `CI-${String(config.runId).replace(/[^0-9A-Za-z-]/g, "").slice(-30)}`;
+  const adminMemo = `CI 자동검사 주문 ${config.runId}`.slice(0, 200);
+
+  await saveGroupBuyOrderState(page, "confirmed", { paymentGuide, adminMemo });
+  result.checks.groupBuyOrderConfirmed = true;
+  await saveGroupBuyOrderState(page, "paid");
+  result.checks.groupBuyPaymentConfirmed = true;
+  await saveGroupBuyOrderState(page, "shipping", { carrier, trackingNumber });
+  result.checks.groupBuyOrderShipping = true;
+  await saveGroupBuyOrderState(page, "completed");
+  result.checks.groupBuyOrderCompleted = true;
+  return { paymentGuide, carrier, trackingNumber };
+}
+
+async function verifyMemberOrderTracking(page, expected) {
+  await openProfile(page);
+  const card = page.locator('.groupbuy-order-card', { hasText: testOrderReceipt }).first();
+  await card.waitFor({ state: "visible", timeout: 30_000 });
+  const text = (await card.textContent()) || "";
+  for (const value of ["완료", expected.paymentGuide, expected.carrier, expected.trackingNumber]) {
+    if (!text.includes(value)) {
+      throw new Error("Member order tracking did not show the completed payment and delivery data.");
+    }
+  }
+  result.checks.memberOrderTrackingVerified = true;
+}
+
+async function cleanupGroupBuyOrder(page) {
+  await saveGroupBuyOrderState(page, "cancelled", {
+    adminMemo: `CI 자동검사 완료 후 정리 ${config.runId}`.slice(0, 200),
+  });
+  result.checks.groupBuyOrderCancelled = true;
+  let card = await locateGroupBuyOrder(page);
+  const cleanupButton = card.locator("button[data-order-cleanup]");
+  await cleanupButton.waitFor({ state: "visible", timeout: 30_000 });
+  let confirmationAccepted = false;
+  page.once("dialog", async (dialog) => {
+    if (!dialog.message().includes("자동검사 주문")) {
+      await dialog.dismiss();
+      return;
+    }
+    confirmationAccepted = true;
+    await dialog.accept();
+  });
+  await cleanupButton.click();
+  await page.locator("#orderSearch").fill(testOrderReceipt);
+  await page.waitForFunction(
+    receipt => !Array.from(document.querySelectorAll("#orderList .application-card")).some(card =>
+      (card.textContent || "").includes(receipt)),
+    testOrderReceipt,
+    { timeout: 30_000 },
+  );
+  if (!confirmationAccepted) {
+    throw new Error("Automation order cleanup confirmation was not accepted.");
+  }
+  testOrderNeedsCleanup = false;
+  result.checks.groupBuyOrderRemoved = true;
+}
+
 async function removeTemporaryAddress(page, label) {
   await openProfile(page);
   const card = page.locator("#addressList .address-card", { hasText: label }).first();
@@ -404,6 +560,8 @@ let memberPage;
 let originalRegion = null;
 let temporaryAddress = null;
 let temporaryAddressNeedsRemoval = false;
+let testOrderReceipt = "";
+let testOrderNeedsCleanup = false;
 let profileNeedsRestore = false;
 let requestNeedsRejection = false;
 let fatalError = null;
@@ -430,6 +588,25 @@ try {
 
   await verifyGroupBuyAddressPrefill(memberPage, temporaryAddress);
   stage("Saved delivery address prefilled the group-buy form.");
+
+  await submitGroupBuyOrder(memberPage);
+  stage("Automation-marked group-buy order submitted.");
+
+  adminContext = await browser.newContext({
+    locale: "ko-KR",
+    viewport: { width: 1440, height: 1000 },
+  });
+  const groupBuyAdminPage = await adminContext.newPage();
+  const orderTracking = await verifyGroupBuyLifecycle(groupBuyAdminPage);
+  stage("Order confirmation, payment, shipping, and completion states verified.");
+
+  await verifyMemberOrderTracking(memberPage, orderTracking);
+  stage("Member-visible order payment and delivery tracking verified.");
+
+  await cleanupGroupBuyOrder(groupBuyAdminPage);
+  stage("Automation order cancelled and removed after lifecycle verification.");
+  await adminContext.close();
+  adminContext = null;
 
   await removeTemporaryAddress(memberPage, temporaryAddress.label);
   stage("Temporary delivery address removed.");
@@ -481,6 +658,20 @@ try {
   result.status = "failed";
   result.failure = redact(error?.message || error);
 } finally {
+  if (testOrderNeedsCleanup && testOrderReceipt && browser) {
+    try {
+      adminContext ||= await browser.newContext({ locale: "ko-KR" });
+      const cleanupOrderPage = await adminContext.newPage();
+      await loginGroupBuyAdmin(cleanupOrderPage);
+      await cleanupGroupBuyOrder(cleanupOrderPage);
+      stage("Emergency automation-order cleanup completed.");
+    } catch (error) {
+      fatalError ||= new Error(`Emergency automation-order cleanup failed: ${redact(error?.message || error)}`);
+      result.status = "failed";
+      result.failure = redact(fatalError.message);
+    }
+  }
+
   if (temporaryAddressNeedsRemoval && temporaryAddress && memberPage) {
     try {
       await removeTemporaryAddress(memberPage, temporaryAddress.label);
