@@ -137,8 +137,14 @@ async function verifyConsumerNavigationAndBenefit(page) {
   if (!href || !href.includes("benefit-detail.html?id=")) {
     throw new Error("Benefit list did not expose a valid detail link.");
   }
-  await firstOffer.click();
-  await page.waitForURL(/\/benefit-detail\.html\?id=[a-z0-9-]+/i, { timeout: 30_000 });
+  await goto(page, `/${href}`);
+  const currentUrl = new URL(page.url());
+  if (
+    currentUrl.pathname !== "/benefit-detail.html" ||
+    !/^[a-z0-9-]+$/i.test(currentUrl.searchParams.get("id") || "")
+  ) {
+    throw new Error("Benefit detail navigation did not preserve a valid offer id.");
+  }
   const detailTitle = page.locator("#detailTitle");
   await detailTitle.waitFor({ state: "visible", timeout: 30_000 });
   if (!(await detailTitle.textContent())?.trim()) {
