@@ -41,6 +41,9 @@ jobs:
       - name: Check tracked files and security controls
         run: npm run test:security
 
+      - name: Test payment API safety and idempotency controls
+        run: npm run test:payments
+
       - name: Install pinned Firebase emulator CLI
         run: npm install --global firebase-tools@15.28.1
 

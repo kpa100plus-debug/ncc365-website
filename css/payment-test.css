@@ -1,0 +1,50 @@
+.test-payment-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid #d8b963;
+  border-radius: 12px;
+  background: #fff9e8;
+}
+
+.test-payment-panel > div {
+  display: grid;
+  gap: 4px;
+}
+
+.test-payment-panel strong {
+  color: #735312;
+  font-size: 13px;
+  letter-spacing: .03em;
+}
+
+.test-payment-panel span {
+  color: #665936;
+  font-weight: 800;
+}
+
+.test-payment-panel .test-payment-button {
+  width: auto;
+  margin: 0;
+  padding: 10px 14px;
+  background: #d2aa50;
+  color: #06261f;
+}
+
+.test-payment-panel .test-payment-button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+@media (max-width: 600px) {
+  .test-payment-panel {
+    display: grid;
+  }
+
+  .test-payment-panel .test-payment-button {
+    width: 100%;
+  }
+}

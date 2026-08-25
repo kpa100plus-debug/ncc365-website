@@ -35,6 +35,8 @@ let member = null;
 let profile = {};
 let addresses = [];
 let groupBuyOrders = [];
+let paymentConfig = { enabled: false };
+let testPayments = new Map();
 
 const safe = value => String(value ?? "").replace(/[&<>"']/g, character => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -232,6 +234,24 @@ function renderGroupBuyOrders() {
   const list = $("#groupBuyOrderList");
   list.innerHTML = groupBuyOrders.length ? groupBuyOrders.map(order => {
     const delivery = [order.carrier, order.trackingNumber].filter(Boolean).join(" · ");
+    const payment = testPayments.get(order.id);
+    const paymentLabels = {
+      ready: "결제 준비",
+      paid: "테스트 결제완료",
+      partially_refunded: "부분환불",
+      refunded: "전액환불",
+      cancelled: "결제취소"
+    };
+    const refunded = payment && Number(payment.refundedAmount || 0) > 0
+      ? ` · 환불 ${new Intl.NumberFormat("ko-KR").format(Number(payment.refundedAmount))}원`
+      : "";
+    const paymentPanel = paymentConfig.enabled ? `
+      <div class="test-payment-panel">
+        <div><strong>TEST PAYMENT · 실제 금전이동 없음</strong><span>${payment ? safe(paymentLabels[payment.status] || payment.status) : "미결제"}${safe(refunded)}</span></div>
+        ${order.status === "confirmed" && (!payment || ["ready", "cancelled"].includes(payment.status))
+          ? `<button class="ncc-button test-payment-button" type="button" data-test-payment="${safe(order.id)}">테스트 결제하기</button>`
+          : ""}
+      </div>` : "";
     return `
       <article class="groupbuy-order-card" data-order-receipt="${safe(order.receipt)}">
         <div class="groupbuy-order-head">
@@ -245,15 +265,83 @@ function renderGroupBuyOrders() {
           ${delivery ? `<div><dt>배송 조회</dt><dd>${safe(delivery)}</dd></div>` : ""}
           ${order.adminMemo ? `<div><dt>관리자 안내</dt><dd>${safe(order.adminMemo)}</dd></div>` : ""}
         </dl>
+        ${paymentPanel}
         <a href="groupbuy-detail.html?id=${encodeURIComponent(order.productId)}">상품 상세 보기</a>
       </article>`;
   }).join("") : '<div class="empty-state">접수된 공동구매 주문이 없습니다.</div>';
+  list.querySelectorAll("[data-test-payment]").forEach(button => {
+    button.addEventListener("click", () => runTestPayment(button.dataset.testPayment, button));
+  });
+}
+
+async function paymentApi(path, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  if (options.auth !== false) {
+    if (!currentUser) throw new Error("NCC 회원 로그인이 필요합니다.");
+    headers.authorization = `Bearer ${await currentUser.getIdToken()}`;
+  }
+  if (options.body) headers["content-type"] = "application/json";
+  const response = await fetch(`/api/payments/${path}`, { ...options, headers });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || body.ok === false) throw new Error(body.message || "테스트 결제 요청을 처리하지 못했습니다.");
+  return body;
+}
+
+async function loadTestPayments() {
+  try {
+    const config = await paymentApi("config", { method: "GET", auth: false });
+    paymentConfig = config;
+    if (!config.enabled) {
+      testPayments = new Map();
+      return;
+    }
+    const body = await paymentApi("me", { method: "GET" });
+    testPayments = new Map((body.payments || []).map(payment => [payment.orderId, payment]));
+  } catch (error) {
+    console.warn("Test payment API is not active.", error?.message || error);
+    paymentConfig = { enabled: false };
+    testPayments = new Map();
+  }
+}
+
+async function runTestPayment(orderId, button) {
+  const order = groupBuyOrders.find(item => item.id === orderId);
+  if (!order || order.status !== "confirmed") {
+    alert("주문확정된 주문만 테스트 결제할 수 있습니다.");
+    return;
+  }
+  const amount = new Intl.NumberFormat("ko-KR").format(Number(order.totalPrice || 0));
+  if (!confirm(`${amount}원 테스트 결제를 진행하시겠습니까?\n\n실제 카드승인·계좌이체·금전이동은 발생하지 않습니다.`)) return;
+  button.disabled = true;
+  button.textContent = "테스트 결제 처리 중…";
+  try {
+    const prepared = await paymentApi("prepare", {
+      method: "POST",
+      body: JSON.stringify({ orderId })
+    });
+    const confirmed = await paymentApi("confirm", {
+      method: "POST",
+      body: JSON.stringify({
+        paymentId: prepared.payment.id,
+        idempotencyKey: `ncc_${crypto.randomUUID().replaceAll("-", "")}`
+      })
+    });
+    testPayments.set(orderId, confirmed.payment);
+    renderGroupBuyOrders();
+    alert("테스트 결제가 완료되었습니다. 실제 금전이동은 발생하지 않았습니다.");
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "테스트 결제를 완료하지 못했습니다.");
+    await loadTestPayments();
+    renderGroupBuyOrders();
+  }
 }
 
 async function loadGroupBuyOrders() {
   const snapshot = await getDocs(query(collection(db, "groupBuyOrders"), where("memberId", "==", member.id)));
   groupBuyOrders = snapshot.docs.map(orderDocument => ({ id: orderDocument.id, ...orderDocument.data() }))
     .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  await loadTestPayments();
   renderGroupBuyOrders();
 }
 
