@@ -440,50 +440,9 @@ match /inquiryApplications/{applicationId} {
 }
 
 match /groupBuyOrders/{orderId} {
-  allow create: if
-    request.resource.data.keys().hasAll([
-      "productId", "productTitle", "name", "phone", "phoneKey", "quantity",
-      "region", "address", "message", "receipt", "totalPrice", "status",
-      "source", "createdAt", "updatedAt"
-    ])
-    && request.resource.data.keys().hasOnly([
-      "productId", "productTitle", "name", "phone", "phoneKey", "quantity",
-      "region", "address", "message", "receipt", "totalPrice", "status",
-      "source", "createdAt", "updatedAt"
-    ])
-    && request.resource.data.productId is string
-    && request.resource.data.productId.size() >= 1
-    && request.resource.data.productId.size() <= 100
-    && request.resource.data.productTitle is string
-    && request.resource.data.productTitle.size() >= 1
-    && request.resource.data.productTitle.size() <= 120
-    && request.resource.data.name is string
-    && request.resource.data.name.size() >= 1
-    && request.resource.data.name.size() <= 50
-    && request.resource.data.phone is string
-    && request.resource.data.phone.size() >= 9
-    && request.resource.data.phone.size() <= 30
-    && request.resource.data.phoneKey is string
-    && request.resource.data.phoneKey.matches('^[0-9]{9,11}$')
-    && request.resource.data.quantity is int
-    && request.resource.data.quantity >= 1
-    && request.resource.data.quantity <= 20
-    && request.resource.data.region is string
-    && request.resource.data.region.size() >= 1
-    && request.resource.data.region.size() <= 100
-    && request.resource.data.address is string
-    && request.resource.data.address.size() >= 1
-    && request.resource.data.address.size() <= 300
-    && request.resource.data.message is string
-    && request.resource.data.message.size() <= 500
-    && request.resource.data.receipt is string
-    && request.resource.data.receipt.matches('^NCC-G-[0-9]{6}-[0-9]{5}$')
-    && request.resource.data.totalPrice is int
-    && request.resource.data.totalPrice >= 0
-    && request.resource.data.status == "new"
-    && request.resource.data.source == "website"
-    && request.resource.data.createdAt == request.time
-    && request.resource.data.updatedAt == request.time;
+  // Legacy anonymous order shape is permanently disabled.
+  // Authenticated member creates are validated by the strict rule below.
+  allow create: if false;
 
   allow read: if isAdmin();
 
@@ -795,6 +754,7 @@ match /groupBuyOrders/{orderId} {
     && request.resource.data.keys().hasAll(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
     && request.resource.data.keys().hasOnly(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","status","source","createdAt","updatedAt"])
     && ownsMember(request.resource.data.memberId)
+    && isActiveMember(request.resource.data.memberId)
     && request.resource.data.memberEmail == request.auth.token.email
     && request.resource.data.productId is string && request.resource.data.productId.size() >= 1 && request.resource.data.productId.size() <= 100
     && request.resource.data.productTitle is string && request.resource.data.productTitle.size() >= 1 && request.resource.data.productTitle.size() <= 120

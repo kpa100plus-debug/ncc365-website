@@ -129,3 +129,124 @@ test("unknown collections are denied by the default rule", async () => {
   await assertFails(getDoc(doc(publicDb, "unexpected", "record")));
   await assertFails(setDoc(doc(publicDb, "unexpected", "record"), { value: true }));
 });
+
+async function seedMember(id, data = {}) {
+  await testEnv.withSecurityRulesDisabled(async context => {
+    await setDoc(doc(context.firestore(), "members", id), {
+      authUid: id,
+      email: `${id}@example.com`,
+      emailVerified: true,
+      status: "active",
+      name: id,
+      phone: "01012345678",
+      phoneKey: "01012345678",
+      memberNumber: "NCC-C-TEST",
+      region: "서울특별시",
+      ...data
+    });
+  });
+}
+
+const addressRecord = (memberId, overrides = {}) => ({
+  memberId,
+  label: "테스트 배송지",
+  recipient: "테스트 회원",
+  phone: "01012345678",
+  postalCode: "04524",
+  address: "서울특별시 중구 세종대로 110",
+  addressDetail: "보안규칙 테스트",
+  isDefault: false,
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+  ...overrides
+});
+
+const groupBuyOrder = (memberId, email, overrides = {}) => ({
+  productId: "product-security-test",
+  productTitle: "공동구매 보안규칙 테스트",
+  memberId,
+  memberEmail: email,
+  name: "테스트 회원",
+  phone: "010-1234-5678",
+  phoneKey: "01012345678",
+  quantity: 1,
+  region: "서울특별시",
+  address: "04524 서울특별시 중구 세종대로 110",
+  message: "",
+  receipt: "NCC-G-260825-12345",
+  totalPrice: 10000,
+  status: "new",
+  source: "website",
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+  ...overrides
+});
+
+test("member can manage only their own saved delivery address", async () => {
+  await seedMember("member-1");
+  await seedMember("member-2");
+  const ownerDb = testEnv.authenticatedContext("member-1", {
+    email: "member-1@example.com",
+    email_verified: true
+  }).firestore();
+  const otherDb = testEnv.authenticatedContext("member-2", {
+    email: "member-2@example.com",
+    email_verified: true
+  }).firestore();
+  const addressId = "address-security-test";
+
+  await assertSucceeds(setDoc(doc(ownerDb, "memberAddresses", addressId), addressRecord("member-1")));
+  await assertSucceeds(getDoc(doc(ownerDb, "memberAddresses", addressId)));
+  await assertFails(getDoc(doc(otherDb, "memberAddresses", addressId)));
+  await assertFails(updateDoc(doc(otherDb, "memberAddresses", addressId), {
+    label: "타인 수정 시도",
+    updatedAt: serverTimestamp()
+  }));
+  await assertFails(deleteDoc(doc(otherDb, "memberAddresses", addressId)));
+  await assertSucceeds(deleteDoc(doc(ownerDb, "memberAddresses", addressId)));
+});
+
+test("anonymous legacy group-buy order shape is rejected", async () => {
+  const publicDb = testEnv.unauthenticatedContext().firestore();
+  await assertFails(addDoc(collection(publicDb, "groupBuyOrders"), {
+    productId: "legacy-product",
+    productTitle: "구형 주문",
+    name: "비로그인 사용자",
+    phone: "01012345678",
+    phoneKey: "01012345678",
+    quantity: 1,
+    region: "서울특별시",
+    address: "서울특별시 중구",
+    message: "",
+    receipt: "NCC-G-260825-54321",
+    totalPrice: 10000,
+    status: "new",
+    source: "website",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  }));
+});
+
+test("active member can create a group-buy order but paused member cannot", async () => {
+  await seedMember("active-member");
+  await seedMember("paused-member", { status: "paused" });
+  const activeDb = testEnv.authenticatedContext("active-member", {
+    email: "active-member@example.com",
+    email_verified: true
+  }).firestore();
+  const pausedDb = testEnv.authenticatedContext("paused-member", {
+    email: "paused-member@example.com",
+    email_verified: true
+  }).firestore();
+
+  await assertSucceeds(addDoc(
+    collection(activeDb, "groupBuyOrders"),
+    groupBuyOrder("active-member", "active-member@example.com")
+  ));
+  await assertFails(addDoc(
+    collection(pausedDb, "groupBuyOrders"),
+    groupBuyOrder("paused-member", "paused-member@example.com", {
+      receipt: "NCC-G-260825-67890"
+    })
+  ));
+});
