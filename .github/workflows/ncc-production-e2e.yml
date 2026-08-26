@@ -69,17 +69,19 @@ jobs:
           npx playwright install --with-deps chromium
           npm install --global "wrangler@${WRANGLER_VERSION}"
 
-      - name: Wait for the audited payment API deployment
+      - name: Wait for the exact audited website and payment API deployment
         shell: bash
         run: |
           set -euo pipefail
+          expected_deploy="$(tr -d '\r\n' < deploy-version.txt)"
           for attempt in $(seq 1 24); do
-            if curl --fail --silent --show-error https://ncc365.com/api/payments/config | jq -e '.enabled == true and .mode == "test" and .realCharge == false and .auditVersion == "2026-08-26-admin-route-auth"' > /dev/null; then
+            deployed="$(curl --fail --silent --show-error "https://ncc365.com/deploy-version.txt?run=${GITHUB_RUN_ID}-${attempt}" | tr -d '\r\n' || true)"
+            if [ "$deployed" = "$expected_deploy" ] && curl --fail --silent --show-error https://ncc365.com/api/payments/config | jq -e '.enabled == true and .mode == "test" and .realCharge == false and .auditVersion == "2026-08-26-admin-route-auth"' > /dev/null; then
               exit 0
             fi
             sleep 15
           done
-          echo "::error::Audited payment API deployment was not visible within 6 minutes."
+          echo "::error::The exact audited website and safe payment API deployment were not visible within 6 minutes."
           exit 1
 
       - name: Recover the exact stranded record from failed run 32955211041

@@ -80,13 +80,16 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         shell: bash
         run: |
+          set -euo pipefail
+          expected_deploy="$(tr -d '\r\n' < deploy-version.txt)"
           for attempt in $(seq 1 24); do
-            if curl --fail --silent --show-error https://ncc365.com/css/platform.css | grep --quiet "Noto Sans KR Variable"; then
+            deployed="$(curl --fail --silent --show-error "https://ncc365.com/deploy-version.txt?run=${GITHUB_RUN_ID}-${attempt}" | tr -d '\r\n' || true)"
+            if [ "$deployed" = "$expected_deploy" ]; then
               exit 0
             fi
             sleep 15
           done
-          echo "::error::Cloudflare Pages did not expose the audited typography build within 6 minutes."
+          echo "::error::Cloudflare Pages did not expose the exact audited build within 6 minutes."
           exit 1
 
       - name: Install pinned browser runtime
