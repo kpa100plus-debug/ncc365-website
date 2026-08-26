@@ -451,14 +451,17 @@ async function verifyTestPaymentLifecycle(memberPage, adminContext) {
     amount: partialAmount,
     idempotencyKey: partialKey,
   });
+  const partialList = await paymentApiRequest(adminPaymentPage, "admin/list", adminAuthorization, undefined);
+  const partialCurrent = partialList.body.payments?.find(item => item.id === testPaymentId);
   if (
     partial.status !== 200
-    || partial.body.payment?.status !== "partially_refunded"
-    || partial.body.payment?.refundedAmount !== partialAmount
     || partialAgain.status !== 200
     || partialAgain.body.reused !== true
+    || partialList.status !== 200
+    || partialCurrent?.status !== "partially_refunded"
+    || partialCurrent?.refundedAmount !== partialAmount
   ) {
-    throw new Error("Partial test refund or its idempotent replay failed.");
+    throw new Error(`Partial test refund validation failed (first=${partial.status}/${partial.body.code || partial.body.payment?.status || "unknown"}, replay=${partialAgain.status}/${partialAgain.body.code || String(partialAgain.body.reused)}, current=${partialList.status}/${partialCurrent?.status || "missing"}/${partialCurrent?.refundedAmount ?? "missing"}).`);
   }
   result.checks.testPaymentPartiallyRefunded = true;
 
@@ -828,6 +831,7 @@ try {
   result.failure = redact(error?.message || error);
 } finally {
   if (paymentNeedsRefund && testPaymentId && adminAuthorization && memberPage) {
+    stage("Starting emergency test-payment cancellation/refund.");
     try {
       const memberHistory = await paymentApiRequest(memberPage, "me", memberAuthorization, undefined);
       const payment = memberHistory.body.payments?.find(item => item.id === testPaymentId);
@@ -857,6 +861,7 @@ try {
       paymentNeedsRefund = false;
       stage("Emergency test-payment cancellation/refund completed.");
     } catch (error) {
+      console.error(`::error::Emergency test-payment cleanup failed: ${redact(error?.message || error)}`);
       fatalError ||= new Error(`Emergency test-payment refund failed: ${redact(error?.message || error)}`);
       result.status = "failed";
       result.failure = redact(fatalError.message);
