@@ -15,7 +15,7 @@ NCC 전국소비자클럽은 ㈜ISEA GROUP이 소유·운영·관리하는 소�
 
 ## Cloudflare Pages 필수 연결
 
-현재 자동화 환경에는 Cloudflare 계정 인증정보가 없으므로 다음 리소스는 회사가 통제하는 Cloudflare 계정에서 연결해야 한다.
+GitHub Actions의 `NCC Test Payment Provision` 워크플로가 회사가 통제하는 Cloudflare 계정에 다음 리소스를 자동으로 연결한다.
 
 1. D1 데이터베이스 `ncc-test-payments`를 생성한다.
 2. `migrations/0001_ncc_test_payments.sql`을 D1에 적용한다.
@@ -29,6 +29,8 @@ NCC 전국소비자클럽은 ㈜ISEA GROUP이 소유·운영·관리하는 소�
    - `ADMIN_EMAIL`: 현재 Firebase 결제관리자 이메일
 
 6. 설정 후 Pages를 재배포하고 `/api/payments/config` 응답의 `enabled`가 `true`인지 확인한다.
+
+워크플로는 `main`의 결제 Function·마이그레이션·자동화 파일이 변경될 때 실행되며, 수동 재실행도 가능하다. GitHub Actions 저장소 Secret `CLOUDFLARE_API_TOKEN`과 `CLOUDFLARE_ACCOUNT_ID`는 소스와 작업 로그에 출력하지 않는다.
 
 ## 보안·운영 원칙
 
