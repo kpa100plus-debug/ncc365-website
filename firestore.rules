@@ -856,7 +856,8 @@ match /expectationLikes/{likeId} {
     && request.resource.data.keys().hasOnly(["commentId","userId","createdAt"])
     && request.resource.data.userId == request.auth.uid
     && request.resource.data.createdAt == request.time;
-  allow update, delete: if false;
+  allow update: if false;
+  allow delete: if isAdmin();
 }
 
 match /reviews/{reviewId} {
