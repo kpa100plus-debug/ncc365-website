@@ -21,7 +21,7 @@ const secrets = [
 ].filter(Boolean);
 
 const result = {
-  referenceCode: "REF-NCC-GROUPBUY-LIFECYCLE-E2E-10",
+  referenceCode: "REF-NCC-WEBSITE-PERFECT-AUDIT-14",
   safetyReferenceCode: "REF-NCC-CI-E2E-AUTH-SETUP-01",
   runId: config.runId,
   memberNumber: config.memberNumber,
@@ -38,6 +38,15 @@ const result = {
     groupBuyAddressPrefilled: false,
     groupBuyOrderSubmitted: false,
     groupBuyOrderConfirmed: false,
+    testPaymentConfigSafe: false,
+    testPaymentPrepared: false,
+    testPaymentPrepareReused: false,
+    testPaymentConfirmed: false,
+    testPaymentDuplicatePrevented: false,
+    testPaymentPartiallyRefunded: false,
+    testPaymentFullyRefunded: false,
+    testPaymentMemberHistoryVerified: false,
+    testPaymentDataRemoved: false,
     groupBuyPaymentConfirmed: false,
     groupBuyOrderShipping: false,
     groupBuyOrderCompleted: false,
@@ -321,7 +330,160 @@ async function saveGroupBuyOrderState(page, status, values = {}) {
   }
 }
 
-async function verifyGroupBuyLifecycle(page) {
+async function paymentApiRequest(page, path, authorization, body) {
+  const response = await page.evaluate(async ({ path, authorization, body }) => {
+    const request = {
+      method: body === undefined ? "GET" : "POST",
+      headers: { authorization, accept: "application/json" },
+    };
+    if (body !== undefined) {
+      request.headers["content-type"] = "application/json";
+      request.body = JSON.stringify(body);
+    }
+    const result = await fetch(`/api/payments/${path}`, request);
+    return { status: result.status, body: await result.json().catch(() => ({})) };
+  }, { path, authorization, body });
+  return response;
+}
+
+function paymentKey(operation) {
+  const safeRunId = String(config.runId).replace(/[^A-Za-z0-9_-]/g, "").slice(-55);
+  return `ncc_e2e_${safeRunId}_${operation}`.slice(0, 100);
+}
+
+async function loginPaymentAdmin(page) {
+  const adminRequest = page.waitForRequest(
+    request => request.url().includes("/api/payments/admin/list") && Boolean(request.headers().authorization),
+    { timeout: 30_000 },
+  );
+  await goto(page, "/admin-payments");
+  await page.waitForTimeout(1_000);
+  if (!(await page.locator("#adminArea").isVisible())) {
+    await page.locator("#loginArea").waitFor({ state: "visible", timeout: 30_000 });
+    await page.locator("#adminEmail").fill(config.adminEmail);
+    await page.locator("#adminPassword").fill(config.adminPassword);
+    await page.locator("#loginButton").click();
+  }
+  await page.locator("#adminArea").waitFor({ state: "visible", timeout: 30_000 });
+  const request = await adminRequest;
+  const authorization = request.headers().authorization || "";
+  if (!authorization.startsWith("Bearer ")) throw new Error("Administrator payment authorization was not captured.");
+  secrets.push(authorization, authorization.slice(7));
+  return authorization;
+}
+
+async function verifyTestPaymentLifecycle(memberPage, adminContext) {
+  const memberRequest = memberPage.waitForRequest(
+    request => request.url().includes("/api/payments/me") && Boolean(request.headers().authorization),
+    { timeout: 30_000 },
+  );
+  await openProfile(memberPage);
+  const orderCard = memberPage.locator('.groupbuy-order-card', { hasText: testOrderReceipt }).first();
+  await orderCard.waitFor({ state: "visible", timeout: 30_000 });
+  const orderId = await orderCard.locator("[data-test-payment]").getAttribute("data-test-payment");
+  if (!orderId) throw new Error("Confirmed automation order did not expose the test-payment action.");
+  const request = await memberRequest;
+  memberAuthorization = request.headers().authorization || "";
+  if (!memberAuthorization.startsWith("Bearer ")) throw new Error("Member payment authorization was not captured.");
+  secrets.push(memberAuthorization, memberAuthorization.slice(7));
+
+  const configResponse = await paymentApiRequest(memberPage, "config", "", undefined);
+  if (
+    configResponse.status !== 200
+    || configResponse.body.enabled !== true
+    || configResponse.body.mode !== "test"
+    || configResponse.body.realCharge !== false
+  ) {
+    throw new Error("Payment configuration is not locked to the safe test mode.");
+  }
+  result.checks.testPaymentConfigSafe = true;
+
+  const prepared = await paymentApiRequest(memberPage, "prepare", memberAuthorization, { orderId });
+  if (prepared.status !== 201 || prepared.body.payment?.status !== "ready" || prepared.body.payment?.testMode !== true) {
+    throw new Error("Test payment preparation did not create a safe ready payment.");
+  }
+  testPaymentId = prepared.body.payment.id;
+  testPaymentAmount = Number(prepared.body.payment.amount);
+  paymentNeedsRefund = true;
+  result.checks.testPaymentPrepared = true;
+
+  const preparedAgain = await paymentApiRequest(memberPage, "prepare", memberAuthorization, { orderId });
+  if (preparedAgain.status !== 200 || preparedAgain.body.reused !== true || preparedAgain.body.payment?.id !== testPaymentId) {
+    throw new Error("Repeated payment preparation was not safely reused.");
+  }
+  result.checks.testPaymentPrepareReused = true;
+
+  const adminPaymentPage = await adminContext.newPage();
+  adminAuthorization = await loginPaymentAdmin(adminPaymentPage);
+
+  const confirmKey = paymentKey("confirm");
+  const confirmed = await paymentApiRequest(memberPage, "confirm", memberAuthorization, {
+    paymentId: testPaymentId,
+    idempotencyKey: confirmKey,
+  });
+  if (confirmed.status !== 200 || confirmed.body.payment?.status !== "paid" || confirmed.body.payment?.paidAmount !== testPaymentAmount) {
+    throw new Error("Test payment confirmation did not reach the paid state.");
+  }
+  result.checks.testPaymentConfirmed = true;
+
+  const duplicate = await paymentApiRequest(memberPage, "confirm", memberAuthorization, {
+    paymentId: testPaymentId,
+    idempotencyKey: confirmKey,
+  });
+  const conflictingDuplicate = await paymentApiRequest(memberPage, "confirm", memberAuthorization, {
+    paymentId: testPaymentId,
+    idempotencyKey: paymentKey("conflicting-confirm"),
+  });
+  if (duplicate.status !== 200 || duplicate.body.reused !== true || conflictingDuplicate.status !== 409) {
+    throw new Error("Duplicate test-payment confirmation was not prevented or idempotently reused.");
+  }
+  result.checks.testPaymentDuplicatePrevented = true;
+
+  const partialAmount = Math.max(1, Math.floor(testPaymentAmount / 2));
+  const partialKey = paymentKey("partial-refund");
+  const partial = await paymentApiRequest(adminPaymentPage, "admin/refund", adminAuthorization, {
+    paymentId: testPaymentId,
+    amount: partialAmount,
+    idempotencyKey: partialKey,
+  });
+  const partialAgain = await paymentApiRequest(adminPaymentPage, "admin/refund", adminAuthorization, {
+    paymentId: testPaymentId,
+    amount: partialAmount,
+    idempotencyKey: partialKey,
+  });
+  if (
+    partial.status !== 200
+    || partial.body.payment?.status !== "partially_refunded"
+    || partial.body.payment?.refundedAmount !== partialAmount
+    || partialAgain.status !== 200
+    || partialAgain.body.reused !== true
+  ) {
+    throw new Error("Partial test refund or its idempotent replay failed.");
+  }
+  result.checks.testPaymentPartiallyRefunded = true;
+
+  const remaining = testPaymentAmount - partialAmount;
+  const full = await paymentApiRequest(adminPaymentPage, "admin/refund", adminAuthorization, {
+    paymentId: testPaymentId,
+    amount: remaining,
+    idempotencyKey: paymentKey("full-refund"),
+  });
+  if (full.status !== 200 || full.body.payment?.status !== "refunded" || full.body.payment?.refundedAmount !== testPaymentAmount) {
+    throw new Error("Full test refund did not return the complete amount.");
+  }
+  paymentNeedsRefund = false;
+  result.checks.testPaymentFullyRefunded = true;
+
+  const memberHistory = await paymentApiRequest(memberPage, "me", memberAuthorization, undefined);
+  const payment = memberHistory.body.payments?.find(item => item.id === testPaymentId);
+  if (memberHistory.status !== 200 || payment?.status !== "refunded" || payment?.refundedAmount !== testPaymentAmount) {
+    throw new Error("Member payment history did not show the full test refund.");
+  }
+  result.checks.testPaymentMemberHistoryVerified = true;
+  await adminPaymentPage.close();
+}
+
+async function verifyGroupBuyLifecycle(page, memberPage) {
   await loginGroupBuyAdmin(page);
   const paymentGuide = `CI 결제 안내 ${config.runId}`.slice(0, 200);
   const carrier = "CI택배";
@@ -330,6 +492,7 @@ async function verifyGroupBuyLifecycle(page) {
 
   await saveGroupBuyOrderState(page, "confirmed", { paymentGuide, adminMemo });
   result.checks.groupBuyOrderConfirmed = true;
+  await verifyTestPaymentLifecycle(memberPage, page.context());
   await saveGroupBuyOrderState(page, "paid");
   result.checks.groupBuyPaymentConfirmed = true;
   await saveGroupBuyOrderState(page, "shipping", { carrier, trackingNumber });
@@ -564,6 +727,11 @@ let testOrderReceipt = "";
 let testOrderNeedsCleanup = false;
 let profileNeedsRestore = false;
 let requestNeedsRejection = false;
+let memberAuthorization = "";
+let adminAuthorization = "";
+let testPaymentId = "";
+let testPaymentAmount = 0;
+let paymentNeedsRefund = false;
 let fatalError = null;
 
 try {
@@ -597,7 +765,8 @@ try {
     viewport: { width: 1440, height: 1000 },
   });
   const groupBuyAdminPage = await adminContext.newPage();
-  const orderTracking = await verifyGroupBuyLifecycle(groupBuyAdminPage);
+  const orderTracking = await verifyGroupBuyLifecycle(groupBuyAdminPage, memberPage);
+  stage("Test payment prepare, confirmation, duplicate prevention, partial refund, and full refund verified.");
   stage("Order confirmation, payment, shipping, and completion states verified.");
 
   await verifyMemberOrderTracking(memberPage, orderTracking);
@@ -658,6 +827,42 @@ try {
   result.status = "failed";
   result.failure = redact(error?.message || error);
 } finally {
+  if (paymentNeedsRefund && testPaymentId && adminAuthorization && memberPage) {
+    try {
+      const memberHistory = await paymentApiRequest(memberPage, "me", memberAuthorization, undefined);
+      const payment = memberHistory.body.payments?.find(item => item.id === testPaymentId);
+      if (!payment) throw new Error("Emergency cleanup could not find the test payment.");
+      if (payment.status === "ready") {
+        const cancelled = await paymentApiRequest(memberPage, "admin/cancel", adminAuthorization, {
+          paymentId: testPaymentId,
+          idempotencyKey: paymentKey("emergency-cancel"),
+        });
+        if (cancelled.status !== 200 || cancelled.body.payment?.status !== "cancelled") {
+          throw new Error("Emergency ready-payment cancellation did not complete.");
+        }
+      } else if (["paid", "partially_refunded"].includes(payment.status)) {
+        const remaining = Number(payment.paidAmount || testPaymentAmount) - Number(payment.refundedAmount || 0);
+        const emergency = await paymentApiRequest(memberPage, "admin/refund", adminAuthorization, {
+          paymentId: testPaymentId,
+          amount: remaining,
+          idempotencyKey: paymentKey("emergency-refund"),
+        });
+        if (emergency.status !== 200 || emergency.body.payment?.status !== "refunded") {
+          throw new Error("Emergency full test refund did not complete.");
+        }
+        result.checks.testPaymentFullyRefunded = true;
+      } else if (!["refunded", "cancelled"].includes(payment.status)) {
+        throw new Error(`Emergency cleanup rejected unexpected payment state: ${payment.status}`);
+      }
+      paymentNeedsRefund = false;
+      stage("Emergency test-payment cancellation/refund completed.");
+    } catch (error) {
+      fatalError ||= new Error(`Emergency test-payment refund failed: ${redact(error?.message || error)}`);
+      result.status = "failed";
+      result.failure = redact(fatalError.message);
+    }
+  }
+
   if (testOrderNeedsCleanup && testOrderReceipt && browser) {
     try {
       adminContext ||= await browser.newContext({ locale: "ko-KR" });

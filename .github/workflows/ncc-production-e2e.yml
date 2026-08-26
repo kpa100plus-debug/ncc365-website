@@ -35,6 +35,10 @@ jobs:
       NCC_E2E_D_MEMBER_NUMBER: NCC-C-000016
       NCC_E2E_D_MEMBER_NAME: 테스트회원D
       NCC_E2E_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      NCC_D1_DATABASE_NAME: ncc-test-payments
+      WRANGLER_VERSION: 4.126.0
 
     steps:
       - name: Checkout
@@ -49,7 +53,7 @@ jobs:
         shell: bash
         run: |
           missing=0
-          for secret_name in NCC_E2E_D_EMAIL NCC_E2E_D_PASSWORD NCC_E2E_ADMIN_EMAIL NCC_E2E_ADMIN_PASSWORD; do
+          for secret_name in NCC_E2E_D_EMAIL NCC_E2E_D_PASSWORD NCC_E2E_ADMIN_EMAIL NCC_E2E_ADMIN_PASSWORD CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
             if [ -z "${!secret_name}" ]; then
               echo "::error::Required GitHub Actions secret is missing: ${secret_name}"
               missing=1
@@ -59,13 +63,42 @@ jobs:
             exit 1
           fi
 
-      - name: Install pinned browser test runtime
+      - name: Install pinned browser and D1 cleanup runtimes
         run: |
           npm install --no-save --ignore-scripts playwright@1.55.0
           npx playwright install --with-deps chromium
+          npm install --global "wrangler@${WRANGLER_VERSION}"
 
       - name: Run protected NCC member lifecycle test
         run: node .github/scripts/ncc-d-e2e.mjs
+
+      - name: Remove temporary test-payment records
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          result_file="artifacts/ncc-e2e-result.json"
+          if [ ! -f "$result_file" ]; then
+            echo "::error::Protected E2E result is missing; D1 cleanup cannot be proven."
+            exit 1
+          fi
+          prepared="$(jq -r '.checks.testPaymentPrepared // false' "$result_file")"
+          if [ "$prepared" != "true" ]; then
+            echo "No temporary D1 payment was prepared."
+            exit 0
+          fi
+          receipt="$(jq -r '.testOrderReceipt // empty' "$result_file")"
+          if [[ ! "$receipt" =~ ^NCC-G-[0-9-]{8,40}$ ]]; then
+            echo "::error::Automation receipt failed strict validation; refusing D1 cleanup."
+            exit 1
+          fi
+          cleanup_sql="DELETE FROM payment_events WHERE payment_id IN (SELECT id FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled')); DELETE FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled');"
+          wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --command "$cleanup_sql" --yes > /dev/null
+          verify_file="${RUNNER_TEMP}/ncc-payment-cleanup.json"
+          wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --command "SELECT COUNT(*) AS count FROM payments WHERE order_receipt = '$receipt'" --json > "$verify_file"
+          node -e 'const fs=require("fs");const rows=JSON.parse(fs.readFileSync(process.argv[1],"utf8")).flatMap(x=>x.results||[]);if(Number(rows[0]?.count)!==0)throw new Error("Temporary D1 payment cleanup verification failed")' "$verify_file"
+          node -e 'const fs=require("fs");const p=process.argv[1];const data=JSON.parse(fs.readFileSync(p,"utf8"));data.checks.testPaymentDataRemoved=true;fs.writeFileSync(p,JSON.stringify(data,null,2)+"\n")' "$result_file"
+          echo "Temporary test-payment data was removed and verified."
 
       - name: Upload redacted test result
         if: always()
