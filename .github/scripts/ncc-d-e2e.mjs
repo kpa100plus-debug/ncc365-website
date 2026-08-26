@@ -624,7 +624,12 @@ async function verifyFeedbackLifecycle(memberPage, adminContext) {
   await memberPage.locator("#reviewContent").fill(feedbackReviewContent);
   await reviewForm.locator('button[type="submit"]').click();
   const review = memberPage.locator("#reviewList .review-item", { hasText: feedbackReviewTitle }).first();
-  await review.waitFor({ state: "visible", timeout: 30_000 });
+  try {
+    await review.waitFor({ state: "visible", timeout: 12_000 });
+  } catch {
+    const message = ((await memberPage.locator("#reviewMessage").textContent()) || "표시 메시지 없음").trim();
+    throw new Error(`Verified review was not rendered: ${message}; console: ${feedbackErrors.slice(-3).join(" | ") || "none"}`);
+  }
   result.checks.verifiedReviewCreated = true;
 
   const adminPage = await adminContext.newPage();
