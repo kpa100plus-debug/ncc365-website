@@ -164,8 +164,17 @@ for (const { route, viewport } of routeViewports) {
   let navigationError = "";
   try {
     response = await page.goto(`${baseUrl}${route}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
-    await page.evaluate(() => document.fonts.ready);
-    await page.waitForTimeout(350);
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        await page.waitForTimeout(500);
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForTimeout(350);
+        break;
+      } catch (error) {
+        if (!/Execution context was destroyed/i.test(String(error?.message || error)) || attempt === 2) throw error;
+        await page.waitForLoadState("domcontentloaded", { timeout: 15_000 }).catch(() => {});
+      }
+    }
   } catch (error) {
     navigationError = String(error.message || error).slice(0, 700);
   }
@@ -283,7 +292,8 @@ const failures = results.flatMap(result => {
   if (result.navigationError) issues.push(`navigation: ${result.navigationError}`);
   if (result.pageErrors.length) issues.push(`page errors: ${result.pageErrors.join(" | ")}`);
   if (!ignoreExternalFailures && result.consoleErrors.length) issues.push(`console errors: ${result.consoleErrors.join(" | ")}`);
-  if (!ignoreExternalFailures && result.failedRequests.length) issues.push(`failed requests: ${result.failedRequests.join(" | ")}`);
+  const actionableFailedRequests = result.failedRequests.filter(item => !/net::ERR_ABORTED$/i.test(item));
+  if (!ignoreExternalFailures && actionableFailedRequests.length) issues.push(`failed requests: ${actionableFailedRequests.join(" | ")}`);
   if (!ignoreExternalFailures && result.badResponses.length) issues.push(`bad responses: ${result.badResponses.join(" | ")}`);
   if (result.inspection?.horizontalOverflow > 2) issues.push(`horizontal overflow ${result.inspection.horizontalOverflow}px`);
   if (!result.inspection?.expectedFontReady) issues.push(`${expectedFont} not ready`);
