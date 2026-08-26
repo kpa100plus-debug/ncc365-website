@@ -564,16 +564,38 @@ async function cleanupFeedback(page) {
   result.checks.feedbackDataRemoved = true;
 }
 
+async function cleanupFailedFeedbackRuns(page) {
+  await loginFeedbackAdmin(page);
+  for (const runId of ["32957281264-1", "32957948677-1"]) {
+    await deleteFeedbackCard(page, "reports", `CI 신고 ${runId}`);
+    await deleteFeedbackCard(page, "reviews", `CI 후기 ${runId}`);
+    await deleteFeedbackCard(page, "comments", `CI 기대평 ${runId}`);
+  }
+}
+
 async function verifyFeedbackLifecycle(memberPage, adminContext) {
+  const recoveryPage = await adminContext.newPage();
+  await cleanupFailedFeedbackRuns(recoveryPage);
+  await recoveryPage.close();
+
   await goto(memberPage, `/groupbuy-detail.html?id=${encodeURIComponent(testProductId)}`);
   await memberPage.locator("#expectationForm").waitFor({ state: "visible", timeout: 30_000 });
   const reviewForm = memberPage.locator("#reviewForm");
   await reviewForm.waitFor({ state: "visible", timeout: 30_000 });
+  const feedbackErrors = [];
+  memberPage.on("console", message => {
+    if (message.type() === "error") feedbackErrors.push(redact(message.text()));
+  });
   await memberPage.locator("#expectationInput").fill(feedbackExpectation);
+  feedbackNeedsCleanup = true;
   await memberPage.locator('#expectationForm button[type="submit"]').click();
   const comment = memberPage.locator("#expectationList .feedback-item", { hasText: feedbackExpectation }).first();
-  await comment.waitFor({ state: "visible", timeout: 30_000 });
-  feedbackNeedsCleanup = true;
+  try {
+    await comment.waitFor({ state: "visible", timeout: 12_000 });
+  } catch {
+    const message = ((await memberPage.locator("#expectationMessage").textContent()) || "표시 메시지 없음").trim();
+    throw new Error(`Expectation was not rendered: ${message}; console: ${feedbackErrors.slice(-3).join(" | ") || "none"}`);
+  }
   result.checks.expectationCreated = true;
 
   await comment.locator("[data-like]").click();
