@@ -51,6 +51,13 @@ const result = {
     groupBuyOrderShipping: false,
     groupBuyOrderCompleted: false,
     memberOrderTrackingVerified: false,
+    expectationCreated: false,
+    expectationLiked: false,
+    duplicateLikePrevented: false,
+    feedbackReported: false,
+    verifiedReviewCreated: false,
+    feedbackAdminStatusSaved: false,
+    feedbackDataRemoved: false,
     groupBuyOrderCancelled: false,
     groupBuyOrderRemoved: false,
     deliveryAddressRemoved: false,
@@ -216,6 +223,8 @@ async function verifyGroupBuyAddressPrefill(page, temporaryAddress) {
   await productLink.waitFor({ state: "visible", timeout: 30_000 });
   const href = await productLink.getAttribute("href");
   if (!href) throw new Error("No published group-buy detail link was available for address verification.");
+  testProductId = new URL(href, config.baseUrl).searchParams.get("id") || "";
+  if (!testProductId) throw new Error("Published group-buy link did not contain a product identifier.");
 
   await goto(page, `/${href}`);
   const addressField = page.locator("#savedAddressField");
@@ -519,6 +528,91 @@ async function verifyMemberOrderTracking(page, expected) {
   result.checks.memberOrderTrackingVerified = true;
 }
 
+async function loginFeedbackAdmin(page) {
+  await goto(page, "/admin-feedback.html");
+  await page.waitForTimeout(1_000);
+  if (!(await page.locator("#adminArea").isVisible())) {
+    await page.locator("#loginArea").waitFor({ state: "visible", timeout: 30_000 });
+    await page.locator('#loginForm input[name="email"]').fill(config.adminEmail);
+    await page.locator('#loginForm input[name="password"]').fill(config.adminPassword);
+    await page.locator('#loginForm button[type="submit"]').click();
+  }
+  await page.locator("#adminArea").waitFor({ state: "visible", timeout: 30_000 });
+}
+
+async function deleteFeedbackCard(page, tab, marker) {
+  await page.locator(`[data-tab="${tab}"]`).click();
+  const card = page.locator("#feedbackList .platform-card", { hasText: marker }).first();
+  if ((await card.count()) === 0) return false;
+  let accepted = false;
+  page.once("dialog", async dialog => {
+    accepted = true;
+    await dialog.accept();
+  });
+  await card.locator("[data-delete]").click();
+  await card.waitFor({ state: "detached", timeout: 30_000 });
+  if (!accepted) throw new Error("Feedback cleanup confirmation was not accepted.");
+  return true;
+}
+
+async function cleanupFeedback(page) {
+  await loginFeedbackAdmin(page);
+  await deleteFeedbackCard(page, "reports", feedbackReportReason);
+  await deleteFeedbackCard(page, "reviews", feedbackReviewTitle);
+  await deleteFeedbackCard(page, "comments", feedbackExpectation);
+  feedbackNeedsCleanup = false;
+  result.checks.feedbackDataRemoved = true;
+}
+
+async function verifyFeedbackLifecycle(memberPage, adminContext) {
+  await goto(memberPage, `/groupbuy-detail.html?id=${encodeURIComponent(testProductId)}`);
+  await memberPage.locator("#expectationForm").waitFor({ state: "visible", timeout: 30_000 });
+  await memberPage.locator("#expectationInput").fill(feedbackExpectation);
+  await memberPage.locator('#expectationForm button[type="submit"]').click();
+  const comment = memberPage.locator("#expectationList .feedback-item", { hasText: feedbackExpectation }).first();
+  await comment.waitFor({ state: "visible", timeout: 30_000 });
+  feedbackNeedsCleanup = true;
+  result.checks.expectationCreated = true;
+
+  await comment.locator("[data-like]").click();
+  const likedComment = memberPage.locator("#expectationList .feedback-item", { hasText: feedbackExpectation }).first();
+  await likedComment.locator("[data-like]").filter({ hasText: "좋아요 1" }).waitFor({ state: "visible", timeout: 30_000 });
+  result.checks.expectationLiked = true;
+  await likedComment.locator("[data-like]").click();
+  await memberPage.waitForFunction(() => (document.querySelector("#expectationMessage")?.textContent || "").includes("한 번만"), undefined, { timeout: 30_000 });
+  result.checks.duplicateLikePrevented = true;
+
+  memberPage.once("dialog", async prompt => {
+    await prompt.accept(feedbackReportReason);
+    memberPage.once("dialog", async alert => alert.accept());
+  });
+  await memberPage.locator("#expectationList .feedback-item", { hasText: feedbackExpectation }).first().locator("[data-report]").click();
+  await memberPage.waitForTimeout(1_000);
+  result.checks.feedbackReported = true;
+
+  const reviewForm = memberPage.locator("#reviewForm");
+  await reviewForm.waitFor({ state: "visible", timeout: 30_000 });
+  await memberPage.locator("#reviewRating").selectOption("5");
+  await memberPage.locator("#reviewTitle").fill(feedbackReviewTitle);
+  await memberPage.locator("#reviewContent").fill(feedbackReviewContent);
+  await reviewForm.locator('button[type="submit"]').click();
+  const review = memberPage.locator("#reviewList .review-item", { hasText: feedbackReviewTitle }).first();
+  await review.waitFor({ state: "visible", timeout: 30_000 });
+  result.checks.verifiedReviewCreated = true;
+
+  const adminPage = await adminContext.newPage();
+  await loginFeedbackAdmin(adminPage);
+  await adminPage.locator('[data-tab="reports"]').click();
+  let reportCard = adminPage.locator("#feedbackList .platform-card", { hasText: feedbackReportReason }).first();
+  await reportCard.waitFor({ state: "visible", timeout: 30_000 });
+  await reportCard.locator('[data-status$=":resolved"]').click();
+  reportCard = adminPage.locator("#feedbackList .platform-card", { hasText: feedbackReportReason }).first();
+  await reportCard.filter({ hasText: "resolved" }).waitFor({ state: "visible", timeout: 30_000 });
+  result.checks.feedbackAdminStatusSaved = true;
+  await cleanupFeedback(adminPage);
+  await adminPage.close();
+}
+
 async function cleanupGroupBuyOrder(page) {
   await saveGroupBuyOrderState(page, "cancelled", {
     adminMemo: `CI 자동검사 완료 후 정리 ${config.runId}`.slice(0, 200),
@@ -736,6 +830,12 @@ let adminAuthorization = "";
 let testPaymentId = "";
 let testPaymentAmount = 0;
 let paymentNeedsRefund = false;
+let testProductId = "";
+let feedbackNeedsCleanup = false;
+const feedbackExpectation = `CI 기대평 ${config.runId}`.slice(0, 180);
+const feedbackReportReason = `CI 신고 ${config.runId}`.slice(0, 300);
+const feedbackReviewTitle = `CI 후기 ${config.runId}`.slice(0, 80);
+const feedbackReviewContent = `자동검사로 생성하고 즉시 정리하는 공동구매 이용 인증 후기입니다. ${config.runId}`.slice(0, 1500);
 let fatalError = null;
 
 try {
@@ -772,6 +872,9 @@ try {
   const orderTracking = await verifyGroupBuyLifecycle(groupBuyAdminPage, memberPage);
   stage("Test payment prepare, confirmation, duplicate prevention, partial refund, and full refund verified.");
   stage("Order confirmation, payment, shipping, and completion states verified.");
+
+  await verifyFeedbackLifecycle(memberPage, adminContext);
+  stage("Expectation, like, duplicate prevention, report, verified review, administrator handling, and cleanup verified.");
 
   await verifyMemberOrderTracking(memberPage, orderTracking);
   stage("Member-visible order payment and delivery tracking verified.");
@@ -831,6 +934,20 @@ try {
   result.status = "failed";
   result.failure = redact(error?.message || error);
 } finally {
+  if (feedbackNeedsCleanup && browser) {
+    try {
+      adminContext ||= await browser.newContext({ locale: "ko-KR" });
+      const cleanupFeedbackPage = await adminContext.newPage();
+      await cleanupFeedback(cleanupFeedbackPage);
+      stage("Emergency feedback cleanup completed.");
+    } catch (error) {
+      console.error(`::error::Emergency feedback cleanup failed: ${redact(error?.message || error)}`);
+      fatalError ||= new Error(`Emergency feedback cleanup failed: ${redact(error?.message || error)}`);
+      result.status = "failed";
+      result.failure = redact(fatalError.message);
+    }
+  }
+
   if (paymentNeedsRefund && testPaymentId && adminAuthorization && memberPage) {
     stage("Starting emergency test-payment cancellation/refund.");
     try {

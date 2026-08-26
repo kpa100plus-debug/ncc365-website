@@ -287,3 +287,21 @@ test("admin alone can update group-buy payment and delivery progress", async () 
     updatedAt: serverTimestamp()
   }));
 });
+
+test("members cannot delete expectation likes but the administrator can clean them up", async () => {
+  const likeId = "comment-1_member-feedback";
+  await testEnv.withSecurityRulesDisabled(async context => {
+    await setDoc(doc(context.firestore(), "expectationLikes", likeId), {
+      commentId: "comment-1",
+      userId: "member-feedback",
+      createdAt: Timestamp.fromMillis(1_777_000_000_000)
+    });
+  });
+  const memberDb = testEnv.authenticatedContext("member-feedback", {
+    email: "member-feedback@example.com",
+    email_verified: true
+  }).firestore();
+  const adminDb = testEnv.authenticatedContext("admin-1", adminClaims).firestore();
+  await assertFails(deleteDoc(doc(memberDb, "expectationLikes", likeId)));
+  await assertSucceeds(deleteDoc(doc(adminDb, "expectationLikes", likeId)));
+});
