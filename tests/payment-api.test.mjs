@@ -100,3 +100,13 @@ test("unapproved origins are rejected before any payment work", async () => {
   assert.equal(response.status, 403);
   assert.equal((await response.json()).code, "ORIGIN_DENIED");
 });
+
+test("only the configured administrator may bypass email verification on administrator routes", () => {
+  const env = { ADMIN_EMAIL: "admin@example.com" };
+  const admin = { localId: "admin-uid", email: "ADMIN@example.com", disabled: false, emailVerified: false };
+  const member = { localId: "member-uid", email: "member@example.com", disabled: false, emailVerified: false };
+  assert.equal(__test.firebaseAccountAllowed(admin, env, true), true);
+  assert.equal(__test.firebaseAccountAllowed(admin, env, false), false);
+  assert.equal(__test.firebaseAccountAllowed(member, env, true), false);
+  assert.equal(__test.firebaseAccountAllowed({ ...admin, disabled: true }, env, true), false);
+});

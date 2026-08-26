@@ -82,7 +82,14 @@ function bearerToken(request) {
   return match[1];
 }
 
-async function verifyFirebaseUser(request, env) {
+function firebaseAccountAllowed(user, env, allowConfiguredAdmin = false) {
+  if (!user?.localId || !user.email || user.disabled) return false;
+  const email = String(user.email).toLowerCase();
+  const adminEmail = String(env.ADMIN_EMAIL || "").trim().toLowerCase();
+  return Boolean(user.emailVerified || (allowConfiguredAdmin && adminEmail && email === adminEmail));
+}
+
+async function verifyFirebaseUser(request, env, allowConfiguredAdmin = false) {
   const token = bearerToken(request);
   if (!env.FIREBASE_API_KEY) {
     throw new PaymentError(503, "AUTH_NOT_CONFIGURED", "결제 인증 설정이 완료되지 않았습니다.");
@@ -100,7 +107,7 @@ async function verifyFirebaseUser(request, env) {
   }
   const body = await response.json();
   const user = body.users?.[0];
-  if (!user?.localId || !user.email || user.disabled || !user.emailVerified) {
+  if (!firebaseAccountAllowed(user, env, allowConfiguredAdmin)) {
     throw new PaymentError(403, "ACCOUNT_NOT_ALLOWED", "인증된 활성 회원만 결제할 수 있습니다.");
   }
   return { uid: user.localId, email: String(user.email).toLowerCase(), token };
@@ -411,6 +418,7 @@ export async function onRequest(context) {
       mode: "test",
       realCharge: false,
       notice: "테스트 결제는 실제 카드승인·계좌이체·금전이동이 발생하지 않습니다.",
+      auditVersion: "2026-08-26-admin-route-auth",
     });
   }
   if (env.PAYMENT_MODE !== "test") return apiError(503, "TEST_MODE_DISABLED", "테스트 결제모드가 비활성화되어 있습니다.");
@@ -420,7 +428,7 @@ export async function onRequest(context) {
   }
 
   try {
-    const user = await verifyFirebaseUser(request, env);
+    const user = await verifyFirebaseUser(request, env, route.startsWith("admin/"));
     if (request.method === "GET" && route === "me") return await memberPayments(env, user);
     if (request.method === "POST" && route === "prepare") return await preparePayment(request, env, user);
     if (request.method === "POST" && route === "confirm") return await confirmPayment(request, env, user);
@@ -442,6 +450,7 @@ export const __test = {
   assertIdempotencyKey,
   firestoreInteger,
   firestoreString,
+  firebaseAccountAllowed,
   paymentView,
   refundPlan,
   PAYMENT_STATUSES,

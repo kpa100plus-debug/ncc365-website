@@ -393,6 +393,7 @@ async function verifyTestPaymentLifecycle(memberPage, adminContext) {
     || configResponse.body.enabled !== true
     || configResponse.body.mode !== "test"
     || configResponse.body.realCharge !== false
+    || configResponse.body.auditVersion !== "2026-08-26-admin-route-auth"
   ) {
     throw new Error("Payment configuration is not locked to the safe test mode.");
   }

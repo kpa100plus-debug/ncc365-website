@@ -69,7 +69,20 @@ jobs:
           npx playwright install --with-deps chromium
           npm install --global "wrangler@${WRANGLER_VERSION}"
 
-      - name: Recover the exact stranded record from failed run 32953890574
+      - name: Wait for the audited payment API deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 24); do
+            if curl --fail --silent --show-error https://ncc365.com/api/payments/config | jq -e '.enabled == true and .mode == "test" and .realCharge == false and .auditVersion == "2026-08-26-admin-route-auth"' > /dev/null; then
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::Audited payment API deployment was not visible within 6 minutes."
+          exit 1
+
+      - name: Recover the exact stranded record from failed run 32955211041
         shell: bash
         run: |
           set -euo pipefail
@@ -77,8 +90,8 @@ jobs:
             echo "::error::Test member email failed strict validation; refusing recovery."
             exit 1
           fi
-          start="2026-08-26T09:37:00.000Z"
-          end="2026-08-26T09:39:00.000Z"
+          start="2026-08-26T09:52:00.000Z"
+          end="2026-08-26T09:54:00.000Z"
           where_clause="member_email = '$NCC_E2E_D_EMAIL' AND test_mode = 1 AND created_at >= '$start' AND created_at < '$end'"
           count_file="${RUNNER_TEMP}/ncc-stranded-count.json"
           wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --command "SELECT COUNT(*) AS count FROM payments WHERE $where_clause" --json > "$count_file"
