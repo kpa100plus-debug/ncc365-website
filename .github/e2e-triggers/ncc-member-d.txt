@@ -1,7 +1,7 @@
-reference=REF-NCC-PAYMENT-TEST-11
+reference=REF-NCC-WEBSITE-PERFECT-AUDIT-14
 member=NCC-C-000016
-scope=post-payment-infrastructure-safety-regression
+scope=post-website-audit-safety-regression
 updated=2026-08-26
-requested_at=2026-08-26T17:16:00+09:00
+requested_at=2026-08-26T18:05:00+09:00
 mode=protected-reversible
-reason=verify-authenticated-member-lifecycle-after-test-payment-infrastructure-enable
+reason=verify-authenticated-member-lifecycle-after-font-design-responsive-and-link-fixes

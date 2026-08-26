@@ -1,7 +1,7 @@
 /* REF-NCC-BENEFIT-CENTER-REBUILD-02 */
 .benefit-market-section{background:linear-gradient(180deg,#fbf8f1 0%,#f4efe4 100%)}
 .benefit-filter{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 32px}
-.benefit-filter a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border:1px solid rgba(7,42,37,.16);border-radius:999px;background:#fff;color:var(--ncc-900);font-size:16px;font-weight:800;transition:.25s ease}
+.benefit-filter a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border:1px solid rgba(7,42,37,.16);border-radius:999px;background:#fff;color:var(--ncc-900);font-size:16px;font-weight:600;transition:.25s ease}
 .benefit-filter a:hover,.benefit-filter a.active{border-color:var(--gold);background:var(--ncc-900);color:var(--gold-soft);box-shadow:0 10px 24px rgba(7,42,37,.14)}
 .benefit-market-note{margin:0 0 30px;padding:18px 21px;border:1px solid rgba(210,170,80,.28);border-radius:14px;background:#fff9e9;color:#6f5a2c;font-size:16px;line-height:1.65}
 .benefit-market-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
@@ -13,17 +13,17 @@ body[data-page="benefits"] .benefit-market-grid>.benefit-offer:hover{transform:t
 .benefit-offer-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(4,28,25,.58),transparent 55%)}
 .benefit-offer-photo img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
 .benefit-offer:hover .benefit-offer-photo img{transform:scale(1.045)}
-.sample-chip{position:absolute;z-index:2;left:16px;top:16px;padding:8px 12px;border:1px solid rgba(255,255,255,.55);border-radius:999px;background:rgba(4,28,25,.84);color:#fff;font-size:13px;font-weight:800;backdrop-filter:blur(8px)}
-.class-chip{position:absolute;z-index:2;right:16px;bottom:15px;padding:8px 13px;border-radius:999px;background:var(--gold);color:var(--ncc-950);font-size:13px;font-weight:900;letter-spacing:.04em}
+.sample-chip{position:absolute;z-index:2;left:16px;top:16px;padding:8px 12px;border:1px solid rgba(255,255,255,.55);border-radius:999px;background:rgba(4,28,25,.84);color:#fff;font-size:13px;font-weight:600;backdrop-filter:blur(8px)}
+.class-chip{position:absolute;z-index:2;right:16px;bottom:15px;padding:8px 13px;border-radius:999px;background:var(--gold);color:var(--ncc-950);font-size:13px;font-weight:600;letter-spacing:.04em}
 .benefit-offer[data-class="premium"] .class-chip{background:#a9d7cc}
 .benefit-offer[data-class="daily"] .class-chip{background:#ead49c}
 .benefit-offer-copy{display:flex;flex:1;flex-direction:column;padding:25px}
-.benefit-offer-copy .category{margin:0 0 8px;color:#8b661f;font-size:13px;font-weight:900;letter-spacing:.09em}
-.benefit-offer-copy h3{margin:0 0 10px;color:var(--ncc-900);font-size:25px;line-height:1.38;letter-spacing:-.035em;word-break:keep-all}
+.benefit-offer-copy .category{margin:0 0 8px;color:#8b661f;font-size:13px;font-weight:600;letter-spacing:.09em}
+.benefit-offer-copy h3{margin:0 0 10px;color:var(--ncc-900);font-size:25px;line-height:1.38;letter-spacing:-.025em;word-break:keep-all}
 .benefit-offer-copy>p{margin:0;color:#53645d;font-size:17px;line-height:1.7;word-break:keep-all}
 .benefit-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:19px}
-.benefit-meta span{padding:7px 10px;border-radius:8px;background:#edf3ef;color:#36574c;font-size:13px;font-weight:700}
-.benefit-offer-copy .apply-arrow{display:block;margin-top:auto;padding-top:22px;color:#8e681e;font-size:18px;font-weight:900}
+.benefit-meta span{padding:7px 10px;border-radius:8px;background:#edf3ef;color:#36574c;font-size:13px;font-weight:600}
+.benefit-offer-copy .apply-arrow{display:block;margin-top:auto;padding-top:22px;color:#8e681e;font-size:18px;font-weight:600}
 .benefit-class-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:32px}
 .benefit-class-summary a{padding:22px;border:1px solid rgba(7,42,37,.12);border-radius:16px;background:#fff}
 .benefit-class-summary b{display:block;color:var(--ncc-900);font-size:21px}.benefit-class-summary span{display:block;margin-top:6px;color:#53645d;font-size:15px;line-height:1.6}

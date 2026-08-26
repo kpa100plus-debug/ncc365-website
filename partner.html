@@ -31,7 +31,7 @@ background:#f5f8f6;
 
 color:#12291c;
 
-letter-spacing:-0.03em;
+letter-spacing:-.025em;
 
 }
 
@@ -89,7 +89,7 @@ box-shadow:0 15px 40px rgba(0,0,0,.06);
 
 font-size:12px;
 
-font-weight:800;
+font-weight:600;
 
 letter-spacing:.12em;
 
@@ -105,7 +105,7 @@ font-size:42px;
 
 line-height:1.15;
 
-letter-spacing:-.06em;
+letter-spacing:-.025em;
 
 margin:12px 0;
 
@@ -155,7 +155,7 @@ padding:18px;
 
 border-radius:12px;
 
-font-weight:750;
+font-weight:600;
 
 }
 
@@ -165,7 +165,7 @@ font-weight:750;
 
 font-size:23px;
 
-font-weight:800;
+font-weight:600;
 
 margin:35px 0 15px;
 
@@ -199,7 +199,7 @@ display:block;
 
 font-size:14px;
 
-font-weight:750;
+font-weight:600;
 
 margin-bottom:7px;
 
@@ -253,7 +253,7 @@ color:#fff;
 
 font-size:17px;
 
-font-weight:800;
+font-weight:600;
 
 }
 
@@ -361,7 +361,7 @@ grid-template-columns:1fr;
 
 <a class="logo" href="index.html">
 
-<img src="images/NCC_HEADER.png?v=20260821-1"
+<img src="images/NCC_HEADER.webp?v=20260826-1"
 alt="전국소비자클럽 공식 로고">
 
 </a>
@@ -496,7 +496,7 @@ BUSINESS PARTNERSHIP
 기업명 / 매장명 *
 </label>
 
-<input name="organization" maxlength="100" required placeholder="상호명을 입력하세요">
+<input name="organization" maxlength="100" required placeholder="상호명을 입력하세요" aria-label="상호명">
 
 </div>
 
@@ -508,7 +508,7 @@ BUSINESS PARTNERSHIP
 담당자명 *
 </label>
 
-<input name="name" maxlength="50" required placeholder="담당자 이름">
+<input name="name" maxlength="50" required placeholder="담당자 이름" aria-label="담당자 이름">
 
 </div>
 
@@ -520,7 +520,7 @@ BUSINESS PARTNERSHIP
 연락처 *
 </label>
 
-<input name="phone" inputmode="tel" maxlength="30" required placeholder="010-0000-0000">
+<input name="phone" inputmode="tel" maxlength="30" required placeholder="010-0000-0000" aria-label="담당자 연락처">
 
 </div>
 
@@ -532,7 +532,7 @@ BUSINESS PARTNERSHIP
 지역
 </label>
 
-<input name="region" maxlength="100" required placeholder="예) 서울 강남구">
+<input name="region" maxlength="100" required placeholder="예) 서울 강남구" aria-label="사업 지역">
 
 </div>
 
@@ -544,7 +544,7 @@ BUSINESS PARTNERSHIP
 업종
 </label>
 
-<select name="category" required>
+<select name="category" required aria-label="파트너 유형">
 
 <option>
 식품·외식
@@ -580,7 +580,7 @@ BUSINESS PARTNERSHIP
 제공 가능한 혜택 및 문의내용
 </label>
 
-<textarea name="message" maxlength="1000" placeholder="상품, 회원 혜택, 무료 경험, 공동구매 등 내용을 입력하세요"></textarea>
+<textarea name="message" maxlength="1000" placeholder="상품, 회원 혜택, 무료 경험, 공동구매 등 내용을 입력하세요" aria-label="제휴 제안 내용"></textarea>
 
 </div>
 
@@ -622,6 +622,7 @@ BUSINESS PARTNERSHIP
 전국소비자클럽 NCC<br>
 
 소비자에게 더 많은 혜택을
+<br>© 2026 ISEA GROUP. All Rights Reserved.
 
 </footer>
 

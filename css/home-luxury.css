@@ -13,7 +13,7 @@
 .benefit-visual-grid .class-card p{color:rgba(241,247,244,.82);font-size:17px;line-height:1.7;word-break:keep-all}
 .benefit-visual-grid .class-card .badge{border:1px solid rgba(239,216,153,.28);background:rgba(255,255,255,.11);color:#f7e8b8;backdrop-filter:blur(8px)}
 .benefit-visual-grid .class-card .arrow{color:#f1cd76;border-top:1px solid rgba(239,216,153,.18);padding-top:16px}
-.benefit-visual-grid .class-card:before{z-index:4;left:30px;top:190px;width:50px;height:50px;display:grid;place-items:center;border:1px solid rgba(239,216,153,.88);border-radius:50%;background:rgba(4,28,25,.94);color:#f5d77d;font-size:18px;font-weight:800;line-height:1;box-shadow:0 9px 24px rgba(0,0,0,.3),0 0 0 5px rgba(210,170,80,.09);text-shadow:none}
+.benefit-visual-grid .class-card:before{z-index:4;left:30px;top:190px;width:50px;height:50px;display:grid;place-items:center;border:1px solid rgba(239,216,153,.88);border-radius:50%;background:rgba(4,28,25,.94);color:#f5d77d;font-size:18px;font-weight:600;line-height:1;box-shadow:0 9px 24px rgba(0,0,0,.3),0 0 0 5px rgba(210,170,80,.09);text-shadow:none}
 .card-photo{position:absolute;inset:0 0 auto;height:220px;overflow:hidden;background:#102e29}
 .card-photo:after,.activity-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(4,28,25,.78) 0%,rgba(4,28,25,.16) 46%,transparent 72%)}
 .card-photo img,.activity-photo img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease,filter .45s ease}
