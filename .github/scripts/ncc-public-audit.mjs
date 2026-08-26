@@ -54,6 +54,7 @@ const routeViewports = auditedRoutes.flatMap(route => {
   const filtered = requestedWidths.length ? selected.filter(viewport => requestedWidths.includes(viewport.width)) : selected;
   return filtered.map(viewport => ({ route, viewport }));
 });
+const auditConcurrency = Math.min(6, Math.max(1, Number(process.env.NCC_AUDIT_CONCURRENCY) || 4));
 
 function fileKey(route) {
   return route === "/" ? "home" : route.replace(/^\//, "").replace(/\.html$/, "").replace(/[^a-z0-9-]+/gi, "-");
@@ -116,7 +117,9 @@ if (process.env.NCC_SERVE_DIR) {
 const browser = await chromium.launch({ headless: true });
 const results = [];
 
-for (const { route, viewport } of routeViewports) {
+for (let offset = 0; offset < routeViewports.length; offset += auditConcurrency) {
+  const batch = routeViewports.slice(offset, offset + auditConcurrency);
+  await Promise.all(batch.map(async ({ route, viewport }) => {
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
     deviceScaleFactor: 1,
@@ -280,7 +283,15 @@ for (const { route, viewport } of routeViewports) {
     inspection,
   });
   await context.close();
+  }));
 }
+
+results.sort((left, right) => {
+  const routeOrder = routes.indexOf(left.route) - routes.indexOf(right.route);
+  if (routeOrder !== 0) return routeOrder;
+  return viewports.findIndex(item => item.name === left.viewport)
+    - viewports.findIndex(item => item.name === right.viewport);
+});
 
 await browser.close();
 if (localServer) await new Promise((resolve, reject) => localServer.close(error => error ? reject(error) : resolve()));

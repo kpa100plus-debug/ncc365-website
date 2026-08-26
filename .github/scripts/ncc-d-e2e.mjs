@@ -567,6 +567,8 @@ async function cleanupFeedback(page) {
 async function verifyFeedbackLifecycle(memberPage, adminContext) {
   await goto(memberPage, `/groupbuy-detail.html?id=${encodeURIComponent(testProductId)}`);
   await memberPage.locator("#expectationForm").waitFor({ state: "visible", timeout: 30_000 });
+  const reviewForm = memberPage.locator("#reviewForm");
+  await reviewForm.waitFor({ state: "visible", timeout: 30_000 });
   await memberPage.locator("#expectationInput").fill(feedbackExpectation);
   await memberPage.locator('#expectationForm button[type="submit"]').click();
   const comment = memberPage.locator("#expectationList .feedback-item", { hasText: feedbackExpectation }).first();
@@ -590,8 +592,6 @@ async function verifyFeedbackLifecycle(memberPage, adminContext) {
   await memberPage.waitForTimeout(1_000);
   result.checks.feedbackReported = true;
 
-  const reviewForm = memberPage.locator("#reviewForm");
-  await reviewForm.waitFor({ state: "visible", timeout: 30_000 });
   await memberPage.locator("#reviewRating").selectOption("5");
   await memberPage.locator("#reviewTitle").fill(feedbackReviewTitle);
   await memberPage.locator("#reviewContent").fill(feedbackReviewContent);
