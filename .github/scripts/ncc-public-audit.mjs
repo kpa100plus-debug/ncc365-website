@@ -150,7 +150,10 @@ for (let offset = 0; offset < routeViewports.length; offset += auditConcurrency)
   }
 
   page.on("console", message => {
-    if (message.type() === "error") consoleErrors.push(message.text().slice(0, 500));
+    if (message.type() === "error") {
+      const sourceUrl = message.location().url;
+      consoleErrors.push(`${message.text()}${sourceUrl ? ` @ ${sourceUrl}` : ""}`.slice(0, 700));
+    }
   });
   page.on("pageerror", error => pageErrors.push(String(error.message || error).slice(0, 500)));
   page.on("requestfailed", request => {
