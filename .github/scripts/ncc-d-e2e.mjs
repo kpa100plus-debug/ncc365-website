@@ -581,6 +581,11 @@ async function verifyFeedbackLifecycle(memberPage, adminContext) {
   await goto(memberPage, `/groupbuy-detail.html?id=${encodeURIComponent(testProductId)}`);
   await memberPage.locator("#expectationForm").waitFor({ state: "visible", timeout: 30_000 });
   const reviewForm = memberPage.locator("#reviewForm");
+  await memberPage.waitForFunction(
+    () => (document.querySelector("#reviewMessage")?.textContent || "").includes("이용 완료 기록이 확인되었습니다"),
+    undefined,
+    { timeout: 30_000 },
+  );
   await reviewForm.waitFor({ state: "visible", timeout: 30_000 });
   const feedbackErrors = [];
   memberPage.on("console", message => {
