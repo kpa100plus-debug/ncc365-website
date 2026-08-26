@@ -11,11 +11,11 @@
 <body>
   <main class="admin-shell">
     <section class="login-panel" id="loginArea">
-      <img src="images/NCC_HEADER.png" alt="전국소비자클럽">
+      <img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽">
       <p>NCC ADMINISTRATION</p>
       <h1>테스트 결제관리</h1>
-      <input id="adminEmail" type="email" autocomplete="username" placeholder="관리자 이메일">
-      <input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호">
+      <input id="adminEmail" aria-label="관리자 이메일" type="email" autocomplete="username" placeholder="관리자 이메일">
+      <input id="adminPassword" aria-label="관리자 비밀번호" type="password" autocomplete="current-password" placeholder="비밀번호">
       <button id="loginButton" type="button">관리자 로그인</button>
       <p class="error" id="loginError"></p>
       <a href="admin.html">← 통합 관리자로 돌아가기</a>
@@ -40,7 +40,7 @@
       </div>
 
       <div class="toolbar">
-        <select id="paymentStatusFilter">
+        <select id="paymentStatusFilter" aria-label="결제 상태 필터">
           <option value="all">전체 상태</option>
           <option value="ready">결제 준비</option>
           <option value="paid">결제완료</option>
@@ -48,7 +48,7 @@
           <option value="refunded">전액환불</option>
           <option value="cancelled">결제취소</option>
         </select>
-        <input id="paymentSearch" placeholder="주문번호·접수번호·회원 이메일 검색">
+        <input id="paymentSearch" placeholder="주문번호·접수번호·회원 이메일 검색" aria-label="결제내역 검색">
         <button id="refreshButton" type="button">새로고침</button>
       </div>
       <p id="paymentMessage" role="status"></p>

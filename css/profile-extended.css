@@ -9,7 +9,7 @@
   padding: 0 10px;
   color: var(--ncc-900);
   font-size: 20px;
-  font-weight: 800;
+  font-weight:600;
 }
 .profile-group .check-line { margin-top: 4px; }
 @media (max-width: 600px) {

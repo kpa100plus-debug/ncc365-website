@@ -4,18 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>파트너·센터 운영 승인 | NCC</title>
-  <link rel="stylesheet" href="css/platform.css?v=20260824-4">
+  <link rel="stylesheet" href="css/platform.css?v=20260826-1">
   <link rel="stylesheet" href="css/role-dashboard.css">
 </head>
 <body class="role-page">
 <main class="role-shell">
   <section class="role-hero"><div><p class="role-kicker">NCC ADMINISTRATION</p><h1>파트너·센터<br>운영 승인</h1><p class="role-lead">파트너의 혜택·경험·공동구매 제안과 센터의 지역 활동을 검토합니다.</p></div><div class="role-member-card"><span>관리 기준</span><strong>APPROVAL WORKFLOW</strong><p>관리자 인증 필수</p><p>승인·보완·공개 상태 관리</p></div></section>
   <section class="role-admin-panel">
-    <div id="adminOperationLogin"><h2>관리자 로그인</h2><div class="role-filter"><input id="adminEmail" type="email" autocomplete="username" placeholder="관리자 이메일"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button id="adminLoginButton" class="role-button" type="button">로그인</button></div><p id="adminOperationMessage" class="role-status"></p></div>
+    <div id="adminOperationLogin"><h2>관리자 로그인</h2><div class="role-filter"><input id="adminEmail" aria-label="관리자 이메일" type="email" autocomplete="username" placeholder="관리자 이메일"><input id="adminPassword" aria-label="관리자 비밀번호" type="password" autocomplete="current-password" placeholder="비밀번호"><button id="adminLoginButton" class="role-button" type="button">로그인</button></div><p id="adminOperationMessage" class="role-status"></p></div>
     <div id="adminOperationArea" hidden>
       <div class="role-toolbar"><p>등록 내용과 운영 조건을 확인한 뒤 상태를 저장하세요.</p><div><a class="role-button light" href="admin.html">통합관리</a> <button id="adminLogoutButton" class="role-button" type="button">로그아웃</button></div></div>
-      <div class="role-filter"><input id="operationSearch" placeholder="제목·회원·업체·센터·지역 검색"><select id="operationType"><option value="">전체 구분</option><option value="partner">파트너 제안</option><option value="center">센터 활동</option></select><button id="operationRefresh" class="role-button light" type="button">새로고침</button></div>
-      <div class="role-filter"><select id="operationStatus"><option value="">전체 상태</option><option value="pending">검토 대기</option><option value="reviewing">검토 중</option><option value="approved">승인</option><option value="rejected">보완 요청</option><option value="published">공개 완료</option></select><div></div><div></div></div>
+      <div class="role-filter"><input id="operationSearch" aria-label="운영제안 검색" placeholder="제목·회원·업체·센터·지역 검색"><select id="operationType" aria-label="운영유형 필터"><option value="">전체 구분</option><option value="partner">파트너 제안</option><option value="center">센터 활동</option></select><button id="operationRefresh" class="role-button light" type="button">새로고침</button></div>
+      <div class="role-filter"><select id="operationStatus" aria-label="운영상태 필터"><option value="">전체 상태</option><option value="pending">검토 대기</option><option value="reviewing">검토 중</option><option value="approved">승인</option><option value="rejected">보완 요청</option><option value="published">공개 완료</option></select><div></div><div></div></div>
       <p id="operationSaveMessage" class="role-status"></p>
       <div id="adminOperationList" class="operation-list"><div class="role-empty">운영 등록내역을 불러오고 있습니다.</div></div>
     </div>

@@ -32,7 +32,7 @@ background:#f5f8f6;
 
 color:#12291c;
 
-letter-spacing:-0.03em;
+letter-spacing:-.025em;
 
 }
 
@@ -90,7 +90,7 @@ box-shadow:0 15px 40px rgba(0,0,0,.06);
 
 font-size:12px;
 
-font-weight:800;
+font-weight:600;
 
 letter-spacing:.12em;
 
@@ -106,7 +106,7 @@ font-size:42px;
 
 line-height:1.15;
 
-letter-spacing:-.06em;
+letter-spacing:-.025em;
 
 margin:12px 0;
 
@@ -156,7 +156,7 @@ padding:18px;
 
 border-radius:12px;
 
-font-weight:750;
+font-weight:600;
 
 }
 
@@ -166,7 +166,7 @@ font-weight:750;
 
 font-size:22px;
 
-font-weight:800;
+font-weight:600;
 
 margin:35px 0 15px;
 
@@ -200,7 +200,7 @@ display:block;
 
 font-size:14px;
 
-font-weight:750;
+font-weight:600;
 
 margin-bottom:7px;
 
@@ -254,7 +254,7 @@ color:white;
 
 font-size:17px;
 
-font-weight:800;
+font-weight:600;
 
 }
 
@@ -363,7 +363,7 @@ grid-template-columns:1fr;
 
 <a class="logo" href="index.html">
 
-<img src="images/NCC_HEADER.png?v=20260821-1"
+<img src="images/NCC_HEADER.webp?v=20260826-1"
 alt="전국소비자클럽 공식 로고">
 
 </a>
@@ -511,7 +511,7 @@ NATIONAL CONSUMER CENTER
 이름 *
 </label>
 
-<input name="name" maxlength="50" required placeholder="이름">
+<input name="name" maxlength="50" required placeholder="이름" aria-label="신청자 이름">
 
 </div>
 
@@ -523,7 +523,7 @@ NATIONAL CONSUMER CENTER
 연락처 *
 </label>
 
-<input name="phone" inputmode="tel" maxlength="30" required placeholder="010-0000-0000">
+<input name="phone" inputmode="tel" maxlength="30" required placeholder="010-0000-0000" aria-label="신청자 연락처">
 
 </div>
 
@@ -535,7 +535,7 @@ NATIONAL CONSUMER CENTER
 희망 활동지역 *
 </label>
 
-<input name="region" maxlength="100" required placeholder="예) 서울 강남구">
+<input name="region" maxlength="100" required placeholder="예) 서울 강남구" aria-label="신청 지역">
 
 </div>
 
@@ -548,7 +548,7 @@ NATIONAL CONSUMER CENTER
 </label>
 
 
-<select name="category" required>
+<select name="category" required aria-label="참여 유형">
 
 <option>
 센터장 참여
@@ -576,7 +576,7 @@ NATIONAL CONSUMER CENTER
 소개 및 문의사항
 </label>
 
-<textarea name="message" maxlength="1000" placeholder="활동 경력이나 문의사항을 입력해 주세요"></textarea>
+<textarea name="message" maxlength="1000" placeholder="활동 경력이나 문의사항을 입력해 주세요" aria-label="활동 경력 또는 문의사항"></textarea>
 
 </div>
 
@@ -618,6 +618,7 @@ NATIONAL CONSUMER CENTER
 전국소비자클럽 NCC<br>
 
 소비자에게 더 많은 혜택을
+<br>© 2026 ISEA GROUP. All Rights Reserved.
 
 </footer>
 

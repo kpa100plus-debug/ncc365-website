@@ -1,0 +1,111 @@
+name: NCC Perfect Website Audit
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "재검증할 NCC URL"
+        required: true
+        default: "https://ncc365.com"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ncc-perfect-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-and-responsive-audit:
+    name: Source, font, accessibility, and responsive audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install pinned dependencies
+        run: npm ci
+
+      - name: Check source quality
+        run: npm run test:quality
+
+      - name: Install pinned browser runtime
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Render all NCC pages at required widths
+        env:
+          NCC_SERVE_DIR: .
+          NCC_AUDIT_PHASE: source
+          NCC_AUDIT_ENFORCE: "true"
+        run: node .github/scripts/ncc-public-audit.mjs
+
+      - name: Upload responsive audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ncc-source-responsive-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/public-audit
+          if-no-files-found: warn
+          retention-days: 14
+
+  production-reverification:
+    name: Production deployment reverification
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Wait for Cloudflare Pages deployment
+        if: ${{ github.event_name == 'push' }}
+        shell: bash
+        run: |
+          for attempt in $(seq 1 24); do
+            if curl --fail --silent --show-error https://ncc365.com/css/platform.css | grep --quiet "Noto Sans KR Variable"; then
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::Cloudflare Pages did not expose the audited typography build within 6 minutes."
+          exit 1
+
+      - name: Install pinned browser runtime
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Reverify deployed site
+        env:
+          NCC_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.base_url || 'https://ncc365.com' }}
+          NCC_AUDIT_PHASE: production
+          NCC_AUDIT_ENFORCE: "true"
+        run: node .github/scripts/ncc-public-audit.mjs
+
+      - name: Upload production audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ncc-production-responsive-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/public-audit
+          if-no-files-found: warn
+          retention-days: 14

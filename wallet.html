@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>NCC 월렛 | 전국소비자클럽</title>
-  <link rel="stylesheet" href="css/platform.css?v=20260824-4">
+  <link rel="stylesheet" href="css/platform.css?v=20260826-1">
   <link rel="stylesheet" href="css/wallet.css?v=20260824-6">
 </head>
 <body data-page="wallet">
@@ -30,11 +30,11 @@
           <form id="loginForm" class="wallet-form">
             <div class="field">
               <label>이메일</label>
-              <input name="email" type="email" autocomplete="username" required>
+              <input name="email" type="email" autocomplete="username" aria-label="회원 이메일" required>
             </div>
             <div class="field">
               <label>비밀번호</label>
-              <input name="password" type="password" minlength="6" autocomplete="current-password" required>
+              <input name="password" type="password" minlength="6" autocomplete="current-password" aria-label="회원 비밀번호" required>
             </div>
             <button class="ncc-button gold" type="submit">회원 로그인</button>
           </form>
@@ -55,11 +55,11 @@
               <form id="signupForm" class="wallet-form">
                 <div class="field">
                   <label>기존 회원 등록 이메일</label>
-                  <input name="email" type="email" autocomplete="email" required>
+                  <input name="email" type="email" autocomplete="email" aria-label="기존 회원 이메일" required>
                 </div>
                 <div class="field">
                   <label>온라인 로그인용 새 비밀번호</label>
-                  <input name="password" type="password" minlength="6" autocomplete="new-password" required>
+                  <input name="password" type="password" minlength="6" autocomplete="new-password" aria-label="새 로그인 비밀번호" required>
                 </div>
                 <label class="wallet-legacy-confirm">
                   <input name="legacyConfirm" type="checkbox" required>
@@ -96,7 +96,7 @@
             <div class="member-card-inner">
               <article id="memberCardFront" class="member-card-face member-card-front" aria-label="NCC 디지털 회원카드 앞면">
                 <div class="member-front-art" aria-hidden="true"></div>
-                <img class="member-card-logo" src="images/NCC_HEADER.png" alt="전국소비자클럽 NCC">
+                <img class="member-card-logo" src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽 NCC">
                 <span class="member-status"><i></i>ACTIVE MEMBER</span>
                 <span class="member-chip" aria-hidden="true"><i></i></span>
 
@@ -153,7 +153,7 @@
 
                 <div class="member-back-brand">
                   <div class="member-back-logo-wrap">
-                    <img src="images/NCC_HEADER.png" alt="전국소비자클럽 NCC">
+                    <img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽 NCC">
                   </div>
                   <div class="member-back-copy">
                     <b>NCC 365</b>
@@ -206,7 +206,7 @@
     </section>
   </main>
 
-  <script src="js/platform-shell.js?v=20260824-5"></script>
+  <script src="js/platform-shell.js?v=20260826-1"></script>
   <script type="module" src="js/wallet.js?v=20260824-5"></script>
 </body>
 </html>

@@ -63,7 +63,7 @@
   gap: 14px;
   color: #765719;
   font-size: 16px;
-  font-weight: 800;
+  font-weight:600;
   cursor: pointer;
   list-style: none;
 }
@@ -270,7 +270,7 @@
   background: rgba(0, 0, 0, .17);
   color: #f3dda2;
   font-size: clamp(7px, .95cqw, 9px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .13em;
   line-height: 1;
 }
@@ -351,7 +351,7 @@
   margin: 0 0 2.2cqw;
   color: #efd899;
   font-size: clamp(7px, 1.08cqw, 10px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .24em;
   line-height: 1;
 }
@@ -362,8 +362,8 @@
   overflow: hidden;
   color: #f7fbf9;
   font-size: clamp(14px, 3.25cqw, 29px);
-  font-weight: 800;
-  letter-spacing: -.045em;
+  font-weight:600;
+  letter-spacing:-.025em;
   line-height: 1.18;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -390,7 +390,7 @@
   overflow: hidden;
   color: #f0cf75;
   font-size: clamp(9px, 1.7cqw, 15px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .11em;
   line-height: 1.2;
   text-overflow: ellipsis;
@@ -410,7 +410,7 @@
 .member-identity-details span:first-child {
   color: #efd899;
   font-size: clamp(7px, 1.05cqw, 10px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .18em;
   line-height: 1.1;
 }
@@ -420,7 +420,7 @@
   overflow: hidden;
   color: #d8e6e1;
   font-size: clamp(7px, 1.15cqw, 11px);
-  font-weight: 700;
+  font-weight:600;
   letter-spacing: .09em;
   line-height: 1.2;
   text-overflow: ellipsis;
@@ -469,7 +469,7 @@
   color: #e9c86d;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(11px, 2.75cqw, 24px);
-  font-weight: 700;
+  font-weight:600;
   letter-spacing: .04em;
 }
 
@@ -477,7 +477,7 @@
   top: 9.3cqw;
   color: rgba(239, 216, 153, .86);
   font-size: clamp(5px, .78cqw, 8px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .16em;
 }
 
@@ -495,7 +495,7 @@
   border-top: 1px solid rgba(255, 255, 255, .18);
   color: #d9e5e0;
   font-size: clamp(8px, 1.28cqw, 12px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .11em;
   line-height: 1;
   white-space: nowrap;
@@ -545,7 +545,7 @@
 .member-verification small {
   color: #9bb5ab;
   font-size: clamp(5.5px, 1.02cqw, 9px);
-  font-weight: 700;
+  font-weight:600;
   letter-spacing: .1em;
 }
 
@@ -554,7 +554,7 @@
   overflow: hidden;
   color: #f2f6f4;
   font-size: clamp(6px, 1.12cqw, 10px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .06em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -568,7 +568,7 @@
   margin: 0;
   color: rgba(239, 216, 153, .78);
   font-size: clamp(4.5px, .7cqw, 7px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .12em;
   line-height: 1;
 }
@@ -622,7 +622,7 @@
   gap: 2cqw;
   color: #efd477;
   font-size: clamp(6px, .95cqw, 9px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .2em;
   line-height: 1;
   white-space: nowrap;
@@ -649,7 +649,7 @@
   margin: 0;
   color: rgba(232, 195, 105, .5);
   font-size: clamp(4.5px, .72cqw, 6px);
-  font-weight: 700;
+  font-weight:600;
   letter-spacing: .25em;
   line-height: 1;
   white-space: nowrap;
@@ -672,7 +672,7 @@
   margin-bottom: 1cqw;
   color: #efd477;
   font-size: clamp(6px, .95cqw, 9px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .14em;
   line-height: 1;
   white-space: nowrap;
@@ -691,7 +691,7 @@
     #f1eee5;
   color: rgba(64, 76, 71, .42);
   font-size: clamp(8px, 1.45cqw, 13px);
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .08em;
   white-space: nowrap;
 }
@@ -718,7 +718,7 @@
   color: #6d7e77;
   font-size: clamp(6px, .92cqw, 8px);
   font-style: normal;
-  font-weight: 800;
+  font-weight:600;
   letter-spacing: .12em;
 }
 
@@ -865,7 +865,7 @@
   gap: 2cqw;
   color: #d8e2de;
   font-size: clamp(5px, .82cqw, 8px);
-  font-weight: 700;
+  font-weight:600;
   letter-spacing: .08em;
   line-height: 1;
   white-space: nowrap;
@@ -903,7 +903,7 @@
   box-shadow: 0 8px 22px rgba(3, 28, 25, .09);
   color: #654b16;
   font-size: 15px;
-  font-weight: 800;
+  font-weight:600;
   cursor: pointer;
 }
 

@@ -55,6 +55,8 @@ requireText("_headers", [
   "X-Frame-Options: DENY",
   "Referrer-Policy:",
   "Permissions-Policy:",
+  "Cross-Origin-Opener-Policy: same-origin-allow-popups",
+  "X-Permitted-Cross-Domain-Policies: none",
   "Cache-Control: no-store",
   "X-Robots-Tag: noindex"
 ]);

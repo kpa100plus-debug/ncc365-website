@@ -7,6 +7,8 @@
 
 <title>NCC 관리자 회원관리</title>
 
+<link rel="stylesheet" href="css/ncc-fonts.css?v=20260826-1">
+
 <style>
 
 *{
@@ -38,14 +40,7 @@ box-sizing:border-box;
 body{
 margin:0;
 
-font-family:
--apple-system,
-BlinkMacSystemFont,
-"Segoe UI",
-"Apple SD Gothic Neo",
-"Malgun Gothic",
-Arial,
-sans-serif;
+font-family:"Noto Sans KR Variable","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 
 background:var(--bg);
 color:var(--text);
@@ -54,7 +49,7 @@ letter-spacing:-.02em;
 
 font-weight:400;
 
--webkit-font-smoothing:antialiased;
+font-synthesis:none;
 }
 
 
@@ -68,7 +63,7 @@ h1{
 margin:0 0 7px;
 
 font-size:32px;
-font-weight:700;
+font-weight:600;
 
 color:#27382f;
 }
@@ -154,6 +149,8 @@ font-weight:600;
 cursor:pointer;
 
 transition:.15s;
+
+min-height:44px;
 }
 
 
@@ -196,7 +193,7 @@ box-shadow:
 margin:0 0 10px;
 
 font-size:26px;
-font-weight:700;
+font-weight:600;
 }
 
 
@@ -284,7 +281,7 @@ margin-top:5px;
 
 font-size:28px;
 
-font-weight:700;
+font-weight:600;
 
 color:#29382f;
 }
@@ -572,7 +569,7 @@ margin:0;
 
 font-size:25px;
 
-font-weight:700;
+font-weight:600;
 
 color:#293a31;
 }
@@ -1125,7 +1122,7 @@ td:nth-child(9){
 /* 회원번호 */
 td:nth-child(1){
   color:#2f614a;
-  font-weight:700;
+  font-weight:600;
   letter-spacing:-.02em;
 }
 
@@ -1389,9 +1386,9 @@ td:nth-child(11){
   white-space:nowrap;
 }
 
-.bulk-status-ok{ color:#2f6f50; font-weight:700; }
-.bulk-status-dup{ color:#a57b38; font-weight:700; }
-.bulk-status-err{ color:#b95d58; font-weight:700; }
+.bulk-status-ok{ color:#2f6f50; font-weight:600; }
+.bulk-status-dup{ color:#a57b38; font-weight:600; }
+.bulk-status-err{ color:#b95d58; font-weight:600; }
 
 .bulk-note{
   margin-top:12px;
@@ -1467,7 +1464,7 @@ td:nth-child(11){
     font-weight:600;
   }
 
-  .table-wrap td:nth-child(1){grid-column:1 / -1; background:#f3f8f5; color:#2f674d; font-weight:700; font-size:16px !important;}
+  .table-wrap td:nth-child(1){grid-column:1 / -1; background:#f3f8f5; color:#2f674d; font-weight:600; font-size:16px !important;}
   .table-wrap td:nth-child(1)::before{content:"NCC 회원번호";}
   .table-wrap td:nth-child(2)::before{content:"이름";}
   .table-wrap td:nth-child(4)::before{content:"연락처";}
@@ -1490,7 +1487,7 @@ td:nth-child(11){
     width:100% !important;
     min-height:42px !important;
     font-size:14px !important;
-    font-weight:700 !important;
+    font-weight:600 !important;
   }
 
   .table-wrap .cell-ellipsis{
@@ -1513,7 +1510,7 @@ td:nth-child(11){
 }
 h1{
   font-size:29px !important;
-  letter-spacing:-.04em;
+  letter-spacing:-.025em;
 }
 .info{
   margin-bottom:17px !important;
@@ -1653,7 +1650,7 @@ th,td{
     grid-column:2 !important;
     background:#f2f7f4 !important;
     font-size:11px !important;
-    font-weight:700 !important;
+    font-weight:600 !important;
     border-bottom:1px solid #e3ebe6 !important;
   }
   .table-wrap td:nth-child(1)::before{content:"번호" !important;}
@@ -1770,6 +1767,14 @@ th,td{
   }
 }
 
+/* REF-NCC-WEBSITE-PERFECT-AUDIT-14: mobile readability floor */
+@media(max-width:700px){
+  body{font-size:16px;line-height:1.65}
+  input,select,textarea{font-size:16px!important;line-height:1.5}
+  button{min-height:44px;font-size:15px!important;line-height:1.35}
+  .login-box p,.info,.member-meta,.member-card p,.modal label{font-size:14px!important;line-height:1.55}
+}
+
 </style>
 </head>
 
@@ -1794,13 +1799,13 @@ NCC 관리자 로그인
 </p>
 
 <input
-id="adminEmail"
+id="adminEmail" aria-label="관리자 이메일"
 type="email"
 placeholder="관리자 이메일"
 autocomplete="username">
 
 <input
-id="adminPassword"
+id="adminPassword" aria-label="관리자 비밀번호"
 type="password"
 placeholder="비밀번호"
 autocomplete="current-password">
@@ -1897,21 +1902,21 @@ class="search-box"
 type="text"
 placeholder="회원번호, 이름, 연락처, 지역, 이메일, 추천인, 센터 검색">
 
-<select id="memberTypeFilter" class="filter-box">
+<select id="memberTypeFilter" aria-label="회원유형 필터" class="filter-box">
 <option value="">전체 회원유형</option>
 <option value="consumer">소비자회원</option>
 <option value="corporate">법인사업자</option>
 <option value="soleProprietor">개인사업자</option>
 </select>
 
-<select id="statusFilter" class="filter-box">
+<select id="statusFilter" aria-label="상태 필터" class="filter-box">
 <option value="">전체 상태</option>
 <option value="active">활성</option>
 <option value="paused">정지</option>
 <option value="blocked">차단</option>
 </select>
 
-<select id="gradeFilter" class="filter-box">
+<select id="gradeFilter" aria-label="관리등급 필터" class="filter-box">
 <option value="">전체 관리등급</option>
 <option value="general">일반</option>
 <option value="priority">우선관리</option>
@@ -2140,7 +2145,7 @@ class="tab-panel active">
 이름
 </label>
 
-<input id="editName">
+<input id="editName" aria-label="회원 이름">
 
 </div>
 
@@ -2151,7 +2156,7 @@ class="tab-panel active">
 연락처
 </label>
 
-<input id="editPhone">
+<input id="editPhone" aria-label="회원 연락처">
 
 </div>
 
@@ -2188,7 +2193,7 @@ type="date">
 성별
 </label>
 
-<select id="editGender">
+<select id="editGender" aria-label="성별">
 
 <option value="">
 미입력
@@ -2230,7 +2235,7 @@ class="readonly-box">
 거주지역 / 주소
 </label>
 
-<input id="editRegion">
+<input id="editRegion" aria-label="회원 지역">
 
 </div>
 
@@ -2241,7 +2246,7 @@ class="readonly-box">
 관심 혜택
 </label>
 
-<select id="editBenefit">
+<select id="editBenefit" aria-label="관심 혜택">
 
 <option value="전체 혜택">
 전체 혜택
@@ -2274,7 +2279,7 @@ class="readonly-box">
 반려동물 보유 여부
 </label>
 
-<select id="editHasPet">
+<select id="editHasPet" aria-label="반려동물 여부">
 
 <option value="">
 미입력
@@ -2324,7 +2329,7 @@ class="tab-panel">
 추천인
 </label>
 
-<input id="editReferrer">
+<input id="editReferrer" aria-label="추천인">
 
 </div>
 
@@ -2335,7 +2340,7 @@ class="tab-panel">
 추천코드
 </label>
 
-<input id="editReferralCode">
+<input id="editReferralCode" aria-label="추천코드">
 
 </div>
 
@@ -2359,7 +2364,7 @@ placeholder="예: 서울특별시 강남구 삼성동 소비자센터">
 센터코드
 </label>
 
-<input id="editCenterCode">
+<input id="editCenterCode" aria-label="센터코드">
 
 </div>
 
@@ -2391,7 +2396,7 @@ class="tab-panel">
 회원 상태
 </label>
 
-<select id="editStatus">
+<select id="editStatus" aria-label="회원 상태">
 
 <option value="active">
 활성
@@ -2416,7 +2421,7 @@ class="tab-panel">
 관리등급
 </label>
 
-<select id="editManagementGrade">
+<select id="editManagementGrade" aria-label="관리등급">
 
 <option value="general">
 일반
