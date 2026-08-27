@@ -70,7 +70,9 @@ async function firebaseConfig(token, init = {}) {
     const violations = Array.isArray(body?.error?.details)
       ? body.error.details.flatMap(detail => detail?.fieldViolations || []).map(item => String(item?.field || "").slice(0, 160)).filter(Boolean).join(",")
       : "";
-    throw new Error(`Firebase email configuration request failed (HTTP ${response.status}, ${status}${violations ? `, fields: ${violations}` : ""}): ${message}`);
+    const error = new Error(`Firebase email configuration request failed (HTTP ${response.status}, ${status}${violations ? `, fields: ${violations}` : ""}): ${message}`);
+    error.code = status;
+    throw error;
   }
   return body;
 }
@@ -79,10 +81,18 @@ async function main() {
   const token = await accessToken(serviceAccount());
   const current = await firebaseConfig(token);
   const sendEmail = current.notification?.sendEmail || {};
-  await firebaseConfig(token, {
-    method: "PATCH",
-    body: JSON.stringify({ notification: { defaultLocale: "ko", sendEmail: { callbackUri: EXPECTED_CALLBACK, resetPasswordTemplate: koreanResetTemplate(sendEmail.resetPasswordTemplate) } } }),
-  });
+  try {
+    await firebaseConfig(token, {
+      method: "PATCH",
+      body: JSON.stringify({ notification: { defaultLocale: "ko", sendEmail: { callbackUri: EXPECTED_CALLBACK, resetPasswordTemplate: koreanResetTemplate(sendEmail.resetPasswordTemplate) } } }),
+    });
+  } catch (error) {
+    if (error?.code === "INVALID_ARGUMENT" && error.message.includes("EMAIL_TEMPLATE_UPDATE_NOT_ALLOWED")) {
+      console.warn("::warning::Firebase requires the password-reset template to be updated in the Authentication console; continuing with the verified NCC custom reset screen.");
+      return;
+    }
+    throw error;
+  }
   const verified = await firebaseConfig(token);
   assertKoreanResetConfig(verified);
   console.log("NCC Korean Firebase password-reset email is configured and verified.");
