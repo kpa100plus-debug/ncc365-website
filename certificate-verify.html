@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>공식 인증서 진위확인 | 전국소비자클럽</title>
-  <meta name="description" content="전국소비자클럽이 발급한 인증서의 인증번호와 현재 상태를 확인합니다.">
+  <title>회원·인증서 공식 진위확인 | 전국소비자클럽</title>
+  <meta name="description" content="전국소비자클럽 회원번호와 NCC 발급 인증번호의 현재 상태를 확인합니다.">
   <link rel="stylesheet" href="css/platform.css?v=20260826-1">
   <link rel="stylesheet" href="css/certificate-verify.css?v=20260824-1">
 </head>
@@ -12,23 +12,23 @@
 <main id="mainContent" class="platform-main">
   <section class="page-hero verification-hero">
     <p class="hero-kicker">NCC OFFICIAL VERIFICATION</p>
-    <h1>공식 인증서<br>진위확인</h1>
-    <p class="lead">인증서의 QR을 촬영하거나 인증번호를 입력하면 발급 여부와 현재 상태를 확인할 수 있습니다.</p>
+    <h1>회원·인증서<br>공식 진위확인</h1>
+    <p class="lead">회원카드의 QR을 촬영하거나 회원번호·인증번호를 입력하면 현재 상태를 확인할 수 있습니다.</p>
   </section>
 
   <section class="platform-section paper verification-section">
     <div class="verify-shell">
       <div class="verify-heading">
-        <p class="eyebrow">CERTIFICATE LOOKUP</p>
-        <h2>인증번호 조회</h2>
-        <p>인증서 오른쪽 상단에 표시된 번호를 하이픈까지 그대로 입력해 주세요.</p>
+        <p class="eyebrow">OFFICIAL LOOKUP</p>
+        <h2>회원번호·인증번호 조회</h2>
+        <p>회원카드 또는 인증서에 표시된 번호를 하이픈까지 그대로 입력해 주세요.</p>
       </div>
 
       <form id="verifyForm" class="verify-form" novalidate>
-        <label for="certificateNumber">인증번호</label>
+        <label for="certificateNumber">회원번호 또는 인증번호</label>
         <div class="verify-input-row">
           <input id="certificateNumber" name="id" inputmode="latin" autocomplete="off"
-                 maxlength="50" placeholder="예: NCC-EC-2026-FD-0001" required>
+                 maxlength="50" placeholder="예: NCC-C-000011 또는 NCC-EC-2026-FD-0001" required>
           <button type="submit">공식 조회</button>
         </div>
       </form>
@@ -45,22 +45,17 @@
           </div>
         </div>
         <dl class="certificate-data">
-          <div><dt>인증번호</dt><dd id="resultNumber"></dd></div>
-          <div><dt>인증서명</dt><dd id="resultTitle"></dd></div>
-          <div><dt>기업·선정대상</dt><dd id="resultRecipient"></dd></div>
-          <div><dt>선정부문</dt><dd id="resultCategory"></dd></div>
-          <div><dt>발급일</dt><dd id="resultIssuedAt"></dd></div>
-          <div><dt>현재상태</dt><dd id="resultStatus"></dd></div>
-          <div><dt>선정지역</dt><dd id="resultRegion"></dd></div>
+          <div><dt>조회 대상 유형</dt><dd id="resultType"></dd></div>
+          <div><dt>회원번호 또는 인증번호</dt><dd id="resultNumber"></dd></div>
+          <div><dt>이름</dt><dd id="resultName"></dd></div>
+          <div><dt>현재 상태</dt><dd id="resultStatus"></dd></div>
+          <div><dt>가입일 또는 발급일</dt><dd id="resultDate"></dd></div>
+          <div><dt>유효 여부</dt><dd id="resultValidity"></dd></div>
           <div><dt>발급기관</dt><dd id="resultIssuer"></dd></div>
         </dl>
         <a id="certificateImageLink" class="certificate-image-link" href="#" target="_blank" rel="noopener" hidden>인증서 이미지 확인</a>
       </section>
 
-      <aside class="verification-notice">
-        <strong>확인 안내</strong>
-        <p>이 서비스는 전국소비자클럽이 자체 발급한 민간 인증서의 발급 사실과 현재 상태를 확인하는 기능입니다. 정부기관의 인증 또는 국가공인 자격을 의미하지 않습니다.</p>
-      </aside>
     </div>
   </section>
 </main>

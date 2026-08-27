@@ -59,6 +59,8 @@ $("#adminLogoutButton").addEventListener("click", () => signOut(auth));
 $("#accountRefresh").addEventListener("click", loadAll);
 $("#restrictionRefresh").addEventListener("click", loadAll);
 $("#logRefresh").addEventListener("click", loadAll);
+$("#recoveryRefresh").addEventListener("click", loadAll);
+$("#recoverySearch").addEventListener("input", renderRecovery);
 $("#requestSearch").addEventListener("input", renderRequests);
 $("#requestStatus").addEventListener("change", renderRequests);
 $("#restrictionSearch").addEventListener("input", renderRestrictions);
@@ -78,6 +80,7 @@ onAuthStateChanged(auth, async user => {
 function switchTab(name) {
   document.querySelectorAll("[data-account-tab]").forEach(button => button.classList.toggle("active", button.dataset.accountTab === name));
   $("#requestPanel").hidden = name !== "requests";
+  $("#recoveryPanel").hidden = name !== "recovery";
   $("#restrictionPanel").hidden = name !== "restrictions";
   $("#logPanel").hidden = name !== "logs";
 }
@@ -99,13 +102,102 @@ async function loadAll() {
     restrictionsById = new Map(restrictionSnapshot.docs.map(item => [item.id, { id: item.id, ...item.data() }]));
     renderSummary();
     renderRequests();
+    renderRecovery();
     renderRestrictions();
     renderLogs();
+    try { await syncPublicAccountIndexes(); }
+    catch (syncError) { console.warn("Public account indexes could not be synchronized.", syncError); }
   } catch (error) {
     console.error(error);
     $("#requestList").innerHTML = '<div class="role-empty">탈퇴요청을 불러오지 못했습니다. 관리자 권한을 확인해 주세요.</div>';
     $("#restrictionList").innerHTML = '<div class="role-empty">회원 제한정보를 불러오지 못했습니다.</div>';
     $("#logList").innerHTML = '<div class="role-empty">계정변경 로그를 불러오지 못했습니다.</div>';
+  }
+}
+
+async function accountApi(path, payload) {
+  const response = await fetch(`/api/account/${path}`, {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: `Bearer ${await auth.currentUser.getIdToken()}` },
+    body: JSON.stringify(payload)
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || body.ok === false) throw new Error(body.message || "계정 복구 요청을 처리하지 못했습니다.");
+  return body;
+}
+
+function joinedAtValue(member) {
+  const value = member.joinDate || member.createdAt;
+  return value?.toDate?.()?.toISOString?.() || (typeof value === "string" ? value : "");
+}
+
+async function syncPublicAccountIndexes() {
+  const members = [...membersById.values()].map(member => ({
+    memberNumber: member.memberNumber, memberType: member.memberType || "consumer",
+    name: member.name || "", status: member.status || "active", joinedAt: joinedAtValue(member),
+    email: member.email || "", phone: member.phone || ""
+  }));
+  if (!members.length) return;
+  for (let start = 0; start < members.length; start += 500) {
+    await accountApi("admin/sync", { members: members.slice(start, start + 500) });
+  }
+  const configResponse = await fetch("/api/account/config", { headers: { accept: "application/json" } });
+  const config = await configResponse.json().catch(() => ({}));
+  if (config.adminAccountManagement === true) {
+    await accountApi("admin/configure-reset-template", {});
+  }
+}
+
+function renderRecovery() {
+  const word = $("#recoverySearch").value.trim().toLowerCase();
+  const members = [...membersById.values()].filter(member =>
+    !word || [member.name, member.memberNumber, member.email, member.phone].join(" ").toLowerCase().includes(word)
+  );
+  $("#recoveryList").innerHTML = members.length ? members.map(member => `<article class="recovery-card">
+    <h3>${escapeHtml(member.name || "회원")} · ${escapeHtml(member.memberNumber || "번호 없음")}</h3>
+    <p>${escapeHtml(member.email || "이메일 없음")} · ${escapeHtml(member.phone || "연락처 없음")}</p>
+    <div class="recovery-controls"><input id="recovery-email-${member.id}" type="email" value="${escapeHtml(member.email || "")}" aria-label="${escapeHtml(member.name || "회원")} 변경 이메일"><input id="recovery-reason-${member.id}" maxlength="500" placeholder="본인확인 방법과 처리 사유" aria-label="${escapeHtml(member.name || "회원")} 처리 사유"></div>
+    <div class="recovery-actions"><button class="account-action" data-reset-account="${member.id}" type="button">재설정 메일 재발송</button><button class="account-action" data-email-account="${member.id}" type="button">가입 이메일 변경</button><button class="account-action danger" data-temp-account="${member.id}" type="button">1회용 임시 비밀번호 발급</button></div>
+    <div id="temporary-password-${member.id}" class="temporary-password" hidden></div>
+  </article>`).join("") : '<div class="role-empty">조건에 맞는 회원이 없습니다.</div>';
+  document.querySelectorAll("[data-reset-account]").forEach(button => button.onclick = () => recoverAccount(button.dataset.resetAccount, "reset"));
+  document.querySelectorAll("[data-email-account]").forEach(button => button.onclick = () => recoverAccount(button.dataset.emailAccount, "email"));
+  document.querySelectorAll("[data-temp-account]").forEach(button => button.onclick = () => recoverAccount(button.dataset.tempAccount, "temporary"));
+}
+
+async function recoverAccount(memberId, action) {
+  const member = membersById.get(memberId);
+  const reason = $("#recovery-reason-" + memberId).value.trim();
+  const nextEmail = $("#recovery-email-" + memberId).value.trim().toLowerCase();
+  if (!member || !reason) { $("#recoveryMessage").textContent = "본인확인 방법과 처리 사유를 입력해 주세요."; return; }
+  if (!confirm(`${member.name || "회원"} 계정 복구 작업을 실행하고 감사기록을 남기시겠습니까?`)) return;
+  $("#recoveryMessage").textContent = "권한과 계정정보를 확인하고 있습니다.";
+  try {
+    if (action === "reset") {
+      await accountApi("admin/reset-password", { email: member.email, memberNumber: member.memberNumber, reason });
+      $("#recoveryMessage").textContent = "NCC 한글 비밀번호 재설정 메일을 재발송했습니다.";
+    } else if (action === "email") {
+      const result = await accountApi("admin/update-email", { uid: member.authUid, memberNumber: member.memberNumber, beforeEmail: member.email, email: nextEmail, reason });
+      const batch = writeBatch(db);
+      batch.update(doc(db, "members", memberId), { email: result.email, emailVerified: false, updatedAt: serverTimestamp() });
+      batch.set(doc(collection(db, "accountChangeLogs")), { memberId, memberNumber: member.memberNumber, memberName: member.name, actorUid: auth.currentUser.uid, actorEmail: auth.currentUser.email, actorType: "admin", eventType: "email_synced", changedFields: ["가입 이메일"], before: { email: member.email.replace(/(^.).*(@.*$)/, "$1***$2") }, after: { email: result.email.replace(/(^.).*(@.*$)/, "$1***$2") }, description: reason, createdAt: serverTimestamp() });
+      await batch.commit();
+      $("#recoveryMessage").textContent = "가입 이메일을 변경했습니다. 새 이메일 인증이 필요합니다.";
+      await loadAll();
+    } else {
+      const result = await accountApi("admin/temporary-password", { uid: member.authUid, memberNumber: member.memberNumber, reason });
+      const batch = writeBatch(db);
+      batch.update(doc(db, "members", memberId), { mustChangePassword: true, temporaryPasswordIssuedAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      batch.set(doc(collection(db, "accountChangeLogs")), { memberId, memberNumber: member.memberNumber, memberName: member.name, actorUid: auth.currentUser.uid, actorEmail: auth.currentUser.email, actorType: "admin", eventType: "password_reset_requested", changedFields: ["1회용 임시 비밀번호", "다음 로그인 변경 요구"], before: { password: "조회 불가" }, after: { mustChangePassword: true }, description: reason, createdAt: serverTimestamp() });
+      await batch.commit();
+      const box = $("#temporary-password-" + memberId);
+      box.textContent = `1회만 전달할 임시 비밀번호: ${result.temporaryPassword}`;
+      box.hidden = false;
+      $("#recoveryMessage").textContent = "임시 비밀번호를 발급했습니다. 화면을 벗어나면 다시 확인할 수 없습니다.";
+    }
+  } catch (error) {
+    console.error(error);
+    $("#recoveryMessage").textContent = error.message || "계정 복구 작업을 완료하지 못했습니다.";
   }
 }
 

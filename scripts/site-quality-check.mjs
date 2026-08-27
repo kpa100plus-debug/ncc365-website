@@ -87,6 +87,11 @@ if (!readFileSync("js/platform-shell.js", "utf8").includes("© 2026 ISEA GROUP. 
   findings.push("js/platform-shell.js: missing required footer rights notice");
 }
 
+const functionRoutes = JSON.parse(readFileSync("_routes.json", "utf8"));
+for (const requiredRoute of ["/api/payments/*", "/api/account/*"]) {
+  if (!functionRoutes.include?.includes(requiredRoute)) findings.push(`_routes.json: missing ${requiredRoute}`);
+}
+
 if (findings.length) {
   console.error("NCC site quality check failed:");
   for (const finding of [...new Set(findings)]) console.error(`- ${finding}`);

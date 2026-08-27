@@ -266,7 +266,7 @@ function renderGroupBuyOrders() {
           ${order.adminMemo ? `<div><dt>관리자 안내</dt><dd>${safe(order.adminMemo)}</dd></div>` : ""}
         </dl>
         ${paymentPanel}
-        <a href="groupbuy-detail.html?id=${encodeURIComponent(order.productId)}">상품 상세 보기</a>
+        <a href="order-detail.html?id=${encodeURIComponent(order.id)}">신청내역 상세보기</a>
       </article>`;
   }).join("") : '<div class="empty-state">접수된 공동구매 주문이 없습니다.</div>';
   list.querySelectorAll("[data-test-payment]").forEach(button => {

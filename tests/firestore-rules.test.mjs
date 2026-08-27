@@ -181,6 +181,26 @@ const groupBuyOrder = (memberId, email, overrides = {}) => ({
   adminMemo: "",
   status: "new",
   source: "website",
+  snapshotVersion: 1,
+  productSnapshot: {
+    title: "공동구매 보안규칙 테스트",
+    image: "images/NCC_consumer.jpg",
+    description: "신청 시점 설명",
+    option: "기본 옵션",
+    unitPrice: 10000,
+    regularPrice: 12000,
+    shipping: "모집 확정 후 안내",
+    supplier: "NCC 제휴 파트너"
+  },
+  deliverySnapshot: {
+    recipient: "테스트 회원",
+    phone: "010-1234-5678",
+    postalCode: "04524",
+    address: "서울특별시 중구 세종대로 110",
+    addressDetail: "보안규칙 테스트",
+    request: ""
+  },
+  applicationSnapshot: { quantity: 1, unitPrice: 10000, totalPrice: 10000, region: "서울특별시" },
   createdAt: serverTimestamp(),
   updatedAt: serverTimestamp(),
   ...overrides
@@ -253,6 +273,17 @@ test("active member can create a group-buy order but paused member cannot", asyn
       receipt: "NCC-G-260825-67890"
     })
   ));
+});
+
+test("member may clear only their own forced-password flag", async () => {
+  await seedMember("password-member", { mustChangePassword: true });
+  const memberDb = testEnv.authenticatedContext("password-member", { email: "password-member@example.com", email_verified: true }).firestore();
+  await assertSucceeds(updateDoc(doc(memberDb, "members", "password-member"), {
+    mustChangePassword: false, temporaryPasswordChangedAt: serverTimestamp(), updatedAt: serverTimestamp()
+  }));
+  await assertFails(updateDoc(doc(memberDb, "members", "password-member"), {
+    mustChangePassword: true, updatedAt: serverTimestamp()
+  }));
 });
 
 test("admin alone can update group-buy payment and delivery progress", async () => {
