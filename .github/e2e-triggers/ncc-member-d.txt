@@ -1,7 +1,7 @@
-reference=REF-NCC-WEBSITE-PERFECT-AUDIT-14
+reference=REF-NCC-WALLET-VERIFICATION-ACCOUNT-FIX-MASTER-05
 member=NCC-C-000016
 scope=post-website-audit-payment-and-feedback-lifecycle-regression
-updated=2026-08-26
-requested_at=2026-08-26T20:05:00+09:00
+updated=2026-08-27
+requested_at=2026-08-27T17:50:00+09:00
 mode=protected-reversible
-reason=verify-review-form-reference-and-complete-cleanup-lifecycles
+reason=verify-unified-member-account-recovery-order-snapshot-and-cleanup-lifecycles

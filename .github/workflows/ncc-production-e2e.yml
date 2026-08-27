@@ -13,6 +13,16 @@ on:
       - main
     paths:
       - ".github/e2e-triggers/ncc-member-d.txt"
+      - ".github/scripts/ncc-d-e2e.mjs"
+      - ".github/workflows/ncc-production-e2e.yml"
+      - "functions/api/account/**"
+      - "functions/api/payments/**"
+      - "certificate-verify.*"
+      - "wallet-login.*"
+      - "admin-accounts.*"
+      - "groupbuy-apply.*"
+      - "order-detail.*"
+      - "firestore.rules"
 
 permissions:
   contents: read
@@ -76,7 +86,9 @@ jobs:
           expected_deploy="$(tr -d '\r\n' < deploy-version.txt)"
           for attempt in $(seq 1 24); do
             deployed="$(curl --fail --silent --show-error "https://ncc365.com/deploy-version.txt?run=${GITHUB_RUN_ID}-${attempt}" | tr -d '\r\n' || true)"
-            if [ "$deployed" = "$expected_deploy" ] && curl --fail --silent --show-error https://ncc365.com/api/payments/config | jq -e '.enabled == true and .mode == "test" and .realCharge == false and .auditVersion == "2026-08-26-admin-route-auth"' > /dev/null; then
+            if [ "$deployed" = "$expected_deploy" ] \
+              && curl --fail --silent --show-error https://ncc365.com/api/payments/config | jq -e '.enabled == true and .mode == "test" and .realCharge == false and .auditVersion == "2026-08-26-admin-route-auth"' > /dev/null \
+              && curl --fail --silent --show-error https://ncc365.com/api/account/config | jq -e '.ok == true and .emailRecovery == true' > /dev/null; then
               exit 0
             fi
             sleep 15
