@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - ".github/scripts/configure-ncc-firebase-email.mjs"
       - ".github/scripts/configure-ncc-payment-pages.mjs"
       - ".github/workflows/ncc-payment-provision.yml"
       - "functions/api/payments/**"
