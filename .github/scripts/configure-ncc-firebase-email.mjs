@@ -64,7 +64,14 @@ async function firebaseConfig(token, init = {}) {
     headers: { authorization: `Bearer ${token}`, ...(init.body ? { "content-type": "application/json" } : {}) },
   });
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(`Firebase email configuration request failed (HTTP ${response.status})`);
+  if (!response.ok) {
+    const status = String(body?.error?.status || "UNKNOWN").replace(/[^A-Z0-9_]/g, "").slice(0, 80);
+    const message = String(body?.error?.message || "request rejected").replace(/[\r\n]+/g, " ").slice(0, 500);
+    const violations = Array.isArray(body?.error?.details)
+      ? body.error.details.flatMap(detail => detail?.fieldViolations || []).map(item => String(item?.field || "").slice(0, 160)).filter(Boolean).join(",")
+      : "";
+    throw new Error(`Firebase email configuration request failed (HTTP ${response.status}, ${status}${violations ? `, fields: ${violations}` : ""}): ${message}`);
+  }
   return body;
 }
 
