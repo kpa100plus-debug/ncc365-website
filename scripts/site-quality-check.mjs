@@ -38,6 +38,7 @@ for (const file of htmlFiles) {
 
   for (const match of content.matchAll(/<(a|link|script|img|source)\b[^>]*(?:href|src)=["']([^"']+)["'][^>]*>/gi)) {
     const [, tag, target] = match;
+    if (target.includes("${")) continue;
     if (/^(?:https?:|mailto:|tel:|data:|javascript:)/i.test(target)) continue;
     if (target === "#") {
       if (!/id=["']certificateImageLink["']/.test(match[0])) findings.push(`${file}: dead ${tag} target href="#"`);
