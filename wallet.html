@@ -38,7 +38,21 @@
             </div>
             <button class="ncc-button gold" type="submit">회원 로그인</button>
           </form>
-          <button class="text-button" id="resetPassword" type="button">비밀번호 찾기·재설정</button>
+          <div class="wallet-recovery-links">
+            <button class="text-button" id="findEmailToggle" type="button" aria-expanded="false" aria-controls="findEmailArea">가입 이메일 찾기</button>
+            <button class="text-button" id="resetPassword" type="button">비밀번호 재설정</button>
+          </div>
+          <section id="findEmailArea" class="wallet-find-email" hidden aria-labelledby="findEmailTitle">
+            <h3 id="findEmailTitle">가입 이메일 찾기</h3>
+            <p>가입할 때 입력한 이름과 휴대전화 번호를 확인한 뒤 이메일 일부만 표시합니다.</p>
+            <form id="findEmailForm" class="wallet-form">
+              <div class="field"><label for="findEmailName">이름</label><input id="findEmailName" name="name" autocomplete="name" maxlength="50" required></div>
+              <div class="field"><label for="findEmailPhone">휴대전화</label><input id="findEmailPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="010-0000-0000" required></div>
+              <button class="ncc-button" type="submit">본인정보 확인</button>
+            </form>
+            <p id="findEmailMessage" class="recovery-message" role="status" aria-live="polite"></p>
+            <a class="wallet-admin-help" href="mailto:help@ncc365.com?subject=NCC%20가입%20이메일%20확인%20요청">본인확인이 어려우면 관리자 확인 요청</a>
+          </section>
         </div>
 
         <aside class="form-panel wallet-access-panel" aria-labelledby="firstAccessTitle">
@@ -81,6 +95,18 @@
         <button class="ncc-button" id="resendVerification">인증메일 다시 보내기</button>
         <button class="text-button logout-button" type="button">로그아웃</button>
         <p id="verifyMessage" role="status"></p>
+      </section>
+
+      <section id="forcedPasswordArea" class="form-panel" hidden>
+        <p class="eyebrow">SECURITY UPDATE</p><h2>새 비밀번호로 변경해 주세요</h2>
+        <p>관리자가 발급한 임시 비밀번호로 로그인했습니다. 계속 이용하려면 본인만 아는 새 비밀번호로 변경해야 합니다.</p>
+        <form id="forcedPasswordForm" class="wallet-form">
+          <div class="field"><label for="forcedPassword">새 비밀번호</label><input id="forcedPassword" name="password" type="password" minlength="8" autocomplete="new-password" required></div>
+          <div class="field"><label for="forcedPasswordConfirm">비밀번호 확인</label><input id="forcedPasswordConfirm" name="confirm" type="password" minlength="8" autocomplete="new-password" required></div>
+          <button class="ncc-button gold" type="submit">비밀번호 변경</button>
+        </form>
+        <p id="forcedPasswordMessage" role="status" aria-live="polite"></p>
+        <button class="text-button logout-button" type="button">로그아웃</button>
       </section>
 
       <section id="memberArea" hidden>
@@ -150,6 +176,7 @@
                   </div>
                   <div class="member-back-diamond" aria-hidden="true"><i></i></div>
                 </div>
+                <div id="memberQr" class="member-qr" aria-label="회원번호 공식 진위확인 QR"></div>
 
                 <div class="member-back-brand">
                   <div class="member-back-logo-wrap">
@@ -177,6 +204,7 @@
               <span aria-hidden="true">↻</span> 카드 뒷면 보기
             </button>
             <p>카드 자체를 눌러도 앞·뒷면이 전환됩니다.</p>
+            <a id="memberVerificationLink" class="member-verification-link" href="certificate-verify.html">회원번호 공식 진위확인</a>
           </div>
           <p id="cardFlipStatus" class="wallet-sr-only" aria-live="polite">카드 앞면이 표시되었습니다.</p>
         </div>
@@ -207,6 +235,7 @@
   </main>
 
   <script src="js/platform-shell.js?v=20260826-1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/qrcode.min.js" crossorigin="anonymous"></script>
   <script type="module" src="js/wallet.js?v=20260824-5"></script>
 </body>
 </html>

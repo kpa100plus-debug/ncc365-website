@@ -1,16 +1,18 @@
 import{initializeApp,getApps}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail,signOut,reload}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,collection,doc,getDoc,getDocs,query,where,limit}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail,signOut,reload,updatePassword}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,collection,doc,getDoc,getDocs,query,where,limit,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import{firebaseConfig}from"./platform-config.js";
 import{formatCardholderName,formatCardRegion,formatCardMemberType}from"./member-card-english.js?v=20260824-1";
 
 const app=getApps()[0]||initializeApp(firebaseConfig);
 const auth=getAuth(app);
+auth.languageCode="ko";
 const db=getFirestore(app);
 const $=selector=>document.querySelector(selector);
 const ADMIN_EMAIL="kpa100plus@gmail.com";
 const ROLE_ROUTES={center_manager:"center-dashboard.html",center_staff:"center-dashboard.html",partner:"partner-dashboard.html",corporate:"partner-dashboard.html",soleProprietor:"partner-dashboard.html",admin:"admin.html"};
 let currentUser;
+let forcedPasswordMemberId="";
 
 const memberCard=$("#memberCard");
 const memberCardFront=$("#memberCardFront");
@@ -56,6 +58,7 @@ onAuthStateChanged(auth,async user=>{
   $("#authArea").hidden=true;
   $("#authArea").style.display="none";
   $("#verifyArea").hidden=true;
+  $("#forcedPasswordArea").hidden=true;
   $("#memberArea").hidden=true;
   if(!user){
     sessionStorage.removeItem("nccMemberProfile");
@@ -79,7 +82,12 @@ onAuthStateChanged(auth,async user=>{
 $("#loginForm").onsubmit=async event=>{
   event.preventDefault();
   const data=Object.fromEntries(new FormData(event.currentTarget));
-  await action(()=>signInWithEmailAndPassword(auth,data.email.trim(),data.password),"로그인 정보를 확인해 주세요.");
+  const email=data.email.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    $("#authMessage").textContent="이메일 형식을 확인해 주세요.";
+    return;
+  }
+  await action(()=>signInWithEmailAndPassword(auth,email,data.password),"이메일 또는 비밀번호가 일치하지 않습니다.");
 };
 
 $("#signupForm").onsubmit=async event=>{
@@ -98,7 +106,36 @@ $("#resetPassword").onclick=async()=>{
     $("#authMessage").textContent="로그인 이메일을 먼저 입력해 주세요.";
     return;
   }
-  await action(()=>sendPasswordResetEmail(auth,email),"비밀번호 재설정 메일을 보내지 못했습니다.","비밀번호 재설정 메일을 보냈습니다.");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    $("#authMessage").textContent="이메일 형식을 확인해 주세요.";
+    return;
+  }
+  await action(()=>sendPasswordResetEmail(auth,email,{url:"https://ncc365.com/password-reset.html"}),"비밀번호 재설정 메일을 보내지 못했습니다.","입력한 이메일로 NCC 비밀번호 재설정 메일을 보냈습니다.");
+};
+
+$("#findEmailToggle").onclick=()=>{
+  const area=$("#findEmailArea");
+  area.hidden=!area.hidden;
+  $("#findEmailToggle").setAttribute("aria-expanded",String(!area.hidden));
+  if(!area.hidden)$("#findEmailName").focus();
+};
+
+$("#findEmailForm").onsubmit=async event=>{
+  event.preventDefault();
+  const form=event.currentTarget;
+  const data=Object.fromEntries(new FormData(form));
+  const target=$("#findEmailMessage");
+  target.textContent="본인정보를 확인하고 있습니다.";
+  try{
+    const response=await fetch("/api/account/recover-email",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({name:data.name.trim(),phone:data.phone})});
+    const body=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(body.message||"가입정보를 확인하지 못했습니다.");
+    target.textContent=body.found?`가입 이메일: ${body.maskedEmail}`:"일치하는 가입정보를 확인하지 못했습니다. 관리자 확인 요청을 이용해 주세요.";
+    if(body.found)form.reset();
+  }catch(error){
+    console.error(error);
+    target.textContent=error.message||"잠시 후 다시 시도해 주세요.";
+  }
 };
 
 $("#resendVerification").onclick=async()=>{
@@ -149,6 +186,11 @@ async function loadMember(user){
       $("#restrictedLogout").onclick=()=>signOut(auth);
       return;
     }
+    if(member.mustChangePassword===true){
+      forcedPasswordMemberId=member.id;
+      $("#forcedPasswordArea").hidden=false;
+      return;
+    }
     const role=member.memberType||"consumer";
     if(ROLE_ROUTES[role]){
       location.replace(ROLE_ROUTES[role]);
@@ -170,6 +212,18 @@ async function loadMember(user){
     cardNameElement.classList.toggle("is-very-long",cardName.length>32);
     cardNameElement.title=cardName;
     $("#memberNumber").textContent=member.memberNumber||"NUMBER PENDING";
+    const verificationLink=$("#memberVerificationLink");
+    if(verificationLink&&member.memberNumber){
+      const verificationUrl=`${location.origin}/certificate-verify.html?id=${encodeURIComponent(member.memberNumber)}`;
+      verificationLink.href=verificationUrl;
+      const qrTarget=$("#memberQr");
+      if(qrTarget&&typeof window.qrcode==="function"){
+        const qr=window.qrcode(0,"M");
+        qr.addData(verificationUrl);
+        qr.make();
+        qrTarget.innerHTML=qr.createSvgTag({cellSize:4,margin:2,scalable:true});
+      }
+    }
     $("#memberRegion").textContent=formatCardRegion(cardMember);
     $("#memberType").textContent=formatCardMemberType(role);
     $("#memberContact").textContent=`${member.phone||"연락처 미등록"} · ${member.email}`;
@@ -194,3 +248,22 @@ async function action(fn,errorText,successText="",target="#authMessage"){
     element.textContent=errorText;
   }
 }
+
+$("#forcedPasswordForm").onsubmit=async event=>{
+  event.preventDefault();
+  const data=Object.fromEntries(new FormData(event.currentTarget));
+  const message=$("#forcedPasswordMessage");
+  if(data.password.length<8){message.textContent="새 비밀번호는 8자 이상 입력해 주세요.";return}
+  if(data.password!==data.confirm){message.textContent="새 비밀번호와 비밀번호 확인이 일치하지 않습니다.";return}
+  message.textContent="비밀번호를 변경하고 있습니다.";
+  try{
+    await updatePassword(currentUser,data.password);
+    await updateDoc(doc(db,"members",forcedPasswordMemberId),{mustChangePassword:false,temporaryPasswordChangedAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    event.currentTarget.reset();
+    message.textContent="비밀번호 변경을 완료했습니다.";
+    location.reload();
+  }catch(error){
+    console.error(error);
+    message.textContent="비밀번호를 변경하지 못했습니다. 다시 로그인한 뒤 시도해 주세요.";
+  }
+};

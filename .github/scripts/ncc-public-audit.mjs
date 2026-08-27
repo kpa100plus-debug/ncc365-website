@@ -17,7 +17,7 @@ const routes = [
   "/centers.html", "/center.html", "/center-guide.html", "/center-dashboard.html",
   "/partner-center.html", "/partner.html", "/partner-dashboard.html",
   "/consumer-channel.html", "/consumer-on.html", "/consumer-tv.html",
-  "/certificate-verify.html", "/admin.html", "/admin-members.html",
+  "/certificate-verify.html", "/order-detail.html", "/password-reset.html", "/admin.html", "/admin-members.html",
   "/admin-applications.html", "/admin-inquiries.html", "/admin-groupbuy.html",
   "/admin-feedback.html", "/admin-certificates.html", "/admin-operations.html",
   "/admin-roles.html", "/admin-accounts.html", "/admin-payments",

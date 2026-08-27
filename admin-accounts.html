@@ -52,6 +52,7 @@
 
       <div class="account-tabs" role="tablist" aria-label="회원 계정관리 메뉴">
         <button class="account-tab active" type="button" data-account-tab="requests">탈퇴요청 처리</button>
+        <button class="account-tab" type="button" data-account-tab="recovery">계정 복구</button>
         <button class="account-tab" type="button" data-account-tab="restrictions">주의·블랙리스트</button>
         <button class="account-tab" type="button" data-account-tab="logs">계정변경 로그</button>
       </div>
@@ -71,6 +72,16 @@
         </div>
         <p id="requestMessage" class="role-status" aria-live="polite"></p>
         <div id="requestList" class="account-list"><div class="role-empty">탈퇴요청을 불러오고 있습니다.</div></div>
+      </section>
+
+      <section id="recoveryPanel" class="account-panel" hidden>
+        <div class="account-filter">
+          <input id="recoverySearch" aria-label="계정 복구 회원 검색" type="search" placeholder="회원명·회원번호·이메일·연락처 검색">
+          <button id="recoveryRefresh" class="role-button light" type="button">새로고침</button>
+        </div>
+        <p id="recoveryMessage" class="role-status" aria-live="polite"></p>
+        <div class="restriction-guide"><b>보안 원칙</b><span>기존 비밀번호는 조회하거나 저장하지 않습니다.</span><span>모든 복구 작업에는 사유와 관리자 감사기록이 남습니다.</span></div>
+        <div id="recoveryList" class="account-list"><div class="role-empty">회원정보를 불러오고 있습니다.</div></div>
       </section>
 
       <section id="restrictionPanel" class="account-panel" hidden>

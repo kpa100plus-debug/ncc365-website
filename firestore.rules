@@ -504,6 +504,16 @@ match /members/{memberId} {
     && request.resource.data.region.size() >= 1
     && request.resource.data.region.size() <= 200
     && request.resource.data.updatedAt == request.time;
+
+  allow update: if
+    ownsMember(memberId)
+    && resource.data.mustChangePassword == true
+    && request.resource.data.mustChangePassword == false
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "mustChangePassword", "temporaryPasswordChangedAt", "updatedAt"
+    ])
+    && request.resource.data.temporaryPasswordChangedAt == request.time
+    && request.resource.data.updatedAt == request.time;
 } 
 function ownsMember(memberId) {
   return request.auth != null
@@ -762,8 +772,8 @@ match /benefitApplications/{applicationId} {
 
 match /groupBuyOrders/{orderId} {
   allow create: if request.auth != null
-    && request.resource.data.keys().hasAll(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","paymentGuide","carrier","trackingNumber","adminMemo","status","source","createdAt","updatedAt"])
-    && request.resource.data.keys().hasOnly(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","paymentGuide","carrier","trackingNumber","adminMemo","status","source","createdAt","updatedAt"])
+    && request.resource.data.keys().hasAll(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","paymentGuide","carrier","trackingNumber","adminMemo","status","source","snapshotVersion","productSnapshot","deliverySnapshot","applicationSnapshot","createdAt","updatedAt"])
+    && request.resource.data.keys().hasOnly(["productId","productTitle","memberId","memberEmail","name","phone","phoneKey","quantity","region","address","message","receipt","totalPrice","paymentGuide","carrier","trackingNumber","adminMemo","status","source","snapshotVersion","productSnapshot","deliverySnapshot","applicationSnapshot","createdAt","updatedAt"])
     && ownsMember(request.resource.data.memberId)
     && isActiveMember(request.resource.data.memberId)
     && request.resource.data.memberEmail == request.auth.token.email
@@ -778,6 +788,34 @@ match /groupBuyOrders/{orderId} {
     && request.resource.data.message is string && request.resource.data.message.size() <= 500
     && request.resource.data.receipt is string && request.resource.data.receipt.matches('^NCC-G-[0-9]{6}-[0-9]{5}$')
     && request.resource.data.totalPrice is int && request.resource.data.totalPrice >= 0
+    && request.resource.data.snapshotVersion == 1
+    && request.resource.data.productSnapshot is map
+    && request.resource.data.productSnapshot.keys().hasAll(["title","image","description","option","unitPrice","regularPrice","shipping","supplier"])
+    && request.resource.data.productSnapshot.keys().hasOnly(["title","image","description","option","unitPrice","regularPrice","shipping","supplier"])
+    && request.resource.data.productSnapshot.title is string && request.resource.data.productSnapshot.title.size() >= 1 && request.resource.data.productSnapshot.title.size() <= 120
+    && request.resource.data.productSnapshot.image is string && request.resource.data.productSnapshot.image.size() <= 500
+    && request.resource.data.productSnapshot.description is string && request.resource.data.productSnapshot.description.size() <= 2000
+    && request.resource.data.productSnapshot.option is string && request.resource.data.productSnapshot.option.size() <= 300
+    && request.resource.data.productSnapshot.unitPrice is int && request.resource.data.productSnapshot.unitPrice >= 0
+    && request.resource.data.productSnapshot.regularPrice is int && request.resource.data.productSnapshot.regularPrice >= 0
+    && request.resource.data.productSnapshot.shipping is string && request.resource.data.productSnapshot.shipping.size() <= 500
+    && request.resource.data.productSnapshot.supplier is string && request.resource.data.productSnapshot.supplier.size() <= 200
+    && request.resource.data.deliverySnapshot is map
+    && request.resource.data.deliverySnapshot.keys().hasAll(["recipient","phone","postalCode","address","addressDetail","request"])
+    && request.resource.data.deliverySnapshot.keys().hasOnly(["recipient","phone","postalCode","address","addressDetail","request"])
+    && request.resource.data.deliverySnapshot.recipient is string && request.resource.data.deliverySnapshot.recipient.size() >= 1 && request.resource.data.deliverySnapshot.recipient.size() <= 50
+    && request.resource.data.deliverySnapshot.phone is string && request.resource.data.deliverySnapshot.phone.size() >= 9 && request.resource.data.deliverySnapshot.phone.size() <= 30
+    && request.resource.data.deliverySnapshot.postalCode is string && request.resource.data.deliverySnapshot.postalCode.size() <= 10
+    && request.resource.data.deliverySnapshot.address is string && request.resource.data.deliverySnapshot.address.size() >= 1 && request.resource.data.deliverySnapshot.address.size() <= 200
+    && request.resource.data.deliverySnapshot.addressDetail is string && request.resource.data.deliverySnapshot.addressDetail.size() <= 150
+    && request.resource.data.deliverySnapshot.request is string && request.resource.data.deliverySnapshot.request.size() <= 500
+    && request.resource.data.applicationSnapshot is map
+    && request.resource.data.applicationSnapshot.keys().hasAll(["quantity","unitPrice","totalPrice","region"])
+    && request.resource.data.applicationSnapshot.keys().hasOnly(["quantity","unitPrice","totalPrice","region"])
+    && request.resource.data.applicationSnapshot.quantity == request.resource.data.quantity
+    && request.resource.data.applicationSnapshot.unitPrice == request.resource.data.productSnapshot.unitPrice
+    && request.resource.data.applicationSnapshot.totalPrice == request.resource.data.totalPrice
+    && request.resource.data.applicationSnapshot.region == request.resource.data.region
     && request.resource.data.paymentGuide == ""
     && request.resource.data.carrier == ""
     && request.resource.data.trackingNumber == ""

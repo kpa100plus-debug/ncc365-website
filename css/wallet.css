@@ -137,6 +137,12 @@
   cursor: pointer;
 }
 
+.wallet-recovery-links{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}.wallet-find-email{margin-top:16px;padding:20px;border:1px solid rgba(7,42,37,.14);border-radius:12px;background:#faf8f1}.wallet-find-email h3{margin:0 0 8px;color:#173b34}.wallet-find-email>p{margin:0 0 16px;color:#5b6c66;font-size:14px}.recovery-message{min-height:24px;margin:12px 0;color:#173b34;font-weight:500}.wallet-admin-help{color:#765719;font-size:14px}.member-verification-link{display:inline-flex;min-height:44px;align-items:center;justify-content:center;margin-top:10px;color:#765719;font-weight:600}
+.member-qr{position:absolute;z-index:4;right:5cqw;bottom:7cqw;width:18cqw;height:18cqw;padding:1.2cqw;border-radius:1.2cqw;background:#fff}.member-qr svg{display:block;width:100%;height:100%}
+
+@media(max-width:900px){.wallet-auth{grid-template-columns:1fr}.wallet-auth .form-panel{width:100%}}
+@media(max-width:600px){.wallet-auth{gap:18px}.wallet-auth .form-panel{padding:28px 20px}.wallet-recovery-links{justify-content:center}.wallet-form .ncc-button{min-height:54px;font-size:17px}}
+
 .wide-message {
   grid-column: 1 / -1;
   margin: 0;

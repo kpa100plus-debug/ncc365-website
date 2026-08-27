@@ -21,7 +21,7 @@ const secrets = [
 ].filter(Boolean);
 
 const result = {
-  referenceCode: "REF-NCC-WEBSITE-PERFECT-AUDIT-14",
+  referenceCode: "REF-NCC-WALLET-VERIFICATION-ACCOUNT-FIX-MASTER-05",
   safetyReferenceCode: "REF-NCC-CI-E2E-AUTH-SETUP-01",
   runId: config.runId,
   memberNumber: config.memberNumber,
@@ -31,12 +31,16 @@ const result = {
   checks: {
     memberIdentityMatched: false,
     walletLoaded: false,
+    memberVerificationIndexed: false,
+    emailRecoveryMasked: false,
     consumerNavAuthenticated: false,
     benefitDetailLoaded: false,
     myPageLoaded: false,
     deliveryAddressSaved: false,
     groupBuyAddressPrefilled: false,
     groupBuyOrderSubmitted: false,
+    groupBuySnapshotVerified: false,
+    readOnlyOrderDetailVerified: false,
     groupBuyOrderConfirmed: false,
     testPaymentConfigSafe: false,
     testPaymentPrepared: false,
@@ -272,7 +276,48 @@ async function submitGroupBuyOrder(page) {
   testOrderReceipt = receipt;
   testOrderNeedsCleanup = true;
   result.testOrderReceipt = receipt;
+  for (const label of ["신청내역 보기", "접수내역 저장", "공유하기", "공동구매 목록으로"]) {
+    if (!resultText.includes(label)) throw new Error(`Group-buy completion action is missing: ${label}`);
+  }
+  const detailLink = resultBox.locator('a[href^="order-detail.html?id="]');
+  const href = await detailLink.getAttribute("href");
+  if (!href) throw new Error("Group-buy completion did not expose the read-only order detail.");
+  await goto(page, `/${href}`);
+  await page.locator("#orderDetail").waitFor({ state: "visible", timeout: 30_000 });
+  const detailText = (await page.locator("#orderDetail").textContent()) || "";
+  if (!detailText.includes(receipt) || detailText.includes(config.memberEmail) || !detailText.includes("신청 당시 옵션")) {
+    throw new Error("Read-only order detail did not preserve the safe application snapshot.");
+  }
+  result.checks.groupBuySnapshotVerified = true;
+  result.checks.readOnlyOrderDetailVerified = true;
   result.checks.groupBuyOrderSubmitted = true;
+}
+
+async function syncAndVerifyAccountIndex(adminPage, memberPage) {
+  const syncResponse = adminPage.waitForResponse(response => response.url().includes("/api/account/admin/sync"), { timeout: 45_000 });
+  await goto(adminPage, "/admin-accounts.html");
+  await adminPage.waitForTimeout(1_000);
+  if (!(await adminPage.locator("#adminAccountArea").isVisible())) {
+    await adminPage.locator("#adminEmail").fill(config.adminEmail);
+    await adminPage.locator("#adminPassword").fill(config.adminPassword);
+    await adminPage.locator("#adminLoginButton").click();
+  }
+  await adminPage.locator("#adminAccountArea").waitFor({ state: "visible", timeout: 30_000 });
+  const response = await syncResponse;
+  if (!response.ok()) throw new Error("Sanitized member-verification index synchronization failed.");
+  const verification = await memberPage.request.get(`${config.baseUrl}/api/account/verify?id=${encodeURIComponent(config.memberNumber)}`);
+  const body = await verification.json();
+  const serialized = JSON.stringify(body);
+  if (!verification.ok() || body.verification?.number !== config.memberNumber || serialized.includes(config.memberEmail) || serialized.includes("phone")) {
+    throw new Error("Public member verification was missing or exposed private account data.");
+  }
+  result.checks.memberVerificationIndexed = true;
+
+  const stored = await memberPage.evaluate(() => JSON.parse(sessionStorage.getItem("nccMemberProfile") || "null"));
+  const recovery = await memberPage.request.post(`${config.baseUrl}/api/account/recover-email`, { data: { name: stored.name, phone: stored.phone } });
+  const recoveryBody = await recovery.json();
+  if (!recovery.ok() || !recoveryBody.maskedEmail?.includes("@") || recoveryBody.maskedEmail === config.memberEmail) throw new Error("Email recovery did not return only a masked address.");
+  result.checks.emailRecoveryMasked = true;
 }
 
 async function loginGroupBuyAdmin(page) {
@@ -900,6 +945,10 @@ try {
     locale: "ko-KR",
     viewport: { width: 1440, height: 1000 },
   });
+  const accountAdminPage = await adminContext.newPage();
+  await syncAndVerifyAccountIndex(accountAdminPage, memberPage);
+  await accountAdminPage.close();
+  stage("Sanitized member verification and masked email recovery verified.");
   const groupBuyAdminPage = await adminContext.newPage();
   const orderTracking = await verifyGroupBuyLifecycle(groupBuyAdminPage, memberPage);
   stage("Test payment prepare, confirmation, duplicate prevention, partial refund, and full refund verified.");
