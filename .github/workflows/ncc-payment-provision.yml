@@ -27,6 +27,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
       NCC_D1_DATABASE_NAME: ncc-test-payments
       WRANGLER_VERSION: 4.126.0
 
@@ -44,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           missing=0
-          for variable_name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+          for variable_name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON; do
             if [ -z "${!variable_name}" ]; then
               echo "::error::Required GitHub Actions secret is missing: ${variable_name}"
               missing=1
@@ -97,19 +98,16 @@ jobs:
             --json > "$schema_file"
           node -e 'const fs=require("fs");const data=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));const rows=new Set(data.flatMap(x=>x.results||[]).map(x=>x.name));for(const name of ["payments","payment_events","member_verifications","member_recovery_index","account_recovery_attempts","account_admin_audit"]){if(!rows.has(name))throw new Error(`D1 schema verification failed: ${name}`)}' "$schema_file"
 
-      - name: Configure optional Firebase account-administration credential
-        env:
-          FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
+      - name: Configure Firebase account-administration credential
         shell: bash
         run: |
           set -euo pipefail
-          if [ -n "$FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON" ]; then
-            printf '%s' "$FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON" |
-              wrangler pages secret put FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON --project-name ncc365-website
-            echo "Firebase account-administration credential is configured."
-          else
-            echo "::notice::FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON is not configured; email-change and temporary-password actions remain safely disabled."
-          fi
+          printf '%s' "$FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON" |
+            wrangler pages secret put FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON --project-name ncc365-website
+          echo "Firebase account-administration credential is configured."
+
+      - name: Configure and verify Korean Firebase reset email
+        run: node .github/scripts/configure-ncc-firebase-email.mjs
 
       - name: Bind Pages, redeploy, and verify test mode
         env:

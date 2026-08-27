@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 const API_BASE = "https://api.cloudflare.com/client/v4";
 const PROJECT_NAME = "ncc365-website";
 const PUBLIC_CONFIG_URL = "https://ncc365.com/api/payments/config";
+const ACCOUNT_CONFIG_URL = "https://ncc365.com/api/account/config";
 
 function requireValue(value, name) {
   const normalized = String(value || "").trim();
@@ -113,25 +114,30 @@ async function waitForDeployment(accountId, token, deploymentId) {
 async function waitForPublicConfig() {
   for (let attempt = 0; attempt < 120; attempt += 1) {
     try {
-      const response = await fetch(PUBLIC_CONFIG_URL, {
-        headers: { accept: "application/json", "cache-control": "no-cache" },
-      });
-      const config = await response.json();
+      const [paymentResponse, accountResponse] = await Promise.all([
+        fetch(PUBLIC_CONFIG_URL, { headers: { accept: "application/json", "cache-control": "no-cache" } }),
+        fetch(ACCOUNT_CONFIG_URL, { headers: { accept: "application/json", "cache-control": "no-cache" } }),
+      ]);
+      const [config, accountConfig] = await Promise.all([paymentResponse.json(), accountResponse.json()]);
       if (
-        response.ok
+        paymentResponse.ok
         && config?.ok === true
         && config?.enabled === true
         && config?.mode === "test"
         && config?.realCharge === false
+        && accountResponse.ok
+        && accountConfig?.ok === true
+        && accountConfig?.emailRecovery === true
+        && accountConfig?.adminAccountManagement === true
       ) {
-        return config;
+        return { payment: config, account: accountConfig };
       }
     } catch {
       // A deployment may briefly make the endpoint unavailable. Retry below.
     }
     await new Promise((resolve) => setTimeout(resolve, 5_000));
   }
-  throw new Error("Timed out waiting for the NCC test payment API to become enabled");
+  throw new Error("Timed out waiting for safe payment mode and Firebase administrator account management");
 }
 
 async function writeSummary() {
@@ -146,6 +152,7 @@ async function writeSummary() {
       "- Pages Production/Preview: `NCC_PAYMENTS` 연결 완료",
       "- 결제 모드: `test` / 실제 결제: 비활성",
       `- 운영 확인: ${PUBLIC_CONFIG_URL}`,
+      `- 관리자 계정 복구 확인: ${ACCOUNT_CONFIG_URL}`,
       "",
       "참조코드: `REF-NCC-PAYMENT-TEST-11`",
       "",
