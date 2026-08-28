@@ -171,7 +171,7 @@ async function verifyConsumerNavigationAndBenefit(page) {
   }
   await goto(page, `/${href}`);
   const detailTitle = page.locator("#detailTitle");
-  const applicationForm = page.locator("#demoApplicationForm");
+  const applicationForm = page.locator("#benefitApplicationForm");
   const breadcrumbTitle = page.locator("#crumbTitle");
   await detailTitle.waitFor({ state: "visible", timeout: 30_000 });
   await applicationForm.waitFor({ state: "visible", timeout: 30_000 });
