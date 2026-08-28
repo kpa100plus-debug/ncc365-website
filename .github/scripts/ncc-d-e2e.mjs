@@ -447,7 +447,9 @@ async function verifyTestPaymentLifecycle(memberPage, adminContext) {
     || configResponse.body.enabled !== true
     || configResponse.body.mode !== "test"
     || configResponse.body.realCharge !== false
-    || configResponse.body.auditVersion !== "2026-08-26-admin-route-auth"
+    || configResponse.body.auditVersion !== "2026-08-28-toss-prebuild"
+    || configResponse.body.provider !== "simulation"
+    || configResponse.body.checkoutEnabled !== false
   ) {
     throw new Error("Payment configuration is not locked to the safe test mode.");
   }

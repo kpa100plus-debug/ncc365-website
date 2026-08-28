@@ -69,6 +69,9 @@ jobs:
           npx playwright install --with-deps chromium
           npm install --global "wrangler@${WRANGLER_VERSION}"
 
+      - name: Ensure additive Toss payment tables exist
+        run: wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --file migrations/0003_ncc_toss_payment_readiness.sql --yes
+
       - name: Wait for the exact audited website and payment API deployment
         shell: bash
         run: |
@@ -76,7 +79,7 @@ jobs:
           expected_deploy="$(tr -d '\r\n' < deploy-version.txt)"
           for attempt in $(seq 1 24); do
             deployed="$(curl --fail --silent --show-error "https://ncc365.com/deploy-version.txt?run=${GITHUB_RUN_ID}-${attempt}" | tr -d '\r\n' || true)"
-            if [ "$deployed" = "$expected_deploy" ] && curl --fail --silent --show-error https://ncc365.com/api/payments/config | jq -e '.enabled == true and .mode == "test" and .realCharge == false and .auditVersion == "2026-08-26-admin-route-auth"' > /dev/null; then
+            if [ "$deployed" = "$expected_deploy" ] && curl --fail --silent --show-error https://ncc365.com/api/payments/config | jq -e '.enabled == true and .provider == "simulation" and .checkoutEnabled == false and .mode == "test" and .realCharge == false and .auditVersion == "2026-08-28-toss-prebuild"' > /dev/null; then
               exit 0
             fi
             sleep 15
@@ -103,7 +106,7 @@ jobs:
             exit 1
           fi
           if [ "$count" -eq 1 ]; then
-            recovery_sql="DELETE FROM payment_events WHERE payment_id IN (SELECT id FROM payments WHERE $where_clause); DELETE FROM payments WHERE $where_clause;"
+            recovery_sql="DELETE FROM payment_provider_events WHERE payment_id IN (SELECT id FROM payments WHERE $where_clause); DELETE FROM payment_provider_transactions WHERE payment_id IN (SELECT id FROM payments WHERE $where_clause); DELETE FROM payment_events WHERE payment_id IN (SELECT id FROM payments WHERE $where_clause); DELETE FROM payments WHERE $where_clause;"
             wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --command "$recovery_sql" --yes > /dev/null
           fi
           wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --command "SELECT COUNT(*) AS count FROM payments WHERE $where_clause" --json > "$count_file"
@@ -133,7 +136,7 @@ jobs:
             echo "::error::Automation receipt failed strict validation; refusing D1 cleanup."
             exit 1
           fi
-          cleanup_sql="DELETE FROM payment_events WHERE payment_id IN (SELECT id FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled')); DELETE FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled');"
+          cleanup_sql="DELETE FROM payment_provider_events WHERE payment_id IN (SELECT id FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled')); DELETE FROM payment_provider_transactions WHERE payment_id IN (SELECT id FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled')); DELETE FROM payment_events WHERE payment_id IN (SELECT id FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled')); DELETE FROM payments WHERE order_receipt = '$receipt' AND test_mode = 1 AND status IN ('refunded','cancelled');"
           wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --command "$cleanup_sql" --yes > /dev/null
           verify_file="${RUNNER_TEMP}/ncc-payment-cleanup.json"
           wrangler d1 execute "$NCC_D1_DATABASE_NAME" --remote --command "SELECT COUNT(*) AS count FROM payments WHERE order_receipt = '$receipt'" --json > "$verify_file"

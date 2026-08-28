@@ -31,12 +31,29 @@ export function readPublicRuntimeConfig(platformConfigSource, adminPaymentsSourc
   };
 }
 
-export function buildDeploymentConfigPatch(databaseId, runtimeConfig) {
+function normalizeTesterEmails(value) {
+  const emails = [...new Set(
+    String(value || "")
+      .split(",")
+      .map(email => email.trim().toLowerCase())
+      .filter(Boolean),
+  )];
+  if (!emails.length || emails.some(email => !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))) {
+    throw new Error("A valid protected payment tester email is required");
+  }
+  return emails.slice(0, 20).join(",");
+}
+
+export function buildDeploymentConfigPatch(databaseId, runtimeConfig, testerEmails) {
   const d1Databases = {
     NCC_PAYMENTS: { id: requireValue(databaseId, "D1 database ID") },
   };
   const envVars = {
     PAYMENT_MODE: { type: "plain_text", value: "test" },
+    PAYMENT_PROVIDER: { type: "plain_text", value: "simulation" },
+    TOSS_MODE: { type: "plain_text", value: "disabled" },
+    TOSS_LIVE_CONFIRMATION: { type: "plain_text", value: "disabled" },
+    PAYMENT_TESTER_EMAILS: { type: "secret_text", value: normalizeTesterEmails(testerEmails) },
     FIREBASE_API_KEY: { type: "plain_text", value: runtimeConfig.firebaseApiKey },
     FIREBASE_PROJECT_ID: { type: "plain_text", value: runtimeConfig.firebaseProjectId },
     ADMIN_EMAIL: { type: "plain_text", value: runtimeConfig.adminEmail },
@@ -58,6 +75,15 @@ export function assertProjectConfigured(project, databaseId) {
     }
     if (config?.env_vars?.PAYMENT_MODE?.value !== "test") {
       throw new Error(`PAYMENT_MODE verification failed for ${environment}`);
+    }
+    if (config?.env_vars?.PAYMENT_PROVIDER?.value !== "simulation") {
+      throw new Error(`PAYMENT_PROVIDER verification failed for ${environment}`);
+    }
+    if (config?.env_vars?.TOSS_MODE?.value !== "disabled") {
+      throw new Error(`TOSS_MODE verification failed for ${environment}`);
+    }
+    if (config?.env_vars?.PAYMENT_TESTER_EMAILS?.type !== "secret_text") {
+      throw new Error(`PAYMENT_TESTER_EMAILS verification failed for ${environment}`);
     }
     if (config?.env_vars?.FIREBASE_PROJECT_ID?.value !== "ncc-member") {
       throw new Error(`FIREBASE_PROJECT_ID verification failed for ${environment}`);
@@ -125,6 +151,8 @@ async function waitForPublicConfig() {
         && config?.enabled === true
         && config?.mode === "test"
         && config?.realCharge === false
+        && config?.provider === "simulation"
+        && config?.checkoutEnabled === false
         && accountResponse.ok
         && accountConfig?.ok === true
         && accountConfig?.emailRecovery === true
@@ -146,15 +174,16 @@ async function writeSummary() {
   await appendFile(
     summaryPath,
     [
-      "## NCC 테스트 결제 인프라",
+      "## NCC 결제 인프라 안전 기준선",
       "",
       "- D1 데이터베이스: 연결 및 스키마 확인 완료",
       "- Pages Production/Preview: `NCC_PAYMENTS` 연결 완료",
-      "- 결제 모드: `test` / 실제 결제: 비활성",
+      "- 결제 모드: `test` / 공급자: `simulation` / 실제 결제: 비활성",
+      "- 토스페이먼츠: 코드·스키마 준비 완료 / 계약키 활성화 전 잠금",
       `- 운영 확인: ${PUBLIC_CONFIG_URL}`,
       `- 관리자 계정 복구 확인: ${ACCOUNT_CONFIG_URL}`,
       "",
-      "참조코드: `REF-NCC-PAYMENT-TEST-11`",
+      "참조코드: `REF-NCC-TOSS-PAYMENTS-PREBUILD-MASTER-20`",
       "",
     ].join("\n"),
   );
@@ -169,7 +198,7 @@ async function main() {
     readFile("js/admin-payments.js", "utf8"),
   ]);
   const runtimeConfig = readPublicRuntimeConfig(platformConfigSource, adminPaymentsSource);
-  const patch = buildDeploymentConfigPatch(databaseId, runtimeConfig);
+  const patch = buildDeploymentConfigPatch(databaseId, runtimeConfig, process.env.PAYMENT_TESTER_EMAILS);
 
   const existingProject = await cloudflareRequest(
     accountId,
@@ -216,7 +245,7 @@ async function main() {
   await waitForDeployment(accountId, token, retried.id);
   await waitForPublicConfig();
   await writeSummary();
-  console.log("NCC test payment infrastructure is enabled and verified.");
+  console.log("NCC payment infrastructure is safely provisioned and verified.");
 }
 
 if (import.meta.url === pathToFileURL(resolve(process.argv[1] || "")).href) {

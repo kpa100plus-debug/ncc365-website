@@ -1,7 +1,7 @@
-reference=REF-NCC-WALLET-VERIFICATION-ACCOUNT-FIX-MASTER-05
+reference=REF-NCC-TOSS-PAYMENTS-PREBUILD-MASTER-20
 member=NCC-C-000016
-scope=post-deployment-unified-verification-account-recovery-order-snapshot-regression
-updated=2026-08-27
-requested_at=2026-08-27T19:33:00+09:00
+scope=post-deployment-toss-prebuild-payment-regression
+updated=2026-08-28
+requested_at=2026-08-28T00:00:00Z
 mode=protected-reversible
-reason=verify-production-after-firebase-admin-credential-activation
+reason=verify-production-after-guarded-toss-payments-prebuild
