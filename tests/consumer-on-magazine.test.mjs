@@ -5,6 +5,7 @@ import fs from 'node:fs';
 const html=fs.readFileSync(new URL('../consumer-on.html',import.meta.url),'utf8');
 const script=fs.readFileSync(new URL('../js/consumer-on.js',import.meta.url),'utf8');
 const issue=JSON.parse(fs.readFileSync(new URL('../data/consumer-on/issues.json',import.meta.url),'utf8'));
+const premiumCss=fs.readFileSync(new URL('../css/consumer-on-premium.css',import.meta.url),'utf8');
 
 test('first Consumer ON issue contains twelve independently addressable pages',()=>{
   assert.equal((html.match(/class="mag-page/g)||[]).length,12);
@@ -27,4 +28,14 @@ test('magazine does not invent advertisers or expose member data',()=>{
   assert.doesNotMatch(html,/전화번호|이메일 주소|상세주소|생년월일|테스트 예시|샘플입니다/);
   assert.match(html,/계약되지 않은/);
   assert.match(html,/© 2026 ISEA GROUP\. All Rights Reserved\./);
+});
+
+test('premium issue includes editorial cover, case webtoon and middle-age typography',()=>{
+  assert.match(html,/consumer-on-vol01-cover-premium\.png/);
+  assert.match(html,/consumer-on-vol01-subscription-webtoon\.png/);
+  assert.match(html,/사건형 웹툰/);
+  assert.match(html,/가격 반전 실험/);
+  assert.match(html,/반품을 거절당하지 않는 증거/);
+  assert.match(premiumCss,/\.mag-page p,\.mag-page li\{font-size:clamp\(15px/);
+  assert.match(premiumCss,/@media\(max-width:700px\).*font-size:clamp\(16px/s);
 });
