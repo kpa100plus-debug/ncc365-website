@@ -25,7 +25,7 @@ const routes = [
 
 const coreRoutes = [
   "/", "/join.html", "/wallet.html", "/profile", "/benefits.html",
-  "/groupbuy.html", "/consumer-channel.html", "/payment-checkout.html", "/payment-result.html", "/admin.html", "/admin-payments",
+  "/groupbuy.html", "/consumer-channel.html", "/consumer-on.html", "/payment-checkout.html", "/payment-result.html", "/admin.html", "/admin-payments",
 ];
 
 const viewports = [
