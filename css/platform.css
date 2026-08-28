@@ -26,9 +26,9 @@ body[data-page="centers"] .card-grid>.platform-card:nth-child(3){background-imag
 body[data-page="partners"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-partner-store.webp')}
 body[data-page="partners"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-partner-experience.webp')}
 body[data-page="partners"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-partner-groupbuy.webp')}
-body[data-page="channel"] .card-grid>.platform-card:nth-child(1){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-channel-article.webp')}
-body[data-page="channel"] .card-grid>.platform-card:nth-child(2){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-channel-video.webp')}
-body[data-page="channel"] .card-grid>.platform-card:nth-child(3){background-image:linear-gradient(180deg,transparent 55%,#fdfbf6 100%),url('../images/card-channel-review.webp')}
+body[data-page="channel"] .card-grid>.platform-card:nth-child(1){background-image:url('../images/card-channel-article.webp')}
+body[data-page="channel"] .card-grid>.platform-card:nth-child(2){background-image:url('../images/card-channel-video.webp')}
+body[data-page="channel"] .card-grid>.platform-card:nth-child(3){background-image:url('../images/card-channel-review.webp')}
 body[data-page="wallet"] .wallet-services>.platform-card{padding-top:32px;min-height:260px;background-image:none}
 body:not([data-page="home"]) .process{gap:16px}body:not([data-page="home"]) .process div{overflow:hidden;min-height:175px;padding:58px 24px 24px;border-color:rgba(164,126,45,.24);background:linear-gradient(145deg,#fff,#f6f1e6);box-shadow:0 12px 28px rgba(7,42,37,.06)}body:not([data-page="home"]) .process div:before{position:absolute;left:20px;top:17px;width:30px;height:30px;display:grid;place-items:center;margin:0;border-radius:50%;background:var(--ncc-900);color:var(--gold-soft);font-size:12px}body:not([data-page="home"]) .process div:after{content:"";position:absolute;left:0;top:0;width:4px;height:100%;background:linear-gradient(var(--gold),transparent)}
 body:not([data-page="home"]) .platform-section:not(.paper){background:linear-gradient(145deg,#e5ece7,#f2ede2)}
