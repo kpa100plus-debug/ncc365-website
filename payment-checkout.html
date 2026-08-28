@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>공동구매 결제 | NCC 월렛</title>
+  <link rel="stylesheet" href="css/platform.css?v=20260826-1">
+  <link rel="stylesheet" href="css/payment-checkout.css?v=20260828-1">
+</head>
+<body data-page="profile">
+  <main id="mainContent" class="payment-page">
+    <header class="payment-brand">
+      <img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽 NCC">
+      <div><p>NCC SECURE CHECKOUT</p><h1>공동구매 결제</h1></div>
+    </header>
+
+    <section class="checkout-card" aria-labelledby="checkoutTitle">
+      <div id="checkoutLoading" class="checkout-message" role="status">결제할 주문을 안전하게 확인하고 있습니다.</div>
+      <div id="checkoutUnavailable" class="checkout-message warning" role="status" hidden>
+        <h2>결제 서비스 준비 중</h2>
+        <p>PG 계약 승인과 결제키 등록이 끝나면 이 화면에서 바로 결제할 수 있습니다.</p>
+        <a class="ncc-button" href="profile.html#groupbuy-orders">신청내역으로 돌아가기</a>
+      </div>
+      <div id="checkoutContent" hidden>
+        <div class="order-summary">
+          <div><span>결제 상품</span><strong id="checkoutTitle"></strong></div>
+          <div><span>결제 금액</span><strong id="checkoutAmount"></strong></div>
+        </div>
+        <div id="payment-method" class="toss-widget"></div>
+        <div id="agreement" class="toss-widget"></div>
+        <button id="payButton" class="pay-button" type="button" disabled>결제하기</button>
+        <p id="checkoutError" class="checkout-error" role="alert"></p>
+      </div>
+    </section>
+    <p class="payment-security">결제 승인과 금액 검증은 NCC 서버와 토스페이먼츠에서 이중 확인합니다.</p>
+  </main>
+  <script type="module" src="js/payment-checkout.js?v=20260828-1"></script>
+</body>
+</html>

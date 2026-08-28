@@ -1,1 +1,53 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>공동구매 신청내역 | 전국소비자클럽</title><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="css/platform.css?v=20260826-1"><link rel="stylesheet" href="css/order-detail.css"></head><body data-page="profile"><main id="mainContent" class="platform-main"><section class="page-hero compact"><p class="hero-kicker">APPLICATION RECORD</p><h1>공동구매 신청내역</h1><p class="lead">신청 당시 기록을 읽기 전용으로 확인합니다.</p></section><section class="platform-section paper"><div id="orderDetailLoading" class="empty-state">본인 신청내역을 확인하고 있습니다.</div><article id="orderDetail" class="order-record" hidden><header><div><p class="eyebrow">GROUP BUY RECORD</p><h2 id="detailProductTitle"></h2><p id="detailReceipt"></p></div><span id="detailStatus" class="record-status"></span></header><div class="record-product"><img id="detailImage" alt=""><div><p id="detailDescription"></p><p><b>신청 당시 옵션</b><span id="detailOption"></span></p></div></div><dl class="record-data"><div><dt>신청 수량</dt><dd id="detailQuantity"></dd></div><div><dt>단가</dt><dd id="detailUnitPrice"></dd></div><div><dt>총 예상금액</dt><dd id="detailTotalPrice"></dd></div><div><dt>신청일시</dt><dd id="detailCreatedAt"></dd></div><div class="private-row"><dt>배송지</dt><dd id="detailAddress"></dd></div><div><dt>결제상태</dt><dd id="detailPayment"></dd></div><div><dt>모집상태</dt><dd id="detailRecruitment"></dd></div><div><dt>주문상태</dt><dd id="detailOrderStatus"></dd></div><div><dt>배송상태</dt><dd id="detailDelivery"></dd></div><div><dt>관리자 안내</dt><dd id="detailAdminMemo"></dd></div><div><dt>취소·수정 가능 여부</dt><dd id="detailEditable"></dd></div></dl><div class="record-actions"><a class="ncc-button gold" href="profile.html#groupbuy-orders">신청목록으로</a><a class="ncc-button" href="groupbuy.html">공동구매 목록으로</a></div></article></section></main><script src="js/platform-shell.js?v=20260826-1"></script><script type="module" src="js/order-detail.js"></script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>공동구매 신청내역 | 전국소비자클럽</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="css/platform.css?v=20260826-1">
+  <link rel="stylesheet" href="css/order-detail.css?v=20260828-1">
+</head>
+<body data-page="profile">
+  <main id="mainContent" class="platform-main">
+    <section class="page-hero compact">
+      <p class="hero-kicker">APPLICATION RECORD</p>
+      <h1>공동구매 신청내역</h1>
+      <p class="lead">신청 당시 기록을 읽기 전용으로 확인합니다.</p>
+    </section>
+    <section class="platform-section paper">
+      <div id="orderDetailLoading" class="empty-state">본인 신청내역을 확인하고 있습니다.</div>
+      <article id="orderDetail" class="order-record" hidden>
+        <header>
+          <div><p class="eyebrow">GROUP BUY RECORD</p><h2 id="detailProductTitle"></h2><p id="detailReceipt"></p></div>
+          <span id="detailStatus" class="record-status"></span>
+        </header>
+        <div class="record-product">
+          <img id="detailImage" alt="">
+          <div><p id="detailDescription"></p><p><b>신청 당시 옵션</b><span id="detailOption"></span></p></div>
+        </div>
+        <dl class="record-data">
+          <div><dt>신청 수량</dt><dd id="detailQuantity"></dd></div>
+          <div><dt>단가</dt><dd id="detailUnitPrice"></dd></div>
+          <div><dt>총 예상금액</dt><dd id="detailTotalPrice"></dd></div>
+          <div><dt>신청일시</dt><dd id="detailCreatedAt"></dd></div>
+          <div class="private-row"><dt>배송지</dt><dd id="detailAddress"></dd></div>
+          <div><dt>결제상태</dt><dd id="detailPayment"></dd></div>
+          <div><dt>모집상태</dt><dd id="detailRecruitment"></dd></div>
+          <div><dt>주문상태</dt><dd id="detailOrderStatus"></dd></div>
+          <div><dt>배송상태</dt><dd id="detailDelivery"></dd></div>
+          <div><dt>관리자 안내</dt><dd id="detailAdminMemo"></dd></div>
+          <div><dt>취소·수정 가능 여부</dt><dd id="detailEditable"></dd></div>
+        </dl>
+        <div class="record-actions">
+          <a id="detailPayLink" class="ncc-button gold" href="profile.html#groupbuy-orders" hidden>결제하기</a>
+          <a class="ncc-button gold" href="profile.html#groupbuy-orders">신청목록으로</a>
+          <a class="ncc-button" href="groupbuy.html">공동구매 목록으로</a>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script src="js/platform-shell.js?v=20260826-1"></script>
+  <script type="module" src="js/order-detail.js?v=20260828-1"></script>
+</body>
+</html>

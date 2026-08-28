@@ -1,4 +1,4 @@
-name: NCC Test Payment Provision
+name: NCC Payment Provision
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ncc-test-payment-provision
+  group: ncc-payment-provision
   cancel-in-progress: false
 
 jobs:
@@ -29,6 +29,7 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
+      PAYMENT_TESTER_EMAILS: ${{ secrets.NCC_E2E_D_EMAIL }}
       NCC_D1_DATABASE_NAME: ncc-test-payments
       WRANGLER_VERSION: 4.126.0
 
@@ -46,7 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           missing=0
-          for variable_name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON; do
+          for variable_name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON PAYMENT_TESTER_EMAILS; do
             if [ -z "${!variable_name}" ]; then
               echo "::error::Required GitHub Actions secret is missing: ${variable_name}"
               missing=1
@@ -92,12 +93,16 @@ jobs:
             --remote \
             --file migrations/0002_ncc_account_indexes.sql \
             --yes
+          wrangler d1 execute "$NCC_D1_DATABASE_NAME" \
+            --remote \
+            --file migrations/0003_ncc_toss_payment_readiness.sql \
+            --yes
           schema_file="${RUNNER_TEMP}/ncc-d1-schema-check.json"
           wrangler d1 execute "$NCC_D1_DATABASE_NAME" \
             --remote \
-            --command "SELECT name FROM sqlite_schema WHERE type='table' AND name IN ('payments','payment_events','member_verifications','member_recovery_index','account_recovery_attempts','account_admin_audit') ORDER BY name" \
+            --command "SELECT name FROM sqlite_schema WHERE type='table' AND name IN ('payments','payment_events','payment_provider_transactions','payment_provider_events','member_verifications','member_recovery_index','account_recovery_attempts','account_admin_audit') ORDER BY name" \
             --json > "$schema_file"
-          node -e 'const fs=require("fs");const data=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));const rows=new Set(data.flatMap(x=>x.results||[]).map(x=>x.name));for(const name of ["payments","payment_events","member_verifications","member_recovery_index","account_recovery_attempts","account_admin_audit"]){if(!rows.has(name))throw new Error(`D1 schema verification failed: ${name}`)}' "$schema_file"
+          node -e 'const fs=require("fs");const data=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));const rows=new Set(data.flatMap(x=>x.results||[]).map(x=>x.name));for(const name of ["payments","payment_events","payment_provider_transactions","payment_provider_events","member_verifications","member_recovery_index","account_recovery_attempts","account_admin_audit"]){if(!rows.has(name))throw new Error(`D1 schema verification failed: ${name}`)}' "$schema_file"
 
       - name: Configure Firebase account-administration credential
         shell: bash
@@ -110,7 +115,7 @@ jobs:
       - name: Configure and verify Korean Firebase reset email
         run: node .github/scripts/configure-ncc-firebase-email.mjs
 
-      - name: Bind Pages, redeploy, and verify test mode
+      - name: Bind Pages, keep provider locked, redeploy, and verify
         env:
           NCC_PAYMENTS_DATABASE_ID: ${{ steps.d1.outputs.database_id }}
         run: node .github/scripts/configure-ncc-payment-pages.mjs

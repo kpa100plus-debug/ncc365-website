@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>NCC 테스트 결제관리</title>
+  <title>NCC 결제관리</title>
   <link rel="stylesheet" href="css/admin-applications.css">
   <link rel="stylesheet" href="css/groupbuy.css">
-  <link rel="stylesheet" href="css/admin-payments.css?v=20260826-1">
+  <link rel="stylesheet" href="css/admin-payments.css?v=20260828-1">
 </head>
 <body>
   <main class="admin-shell">
     <section class="login-panel" id="loginArea">
       <img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽">
       <p>NCC ADMINISTRATION</p>
-      <h1>테스트 결제관리</h1>
+      <h1>결제관리</h1>
       <input id="adminEmail" aria-label="관리자 이메일" type="email" autocomplete="username" placeholder="관리자 이메일">
       <input id="adminPassword" aria-label="관리자 비밀번호" type="password" autocomplete="current-password" placeholder="비밀번호">
       <button id="loginButton" type="button">관리자 로그인</button>
@@ -24,19 +24,19 @@
     <section id="adminArea" hidden>
       <header class="admin-head">
         <div>
-          <p>NCC TEST PAYMENT</p>
-          <h1>테스트 결제·취소·환불</h1>
-          <span>실제 카드승인·계좌이체·금전이동 없이 결제 생명주기를 검사합니다.</span>
+          <p>NCC PAYMENT ADMINISTRATION</p>
+          <h1>결제·취소·환불</h1>
+          <span>주문별 결제상태와 취소·환불 처리결과를 관리합니다.</span>
         </div>
         <div><a href="admin-groupbuy.html">공동구매 관리</a><button id="logoutButton" type="button">로그아웃</button></div>
       </header>
 
-      <div class="test-mode-warning"><b>TEST MODE</b> 이 화면의 모든 금액은 결제 기능 검사용이며 실제 정산금액이 아닙니다.</div>
+      <div id="paymentModeWarning" class="test-mode-warning"><b>안전 잠금</b> 결제환경을 확인하고 있습니다.</div>
       <div class="stats">
-        <article><span>전체 테스트 결제</span><b id="paymentCount">0</b></article>
+        <article><span>전체 결제</span><b id="paymentCount">0</b></article>
         <article><span>결제완료</span><b id="paidCount">0</b></article>
         <article><span>환불 포함</span><b id="refundCount">0</b></article>
-        <article><span>테스트 결제금액</span><b id="paidAmount">0원</b></article>
+        <article><span>결제금액</span><b id="paidAmount">0원</b></article>
       </div>
 
       <div class="toolbar">
@@ -55,6 +55,6 @@
       <div id="paymentList" class="application-list"><div class="empty">결제내역을 불러오는 중입니다.</div></div>
     </section>
   </main>
-  <script type="module" src="js/admin-payments.js?v=20260826-1"></script>
+  <script type="module" src="js/admin-payments.js?v=20260828-1"></script>
 </body>
 </html>

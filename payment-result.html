@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>결제 결과 | NCC 월렛</title>
+  <link rel="stylesheet" href="css/platform.css?v=20260826-1">
+  <link rel="stylesheet" href="css/payment-checkout.css?v=20260828-1">
+</head>
+<body data-page="profile">
+  <main id="mainContent" class="payment-page result-page">
+    <header class="payment-brand">
+      <img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽 NCC">
+      <div><p>NCC PAYMENT RESULT</p><h1>결제 결과</h1></div>
+    </header>
+    <section class="checkout-card result-card">
+      <div id="resultLoading" class="checkout-message" role="status">결제 결과를 확인하고 있습니다.</div>
+      <div id="resultContent" hidden>
+        <span id="resultBadge" class="result-badge"></span>
+        <h2 id="resultTitle"></h2>
+        <p id="resultMessage"></p>
+        <dl id="resultDetails" class="result-details" hidden>
+          <div><dt>접수번호</dt><dd id="resultReceipt"></dd></div>
+          <div><dt>결제금액</dt><dd id="resultAmount"></dd></div>
+          <div><dt>결제상태</dt><dd id="resultStatus"></dd></div>
+        </dl>
+        <div class="result-actions">
+          <a id="receiptLink" class="ncc-button" href="profile.html#groupbuy-orders" target="_blank" rel="noopener noreferrer" hidden>영수증 보기</a>
+          <a class="ncc-button gold" href="profile.html#groupbuy-orders">신청내역 보기</a>
+          <a class="ncc-button" href="groupbuy.html">공동구매 목록으로</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="js/payment-result.js?v=20260828-1"></script>
+</body>
+</html>

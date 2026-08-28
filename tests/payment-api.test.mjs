@@ -40,12 +40,117 @@ test("payment view exposes no authentication token or internal idempotency key",
     created_at: "2026-08-26T00:00:00.000Z",
     updated_at: "2026-08-26T00:00:01.000Z",
     idempotency_key: "must-not-leak",
-    member_uid: "must-not-leak"
+    member_uid: "must-not-leak",
+    provider_payment_key: "must-not-leak",
   });
   assert.equal(view.orderId, "order-1");
   assert.equal(view.testMode, true);
   assert.equal("idempotencyKey" in view, false);
   assert.equal("memberUid" in view, false);
+  assert.equal("providerPaymentKey" in view, false);
+  assert.equal(__test.paymentView({ ...view, provider_environment: "live", test_mode: 1 }).testMode, false);
+});
+
+test("payment runtime keeps Toss locked until provider, mode, and paired keys agree", () => {
+  assert.deepEqual(__test.paymentRuntime({}), {
+    provider: "simulation",
+    mode: "test",
+    tossMode: "disabled",
+    tossConfigured: false,
+    checkoutEnabled: false,
+    realCharge: false,
+    clientKey: "",
+    secretKey: "",
+  });
+  const testRuntime = __test.paymentRuntime({
+    PAYMENT_MODE: "test",
+    PAYMENT_PROVIDER: "toss",
+    TOSS_MODE: "test",
+    TOSS_CLIENT_KEY: "test_gck_abcdefgh",
+    TOSS_SECRET_KEY: "test_gsk_abcdefgh",
+  });
+  assert.equal(testRuntime.provider, "toss");
+  assert.equal(testRuntime.checkoutEnabled, true);
+  assert.equal(testRuntime.realCharge, false);
+  assert.equal(testRuntime.mode, "test");
+  assert.equal(__test.paymentRuntime({
+    PAYMENT_PROVIDER: "toss",
+    TOSS_MODE: "test",
+    TOSS_CLIENT_KEY: "test_gck_abcdefgh",
+    TOSS_SECRET_KEY: "live_gsk_abcdefgh",
+  }).checkoutEnabled, false);
+});
+
+test("live Toss runtime needs all independent activation guards", () => {
+  const base = {
+    PAYMENT_PROVIDER: "toss",
+    TOSS_MODE: "live",
+    TOSS_CLIENT_KEY: "live_gck_abcdefgh",
+    TOSS_SECRET_KEY: "live_gsk_abcdefgh",
+  };
+  assert.equal(__test.paymentRuntime(base).realCharge, false);
+  assert.equal(__test.paymentRuntime({ ...base, PAYMENT_MODE: "live" }).realCharge, false);
+  const active = __test.paymentRuntime({
+    ...base,
+    PAYMENT_MODE: "live",
+    TOSS_LIVE_CONFIRMATION: "NCC-TOSS-LIVE-CONFIRMED",
+  });
+  assert.equal(active.provider, "toss");
+  assert.equal(active.mode, "live");
+  assert.equal(active.realCharge, true);
+});
+
+test("Toss confirmation validates payment key, provider order, and exact amount", () => {
+  const payment = { provider_order_id: "NCC_0123456789", amount: 25000 };
+  assert.deepEqual(__test.assertTossConfirmation(payment, {
+    paymentKey: "payment_key_123456",
+    orderId: "NCC_0123456789",
+    amount: 25000,
+  }), {
+    paymentKey: "payment_key_123456",
+    providerOrderId: "NCC_0123456789",
+    amount: 25000,
+  });
+  assert.throws(() => __test.assertTossConfirmation(payment, {
+    paymentKey: "payment_key_123456",
+    orderId: "NCC_other",
+    amount: 25000,
+  }));
+  assert.throws(() => __test.assertTossConfirmation(payment, {
+    paymentKey: "payment_key_123456",
+    orderId: "NCC_0123456789",
+    amount: 24999,
+  }));
+});
+
+test("Toss states map paid, partial refund, and full refund without guessing", () => {
+  const payment = { amount: 25000, provider_order_id: "NCC_0123456789", provider_payment_key: "payment_key_123456" };
+  const identity = { paymentKey: "payment_key_123456", orderId: "NCC_0123456789", currency: "KRW", totalAmount: 25000 };
+  assert.equal(__test.tossState({ ...identity, status: "DONE" }, payment).status, "paid");
+  assert.deepEqual(__test.tossState({
+    ...identity,
+    status: "PARTIAL_CANCELED",
+    cancels: [{ cancelAmount: 10000 }],
+  }, payment), {
+    providerStatus: "PARTIAL_CANCELED",
+    status: "partially_refunded",
+    paidAmount: 25000,
+    refundedAmount: 10000,
+  });
+  assert.equal(__test.tossState({ ...identity, status: "CANCELED" }, payment).status, "refunded");
+  assert.throws(() => __test.tossState({ ...identity, totalAmount: 1, status: "DONE" }, payment));
+});
+
+test("Toss Basic authorization has no accidental credential suffix or plaintext response leak", () => {
+  const authorization = __test.tossAuthorization("test_gsk_abcdefgh");
+  assert.match(authorization, /^Basic [A-Za-z0-9+/]+=*$/);
+  assert.equal(Buffer.from(authorization.slice(6), "base64").toString(), "test_gsk_abcdefgh:");
+});
+
+test("refund reason is bounded", () => {
+  assert.equal(__test.assertRefundReason("고객 요청 환불"), "고객 요청 환불");
+  assert.throws(() => __test.assertRefundReason("한"));
+  assert.throws(() => __test.assertRefundReason("가".repeat(201)));
 });
 
 test("member email is added only to the administrator payment view", () => {
@@ -90,6 +195,71 @@ test("config endpoint remains disabled until D1 and required variables are bound
   assert.equal(body.ok, true);
   assert.equal(body.enabled, false);
   assert.equal(body.realCharge, false);
+});
+
+test("public config keeps Toss test checkout private and never exposes keys", async () => {
+  const response = await onRequest({
+    request: new Request("https://ncc365.com/api/payments/config"),
+    env: {
+      NCC_PAYMENTS: {},
+      FIREBASE_API_KEY: "public-firebase-key",
+      ADMIN_EMAIL: "admin@example.com",
+      PAYMENT_MODE: "test",
+      PAYMENT_PROVIDER: "toss",
+      TOSS_MODE: "test",
+      TOSS_CLIENT_KEY: "test_gck_abcdefgh",
+      TOSS_SECRET_KEY: "test_gsk_abcdefgh",
+      PAYMENT_TESTER_EMAILS: "tester@example.com",
+    }
+  });
+  const body = await response.json();
+  assert.equal(body.enabled, true);
+  assert.equal(body.provider, "toss");
+  assert.equal(body.checkoutEnabled, false);
+  assert.equal(body.realCharge, false);
+  assert.equal("clientKey" in body, false);
+  assert.equal("secretKey" in body, false);
+});
+
+test("Toss test checkout allowlist accepts only configured internal accounts and the administrator", () => {
+  const env = { PAYMENT_TESTER_EMAILS: "Tester@example.com, second@example.com", ADMIN_EMAIL: "admin@example.com" };
+  assert.equal(__test.testPaymentUserAllowed({ email: "tester@example.com" }, env), true);
+  assert.equal(__test.testPaymentUserAllowed({ email: "ADMIN@example.com" }, env), true);
+  assert.equal(__test.testPaymentUserAllowed({ email: "public@example.com" }, env), false);
+  assert.equal(__test.testPaymentUserAllowed({}, env), false);
+});
+
+test("authenticated internal tester can discover the test checkout without exposing a key", { concurrency: false }, async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /identitytoolkit\.googleapis\.com/);
+    return new Response(JSON.stringify({ users: [{ localId: "tester-uid", email: "tester@example.com", emailVerified: true }] }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+  try {
+    const response = await onRequest({
+      request: new Request("https://ncc365.com/api/payments/config", { headers: { authorization: "Bearer valid-test-token" } }),
+      env: {
+        NCC_PAYMENTS: {},
+        FIREBASE_API_KEY: "public-firebase-key",
+        ADMIN_EMAIL: "admin@example.com",
+        PAYMENT_MODE: "test",
+        PAYMENT_PROVIDER: "toss",
+        TOSS_MODE: "test",
+        TOSS_CLIENT_KEY: "test_gck_abcdefgh",
+        TOSS_SECRET_KEY: "test_gsk_abcdefgh",
+        PAYMENT_TESTER_EMAILS: "tester@example.com",
+      },
+    });
+    const body = await response.json();
+    assert.equal(body.checkoutEnabled, true);
+    assert.equal("clientKey" in body, false);
+    assert.equal("secretKey" in body, false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("unapproved origins are rejected before any payment work", async () => {

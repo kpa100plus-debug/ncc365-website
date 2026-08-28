@@ -7,11 +7,20 @@ const auth = getAuth(app);
 const $ = selector => document.querySelector(selector);
 const ADMIN_EMAIL = "kpa100plus@gmail.com";
 let payments = [];
+let paymentConfig = { provider: "simulation", mode: "test", realCharge: false };
 
 const safe = value => String(value ?? "").replace(/[&<>"']/g, character => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[character]));
 const money = value => `${new Intl.NumberFormat("ko-KR").format(Number(value || 0))}원`;
+const safeUrl = value => {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "https:" ? safe(url.toString()) : "";
+  } catch {
+    return "";
+  }
+};
 const statusLabels = {
   ready: "결제 준비",
   paid: "결제완료",
@@ -33,11 +42,15 @@ async function paymentApi(path, options = {}) {
 
 async function loadPayments() {
   const message = $("#paymentMessage");
-  message.textContent = "테스트 결제내역을 불러오는 중입니다.";
+  message.textContent = "결제내역을 불러오는 중입니다.";
   try {
-    const configResponse = await fetch("/api/payments/config", { headers: { accept: "application/json" } });
-    const config = await configResponse.json();
-    if (!config.enabled) throw new Error("Cloudflare D1 결제 데이터베이스 연결과 테스트모드 설정이 필요합니다.");
+    const config = await paymentApi("config", { method: "GET" });
+    paymentConfig = config;
+    if (!config.enabled) throw new Error("Cloudflare D1 결제 데이터베이스 연결과 결제 설정이 필요합니다.");
+    const warning = $("#paymentModeWarning");
+    warning.innerHTML = config.realCharge
+      ? "<b>운영 결제</b> 토스페이먼츠 실제 승인·취소·환불이 처리됩니다."
+      : `<b>안전 잠금</b> ${config.provider === "toss" ? "토스 테스트 결제" : "내부 결제검사"} 환경이며 실제 금전이동은 없습니다.`;
     const body = await paymentApi("admin/list", { method: "GET" });
     payments = body.payments || [];
     render();
@@ -46,7 +59,7 @@ async function loadPayments() {
     console.error(error);
     payments = [];
     render();
-    message.textContent = error.message || "테스트 결제내역을 불러오지 못했습니다.";
+    message.textContent = error.message || "결제내역을 불러오지 못했습니다.";
   }
 }
 
@@ -63,45 +76,67 @@ function render() {
   $("#paidAmount").textContent = money(payments.reduce((sum, payment) => sum + Number(payment.paidAmount || 0), 0));
   $("#paymentList").innerHTML = visible.length ? visible.map(payment => {
     const available = Number(payment.paidAmount || 0) - Number(payment.refundedAmount || 0);
+    const receiptUrl = safeUrl(payment.receiptUrl);
     const refundControls = ["paid", "partially_refunded"].includes(payment.status) ? `
       <label>환불금액<input id="refund-${safe(payment.id)}" type="number" min="1" max="${available}" value="${available}"></label>
+      <label>환불 사유<input id="reason-${safe(payment.id)}" type="text" maxlength="200" value="고객 요청에 따른 환불"></label>
       <button type="button" data-refund="${safe(payment.id)}">선택금액 환불</button>` : "";
     const cancelControl = payment.status === "ready"
       ? `<button class="danger" type="button" data-cancel="${safe(payment.id)}">준비 결제 취소</button>` : "";
     return `<article class="application-card payment-card">
       <div class="payment-card-head"><div><span class="payment-status">${safe(statusLabels[payment.status] || payment.status)}</span><h2>${safe(payment.orderReceipt)}</h2><div class="payment-meta"><span>주문 ${safe(payment.orderId)}</span><span>${safe(payment.memberEmail)}</span><span>${safe(payment.updatedAt)}</span></div></div><b class="payment-money">${money(payment.amount)}</b></div>
-      <div class="payment-meta"><span>결제 ${money(payment.paidAmount)}</span><span>환불 ${money(payment.refundedAmount)}</span><span>실결제 아님 · TEST</span></div>
+      <div class="payment-meta"><span>결제 ${money(payment.paidAmount)}</span><span>환불 ${money(payment.refundedAmount)}</span><span>${safe(payment.provider === "toss" ? `토스페이먼츠 · ${payment.providerEnvironment === "live" ? "운영" : "테스트"}` : "내부 결제검사")}</span>${payment.paymentMethod ? `<span>${safe(payment.paymentMethod)}</span>` : ""}${receiptUrl ? `<a href="${receiptUrl}" target="_blank" rel="noopener noreferrer">영수증</a>` : ""}</div>
+      ${payment.provider === "toss" ? `<div class="payment-provider-actions"><button type="button" data-reconcile="${safe(payment.id)}">토스 상태 다시 확인</button></div>` : ""}
       ${(refundControls || cancelControl) ? `<div class="payment-controls">${refundControls}${cancelControl}</div>` : ""}
     </article>`;
-  }).join("") : '<div class="empty">조건에 맞는 테스트 결제내역이 없습니다.</div>';
+  }).join("") : '<div class="empty">조건에 맞는 결제내역이 없습니다.</div>';
   document.querySelectorAll("[data-refund]").forEach(button => button.addEventListener("click", () => refund(button.dataset.refund, button)));
   document.querySelectorAll("[data-cancel]").forEach(button => button.addEventListener("click", () => cancel(button.dataset.cancel, button)));
+  document.querySelectorAll("[data-reconcile]").forEach(button => button.addEventListener("click", () => reconcile(button.dataset.reconcile, button)));
 }
 
 async function refund(paymentId, button) {
   const payment = payments.find(item => item.id === paymentId);
   const amount = Number(document.getElementById(`refund-${paymentId}`)?.value);
+  const reason = document.getElementById(`reason-${paymentId}`)?.value.trim();
   if (!payment || !Number.isSafeInteger(amount) || amount < 1) return;
-  if (!confirm(`${money(amount)} 테스트 환불을 처리하시겠습니까? 실제 금전이동은 없습니다.`)) return;
+  if (!reason || reason.length < 2) return alert("환불 사유를 2자 이상 입력해 주세요.");
+  const environmentNotice = payment.provider === "toss" && payment.providerEnvironment === "live" ? "실제 환불" : "환불";
+  if (!confirm(`${money(amount)} ${environmentNotice}을 처리하시겠습니까?`)) return;
   button.disabled = true;
   try {
-    await paymentApi("admin/refund", { method: "POST", body: JSON.stringify({ paymentId, amount, idempotencyKey: `refund_${crypto.randomUUID().replaceAll("-", "")}` }) });
+    await paymentApi("admin/refund", { method: "POST", body: JSON.stringify({ paymentId, amount, reason, idempotencyKey: `refund_${crypto.randomUUID().replaceAll("-", "")}` }) });
     await loadPayments();
   } catch (error) {
-    alert(error.message || "테스트 환불을 처리하지 못했습니다.");
+    alert(error.message || "환불을 처리하지 못했습니다.");
   } finally {
     button.disabled = false;
   }
 }
 
 async function cancel(paymentId, button) {
-  if (!confirm("이 준비 상태의 테스트 결제를 취소하시겠습니까?")) return;
+  if (!confirm("이 준비 상태의 결제를 취소하시겠습니까?")) return;
   button.disabled = true;
   try {
     await paymentApi("admin/cancel", { method: "POST", body: JSON.stringify({ paymentId, idempotencyKey: `cancel_${crypto.randomUUID().replaceAll("-", "")}` }) });
     await loadPayments();
   } catch (error) {
-    alert(error.message || "테스트 결제를 취소하지 못했습니다.");
+    alert(error.message || "결제를 취소하지 못했습니다.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function reconcile(paymentId, button) {
+  button.disabled = true;
+  try {
+    await paymentApi("admin/reconcile", {
+      method: "POST",
+      body: JSON.stringify({ paymentId, idempotencyKey: `sync_${crypto.randomUUID().replaceAll("-", "")}` })
+    });
+    await loadPayments();
+  } catch (error) {
+    alert(error.message || "토스페이먼츠 결제상태를 다시 확인하지 못했습니다.");
   } finally {
     button.disabled = false;
   }
