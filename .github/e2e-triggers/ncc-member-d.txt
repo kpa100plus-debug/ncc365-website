@@ -1,7 +1,7 @@
 reference=REF-NCC-TOSS-PAYMENTS-PREBUILD-MASTER-20
 member=NCC-C-000016
-scope=post-deployment-toss-prebuild-payment-regression
+scope=post-deployment-toss-prebuild-payment-regression-form-fix
 updated=2026-08-28
-requested_at=2026-08-28T00:00:00Z
+requested_at=2026-08-28T12:38:00Z
 mode=protected-reversible
-reason=verify-production-after-guarded-toss-payments-prebuild
+reason=rerun-after-current-benefit-form-selector-sync
