@@ -1,0 +1,33 @@
+{
+  "publication": "소비자ON",
+  "latest": "2026-08-vol01",
+  "issues": [{
+    "id": "2026-08-vol01",
+    "volume": "VOL.01",
+    "publishedAt": "2026-08-28",
+    "year": 2026,
+    "month": 8,
+    "week": 4,
+    "title": "생활을 바꾸는 똑똑한 소비의 시작",
+    "summary": "장보기, 온라인 구매, 정기결제, 건강·뷰티, 지역혜택과 소비자 피해 대응",
+    "status": "published",
+    "cover": "images/NCC_consumer.jpg",
+    "shareImage": "images/hero-channel-2026.webp",
+    "previousIssue": null,
+    "nextIssue": null,
+    "pages": [
+      {"page":1,"title":"표지","source":null,"advertisement":false},
+      {"page":2,"title":"발행 안내와 목차","source":null,"advertisement":false},
+      {"page":3,"title":"이번 주 핵심 소비 이슈","source":["소비자24","한국소비자원"],"advertisement":false},
+      {"page":4,"title":"장보기·생활비 절약","source":null,"advertisement":false},
+      {"page":5,"title":"온라인 쇼핑·배송·반품","source":["소비자24","1372 소비자상담센터"],"advertisement":false},
+      {"page":6,"title":"정기구독·결제 피해 예방","source":["금융소비자정보포털 파인","소비자24"],"advertisement":false},
+      {"page":7,"title":"건강·뷰티 소비정보","source":["식품의약품안전처","한국소비자원"],"advertisement":false},
+      {"page":8,"title":"우리 동네 생활·지역 혜택","source":null,"advertisement":false},
+      {"page":9,"title":"NCC 회원혜택","source":"NCC","advertisement":false},
+      {"page":10,"title":"공동구매 확인사항","source":"NCC","advertisement":false},
+      {"page":11,"title":"소비자 피해 대응","source":["1372 소비자상담센터","소비자24","한국소비자원"],"advertisement":false},
+      {"page":12,"title":"다음 호·회원가입·제휴","source":"NCC","advertisement":false}
+    ]
+  }]
+}
