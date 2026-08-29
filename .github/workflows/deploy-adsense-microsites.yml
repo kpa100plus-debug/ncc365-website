@@ -1,0 +1,218 @@
+name: Deploy AdSense microsites
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/deploy-adsense-microsites.yml"
+      - ".github/assets/adsense-microsites-text.zip"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adsense-microsites-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Verify, deploy, and recheck both Pages sites
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      ADSENSE_CLIENT_ID: ca-pub-3207271051639372
+      ADSENSE_PUBLISHER_ID: pub-3207271051639372
+      WRANGLER_VERSION: 4.127.1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Validate deployment credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for secret_name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [ -z "${!secret_name}" ]; then
+              echo "::error::Required GitHub Actions secret is missing: ${secret_name}"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Restore verified AdSense-ready sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/adsense-sites"
+          unzip -q .github/assets/adsense-microsites-text.zip -d "$RUNNER_TEMP/adsense-sites"
+
+          download() {
+            local url="$1"
+            local destination="$2"
+            curl --fail --location --silent --show-error \
+              --retry 3 --retry-all-errors \
+              --output "$destination" "$url"
+            test -s "$destination"
+          }
+
+          arcana="$RUNNER_TEMP/adsense-sites/arcana-day.pages.dev"
+          fortune="$RUNNER_TEMP/adsense-sites/daily-fortune-now.pages.dev"
+          download "https://arcana-day.pages.dev/tarot-hero.png" "$arcana/tarot-hero.png"
+          download "https://arcana-day.pages.dev/tarot-spread.png" "$arcana/tarot-spread.png"
+          download "https://arcana-day.pages.dev/og.png" "$arcana/og.png"
+          download "https://daily-fortune-now.pages.dev/hero-v2.png" "$fortune/hero-v2.png"
+          download "https://daily-fortune-now.pages.dev/og.png" "$fortune/og.png"
+
+      - name: Validate every prepared page and asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const base = path.join(process.env.RUNNER_TEMP, 'adsense-sites');
+          const client = process.env.ADSENSE_CLIENT_ID;
+          const publisher = process.env.ADSENSE_PUBLISHER_ID;
+          const sites = [
+            ['arcana-day.pages.dev', 'https://arcana-day.pages.dev/'],
+            ['daily-fortune-now.pages.dev', 'https://daily-fortune-now.pages.dev/']
+          ];
+
+          function walk(directory) {
+            return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+              const item = path.join(directory, entry.name);
+              return entry.isDirectory() ? walk(item) : [item];
+            });
+          }
+
+          for (const [name, canonical] of sites) {
+            const root = path.join(base, name);
+            const files = walk(root);
+            const html = files.filter((file) => file.endsWith('.html'));
+            if (html.length !== 11) throw new Error(`${name}: expected 11 HTML files, found ${html.length}`);
+            for (const file of files) {
+              if (fs.statSync(file).size === 0) throw new Error(`${name}: empty file ${path.relative(root, file)}`);
+            }
+            for (const file of html) {
+              const relative = path.relative(root, file);
+              const source = fs.readFileSync(file, 'utf8');
+              if (relative !== '404.html') {
+                const metaCount = (source.match(/name=["']google-adsense-account["']/g) || []).length;
+                const scriptCount = (source.match(new RegExp(`pagead2\\.googlesyndication\\.com/pagead/js/adsbygoogle\\.js\\?client=${client}`, 'g')) || []).length;
+                if (metaCount !== 1 || scriptCount !== 1) {
+                  throw new Error(`${name}/${relative}: AdSense marker counts are meta=${metaCount}, script=${scriptCount}`);
+                }
+              }
+              if (/cloudflareinsights\.com|data-cf-beacon/i.test(source)) {
+                throw new Error(`${name}/${relative}: duplicate Cloudflare analytics snippet`);
+              }
+            }
+            const ads = fs.readFileSync(path.join(root, 'ads.txt'), 'utf8').trim();
+            if (ads !== `google.com, ${publisher}, DIRECT, f08c47fec0942fa0`) {
+              throw new Error(`${name}: ads.txt mismatch`);
+            }
+            const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+            if (!home.includes(`href="${canonical}"`)) throw new Error(`${name}: canonical URL mismatch`);
+            console.log(`${name}: ${html.length} HTML / ${files.length} files validated`);
+          }
+          NODE
+
+      - name: Install pinned Cloudflare deployment runtime
+        run: npm install --global "wrangler@${WRANGLER_VERSION}"
+
+      - name: Confirm exact Pages projects and production branches
+        id: projects
+        shell: bash
+        run: |
+          set -euo pipefail
+          projects_file="$RUNNER_TEMP/pages-projects.json"
+          wrangler pages project list --json > "$projects_file"
+          node <<'NODE'
+          const fs = require('node:fs');
+          const data = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/pages-projects.json', 'utf8'));
+          const projects = Array.isArray(data) ? data : (Array.isArray(data.result) ? data.result : []);
+          const required = ['arcana-day', 'daily-fortune-now'];
+          const found = new Map(projects.map((project) => [project.name, project]));
+          for (const name of required) {
+            if (!found.has(name)) throw new Error(`Required Cloudflare Pages project is missing: ${name}`);
+          }
+          const output = process.env.GITHUB_OUTPUT;
+          const arcanaBranch = found.get('arcana-day').production_branch || 'main';
+          const fortuneBranch = found.get('daily-fortune-now').production_branch || 'main';
+          fs.appendFileSync(output, `arcana_branch=${arcanaBranch}\nfortune_branch=${fortuneBranch}\n`);
+          console.log(`Verified exact Pages projects: arcana-day (${arcanaBranch}), daily-fortune-now (${fortuneBranch})`);
+          NODE
+
+      - name: Deploy Arcana Day to production
+        shell: bash
+        run: |
+          set -euo pipefail
+          wrangler pages deploy "$RUNNER_TEMP/adsense-sites/arcana-day.pages.dev" \
+            --project-name arcana-day \
+            --branch "${{ steps.projects.outputs.arcana_branch }}" \
+            --commit-message "AdSense readiness deployment 2026-08-29"
+
+      - name: Deploy Daily Fortune Now to production
+        shell: bash
+        run: |
+          set -euo pipefail
+          wrangler pages deploy "$RUNNER_TEMP/adsense-sites/daily-fortune-now.pages.dev" \
+            --project-name daily-fortune-now \
+            --branch "${{ steps.projects.outputs.fortune_branch }}" \
+            --commit-message "AdSense readiness deployment 2026-08-29"
+
+      - name: Verify live AdSense installation
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected_ads="google.com, ${ADSENSE_PUBLISHER_ID}, DIRECT, f08c47fec0942fa0"
+
+          verify_site() {
+            local origin="$1"
+            local name="$2"
+            for attempt in $(seq 1 18); do
+              home="$(curl --fail --silent --show-error --location --header 'Cache-Control: no-cache' "${origin}/?deploy=${GITHUB_RUN_ID}-${attempt}" || true)"
+              ads="$(curl --fail --silent --show-error --location --header 'Cache-Control: no-cache' "${origin}/ads.txt?deploy=${GITHUB_RUN_ID}-${attempt}" | tr -d '\r' || true)"
+              if [ "$ads" = "$expected_ads" ] \
+                && grep -Fq "name=\"google-adsense-account\" content=\"${ADSENSE_CLIENT_ID}\"" <<< "$home" \
+                && grep -Fq "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}" <<< "$home" \
+                && curl --fail --silent --show-error --location "${origin}/privacy/" > /dev/null \
+                && curl --fail --silent --show-error --location "${origin}/contact/" > /dev/null \
+                && curl --fail --silent --show-error --location "${origin}/faq/" > /dev/null; then
+                echo "$name production verification passed."
+                return 0
+              fi
+              sleep 5
+            done
+            echo "::error::$name did not expose the expected AdSense deployment within 90 seconds."
+            return 1
+          }
+
+          verify_site "https://arcana-day.pages.dev" "Arcana Day"
+          verify_site "https://daily-fortune-now.pages.dev" "Daily Fortune Now"
+
+      - name: Record deployment result
+        shell: bash
+        run: |
+          {
+            echo "## AdSense microsites deployment"
+            echo
+            echo "- Arcana Day: https://arcana-day.pages.dev/"
+            echo "- Daily Fortune Now: https://daily-fortune-now.pages.dev/"
+            echo "- Publisher: ${ADSENSE_PUBLISHER_ID}"
+            echo "- Result: source validation, production deployment, and live verification passed"
+          } >> "$GITHUB_STEP_SUMMARY"
