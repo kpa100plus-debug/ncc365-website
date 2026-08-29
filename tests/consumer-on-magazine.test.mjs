@@ -31,8 +31,8 @@ test('magazine does not invent advertisers or expose member data',()=>{
 });
 
 test('premium issue includes editorial cover, case webtoon and middle-age typography',()=>{
-  assert.match(html,/consumer-on-vol01-cover-premium\.png/);
-  assert.match(html,/consumer-on-vol01-subscription-webtoon\.png/);
+  assert.match(html,/consumer-on-vol01-cover-premium\.webp/);
+  assert.match(html,/consumer-on-vol01-subscription-webtoon\.webp/);
   assert.match(html,/사건형 웹툰/);
   assert.match(html,/가격 반전 실험/);
   assert.match(html,/반품을 거절당하지 않는 증거/);
