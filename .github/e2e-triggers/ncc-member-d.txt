@@ -1,7 +1,7 @@
-reference=REF-NCC-TOSS-PAYMENTS-PREBUILD-MASTER-20
+reference=REF-NCC-FULL-EXECUTION-20260829-01
 member=NCC-C-000016
-scope=post-deployment-toss-prebuild-payment-regression-form-fix
-updated=2026-08-28
-requested_at=2026-08-28T12:38:00Z
+scope=post-deployment-benefit-member-restore-wallet-notification-business-card
+updated=2026-08-29
+requested_at=2026-08-29T16:50:27Z
 mode=protected-reversible
-reason=rerun-after-current-benefit-form-selector-sync
+reason=verify-approved-full-execution-on-production
