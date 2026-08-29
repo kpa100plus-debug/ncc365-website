@@ -12,9 +12,17 @@ test("business card studio contains required operational fields",()=>{
 test("business card studio uses the live NCC member-number and verification URL rules",()=>{
   assert.match(js,/NCC-C-\[0-9\]\{6\}/);assert.match(js,/certificate-verify\.html\?id=/);assert.doesNotMatch(js,/NCC-CM-/);
 });
-test("business card studio supports 90 by 50 landscape and portrait previews",()=>{
-  assert.match(html,/가로형 90×50mm/);assert.match(html,/세로형 50×90mm/);assert.match(css,/aspect-ratio:1\.8\/1/);assert.match(css,/aspect-ratio:1\/1\.8/);
+test("business card studio supports artwork, trim and portrait specifications",()=>{
+  assert.match(html,/가로형 92×52mm 작업 \/ 90×50mm 재단/);
+  assert.match(html,/세로형 52×92mm 작업 \/ 50×90mm 재단/);
+  assert.match(html,/300dpi · 가로 1087×614px \/ 세로 614×1087px/);
+  assert.match(css,/aspect-ratio:1\.8\/1/);
+  assert.match(css,/aspect-ratio:52\/92/);
+  assert.match(html,/class="trim-guide"/);
+  assert.match(html,/class="safe-guide"/);
 });
-test("preview does not claim to be a print-ready CMYK artifact",()=>{
-  assert.match(html,/화면 미리보기만 제공/);assert.doesNotMatch(html,/다운로드/);
+test("preview exposes print safety checks without claiming a generated CMYK file",()=>{
+  assert.match(html,/인쇄 규격 자동검사/);
+  assert.match(html,/오버프린트 금지/);
+  assert.doesNotMatch(html,/CMYK 파일 다운로드/);
 });

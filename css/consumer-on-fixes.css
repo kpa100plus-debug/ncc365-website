@@ -1,13 +1,38 @@
 .bubble.b1{min-height:12%;height:auto;padding:2%}
 .bubble.b2{top:29%;left:49%;width:31%;min-height:11%;height:auto;padding:2%}
 .bubble.b3{bottom:13%;left:4%;width:39%;min-height:13%;height:auto;padding:2%}
+.webtoon-layout{grid-template-columns:56% 40%;gap:4%;height:82%}
+.comic{display:grid;place-items:center;background:#f2ecdf}
+.comic img{width:100%;height:100%;object-fit:contain;object-position:center}
+.comic .bubble{max-width:42%;overflow-wrap:anywhere}
 .photo.wide{height:auto;max-height:28%;object-fit:contain;object-position:center}
 .photo.wide.short{height:auto;max-height:23%}
+.issue .xray{margin:4% 0}
+.issue .xray div{min-height:104px}
+.issue .verdict{padding:4%}
+.issue .verdict p{margin:2% 0 0;line-height:1.5}
+.issue .checks{margin:3% 0 0;padding-bottom:7%;line-height:1.38}
+.issue .checks li{margin:1% 0}
 .benefits p{overflow-wrap:anywhere}
+.beauty .photo.wide.short{display:block;width:72%;max-height:19%;margin:0 auto 3%}
+.beauty-guide{display:grid;grid-template-columns:1fr 1fr;gap:3%}
+.beauty-guide section{padding:3.5%;background:#f3efe5}
+.beauty-guide h3{margin-bottom:4px}
+.beauty-guide ul,.local-check ul{margin:0;padding-left:18px}
+.beauty-guide li,.local-check li{margin:2px 0;font-size:clamp(12px,.88vw,15px);line-height:1.42}
+.beauty-guide li b{color:#916613}
+.consumer-note{margin:3% 0 7%;padding:3%;border-left:4px solid #b68b32;background:#edf4f0;font-size:clamp(11px,.82vw,14px)!important;line-height:1.45!important}
+.consumer-note b{color:#946713}
+.local .local-photo{display:block;width:70%;max-height:22%;margin:0 auto 3%}
+.local .calc{margin:3% 0;gap:7px}
+.local .calc div{padding:9px}
+.local-check{padding:3%;border:1px solid #d6c9aa}
+.local-check h3{margin:0 0 4px;color:#8f6514}
 .groupbuy h2{font-size:clamp(25px,2.35vw,38px)}
-.groupbuy .warning{margin-top:3%;padding:4%}
+.groupbuy .warning{margin-top:2.5%;padding:3% 4%}
+.groupbuy .warning h3{margin-bottom:4px}.groupbuy .warning p{margin:4px 0;line-height:1.42}.groupbuy .warning a{min-height:38px}
 .remedy-list{gap:9px}
 .remedy-list li{padding:3%}
 .remedy .official{margin-top:3%}
 .remedy .official a{padding:8px;font-size:clamp(10px,.8vw,13px)}
-@media(max-width:700px){.groupbuy h2{font-size:clamp(24px,6.9vw,30px)}.groupbuy .steps{gap:8px}.groupbuy .steps>div{padding:5%}.remedy h2{font-size:clamp(24px,6.8vw,30px)}.remedy .official{gap:5px}.remedy .official a{font-size:10px}}
+@media(max-width:700px){.issue .xray div{min-height:88px;padding:8px}.issue .checks{padding-bottom:9%}.webtoon-layout{grid-template-columns:55% 41%}.case-file h2{font-size:clamp(20px,5.4vw,25px)}.case-file p,.case-file li{font-size:12px}.beauty-guide li,.local-check li{font-size:11px}.consumer-note{font-size:10px!important}.groupbuy h2{font-size:clamp(24px,6.9vw,30px)}.groupbuy .steps{gap:8px}.groupbuy .steps>div{padding:5%}.remedy h2{font-size:clamp(24px,6.8vw,30px)}.remedy .official{gap:5px}.remedy .official a{font-size:10px}}
