@@ -1,5 +1,5 @@
-.home-luxury-hero{display:grid;grid-template-columns:minmax(0,.88fr) minmax(520px,1.12fr);align-items:center;gap:46px;min-height:650px;padding-top:70px;padding-bottom:70px;background:linear-gradient(90deg,rgba(4,28,25,.98),rgba(7,55,47,.95) 50%,rgba(8,54,47,.3)),linear-gradient(135deg,var(--ncc-950),var(--ncc-800))}
-.home-luxury-hero .hero-content{position:relative;z-index:2}.home-luxury-hero .hero-photo{aspect-ratio:16/10;min-height:410px;border:1px solid rgba(239,216,153,.52);border-radius:30px;overflow:hidden;box-shadow:0 35px 80px rgba(0,0,0,.34),0 0 0 7px rgba(216,174,82,.07)}.home-luxury-hero .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
+.home-luxury-hero{display:grid;grid-template-columns:minmax(400px,.62fr) minmax(760px,1.38fr);align-items:center;gap:30px;min-height:720px;padding:70px max(24px,calc((100% - 1540px)/2));background:linear-gradient(90deg,rgba(4,28,25,.98),rgba(7,55,47,.95) 50%,rgba(8,54,47,.3)),linear-gradient(135deg,var(--ncc-950),var(--ncc-800))}
+.home-luxury-hero .hero-content{position:relative;z-index:2}.home-luxury-hero .hero-photo{width:100%;aspect-ratio:16/9;min-height:520px;border:1px solid rgba(239,216,153,.52);border-radius:30px;overflow:hidden;box-shadow:0 35px 80px rgba(0,0,0,.34),0 0 0 7px rgba(216,174,82,.07)}.home-luxury-hero .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
 
 /* REF-NCC-HOME-BENEFIT-CARD-REDESIGN-01 */
 .benefit-visual-grid{gap:24px}
@@ -21,5 +21,5 @@
 .benefit-visual-grid .class-card.daily .card-photo img{object-position:68% center}
 
 .activity-luxury{background:linear-gradient(135deg,#e4ebe6,#f3eee4)}.activity-visual-grid .platform-card{padding:0;border-color:rgba(164,126,45,.25);background:#fdfbf6}.activity-photo{position:relative;height:250px;overflow:hidden}.activity-copy{padding:30px}.activity-visual-grid h3{font-size:27px}.activity-visual-grid .arrow{padding-top:4px;border-top:1px solid #e7dfce}
-@media(max-width:1050px){.home-luxury-hero{grid-template-columns:1fr;gap:38px}.home-luxury-hero .hero-photo{width:100%;max-width:900px;min-height:0;border-radius:26px}.benefit-visual-grid .class-card{min-height:500px}.activity-photo{height:310px}}
+@media(max-width:1220px){.home-luxury-hero{grid-template-columns:1fr;gap:38px}.home-luxury-hero .hero-photo{width:100%;max-width:none;min-height:0;border-radius:26px}.benefit-visual-grid .class-card{min-height:500px}.activity-photo{height:310px}}
 @media(max-width:600px){.home-luxury-hero{padding:52px 20px}.home-luxury-hero .hero-photo{aspect-ratio:4/3;border-radius:18px}.home-luxury-hero .hero-photo img{object-position:58% center}.benefit-visual-grid .class-card{min-height:470px;padding:237px 24px 28px}.benefit-visual-grid .class-card:before{top:181px;left:24px}.card-photo{height:205px}.activity-photo{height:240px}.activity-copy{padding:25px}}
