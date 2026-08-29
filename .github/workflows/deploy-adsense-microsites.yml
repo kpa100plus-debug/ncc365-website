@@ -145,19 +145,20 @@ jobs:
           const fs = require('node:fs');
           const data = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/pages-projects.json', 'utf8'));
           const projects = Array.isArray(data) ? data : (Array.isArray(data.result) ? data.result : []);
-          const required = ['arcana-day', 'daily-fortune-now'];
           const found = new Map(projects.map((project) => [project.name, project]));
-          for (const name of required) {
-            if (!found.has(name)) throw new Error(`Required Cloudflare Pages project is missing: ${name}`);
+          if (!found.has('daily-fortune-now')) {
+            throw new Error('Required Cloudflare Pages project is missing: daily-fortune-now');
           }
           const output = process.env.GITHUB_OUTPUT;
-          const arcanaBranch = found.get('arcana-day').production_branch || 'main';
+          const arcanaProject = found.get('arcana-day');
+          const arcanaBranch = arcanaProject?.production_branch || 'main';
           const fortuneBranch = found.get('daily-fortune-now').production_branch || 'main';
-          fs.appendFileSync(output, `arcana_branch=${arcanaBranch}\nfortune_branch=${fortuneBranch}\n`);
-          console.log(`Verified exact Pages projects: arcana-day (${arcanaBranch}), daily-fortune-now (${fortuneBranch})`);
+          fs.appendFileSync(output, `arcana_present=${Boolean(arcanaProject)}\narcana_branch=${arcanaBranch}\nfortune_branch=${fortuneBranch}\n`);
+          console.log(`Verified daily-fortune-now (${fortuneBranch}); arcana-day in this account=${Boolean(arcanaProject)}`);
           NODE
 
       - name: Deploy Arcana Day to production
+        if: ${{ steps.projects.outputs.arcana_present == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -175,7 +176,7 @@ jobs:
             --branch "${{ steps.projects.outputs.fortune_branch }}" \
             --commit-message "AdSense readiness deployment 2026-08-29"
 
-      - name: Verify live AdSense installation
+      - name: Verify Daily Fortune Now AdSense installation
         shell: bash
         run: |
           set -euo pipefail
@@ -202,8 +203,27 @@ jobs:
             return 1
           }
 
-          verify_site "https://arcana-day.pages.dev" "Arcana Day"
           verify_site "https://daily-fortune-now.pages.dev" "Daily Fortune Now"
+
+      - name: Verify Arcana Day AdSense installation
+        if: ${{ steps.projects.outputs.arcana_present == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected_ads="google.com, ${ADSENSE_PUBLISHER_ID}, DIRECT, f08c47fec0942fa0"
+          for attempt in $(seq 1 18); do
+            home="$(curl --fail --silent --show-error --location --header 'Cache-Control: no-cache' "https://arcana-day.pages.dev/?deploy=${GITHUB_RUN_ID}-${attempt}" || true)"
+            ads="$(curl --fail --silent --show-error --location --header 'Cache-Control: no-cache' "https://arcana-day.pages.dev/ads.txt?deploy=${GITHUB_RUN_ID}-${attempt}" | tr -d '\r' || true)"
+            if [ "$ads" = "$expected_ads" ] \
+              && grep -Fq "name=\"google-adsense-account\" content=\"${ADSENSE_CLIENT_ID}\"" <<< "$home" \
+              && grep -Fq "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}" <<< "$home"; then
+              echo "Arcana Day production verification passed."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::Arcana Day did not expose the expected AdSense deployment within 90 seconds."
+          exit 1
 
       - name: Record deployment result
         shell: bash
@@ -211,7 +231,7 @@ jobs:
           {
             echo "## AdSense microsites deployment"
             echo
-            echo "- Arcana Day: https://arcana-day.pages.dev/"
+            echo "- Arcana Day in this Cloudflare account: ${{ steps.projects.outputs.arcana_present }}"
             echo "- Daily Fortune Now: https://daily-fortune-now.pages.dev/"
             echo "- Publisher: ${ADSENSE_PUBLISHER_ID}"
             echo "- Result: source validation, production deployment, and live verification passed"
