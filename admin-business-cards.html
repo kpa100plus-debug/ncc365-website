@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>NCC 센터 명함 자동제작 | 관리자</title>
+  <link rel="stylesheet" href="css/platform.css?v=20260826-1">
+  <link rel="stylesheet" href="css/admin-business-cards.css?v=20260829-1">
+</head>
+<body data-page="admin-business-cards">
+<main id="mainContent" class="business-card-admin">
+  <header class="studio-header">
+    <div><p>NCC ADMINISTRATION</p><h1>센터 명함 자동제작</h1><span>센터장·팀원 정보를 입력하면 공식 진위확인 QR이 포함된 시안을 자동으로 구성합니다.</span></div>
+    <nav><a href="admin.html">통합관리</a><a href="admin-members.html">회원관리</a><button id="logoutButton" type="button">로그아웃</button></nav>
+  </header>
+
+  <section id="authGate" class="auth-gate"><strong>관리자 권한을 확인하고 있습니다.</strong></section>
+
+  <section id="studioApp" class="studio-layout" hidden>
+    <form id="cardForm" class="card-form" novalidate>
+      <div class="form-heading"><p>BUSINESS CARD DATA</p><h2>명함 정보 입력</h2><span>입력 내용은 미리보기 생성에만 사용되며 자동 저장되지 않습니다.</span></div>
+
+      <div class="field-grid">
+        <label><span>이름 <b>*</b></span><input name="name" maxlength="20" value="김민준" required></label>
+        <label><span>직책 <b>*</b></span><select name="role" required><option value="센터장">센터장</option><option value="운영팀장">운영팀장</option><option value="회원지원팀장">회원지원팀장</option><option value="지역협력매니저">지역협력매니저</option><option value="센터 팀원">센터 팀원</option></select></label>
+        <label class="wide"><span>센터명 <b>*</b></span><input name="centerName" maxlength="50" value="서울강남삼성센터" required></label>
+        <label class="wide"><span>센터코드 <b>*</b></span><input name="centerCode" maxlength="100" value="SEOUL-GANGNAM-SAMSEONG" required></label>
+        <label class="wide"><span>회원번호 <b>*</b></span><input name="memberNumber" maxlength="12" value="NCC-C-000001" pattern="NCC-C-[0-9]{6}" required aria-describedby="memberNumberHelp"><small id="memberNumberHelp">현재 운영 규칙: NCC-C-000001 형식</small></label>
+        <label><span>전화번호 <b>*</b></span><input name="phone" inputmode="tel" maxlength="20" value="010-1234-5678" required></label>
+        <label><span>이메일 <b>*</b></span><input name="email" type="email" maxlength="80" value="ncc.samseong@ncc365.com" required></label>
+        <label class="wide"><span>주소</span><input name="address" maxlength="100" value="서울특별시 강남구 삼성로 123"></label>
+      </div>
+
+      <fieldset><legend>명함 방향</legend><label><input type="radio" name="orientation" value="landscape" checked> 가로형 90×50mm</label><label><input type="radio" name="orientation" value="portrait"> 세로형 50×90mm</label></fieldset>
+      <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
+      <button class="preview-button" type="submit">명함 시안 새로 만들기</button>
+      <p class="print-note">검수 단계에서는 화면 미리보기만 제공합니다. 승인 후 92×52mm 작업판·300dpi·CMYK 인쇄 원본을 별도로 생성합니다.</p>
+    </form>
+
+    <section class="preview-workspace" aria-labelledby="previewTitle">
+      <div class="preview-heading"><div><p>LIVE PREVIEW</p><h2 id="previewTitle">앞면·뒷면 시안</h2></div><a id="verificationLink" href="certificate-verify.html?id=NCC-C-000001" target="_blank" rel="noopener">QR 연결 주소 확인</a></div>
+      <div id="previewSet" class="preview-set landscape">
+        <article class="business-card card-front" aria-label="명함 앞면">
+          <i class="corner-ribbon top-right" aria-hidden="true"></i><i class="corner-ribbon bottom-left" aria-hidden="true"></i>
+          <img class="card-logo" src="images/NCC_OFFICIAL.png" alt="전국소비자클럽 NCC">
+          <div class="front-copy"><p>전국소비자클럽 NCC</p><h3 data-output="name">김민준</h3><div class="role-emblem"><span aria-hidden="true">◆</span><strong data-output="centerRole">서울강남삼성센터 센터장</strong></div><em data-output="roleEnglish">NCC CENTER DIRECTOR</em></div>
+          <dl class="contact-list"><div><dt>M.</dt><dd data-output="phone">010-1234-5678</dd></div><div><dt>E.</dt><dd data-output="email">ncc.samseong@ncc365.com</dd></div><div><dt>A.</dt><dd data-output="address">서울특별시 강남구 삼성로 123</dd></div><div><dt>W.</dt><dd>www.ncc365.com</dd></div></dl>
+          <dl class="code-list"><div><dt>센터코드</dt><dd data-output="centerCode">SEOUL-GANGNAM-SAMSEONG</dd></div><div><dt>회원번호</dt><dd data-output="memberNumber">NCC-C-000001</dd></div></dl>
+        </article>
+
+        <article class="business-card card-back" aria-label="명함 뒷면">
+          <i class="corner-ribbon top-right" aria-hidden="true"></i><i class="corner-ribbon bottom-left" aria-hidden="true"></i>
+          <div class="back-copy"><h3>소비자에게<br>더 많은 혜택</h3><p>무료 경험 · 할인 · 공동구매<br>문화 · 생활 · 지역 혜택</p></div>
+          <div class="verification-block"><strong>공식 진위확인</strong><span>ncc365.com/certificate-verify.html</span><div id="cardQr" class="card-qr" aria-label="회원번호 공식 진위확인 QR"></div><b data-output="memberNumber">NCC-C-000001</b></div>
+        </article>
+      </div>
+    </section>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js" crossorigin="anonymous"></script>
+<script type="module" src="js/admin-business-cards.js?v=20260829-1"></script>
+</body>
+</html>
