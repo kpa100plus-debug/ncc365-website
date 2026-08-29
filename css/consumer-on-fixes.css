@@ -1,0 +1,13 @@
+.bubble.b1{min-height:12%;height:auto;padding:2%}
+.bubble.b2{top:29%;left:49%;width:31%;min-height:11%;height:auto;padding:2%}
+.bubble.b3{bottom:13%;left:4%;width:39%;min-height:13%;height:auto;padding:2%}
+.photo.wide{height:auto;max-height:28%;object-fit:contain;object-position:center}
+.photo.wide.short{height:auto;max-height:23%}
+.benefits p{overflow-wrap:anywhere}
+.groupbuy h2{font-size:clamp(25px,2.35vw,38px)}
+.groupbuy .warning{margin-top:3%;padding:4%}
+.remedy-list{gap:9px}
+.remedy-list li{padding:3%}
+.remedy .official{margin-top:3%}
+.remedy .official a{padding:8px;font-size:clamp(10px,.8vw,13px)}
+@media(max-width:700px){.groupbuy h2{font-size:clamp(24px,6.9vw,30px)}.groupbuy .steps{gap:8px}.groupbuy .steps>div{padding:5%}.remedy h2{font-size:clamp(24px,6.8vw,30px)}.remedy .official{gap:5px}.remedy .official a{font-size:10px}}
