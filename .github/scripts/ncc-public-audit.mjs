@@ -494,6 +494,7 @@ for (let offset = 0; offset < routeViewports.length; offset += auditConcurrency)
         family: style.fontFamily,
         weight: style.fontWeight,
         size: style.fontSize,
+        type: element.getAttribute("type") || "",
         letterSpacing: style.letterSpacing,
         text: (element.textContent || element.getAttribute("aria-label") || "").trim().slice(0, 80),
         previewArtifact: Boolean(element.closest(".member-card, .business-card")),
@@ -560,7 +561,9 @@ for (let offset = 0; offset < routeViewports.length; offset += auditConcurrency)
     const viewportContent = document.querySelector('meta[name="viewport"]')?.getAttribute("content") || "";
     const zoomBlocked = /user-scalable\s*=\s*no|maximum-scale\s*=\s*(?:0|1(?:\.0*)?)(?:\s|,|$)/i.test(viewportContent);
     const mobileFormText = viewportWidth <= 430
-      ? typography.filter(item => ["input", "select", "textarea", "button"].includes(item.tag) && parseFloat(item.size) < 16)
+      ? typography.filter(item => ["input", "select", "textarea", "button"].includes(item.tag))
+        .filter(item => !["checkbox", "radio", "range", "color", "file", "hidden"].includes(item.type))
+        .filter(item => parseFloat(item.size) < 16)
       : [];
     const unreadablySmallText = viewportWidth <= 430
       ? typography.filter(item => !item.previewArtifact && item.text && parseFloat(item.size) < 12)
@@ -747,7 +750,12 @@ const failures = results.flatMap(result => {
   if (result.navigationError) issues.push(`navigation: ${result.navigationError}`);
   if (result.auditState === "protected" && !result.statePreparation?.applied) issues.push("protected state was not rendered");
   if (result.pageErrors.length) issues.push(`page errors: ${result.pageErrors.join(" | ")}`);
-  if (!ignoreExternalFailures && result.consoleErrors.length) issues.push(`console errors: ${result.consoleErrors.join(" | ")}`);
+  const actionableConsoleErrors = result.consoleErrors.filter(item => !(
+    result.routePath === notFoundAuditRoute
+    && item.includes(notFoundAuditRoute)
+    && /404|Not Found/i.test(item)
+  ));
+  if (!ignoreExternalFailures && actionableConsoleErrors.length) issues.push(`console errors: ${actionableConsoleErrors.join(" | ")}`);
   const actionableFailedRequests = result.failedRequests.filter(item => !/net::ERR_ABORTED$/i.test(item));
   if (!ignoreExternalFailures && actionableFailedRequests.length) issues.push(`failed requests: ${actionableFailedRequests.join(" | ")}`);
   if (!ignoreExternalFailures && result.badResponses.length) issues.push(`bad responses: ${result.badResponses.join(" | ")}`);
