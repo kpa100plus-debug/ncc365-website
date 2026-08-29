@@ -1,0 +1,259 @@
+/* REF-NCC-MOBILE-FULL-AUDIT-FIX-20260830-01 */
+.thumb span {
+  color: #36564e;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.archive p {
+  color: #79550d;
+}
+
+.formula span,
+.benefits span {
+  color: #79550d;
+}
+
+.groupbuy .warning a {
+  min-height: 44px;
+}
+
+@media (max-width: 700px) {
+  .mag-toolbar > div {
+    display: grid;
+    width: 100%;
+    gap: 6px;
+    overflow: visible;
+  }
+
+  .mag-toolbar > div:nth-child(1) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mag-toolbar > div:nth-child(2) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mag-toolbar > div:nth-child(3) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mag-toolbar button,
+  .mag-toolbar strong {
+    min-width: 0;
+    padding: 0 6px;
+    font-size: 16px;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .mag-stage {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .mag-book {
+    align-items: flex-start;
+  }
+
+  .mag-page {
+    width: calc(100vw - 16px);
+    min-height: 760px;
+    flex-basis: calc(100vw - 16px);
+    aspect-ratio: auto;
+    padding: 28px 20px 76px;
+  }
+
+  .mag-page h2,
+  .case-file h2,
+  .groupbuy h2,
+  .remedy h2 {
+    font-size: clamp(28px, 8.2vw, 36px);
+    line-height: 1.28;
+    word-break: keep-all;
+  }
+
+  .mag-page h3 {
+    font-size: clamp(20px, 5.7vw, 25px);
+    line-height: 1.4;
+  }
+
+  .mag-page p,
+  .mag-page li,
+  .case-file p,
+  .case-file li,
+  .beauty-guide li,
+  .local-check li,
+  .consumer-note,
+  .remedy .official a {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+
+  .mag-page em,
+  .folio,
+  .calc span,
+  .benefits span,
+  .cover-copy small,
+  .back small,
+  .back footer {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .mag-page aside {
+    right: 20px;
+    bottom: 24px;
+    left: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .contents .toc,
+  .columns,
+  .checks.two,
+  .xray,
+  .number-grid,
+  .benefits,
+  .beauty-guide,
+  .calc,
+  .official {
+    grid-template-columns: 1fr;
+  }
+
+  .contents .toc {
+    gap: 8px;
+  }
+
+  .contents blockquote {
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  .xray div,
+  .issue .xray div {
+    min-height: 104px;
+  }
+
+  .webtoon-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .comic {
+    min-height: 560px;
+  }
+
+  .case-file {
+    padding: 28px 0 0;
+  }
+
+  .case-file ol {
+    padding-left: 24px;
+  }
+
+  .beauty .photo.wide.short,
+  .local .local-photo {
+    width: 100%;
+    max-height: none;
+  }
+
+  .beauty-guide {
+    gap: 12px;
+  }
+
+  .beauty-guide section,
+  .local-check,
+  .consumer-note {
+    padding: 18px;
+  }
+
+  .calc strong {
+    display: none;
+  }
+
+  .calc div {
+    padding: 16px;
+  }
+
+  .benefits > div,
+  .number-grid > div {
+    padding: 18px;
+  }
+
+  .actions,
+  .back-links {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .actions a,
+  .back-links a,
+  .back-links button,
+  .warning a {
+    justify-content: center;
+    min-height: 48px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .official {
+    gap: 10px;
+  }
+
+  .official a {
+    min-height: 64px;
+  }
+
+  .cover,
+  .back {
+    min-height: 780px;
+  }
+
+  .cover-copy {
+    right: 20px;
+    bottom: 34px;
+    left: 20px;
+  }
+
+  .cover-copy h2,
+  .premium-cover .cover-copy h2 {
+    font-size: clamp(50px, 16vw, 68px);
+  }
+
+  .cover-copy p,
+  .premium-cover .cover-copy p {
+    font-size: clamp(24px, 7vw, 30px) !important;
+    line-height: 1.4 !important;
+  }
+
+  .premium-cover .cover-copy li {
+    font-size: 15px !important;
+  }
+
+  .back-copy {
+    top: 15%;
+    right: 20px;
+    left: 20px;
+  }
+
+  .back-copy p {
+    max-width: none;
+  }
+
+  .back footer {
+    right: 20px;
+    bottom: 24px;
+    left: 20px;
+  }
+
+  .archive select,
+  .archive a {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .groupbuy .warning a {
+    min-height: 48px;
+  }
+}

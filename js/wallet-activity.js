@@ -14,7 +14,7 @@ let records = [];
 let active = "all";
 let loaded = false;
 
-document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="css/wallet-activity.css?v=20260829-2">');
+document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="css/wallet-activity.css?v=20260830-1">');
 
 function shell() {
   if (document.querySelector("#walletActivity")) return;

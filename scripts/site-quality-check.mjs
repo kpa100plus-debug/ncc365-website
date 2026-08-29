@@ -79,7 +79,7 @@ for (const required of [
 }
 
 for (const baseCss of ["css/platform.css", "css/readability.css", "css/style.css", "css/admin-applications.css"]) {
-  if (!readFileSync(baseCss, "utf8").includes("ncc-fonts.css?v=20260826-1")) {
+  if (!readFileSync(baseCss, "utf8").includes("ncc-fonts.css?v=20260830-1")) {
     findings.push(`${baseCss}: missing pinned NCC font import`);
   }
 }
