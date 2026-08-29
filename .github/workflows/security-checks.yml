@@ -44,6 +44,9 @@ jobs:
       - name: Test payment API safety and idempotency controls
         run: npm run test:payments
 
+      - name: Test member benefits, wallet notifications, and business-card output
+        run: npm run test:features
+
       - name: Install pinned Firebase emulator CLI
         run: npm install --global firebase-tools@15.28.1
 

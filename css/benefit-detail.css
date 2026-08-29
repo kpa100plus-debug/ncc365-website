@@ -10,3 +10,4 @@ body{background:radial-gradient(circle at 85% 10%,#164b40 0,transparent 25%),lin
 .side-card{text-align:center}.side-card b{display:block;line-height:1.45}.side-card p{margin:18px auto 0;font-size:17px;line-height:1.75;word-break:keep-all}.side-card a{display:flex;min-height:52px;align-items:center;justify-content:center;text-align:center;white-space:normal}.side-card .ncc-button{min-height:58px;padding:14px 18px;font-size:18px;line-height:1.4}
 @media(max-width:900px){.side-card{width:100%;max-width:680px;margin:0 auto;padding:34px clamp(24px,6vw,48px)}}
 @media(max-width:600px){.side-card{padding:30px 22px}.side-card p{font-size:16px}.side-card .ncc-button{width:100%;font-size:17px}}
+.form-message a{color:#fff0bd;text-decoration:underline;text-underline-offset:3px}

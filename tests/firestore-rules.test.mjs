@@ -13,10 +13,12 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   serverTimestamp,
   setDoc,
   Timestamp,
-  updateDoc
+  updateDoc,
+  where
 } from "firebase/firestore";
 
 const projectId = "ncc-security-test";
@@ -206,6 +208,56 @@ const groupBuyOrder = (memberId, email, overrides = {}) => ({
   ...overrides
 });
 
+const benefitApplication = (memberId, email, overrides = {}) => ({
+  type: "모집 알림 신청",
+  name: "테스트 회원",
+  phone: "010-1234-5678",
+  region: "서울",
+  message: "모집 시작 알림을 신청합니다.",
+  memberId,
+  memberEmail: email,
+  offerId: "first-health",
+  offerTitle: "건강검진 우선 체험",
+  receipt: "NCC-260829-12345",
+  status: "new",
+  source: "website",
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+  ...overrides
+});
+
+test("verified member can create and read only their own benefit application", async () => {
+  await seedMember("benefit-owner");
+  await seedMember("benefit-other");
+  const ownerDb = testEnv.authenticatedContext("benefit-owner", {
+    email: "benefit-owner@example.com",
+    email_verified: true
+  }).firestore();
+  const otherDb = testEnv.authenticatedContext("benefit-other", {
+    email: "benefit-other@example.com",
+    email_verified: true
+  }).firestore();
+
+  const application = await assertSucceeds(addDoc(
+    collection(ownerDb, "benefitApplications"),
+    benefitApplication("benefit-owner", "benefit-owner@example.com")
+  ));
+  await assertSucceeds(getDoc(doc(ownerDb, "benefitApplications", application.id)));
+  await assertFails(getDoc(doc(otherDb, "benefitApplications", application.id)));
+  await assertFails(addDoc(
+    collection(otherDb, "benefitApplications"),
+    benefitApplication("benefit-owner", "benefit-other@example.com", { receipt: "NCC-260829-54321" })
+  ));
+});
+
+test("anonymous legacy benefit application shape is rejected", async () => {
+  const publicDb = testEnv.unauthenticatedContext().firestore();
+  const legacy = benefitApplication("legacy-member", "legacy@example.com");
+  delete legacy.memberId;
+  delete legacy.memberEmail;
+  await assertFails(addDoc(collection(publicDb, "benefitApplications"), legacy));
+});
+
 test("member can manage only their own saved delivery address", async () => {
   await seedMember("member-1");
   await seedMember("member-2");
@@ -335,4 +387,72 @@ test("members cannot delete expectation likes but the administrator can clean th
   const adminDb = testEnv.authenticatedContext("admin-1", adminClaims).firestore();
   await assertFails(deleteDoc(doc(memberDb, "expectationLikes", likeId)));
   await assertSucceeds(deleteDoc(doc(adminDb, "expectationLikes", likeId)));
+});
+
+const memberNotification = (memberId, overrides = {}) => ({
+  memberId,
+  applicationId: "benefit-application-test",
+  offerId: "first-health",
+  offerTitle: "건강검진 우선 체험",
+  applicationType: "모집 알림 신청",
+  status: "approved",
+  title: "모집 시작 안내",
+  message: "건강검진 우선 체험 모집이 시작되었습니다.",
+  href: "benefit-detail.html?id=first-health",
+  read: false,
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+  ...overrides
+});
+
+test("admin creates wallet notifications and only the owning member can read them", async () => {
+  await seedMember("notification-owner");
+  await seedMember("notification-other");
+  const adminDb = testEnv.authenticatedContext("admin-1", adminClaims).firestore();
+  const ownerDb = testEnv.authenticatedContext("notification-owner", {
+    email: "notification-owner@example.com",
+    email_verified: true
+  }).firestore();
+  const otherDb = testEnv.authenticatedContext("notification-other", {
+    email: "notification-other@example.com",
+    email_verified: true
+  }).firestore();
+  const notificationId = "benefit-application-test-approved";
+
+  await assertSucceeds(setDoc(doc(adminDb, "memberNotifications", notificationId), memberNotification("notification-owner")));
+  await assertSucceeds(getDoc(doc(ownerDb, "memberNotifications", notificationId)));
+  await assertSucceeds(getDocs(query(collection(ownerDb, "memberNotifications"), where("memberId", "==", "notification-owner"))));
+  await assertFails(getDoc(doc(otherDb, "memberNotifications", notificationId)));
+  await assertFails(setDoc(doc(ownerDb, "memberNotifications", "member-forgery"), memberNotification("notification-owner")));
+});
+
+test("wallet notifications are member read-only and admin updates preserve identity fields", async () => {
+  await seedMember("notification-owner");
+  const adminDb = testEnv.authenticatedContext("admin-1", adminClaims).firestore();
+  const ownerDb = testEnv.authenticatedContext("notification-owner", {
+    email: "notification-owner@example.com",
+    email_verified: true
+  }).firestore();
+  const reference = doc(adminDb, "memberNotifications", "benefit-application-test-checking");
+
+  await assertSucceeds(setDoc(reference, memberNotification("notification-owner", {
+    status: "checking",
+    title: "혜택 신청 확인 중",
+    message: "신청내용을 확인하고 있습니다."
+  })));
+  await assertSucceeds(updateDoc(reference, {
+    status: "approved",
+    title: "모집 시작 안내",
+    message: "모집이 시작되었습니다.",
+    href: "benefit-detail.html?id=first-health",
+    updatedAt: serverTimestamp()
+  }));
+  await assertFails(updateDoc(doc(ownerDb, "memberNotifications", reference.id), {
+    read: true,
+    updatedAt: serverTimestamp()
+  }));
+  await assertFails(updateDoc(reference, {
+    memberId: "notification-other",
+    updatedAt: serverTimestamp()
+  }));
 });

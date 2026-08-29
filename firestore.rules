@@ -229,9 +229,11 @@ service cloud.firestore {
 
 match /benefitApplications/{applicationId} {
 
-  // ííì´ì§ ë°©ë¬¸ìë ì ì²­ì ë±ë¡ë§ ê°ë¥
+  // Legacy anonymous application shape is permanently disabled.
+  // Authenticated member creates are validated by the strict rule below.
   allow create: if
-    request.resource.data.keys().hasAll([
+    false
+    && request.resource.data.keys().hasAll([
       "type",
       "name",
       "phone",
@@ -768,6 +770,69 @@ match /benefitApplications/{applicationId} {
     && request.resource.data.status == "new" && request.resource.data.source == "website"
     && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
   allow read: if isAdmin() || (request.auth != null && ownsMember(resource.data.memberId));
+}
+
+// 혜택 처리상태와 모집 시작 안내는 관리자만 만들고 해당 회원만 읽는다.
+match /memberNotifications/{notificationId} {
+  allow create: if isAdmin()
+    && request.resource.data.keys().hasAll([
+      "memberId", "applicationId", "offerId", "offerTitle", "applicationType",
+      "status", "title", "message", "href", "read", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.keys().hasOnly([
+      "memberId", "applicationId", "offerId", "offerTitle", "applicationType",
+      "status", "title", "message", "href", "read", "createdAt", "updatedAt"
+    ])
+    && request.resource.data.memberId is string
+    && request.resource.data.memberId.size() >= 1
+    && request.resource.data.applicationId is string
+    && request.resource.data.applicationId.size() >= 1
+    && request.resource.data.offerId is string
+    && request.resource.data.offerId.size() <= 100
+    && request.resource.data.offerTitle is string
+    && request.resource.data.offerTitle.size() >= 1
+    && request.resource.data.offerTitle.size() <= 200
+    && request.resource.data.applicationType is string
+    && request.resource.data.applicationType.size() >= 1
+    && request.resource.data.applicationType.size() <= 100
+    && request.resource.data.status in ["checking", "contacted", "approved", "hold"]
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 100
+    && request.resource.data.message is string
+    && request.resource.data.message.size() >= 1
+    && request.resource.data.message.size() <= 500
+    && request.resource.data.href is string
+    && request.resource.data.href.size() <= 300
+    && request.resource.data.read == false
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time;
+
+  allow read: if isAdmin() || (request.auth != null && ownsMember(resource.data.memberId));
+
+  allow update: if isAdmin()
+    && request.resource.data.memberId == resource.data.memberId
+    && request.resource.data.applicationId == resource.data.applicationId
+    && request.resource.data.offerId == resource.data.offerId
+    && request.resource.data.offerTitle == resource.data.offerTitle
+    && request.resource.data.applicationType == resource.data.applicationType
+    && request.resource.data.createdAt == resource.data.createdAt
+    && request.resource.data.read == resource.data.read
+    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "status", "title", "message", "href", "updatedAt"
+    ])
+    && request.resource.data.status in ["checking", "contacted", "approved", "hold"]
+    && request.resource.data.title is string
+    && request.resource.data.title.size() >= 1
+    && request.resource.data.title.size() <= 100
+    && request.resource.data.message is string
+    && request.resource.data.message.size() >= 1
+    && request.resource.data.message.size() <= 500
+    && request.resource.data.href is string
+    && request.resource.data.href.size() <= 300
+    && request.resource.data.updatedAt == request.time;
+
+  allow delete: if isAdmin();
 }
 
 match /groupBuyOrders/{orderId} {

@@ -26,7 +26,7 @@
         <label><span>직책 <b>*</b></span><select name="role" required><option value="센터장">센터장</option><option value="운영팀장">운영팀장</option><option value="회원지원팀장">회원지원팀장</option><option value="지역협력매니저">지역협력매니저</option><option value="센터 팀원">센터 팀원</option></select></label>
         <label class="wide"><span>센터명 <b>*</b></span><input name="centerName" maxlength="50" value="서울강남삼성센터" required></label>
         <label class="wide"><span>센터코드 <b>*</b></span><input name="centerCode" maxlength="100" value="SEOUL-GANGNAM-SAMSEONG" required></label>
-        <label class="wide"><span>회원번호 <b>*</b></span><input name="memberNumber" maxlength="12" value="NCC-C-000001" pattern="NCC-C-[0-9]{6}" required aria-describedby="memberNumberHelp"><small id="memberNumberHelp">현재 운영 규칙: NCC-C-000001 형식</small></label>
+        <div class="wide lookup-field"><label for="cardMemberNumber">회원번호 <b>*</b></label><div class="member-lookup"><input id="cardMemberNumber" name="memberNumber" maxlength="12" value="NCC-C-000001" pattern="NCC-C-[0-9]{6}" required aria-describedby="memberNumberHelp"><button id="loadMemberButton" type="button">실제 회원정보 불러오기</button></div><small id="memberNumberHelp">현재 운영 규칙: NCC-C-000001 형식 · 센터장/센터 팀원으로 등록된 실제 번호만 출력 가능</small></div>
         <label><span>전화번호 <b>*</b></span><input name="phone" inputmode="tel" maxlength="20" value="010-1234-5678" required></label>
         <label><span>이메일 <b>*</b></span><input name="email" type="email" maxlength="80" value="ncc.samseong@ncc365.com" required></label>
         <label class="wide"><span>주소</span><input name="address" maxlength="100" value="서울특별시 강남구 삼성로 123"></label>
@@ -35,7 +35,7 @@
       <fieldset><legend>명함 방향</legend><label><input type="radio" name="orientation" value="landscape" checked> 가로형 92×52mm 작업 / 90×50mm 재단</label><label><input type="radio" name="orientation" value="portrait"> 세로형 52×92mm 작업 / 50×90mm 재단</label></fieldset>
       <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
       <button class="preview-button" type="submit">명함 시안 새로 만들기</button>
-      <div class="print-spec"><b>인쇄 규격 자동검사</b><span>300dpi · 가로 1087×614px / 세로 614×1087px</span><span>작업선 92×52mm · 재단선 90×50mm · 안전선 안쪽 배치</span><span>앞·뒤 개별 구성 · QR 판독영역 확보 · 오버프린트 금지</span></div>
+      <div class="print-spec"><b>인쇄 규격 자동검사</b><span>300dpi · 가로 1087×614px / 세로 614×1087px</span><span>작업선 92×52mm · 재단선 90×50mm · 안전선 안쪽 배치</span><span>앞·뒤 JPG 개별 출력 · QR 판독영역 확보 · 테두리 재단 오차 주의</span><ul><li>내려받는 JPG는 300dpi RGB 인쇄 참고본입니다.</li><li>최종 인쇄 접수 전 AI 또는 인쇄소에서 전체 CMYK 변환, 모든 글자 윤곽선 처리, 이미지 300dpi를 확인하세요.</li><li>오버프린트 금지, CMY만 사용 금지, 누락 이미지 확인이 필요합니다.</li></ul></div>
     </form>
 
     <section class="preview-workspace" aria-labelledby="previewTitle">
@@ -55,10 +55,12 @@
           <div class="verification-block"><strong>공식 진위확인</strong><span>ncc365.com/certificate-verify.html</span><div id="cardQr" class="card-qr" aria-label="회원번호 공식 진위확인 QR"></div><b data-output="memberNumber">NCC-C-000001</b></div>
         </article>
       </div>
+      <div class="export-panel"><div><strong>인쇄용 JPG 내보내기</strong><span>실제 센터 회원정보를 불러온 뒤 사용할 수 있습니다.</span></div><div class="export-actions"><button type="button" data-export="front" disabled>앞면 JPG · 300dpi</button><button type="button" data-export="back" disabled>뒷면 JPG · 300dpi</button></div><p id="exportMessage" role="status" aria-live="polite"></p></div>
     </section>
   </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js" crossorigin="anonymous"></script>
-<script type="module" src="js/admin-business-cards.js?v=20260829-2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
+<script type="module" src="js/admin-business-cards.js?v=20260829-3"></script>
 </body>
 </html>

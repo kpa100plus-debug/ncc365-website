@@ -21,7 +21,7 @@ const secrets = [
 ].filter(Boolean);
 
 const result = {
-  referenceCode: "REF-NCC-WALLET-VERIFICATION-ACCOUNT-FIX-MASTER-05",
+  referenceCode: "REF-NCC-FULL-EXECUTION-20260829-01",
   safetyReferenceCode: "REF-NCC-CI-E2E-AUTH-SETUP-01",
   runId: config.runId,
   memberNumber: config.memberNumber,
@@ -35,6 +35,7 @@ const result = {
     emailRecoveryMasked: false,
     consumerNavAuthenticated: false,
     benefitDetailLoaded: false,
+    benefitMemberRestored: false,
     myPageLoaded: false,
     deliveryAddressSaved: false,
     groupBuyAddressPrefilled: false,
@@ -181,7 +182,22 @@ async function verifyConsumerNavigationAndBenefit(page) {
   if (!titleText || breadcrumbText !== titleText) {
     throw new Error("Benefit detail page did not render a consistent title and application form.");
   }
+  await page.waitForFunction(
+    expectedNumber => {
+      const message = document.querySelector("#formMessage")?.textContent || "";
+      const button = document.querySelector('#benefitApplicationForm button[type="submit"]');
+      const name = document.querySelector('#benefitApplicationForm input[name="name"]');
+      const phone = document.querySelector('#benefitApplicationForm input[name="phone"]');
+      return message.includes(expectedNumber)
+        && button && !button.disabled
+        && name?.readOnly && Boolean(name.value.trim())
+        && phone?.readOnly && Boolean(phone.value.trim());
+    },
+    config.memberNumber,
+    { timeout: 30_000 },
+  );
   result.checks.benefitDetailLoaded = true;
+  result.checks.benefitMemberRestored = true;
 }
 
 async function openProfile(page) {
