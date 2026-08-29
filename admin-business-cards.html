@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>NCC 센터 명함 자동제작 | 관리자</title>
   <link rel="stylesheet" href="css/platform.css?v=20260826-1">
-  <link rel="stylesheet" href="css/admin-business-cards.css?v=20260829-1">
+  <link rel="stylesheet" href="css/admin-business-cards.css?v=20260829-2">
 </head>
 <body data-page="admin-business-cards">
 <main id="mainContent" class="business-card-admin">
@@ -32,16 +32,16 @@
         <label class="wide"><span>주소</span><input name="address" maxlength="100" value="서울특별시 강남구 삼성로 123"></label>
       </div>
 
-      <fieldset><legend>명함 방향</legend><label><input type="radio" name="orientation" value="landscape" checked> 가로형 90×50mm</label><label><input type="radio" name="orientation" value="portrait"> 세로형 50×90mm</label></fieldset>
+      <fieldset><legend>명함 방향</legend><label><input type="radio" name="orientation" value="landscape" checked> 가로형 92×52mm 작업 / 90×50mm 재단</label><label><input type="radio" name="orientation" value="portrait"> 세로형 52×92mm 작업 / 50×90mm 재단</label></fieldset>
       <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
       <button class="preview-button" type="submit">명함 시안 새로 만들기</button>
-      <p class="print-note">검수 단계에서는 화면 미리보기만 제공합니다. 승인 후 92×52mm 작업판·300dpi·CMYK 인쇄 원본을 별도로 생성합니다.</p>
+      <div class="print-spec"><b>인쇄 규격 자동검사</b><span>300dpi · 가로 1087×614px / 세로 614×1087px</span><span>작업선 92×52mm · 재단선 90×50mm · 안전선 안쪽 배치</span><span>앞·뒤 개별 구성 · QR 판독영역 확보 · 오버프린트 금지</span></div>
     </form>
 
     <section class="preview-workspace" aria-labelledby="previewTitle">
       <div class="preview-heading"><div><p>LIVE PREVIEW</p><h2 id="previewTitle">앞면·뒷면 시안</h2></div><a id="verificationLink" href="certificate-verify.html?id=NCC-C-000001" target="_blank" rel="noopener">QR 연결 주소 확인</a></div>
       <div id="previewSet" class="preview-set landscape">
-        <article class="business-card card-front" aria-label="명함 앞면">
+        <article class="business-card card-front" aria-label="명함 앞면"><span class="trim-guide" aria-hidden="true"></span><span class="safe-guide" aria-hidden="true"></span>
           <i class="corner-ribbon top-right" aria-hidden="true"></i><i class="corner-ribbon bottom-left" aria-hidden="true"></i>
           <img class="card-logo" src="images/NCC_OFFICIAL.png" alt="전국소비자클럽 NCC">
           <div class="front-copy"><p>전국소비자클럽 NCC</p><h3 data-output="name">김민준</h3><div class="role-emblem"><span aria-hidden="true">◆</span><strong data-output="centerRole">서울강남삼성센터 센터장</strong></div><em data-output="roleEnglish">NCC CENTER DIRECTOR</em></div>
@@ -49,7 +49,7 @@
           <dl class="code-list"><div><dt>센터코드</dt><dd data-output="centerCode">SEOUL-GANGNAM-SAMSEONG</dd></div><div><dt>회원번호</dt><dd data-output="memberNumber">NCC-C-000001</dd></div></dl>
         </article>
 
-        <article class="business-card card-back" aria-label="명함 뒷면">
+        <article class="business-card card-back" aria-label="명함 뒷면"><span class="trim-guide" aria-hidden="true"></span><span class="safe-guide" aria-hidden="true"></span>
           <i class="corner-ribbon top-right" aria-hidden="true"></i><i class="corner-ribbon bottom-left" aria-hidden="true"></i>
           <div class="back-copy"><h3>소비자에게<br>더 많은 혜택</h3><p>무료 경험 · 할인 · 공동구매<br>문화 · 생활 · 지역 혜택</p></div>
           <div class="verification-block"><strong>공식 진위확인</strong><span>ncc365.com/certificate-verify.html</span><div id="cardQr" class="card-qr" aria-label="회원번호 공식 진위확인 QR"></div><b data-output="memberNumber">NCC-C-000001</b></div>
@@ -59,6 +59,6 @@
   </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js" crossorigin="anonymous"></script>
-<script type="module" src="js/admin-business-cards.js?v=20260829-1"></script>
+<script type="module" src="js/admin-business-cards.js?v=20260829-2"></script>
 </body>
 </html>
