@@ -13,7 +13,7 @@ test("benefit application matches the strict Firestore field allowlist",()=>{
 
 test("participation and recruitment alert have separate success feedback",()=>{
   assert.match(js,/모집 알림 신청이 완료되었습니다/);
-  assert.match(js,/NCC 알림함과 가입 이메일/);
+  assert.match(js,/관리자 화면에 저장됩니다\. 모집 확정 후 등록된 연락처로 별도 안내/);
   assert.match(html,/id="successTitle"/);
 });
 
