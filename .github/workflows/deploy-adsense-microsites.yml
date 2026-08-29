@@ -139,22 +139,65 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          projects_file="$RUNNER_TEMP/pages-projects.json"
-          wrangler pages project list --json > "$projects_file"
           node <<'NODE'
           const fs = require('node:fs');
-          const data = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/pages-projects.json', 'utf8'));
-          const projects = Array.isArray(data) ? data : (Array.isArray(data.result) ? data.result : []);
-          const found = new Map(projects.map((project) => [project.name, project]));
-          if (!found.has('daily-fortune-now')) {
-            throw new Error('Required Cloudflare Pages project is missing: daily-fortune-now');
+
+          const token = process.env.CLOUDFLARE_API_TOKEN;
+          const configuredAccount = process.env.CLOUDFLARE_ACCOUNT_ID;
+
+          async function cf(path) {
+            const response = await fetch(`https://api.cloudflare.com/client/v4${path}`, {
+              headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok || payload.success === false) throw new Error(`Cloudflare API HTTP ${response.status}`);
+            return payload;
           }
-          const output = process.env.GITHUB_OUTPUT;
-          const arcanaProject = found.get('arcana-day');
-          const arcanaBranch = arcanaProject?.production_branch || 'main';
-          const fortuneBranch = found.get('daily-fortune-now').production_branch || 'main';
-          fs.appendFileSync(output, `arcana_present=${Boolean(arcanaProject)}\narcana_branch=${arcanaBranch}\nfortune_branch=${fortuneBranch}\n`);
-          console.log(`Verified daily-fortune-now (${fortuneBranch}); arcana-day in this account=${Boolean(arcanaProject)}`);
+
+          (async () => {
+            const accountIds = [];
+            try {
+              const payload = await cf('/accounts?per_page=100');
+              for (const account of Array.isArray(payload.result) ? payload.result : []) {
+                if (account?.id && !accountIds.includes(account.id)) accountIds.push(account.id);
+              }
+            } catch {
+              console.log('Account enumeration is unavailable; checking the configured account only.');
+            }
+            if (configuredAccount && !accountIds.includes(configuredAccount)) accountIds.push(configuredAccount);
+
+            const found = new Map();
+            for (const accountId of accountIds) {
+              try {
+                const payload = await cf(`/accounts/${accountId}/pages/projects`);
+                for (const project of Array.isArray(payload.result) ? payload.result : []) {
+                  if (project?.name === 'arcana-day' || project?.name === 'daily-fortune-now') {
+                    found.set(project.name, { accountId, project });
+                  }
+                }
+              } catch {
+                console.log('A Cloudflare account was skipped because Pages access is unavailable.');
+              }
+            }
+
+            const fortune = found.get('daily-fortune-now');
+            if (!fortune) throw new Error('Required Cloudflare Pages project is missing or inaccessible: daily-fortune-now');
+            const arcana = found.get('arcana-day');
+            const output = process.env.GITHUB_OUTPUT;
+            for (const id of [fortune.accountId, arcana?.accountId].filter(Boolean)) console.log(`::add-mask::${id}`);
+            fs.appendFileSync(output, [
+              `fortune_account_id=${fortune.accountId}`,
+              `fortune_branch=${fortune.project.production_branch || 'main'}`,
+              `arcana_present=${Boolean(arcana)}`,
+              `arcana_account_id=${arcana?.accountId || ''}`,
+              `arcana_branch=${arcana?.project?.production_branch || 'main'}`,
+              ''
+            ].join('\n'));
+            console.log(`Verified daily-fortune-now; arcana-day accessible=${Boolean(arcana)}`);
+          })().catch((error) => {
+            console.error(`::error::${error.message}`);
+            process.exitCode = 1;
+          });
           NODE
 
       - name: Deploy Arcana Day to production
@@ -162,7 +205,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          wrangler pages deploy "$RUNNER_TEMP/adsense-sites/arcana-day.pages.dev" \
+          CLOUDFLARE_ACCOUNT_ID="${{ steps.projects.outputs.arcana_account_id }}" \
+            wrangler pages deploy "$RUNNER_TEMP/adsense-sites/arcana-day.pages.dev" \
             --project-name arcana-day \
             --branch "${{ steps.projects.outputs.arcana_branch }}" \
             --commit-message "AdSense readiness deployment 2026-08-29"
@@ -171,7 +215,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          wrangler pages deploy "$RUNNER_TEMP/adsense-sites/daily-fortune-now.pages.dev" \
+          CLOUDFLARE_ACCOUNT_ID="${{ steps.projects.outputs.fortune_account_id }}" \
+            wrangler pages deploy "$RUNNER_TEMP/adsense-sites/daily-fortune-now.pages.dev" \
             --project-name daily-fortune-now \
             --branch "${{ steps.projects.outputs.fortune_branch }}" \
             --commit-message "AdSense readiness deployment 2026-08-29"
