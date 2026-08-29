@@ -143,6 +143,8 @@
 @media(max-width:900px){.wallet-auth{grid-template-columns:1fr}.wallet-auth .form-panel{width:100%}}
 @media(max-width:600px){.wallet-auth{gap:18px}.wallet-auth .form-panel{padding:28px 20px}.wallet-recovery-links{justify-content:center}.wallet-form .ncc-button{min-height:54px;font-size:17px}}
 
+@media(max-width:600px){body[data-page="wallet"] .wallet-services>.platform-card{min-height:0;padding:26px 22px;background-image:none}.wallet-services{gap:14px}.wallet-services .platform-card h3{margin-top:14px}.wallet-services .platform-card .arrow{margin-top:18px}.wide-message:not(:empty){border:1px solid #e4b9b4;border-radius:10px;background:#fff1ef;font-weight:600}}
+
 .wide-message {
   grid-column: 1 / -1;
   margin: 0;
