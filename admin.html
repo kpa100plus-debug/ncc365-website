@@ -3,29 +3,53 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
   <title>NCC 통합 관리자</title>
   <link rel="stylesheet" href="css/platform.css?v=20260826-1">
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260829-1">
 </head>
-<body>
+<body data-page="admin">
 <main id="mainContent" class="platform-main">
-  <section class="page-hero">
-    <p class="hero-kicker">NCC ADMINISTRATION</p>
-    <h1>통합 관리자·CRM</h1>
-    <p class="lead">회원, 신청, 공동구매, 센터와 파트너 데이터를 기능별 관리 화면에서 확인합니다. 관리자 계정 인증이 필요한 메뉴입니다.</p>
+  <section class="page-hero admin-hero">
+    <div class="admin-hero-copy">
+      <p class="hero-kicker">NCC ADMINISTRATION</p>
+      <h1>통합 운영<br>관리센터</h1>
+      <p class="lead">회원·혜택·공동구매·센터·파트너 업무를 한곳에서 빠르게 확인하고 처리합니다.</p>
+      <div class="admin-hero-actions">
+        <a class="admin-primary-action" href="#adminModules">관리업무 시작</a>
+        <a class="admin-secondary-action" href="index.html" target="_blank" rel="noopener">운영사이트 확인</a>
+      </div>
+    </div>
+    <div class="admin-command-panel" aria-label="관리자 운영 상태">
+      <div class="command-panel-head"><span>운영 제어판</span><b>ADMIN ONLY</b></div>
+      <div class="command-status"><i aria-hidden="true"></i><div><strong>관리 시스템 정상</strong><span>권한 인증 후 각 업무 화면 이용</span></div></div>
+      <div class="command-grid">
+        <div><span>관리 모듈</span><b>10</b></div>
+        <div><span>보안</span><b>권한 보호</b></div>
+        <div><span>결제 환경</span><b>테스트</b></div>
+        <div><span>데이터</span><b>실시간 연동</b></div>
+      </div>
+    </div>
   </section>
-  <section class="platform-section paper">
-    <div class="section-head"><div><p class="eyebrow">ACTIVE MODULES</p><h2>운영 관리 모듈</h2></div></div>
-    <div class="card-grid">
-      <a class="platform-card" href="admin-certificates.html"><span class="badge">CERTIFICATE VERIFY</span><h3>인증서 발급·진위관리</h3><p>인증번호별 공개 기록, 발급상태, 효력정지와 QR 조회를 관리합니다.</p><span class="arrow">인증서 관리 열기 →</span></a>
-      <a class="platform-card" href="admin-accounts.html"><span class="badge">ACCOUNT CONTROL</span><h3>탈퇴요청·계정변경 기록</h3><p>회원 탈퇴요청을 승인·반려하고 계정정보 변경 이력을 확인합니다.</p><span class="arrow">계정관리 열기 →</span></a>
-      <a class="platform-card" href="admin-operations.html"><span class="badge">OPERATIONS</span><h3>파트너·센터 운영 승인</h3><p>파트너 등록 제안과 센터 지역 활동을 검토하고 승인합니다.</p><span class="arrow">운영승인 열기 →</span></a>
-      <a class="platform-card" href="admin-roles.html"><span class="badge">ROLE ACCESS</span><h3>회원 역할·권한 관리</h3><p>소비자·센터장·센터 팀원·파트너회원 권한과 소속을 승인합니다.</p><span class="arrow">역할관리 열기 →</span></a>
-      <a class="platform-card" href="admin-members.html"><span class="badge">FIREBASE AUTH</span><h3>회원관리</h3><p>회원번호, 가입정보, 상태와 관리등급을 확인합니다.</p><span class="arrow">회원관리 열기 →</span></a>
-      <a class="platform-card" href="admin-applications.html"><span class="badge">FIRESTORE</span><h3>혜택·서비스 신청관리</h3><p>접수된 신청과 처리 상태를 확인하고 변경합니다.</p><span class="arrow">신청관리 열기 →</span></a>
-      <a class="platform-card" href="admin-inquiries.html"><span class="badge">FIRESTORE</span><h3>파트너·센터 접수관리</h3><p>파트너 제휴와 전국소비자센터 참여 신청을 처리합니다.</p><span class="arrow">접수관리 열기 →</span></a>
-      <a class="platform-card" href="admin-groupbuy.html"><span class="badge">GROUP BUY CRM</span><h3>공동구매 관리</h3><p>상품 등록·공개와 참여 신청·배송 상태를 관리합니다.</p><span class="arrow">공동구매 관리 열기 →</span></a>
-      <a class="platform-card" href="admin-payments.html"><span class="badge">TEST PAYMENT</span><h3>테스트 결제관리</h3><p>실제 금전이동 없이 결제·취소·부분환불 흐름을 검사합니다.</p><span class="arrow">테스트 결제관리 열기 →</span></a>
-      <a class="platform-card" href="admin-feedback.html"><span class="badge">MEMBER VOICE</span><h3>기대평·후기·신고관리</h3><p>회원 기대평과 이용 인증 후기를 공개·숨김 처리합니다.</p><span class="arrow">후기관리 열기 →</span></a>
+  <section class="admin-overview" aria-label="빠른 관리">
+    <a href="admin-members.html"><span>01</span><div><b>회원 확인</b><small>회원번호·상태·등급</small></div></a>
+    <a href="admin-applications.html"><span>02</span><div><b>신청 처리</b><small>혜택·서비스 접수</small></div></a>
+    <a href="admin-groupbuy.html"><span>03</span><div><b>공동구매 운영</b><small>상품·주문·배송</small></div></a>
+    <a href="admin-feedback.html"><span>04</span><div><b>회원 의견</b><small>기대평·후기·신고</small></div></a>
+  </section>
+  <section class="platform-section paper admin-section" id="adminModules">
+    <div class="section-head"><div><p class="eyebrow">OPERATIONS WORKSPACE</p><h2>운영 관리 모듈</h2><p>업무 분야별로 필요한 관리 화면을 선택하세요.</p></div></div>
+    <div class="card-grid admin-card-grid">
+      <a class="platform-card" data-icon="인증" href="admin-certificates.html"><span class="badge">인증·발급</span><h3>인증서 발급·진위관리</h3><p>공개 기록, 발급상태, 효력정지와 QR 조회를 관리합니다.</p><span class="arrow">인증서 관리 →</span></a>
+      <a class="platform-card" data-icon="계정" href="admin-accounts.html"><span class="badge">계정·복구</span><h3>탈퇴요청·계정변경</h3><p>탈퇴 승인·반려와 안전한 계정정보 변경 이력을 확인합니다.</p><span class="arrow">계정 관리 →</span></a>
+      <a class="platform-card" data-icon="승인" href="admin-operations.html"><span class="badge">운영·승인</span><h3>파트너·센터 운영 승인</h3><p>파트너 제안과 센터 지역 활동을 검토하고 승인합니다.</p><span class="arrow">운영 승인 →</span></a>
+      <a class="platform-card" data-icon="권한" href="admin-roles.html"><span class="badge">역할·권한</span><h3>회원 역할·권한 관리</h3><p>소비자·센터장·팀원·파트너 권한과 소속을 승인합니다.</p><span class="arrow">역할 관리 →</span></a>
+      <a class="platform-card priority" data-icon="회원" href="admin-members.html"><span class="badge">회원·CRM</span><h3>회원관리</h3><p>회원번호, 가입정보, 활동상태와 관리등급을 확인합니다.</p><span class="arrow">회원 관리 →</span></a>
+      <a class="platform-card priority" data-icon="혜택" href="admin-applications.html"><span class="badge">혜택·신청</span><h3>혜택·서비스 신청관리</h3><p>접수된 신청을 확인하고 진행 상태를 변경합니다.</p><span class="arrow">신청 관리 →</span></a>
+      <a class="platform-card" data-icon="제휴" href="admin-inquiries.html"><span class="badge">파트너·센터</span><h3>파트너·센터 접수관리</h3><p>파트너 제휴와 전국소비자센터 참여 신청을 처리합니다.</p><span class="arrow">접수 관리 →</span></a>
+      <a class="platform-card priority" data-icon="구매" href="admin-groupbuy.html"><span class="badge">공동구매·주문</span><h3>공동구매 관리</h3><p>상품 공개부터 참여 신청, 주문과 배송 상태를 관리합니다.</p><span class="arrow">공동구매 관리 →</span></a>
+      <a class="platform-card payment-card" data-icon="결제" href="admin-payments.html"><span class="badge">테스트 결제</span><h3>결제관리</h3><p>테스트 환경에서 결제·취소·부분환불 흐름을 점검합니다.</p><span class="arrow">결제 관리 →</span></a>
+      <a class="platform-card" data-icon="후기" href="admin-feedback.html"><span class="badge">회원 의견</span><h3>기대평·후기·신고관리</h3><p>회원 기대평과 인증 후기의 공개·숨김·신고를 처리합니다.</p><span class="arrow">후기 관리 →</span></a>
     </div>
   </section>
 </main>
