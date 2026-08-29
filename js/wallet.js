@@ -87,7 +87,11 @@ $("#loginForm").onsubmit=async event=>{
     $("#authMessage").textContent="이메일 형식을 확인해 주세요.";
     return;
   }
-  await action(()=>signInWithEmailAndPassword(auth,email,data.password),"이메일 또는 비밀번호가 일치하지 않습니다.");
+  const button=event.currentTarget.querySelector('button[type="submit"]');
+  button.disabled=true;button.textContent="로그인 확인 중...";
+  try{await signInWithEmailAndPassword(auth,email,data.password);$("#authMessage").textContent=""}
+  catch(error){const code=String(error?.code||"");console.error(error);$("#authMessage").textContent=code.includes("wrong-password")||code.includes("invalid-credential")?"비밀번호가 올바르지 않습니다. 다시 확인해 주세요.":code.includes("user-not-found")?"등록되지 않은 이메일입니다.":code.includes("too-many-requests")?"로그인 시도가 많아 잠시 제한되었습니다. 잠시 후 다시 시도해 주세요.":code.includes("network-request-failed")?"인터넷 연결을 확인한 뒤 다시 시도해 주세요.":"로그인하지 못했습니다. 이메일과 비밀번호를 확인해 주세요.";$("#authMessage").scrollIntoView({behavior:"smooth",block:"center"})}
+  finally{button.disabled=false;button.textContent="회원 로그인"}
 };
 
 $("#signupForm").onsubmit=async event=>{
