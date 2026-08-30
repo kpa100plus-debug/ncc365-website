@@ -118,3 +118,161 @@
 .active-badge,.front-copy p,.front-copy>b,.center-identity span,.ncc-seal,.member-panel dt,.back-topline,.secure-band,.back-brand b,.back-brand span,.verification-block>b,.copyright{color:#fff!important}
 .signature-area strong,.signature-area small{color:#30423c!important}
 .member-panel dd,.front-copy h3,.center-identity strong,.back-brand strong,.verification-block strong,.card-footer-line{color:#fff!important}
+
+
+/* REF-NCC-CENTER-CARD-SQUARE-PRINT-LAYOUT-20260830
+   Preserve the approved emerald/gold artwork while rebuilding real-name-card hierarchy. */
+.business-card,.preview-set.portrait .business-card{
+  border-radius:0!important;
+}
+.card-qr,.gold-chip,.member-panel,.signature-area{
+  border-radius:0!important;
+}
+.card-logo{
+  top:6.5%;
+  left:5%;
+  width:22%;
+  max-height:18%;
+}
+.active-badge{
+  top:6.5%;
+  right:11%;
+  padding:.9% 1.8%;
+  font-size:1.65cqw;
+  line-height:1.2;
+}
+.gold-chip{
+  top:6.5%;
+  right:4%;
+  width:5.5%;
+}
+.front-copy{
+  left:5%;
+  top:27%;
+  width:49%;
+}
+.front-copy p{
+  font-size:1.75cqw;
+  line-height:1.25;
+}
+.front-copy h3{
+  margin:6% 0 1.5%;
+  font-size:6.1cqw;
+  line-height:1;
+  letter-spacing:-.025em;
+}
+.front-copy>b{
+  font-size:2.85cqw;
+  line-height:1.2;
+}
+.center-identity{
+  gap:1.5%;
+  margin-top:5%;
+  padding-top:4%;
+}
+.center-identity strong{
+  font-size:2.35cqw;
+  line-height:1.35;
+}
+.center-identity span{
+  font-size:1.75cqw;
+  line-height:1.3;
+}
+.ncc-seal{
+  left:61%;
+  top:27%;
+  width:13.5%;
+}
+.ncc-seal b{font-size:3.7cqw}
+.ncc-seal small{font-size:1.05cqw}
+.member-panel{
+  right:4%;
+  bottom:8%;
+  width:36%;
+  padding:2.3%;
+  background:rgba(0,29,25,.62);
+}
+.member-panel div{
+  grid-template-columns:25% 1fr;
+  gap:4%;
+  padding:1.8% 0;
+}
+.member-panel dt{
+  font-size:1.45cqw;
+  line-height:1.25;
+}
+.member-panel dd{
+  font-size:1.55cqw;
+  line-height:1.25;
+}
+.card-footer-line{
+  left:5%;
+  bottom:5%;
+  font-size:1.45cqw;
+  line-height:1.25;
+}
+.back-topline{
+  left:5%;
+  right:5%;
+  top:6%;
+  font-size:1.55cqw;
+}
+.secure-band{
+  top:14%;
+  height:19%;
+  padding:1.8% 5%;
+  font-size:1.35cqw;
+}
+.signature-area{
+  left:5%;
+  top:39%;
+  width:43%;
+  height:15%;
+  padding:2.2%;
+}
+.signature-area small{
+  top:-31%;
+  font-size:1.35cqw;
+}
+.signature-area strong{
+  font-size:2.15cqw;
+  line-height:1.3;
+}
+.back-logo{
+  left:5%;
+  bottom:13%;
+  width:25%;
+  max-height:20%;
+  object-fit:contain;
+}
+.back-brand{
+  left:33%;
+  bottom:15%;
+  gap:2%;
+  padding-left:3%;
+}
+.back-brand b{
+  font-size:4.2cqw;
+  line-height:1;
+}
+.back-brand strong{
+  font-size:2.05cqw;
+  line-height:1.25;
+}
+.back-brand span{
+  font-size:1.45cqw;
+  line-height:1.25;
+}
+.verification-block{
+  right:5%;
+  bottom:9%;
+  width:19%;
+  gap:2.5%;
+}
+.verification-block strong{font-size:1.55cqw}
+.verification-block>b{font-size:1.4cqw}
+.copyright{
+  left:5%;
+  bottom:4%;
+  font-size:1.05cqw;
+}
