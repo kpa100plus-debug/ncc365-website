@@ -112,8 +112,8 @@ function render({ quiet = false } = {}) {
   setOutput("centerCode", data.centerCode);
   setOutput("memberNumber", data.memberNumber);
   const preview = $("#previewSet");
-  preview.classList.toggle("portrait", data.orientation === "portrait");
-  preview.classList.toggle("landscape", data.orientation !== "portrait");
+  preview.classList.remove("portrait");
+  preview.classList.add("landscape");
   renderQr(data.memberNumber);
   if (!quiet) {
     message.textContent = exportReady()
@@ -257,8 +257,7 @@ async function exportCard(side) {
   if (!render({ quiet: true })) return;
 
   const data = values();
-  const portrait = data.orientation === "portrait";
-  const dimensions = portrait ? { width: 614, height: 1087 } : { width: 1087, height: 614 };
+  const dimensions = { width: 1087, height: 614 };
   const node = side === "front" ? $(".card-front") : $(".card-back");
   const sideLabel = side === "front" ? "앞면" : "뒷면";
   exporting = true;
@@ -284,7 +283,7 @@ async function exportCard(side) {
     context.drawImage(captured, 0, 0, dimensions.width, dimensions.height);
     const blob = jpegBlobWithDpi(exact.toDataURL("image/jpeg", 0.98));
     const safeName = data.name.trim().replace(/[^0-9A-Za-z가-힣_-]+/g, "-");
-    download(blob, `${data.memberNumber}_${safeName}_${side === "front" ? "front" : "back"}_${portrait ? "52x92" : "92x52"}_300dpi.jpg`);
+    download(blob, `${data.memberNumber}_${safeName}_${side === "front" ? "front" : "back"}_92x52_300dpi.jpg`);
     exportMessage.textContent = `${sideLabel} ${dimensions.width}×${dimensions.height}px · 300dpi JPG 다운로드를 시작했습니다.`;
   } catch (error) {
     console.error(error);
