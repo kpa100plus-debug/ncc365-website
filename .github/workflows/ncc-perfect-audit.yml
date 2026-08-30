@@ -24,7 +24,7 @@ jobs:
   source-and-responsive-audit:
     name: Source, font, accessibility, and responsive audit
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -41,6 +41,9 @@ jobs:
       - name: Check source quality
         run: npm run test:quality
 
+      - name: Check Consumer ON reader regression
+        run: npm run test:magazine
+
       - name: Install pinned browser runtime
         run: |
           npm install --no-save --ignore-scripts playwright@1.55.0
@@ -51,6 +54,31 @@ jobs:
           NCC_SERVE_DIR: .
           NCC_AUDIT_PHASE: source
           NCC_AUDIT_ENFORCE: "true"
+          NCC_AUDIT_CONCURRENCY: "6"
+        run: node .github/scripts/ncc-public-audit.mjs
+
+      - name: Render protected member and administration screens
+        env:
+          NCC_SERVE_DIR: .
+          NCC_AUDIT_OUTPUT: artifacts/protected-audit
+          NCC_AUDIT_PHASE: protected
+          NCC_AUDIT_STATE: protected
+          NCC_AUDIT_ENFORCE: "true"
+          NCC_AUDIT_IGNORE_EXTERNAL_FAILURES: "true"
+          NCC_AUDIT_CONCURRENCY: "6"
+          NCC_AUDIT_ROUTES: /wallet.html,/profile.html,/center-dashboard.html,/partner-dashboard.html,/admin-applications.html,/admin-certificates.html,/admin-groupbuy.html,/admin-inquiries.html,/admin-payments.html,/admin-feedback.html,/admin-business-cards.html,/admin-members.html,/admin-accounts.html,/admin-operations.html,/admin-roles.html,/benefit-detail.html,/groupbuy-detail.html,/order-detail.html,/payment-checkout.html,/payment-result.html,/certificate-verify.html,/password-reset.html
+        run: node .github/scripts/ncc-public-audit.mjs
+
+      - name: Render protected interactive variants
+        env:
+          NCC_SERVE_DIR: .
+          NCC_AUDIT_OUTPUT: artifacts/protected-variant-audit
+          NCC_AUDIT_PHASE: protected-variants
+          NCC_AUDIT_STATE: protected
+          NCC_AUDIT_ENFORCE: "true"
+          NCC_AUDIT_IGNORE_EXTERNAL_FAILURES: "true"
+          NCC_AUDIT_CONCURRENCY: "6"
+          NCC_AUDIT_ROUTES: /wallet.html?__ncc_variant=back,/profile.html?__ncc_variant=address,/admin-business-cards.html?__ncc_variant=portrait,/admin-certificates.html?__ncc_variant=form,/admin-groupbuy.html?__ncc_variant=form,/admin-groupbuy.html?__ncc_variant=orders,/admin-members.html?__ncc_variant=member-modal,/admin-members.html?__ncc_variant=bulk-modal,/admin-accounts.html?__ncc_variant=recovery,/admin-accounts.html?__ncc_variant=restriction,/admin-accounts.html?__ncc_variant=log
         run: node .github/scripts/ncc-public-audit.mjs
 
       - name: Upload responsive audit evidence
@@ -58,7 +86,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ncc-source-responsive-audit-${{ github.run_id }}-${{ github.run_attempt }}
-          path: artifacts/public-audit
+          path: |
+            artifacts/public-audit
+            artifacts/protected-audit
+            artifacts/protected-variant-audit
           if-no-files-found: warn
           retention-days: 14
 
@@ -66,7 +97,7 @@ jobs:
     name: Production deployment reverification
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v5

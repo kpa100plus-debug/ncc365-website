@@ -13,35 +13,18 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./platform-config.js";
-import { benefitMap } from "./benefit-catalog.js";
+import { offer } from "./benefit-detail-content.js";
 
 const app = getApps()[0] || initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = selector => document.querySelector(selector);
-const id = new URLSearchParams(location.search).get("id") || "first-health";
-const offer = benefitMap[id] || benefitMap["first-health"];
 const form = $("#benefitApplicationForm");
 const submitButton = form.querySelector('button[type="submit"]');
 
 let currentUser = null;
 let currentMember = null;
 let authResolved = false;
-
-document.title = `${offer.title} | 전국소비자클럽`;
-$("#crumbTitle").textContent = offer.title;
-$("#detailStatus").textContent = offer.status;
-$("#detailCategory").textContent = offer.category;
-$("#detailTitle").textContent = offer.title;
-$("#detailLead").textContent = offer.lead;
-$("#detailTarget").textContent = offer.target;
-$("#detailArea").textContent = offer.area;
-$("#detailPeriod").textContent = offer.condition;
-$("#detailVisual").innerHTML = `<img src="${offer.image}" alt="${offer.title}">`;
-$("#pointGrid").innerHTML = offer.points.map((value, index) => `<div><span>0${index + 1}</span><b>${value}</b></div>`).join("");
-$("#stepList").innerHTML = offer.steps.map(value => `<li>${value}</li>`).join("");
-$("#appType").innerHTML = offer.types.map(value => `<option>${value}</option>`).join("");
-$("#formTitle").textContent = `${offer.title} 신청`;
 
 function regionValue(value, targetForm) {
   const regions = [...targetForm.elements.region.options].map(option => option.value).filter(Boolean);

@@ -375,6 +375,7 @@
   line-height: 1.18;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding-bottom: .08em;
 }
 
 .member-identity h2.is-long {
@@ -723,7 +724,7 @@
 }
 
 .member-security-panel small {
-  color: #6d7e77;
+  color: #52655e;
   font-size: clamp(6px, .92cqw, 8px);
   font-style: normal;
   font-weight:600;
@@ -942,7 +943,7 @@
 .wallet-services small {
   display: block;
   margin-top: 15px;
-  color: #7a8580;
+  color: #596a63;
 }
 
 @media (max-width: 800px) {
@@ -972,7 +973,7 @@
   .member-card-flip-button {
     min-height: 46px;
     padding: 0 17px;
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
@@ -987,6 +988,14 @@
 
   .member-back-topline span:last-child {
     display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  body[data-page="wallet"] .page-hero h1 {
+    font-size: 28px;
+    line-height: 1.28;
+    word-break: keep-all;
   }
 }
 

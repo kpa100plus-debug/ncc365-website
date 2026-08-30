@@ -7,7 +7,7 @@
 .wallet-notice-guide{margin:0 0 18px;padding:13px 16px;border-left:4px solid #d4aa4d;background:#f6f1e6;color:#5f665f;font-size:14px;line-height:1.6}
 .wallet-activity-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
 .wallet-activity-summary div{padding:18px;border:1px solid rgba(210,170,80,.3);border-radius:14px;background:#f6f4ed}
-.wallet-activity-summary span{display:block;color:#66756f;font-size:14px}
+.wallet-activity-summary span{display:block;color:#5f6f69;font-size:14px}
 .wallet-activity-summary b{display:block;margin-top:5px;color:#0b4038;font-size:27px}
 .wallet-activity-list{display:grid;gap:12px}
 .wallet-record{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;padding:22px;border:1px solid #d7dfda;border-radius:15px;background:#fff}

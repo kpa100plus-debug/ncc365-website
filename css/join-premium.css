@@ -23,7 +23,7 @@ body{background:#edf2ee!important;color:#17251f;font-family:"Noto Sans KR Variab
 .container{width:min(980px,calc(100% - 48px))!important;margin:64px auto!important}
 .join-card{padding:52px 60px!important;border:1px solid #dbe3de!important;border-top:5px solid var(--join-gold)!important;border-radius:24px!important;box-shadow:0 24px 60px rgba(3,36,31,.11)!important}
 .form-intro{text-align:center}
-.form-intro .eyebrow{color:#9a7221;font-size:14px!important;letter-spacing:.16em}
+.form-intro .eyebrow{color:#8c681d;font-size:14px!important;letter-spacing:.16em}
 .form-intro .form-title{margin:12px 0 18px;color:var(--join-deep);font-size:clamp(38px,5vw,56px);line-height:1.18;letter-spacing:-.025em}
 .form-intro .form-title span{color:#b58b31}
 .form-intro .subtitle{font-size:19px!important;line-height:1.75!important;word-break:keep-all}
@@ -31,7 +31,7 @@ body{background:#edf2ee!important;color:#17251f;font-family:"Noto Sans KR Variab
 .benefit{min-height:106px;padding:18px 12px!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border:1px solid #dce6df;border-radius:14px!important;background:#f1f6f2!important;color:#244b3e!important;font-size:16px!important;text-align:center}
 .benefit b{color:#a67c25;font-size:14px;letter-spacing:.08em}.benefit span{font-weight:600}
 .section{padding-top:34px;border-top:1px solid #e0e6e2}
-.section-title{color:var(--join-deep)!important;font-size:26px!important}.section-desc{font-size:17px!important}
+.section-title{color:var(--join-deep)!important;font-size:26px!important}.section-desc{color:#59635d!important;font-size:17px!important}
 .form-group label{font-size:17px!important;color:#203f35!important}
 .form-group input,.form-group select{min-height:58px!important;font-size:17px!important;border-radius:11px!important}
 .choice-button{min-height:56px!important;font-size:16px!important}

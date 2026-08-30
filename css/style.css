@@ -1,4 +1,4 @@
-@import url("./ncc-fonts.css?v=20260826-1");
+@import url("./ncc-fonts.css?v=20260830-1");
 :root{--emerald:#073c36;--emerald-2:#0b5148;--gold:#c8a34f;--gold-light:#ead9a8;--ink:#17211f;--muted:#66726f;--cream:#f7f3e9;--line:#e5e7e2;--white:#fff;--shadow:0 22px 60px rgba(7,60,54,.13)}
 *{box-sizing:border-box}html{scroll-behavior:smooth;font-synthesis:none;text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0;color:var(--ink);font-family:"Noto Sans KR Variable","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.65;background:#fff}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{font:inherit}
 .site-header{height:92px;padding:12px max(28px,calc((100% - 1240px)/2));display:flex;align-items:center;justify-content:space-between;gap:28px;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(7,60,54,.08);position:sticky;top:0;z-index:50;backdrop-filter:blur(14px)}

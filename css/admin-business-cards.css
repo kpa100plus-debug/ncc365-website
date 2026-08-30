@@ -59,3 +59,14 @@
 .export-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;margin-top:24px;padding:19px;border:1px solid #d9c48f;border-radius:14px;background:#f8f3e8}.export-panel strong,.export-panel span{display:block}.export-panel span{margin-top:4px;color:#66736e;font-size:13px}.export-actions{display:flex;gap:8px}.export-actions button{min-height:44px;padding:10px 14px;border:0;border-radius:9px;background:var(--emerald);color:#fff;font:inherit;font-weight:600;cursor:pointer}.export-actions button:disabled{background:#aeb8b4;cursor:not-allowed}.export-panel p{grid-column:1/-1;min-height:20px;margin:0;color:#7b5a18;font-weight:600}
 .preview-set.exporting .trim-guide,.preview-set.exporting .safe-guide{display:none}.preview-set.exporting .business-card{box-shadow:none}
 @media(max-width:700px){.member-lookup{grid-template-columns:1fr}.export-panel{grid-template-columns:1fr}.export-actions{display:grid;grid-template-columns:1fr 1fr}.export-panel p{grid-column:auto}}
+
+/* Mobile studio readability and one-card-at-a-time preview. */
+:root{--gold:#8b600f}
+.form-heading p,.preview-heading p{color:#79550d}
+.preview-heading a{display:inline-flex;min-height:44px;align-items:center}
+.contact-list dt{color:#79550d}
+.export-panel span{color:#5f6f69}
+@media(max-width:700px){.preview-set,.preview-set.portrait{grid-template-columns:minmax(0,1fr);min-width:0}}
+@media(max-width:420px){.export-actions{grid-template-columns:1fr}}
+
+.business-card,.front-copy p,.front-copy h3,.front-copy em,.contact-list dd,.back-copy h3,.back-copy p,.verification-block strong{font-family:"Noto Sans KR Variable","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}

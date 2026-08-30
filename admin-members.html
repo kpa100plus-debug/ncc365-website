@@ -7,7 +7,7 @@
 
 <title>NCC 관리자 회원관리</title>
 
-<link rel="stylesheet" href="css/ncc-fonts.css?v=20260826-1">
+<link rel="stylesheet" href="css/ncc-fonts.css?v=20260830-1">
 
 <style>
 
@@ -1771,8 +1771,33 @@ th,td{
 @media(max-width:700px){
   body{font-size:16px;line-height:1.65}
   input,select,textarea{font-size:16px!important;line-height:1.5}
-  button{min-height:44px;font-size:15px!important;line-height:1.35}
-  .login-box p,.info,.member-meta,.member-card p,.modal label{font-size:14px!important;line-height:1.55}
+  button{min-height:44px;font-size:16px!important;line-height:1.35}
+  .login-box p,.info{font-size:16px!important;line-height:1.6}
+  .member-meta,.member-card p,.modal label,.modal-desc,.form-group label{font-size:14px!important;line-height:1.55}
+  .wrap .table-wrap td{font-size:14px!important;line-height:1.5!important}
+  .wrap .table-wrap td::before{min-width:52px;font-size:13px!important;line-height:1.5!important}
+  .wrap .table-wrap .manage-button,
+  .wrap .pagination button,
+  .crm-tab,
+  .modal-actions button{min-height:44px!important;font-size:16px!important}
+  .modal input,.modal select,.modal textarea{font-size:16px!important;line-height:1.5!important}
+}
+
+@media(max-width:900px){
+  .wrap .tools input,.wrap .tools select,.wrap .tools button{min-height:44px!important;font-size:16px!important;line-height:1.4!important}
+  .wrap .info a{display:inline-flex;min-height:44px;align-items:center}
+}
+
+@media(max-width:900px){
+  .wrap .modal-x{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important}
+}
+
+.wrap .modal-x,.wrap .crm-tab{color:#65706a}
+.wrap .delete-button{background:#a84f49}
+
+@media(max-width:700px){
+  .wrap .crm-tabs{display:grid!important;grid-template-columns:1fr 1fr;overflow:visible!important}
+  .wrap .crm-tab{width:100%;min-width:0;white-space:normal!important}
 }
 
 </style>
@@ -1781,7 +1806,7 @@ th,td{
 
 <body>
 
-<div class="wrap">
+<main class="wrap" id="mainContent">
 
 
 <!-- LOGIN -->
@@ -1900,6 +1925,7 @@ class="summary-number">
 id="memberSearch"
 class="search-box"
 type="text"
+aria-label="회원 검색"
 placeholder="회원번호, 이름, 연락처, 지역, 이메일, 추천인, 센터 검색">
 
 <select id="memberTypeFilter" aria-label="회원유형 필터" class="filter-box">
@@ -1997,6 +2023,7 @@ class="logout-button">
 
       <input
         id="bulkFileInput"
+        aria-label="회원 명부 파일"
         type="file"
         accept=".xlsx,.xls,.csv">
 
@@ -2169,6 +2196,7 @@ class="tab-panel active">
 
 <input
 id="editEmail"
+aria-label="회원 이메일"
 type="email">
 
 </div>
@@ -2182,6 +2210,7 @@ type="email">
 
 <input
 id="editBirthDate"
+aria-label="회원 생년월일"
 type="date">
 
 </div>
@@ -2687,7 +2716,7 @@ class="delete-button">
 
 </div>
 
-</div>
+</main>
 
 
 
