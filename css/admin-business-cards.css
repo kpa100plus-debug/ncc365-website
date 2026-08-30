@@ -70,3 +70,14 @@
 @media(max-width:420px){.export-actions{grid-template-columns:1fr}}
 
 .business-card,.front-copy p,.front-copy h3,.front-copy em,.contact-list dd,.back-copy h3,.back-copy p,.verification-block strong{font-family:"Noto Sans KR Variable","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+
+/* REF-NCC-BUSINESS-CARD-DATA-LOOKUP-FIX-20260830 */
+.front-copy em{display:none}
+.contact-list{top:48%;bottom:25%;display:grid;align-content:center}
+.contact-list div{min-height:0;margin:0}
+.code-list{bottom:6%;background:rgba(255,253,250,.96)}
+.code-list div{line-height:1.25}
+@media(max-width:700px){
+  .business-card{min-width:0}
+  .contact-list{top:47%;bottom:25%}
+}
