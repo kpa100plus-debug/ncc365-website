@@ -1190,7 +1190,9 @@ placeholder="추천코드가 있는 경우 입력">
 <input
 id="centerName"
 type="text"
-placeholder="예: 서울특별시 강남구 삼성동 소비자센터">
+placeholder="주소 입력 시 자동 배정"
+readonly
+aria-readonly="true">
 
 </div>
 
@@ -1204,7 +1206,10 @@ placeholder="예: 서울특별시 강남구 삼성동 소비자센터">
 <input
 id="centerCode"
 type="text"
-placeholder="센터코드가 있는 경우 입력">
+placeholder="주소 입력 시 자동 배정"
+readonly
+aria-readonly="true">
+<p id="centerAssignmentStatus" class="section-desc" role="status" aria-live="polite">거주지역을 입력하면 소속센터가 자동 배정됩니다.</p>
 
 </div>
 
@@ -1377,6 +1382,8 @@ NCC 고유 회원번호가 자동 발급됩니다.
 
 <script type="module">
 
+import { resolveCenterAssignment } from "./js/ncc-center-assignment.js?v=20260830-1";
+
 
 import {
 initializeApp
@@ -1389,6 +1396,7 @@ getFirestore,
 collection,
 doc,
 getDoc,
+getDocs,
 runTransaction,
 serverTimestamp
 }
@@ -1448,6 +1456,42 @@ const auth =
 getAuth(
 app
 );
+
+
+const centerNameInput = document.getElementById("centerName");
+const centerCodeInput = document.getElementById("centerCode");
+const centerAssignmentStatus = document.getElementById("centerAssignmentStatus");
+let currentCenterAssignment = {
+  status:"pending",
+  reason:"NOT_RESOLVED",
+  centerCode:"",
+  centerName:""
+};
+
+async function assignCenterFromAddress(address){
+  centerAssignmentStatus.textContent = "주소에 맞는 지역센터를 확인하고 있습니다...";
+  const result = await resolveCenterAssignment(db,address,{collection,getDocs});
+  currentCenterAssignment = result;
+  centerNameInput.value = result.centerName || "";
+  centerCodeInput.value = result.centerCode || "";
+
+  if(result.status === "assigned"){
+    centerAssignmentStatus.textContent = "주소 기준으로 " + result.centerName + "가 자동 배정되었습니다.";
+  }else{
+    centerAssignmentStatus.textContent = "일치하는 센터를 찾지 못했습니다. 가입 후 관리자가 주소를 확인해 배정합니다.";
+  }
+  return result;
+}
+
+let centerLookupTimer;
+document.getElementById("region").addEventListener("input",(event)=>{
+  clearTimeout(centerLookupTimer);
+  centerLookupTimer = setTimeout(()=>assignCenterFromAddress(event.target.value.trim()),450);
+});
+document.getElementById("region").addEventListener("blur",(event)=>{
+  clearTimeout(centerLookupTimer);
+  assignCenterFromAddress(event.target.value.trim());
+});
 
 
 
@@ -2519,6 +2563,8 @@ throw duplicateError;
 }
 
 
+currentCenterAssignment = await assignCenterFromAddress(region);
+
 const credential =
 await createUserWithEmailAndPassword(
 auth,
@@ -2611,23 +2657,23 @@ document
 
 
 centerName:
+currentCenterAssignment.centerName || "",
 
-document
-.getElementById(
-"centerName"
-)
-.value
-.trim(),
+centerAssignmentStatus:
+currentCenterAssignment.status,
+
+centerAssignmentReason:
+currentCenterAssignment.reason || "",
+
+centerOfficialAdminCode:
+currentCenterAssignment.officialAdminCode || "",
+
+centerLevel:
+currentCenterAssignment.level || "",
 
 
 centerCode:
-
-document
-.getElementById(
-"centerCode"
-)
-.value
-.trim(),
+currentCenterAssignment.centerCode || "",
 
 
 agreePrivacy:
