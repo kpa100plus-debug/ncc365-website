@@ -8,7 +8,7 @@
     "test:quality": "node scripts/site-quality-check.mjs",
     "test:payments": "node --test tests/payment-api.test.mjs tests/account-api.test.mjs tests/pages-provision.test.mjs",
     "test:magazine": "node --test tests/consumer-on-magazine.test.mjs",
-    "test:features": "node --test tests/admin-business-cards.test.mjs tests/benefit-application-regression.test.mjs tests/benefit-catalog.test.mjs",
+    "test:features": "node --test tests/admin-business-cards.test.mjs tests/admin-groupbuy-bulk.test.mjs tests/benefit-application-regression.test.mjs tests/benefit-catalog.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore --project ncc-security-test \"node --test tests/firestore-rules.test.mjs\"",
     "test": "npm run test:security && npm run test:quality && npm run test:payments && npm run test:magazine && npm run test:features && npm run test:rules"
   },
