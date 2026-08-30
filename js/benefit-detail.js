@@ -168,7 +168,7 @@ form.addEventListener("submit", async event => {
       message: String(data.message || ""),
       memberId: currentMember.id,
       memberEmail: currentUser.email,
-      offerId,
+      offerId: offerId,
       offerTitle: offer.title,
       receipt,
       status: "new",
