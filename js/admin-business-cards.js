@@ -155,20 +155,21 @@ async function loadMember() {
       ? query(collection(db, "members"), where("memberNumber", "==", memberNumber), limit(2))
       : query(collection(db, "members"), where("centerCode", "==", centerCode));
     const snapshot = await getDocs(lookupQuery);
-    const eligible = snapshot.docs
-      .map(item => ({ id: item.id, ...item.data() }))
-      .filter(item => CENTER_ROLES.includes(item.memberType));
+    const matches = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
+    const eligible = matches.filter(item =>
+      CENTER_ROLES.includes(item.memberType) || (item.centerName && item.centerCode)
+    );
 
-    if (!eligible.length) {
+    if (!matches.length) {
       message.textContent = useMemberNumber
-        ? "해당 회원번호의 승인된 센터 회원을 찾지 못했습니다."
-        : "해당 센터코드의 승인된 센터 회원을 찾지 못했습니다.";
+        ? "해당 회원번호를 찾지 못했습니다."
+        : "해당 센터코드를 찾지 못했습니다.";
       return;
     }
 
     let member;
     if (useMemberNumber) {
-      member = eligible[0];
+      member = matches[0];
     } else {
       const managers = eligible.filter(item => item.memberType === "center_manager");
       if (managers.length === 1) member = managers[0];
@@ -180,13 +181,18 @@ async function loadMember() {
       }
     }
 
+    setField("name", member.name);
+    setField("memberNumber", normalizeMemberNumber(member.memberNumber || memberNumber));
+    setField("phone", member.phone);
+    setField("email", member.email);
+    setField("address", member.address || member.region);
+
     if (!member.centerName || !member.centerCode || !member.memberNumber) {
-      message.textContent = "센터명·센터코드·회원번호가 완성되지 않았습니다. 회원관리에서 센터 배정을 먼저 완료해 주세요.";
+      message.textContent = `${member.memberNumber || memberNumber} · ${member.name || "회원"}의 기본정보를 불러왔습니다. JPG 출력은 회원관리에서 센터명·센터코드·센터 역할을 배정한 뒤 가능합니다.`;
       return;
     }
 
-    setField("name", member.name);
-    setField("role", member.memberType === "center_manager" ? "센터장" : "센터 팀원");
+    setField("role", member.memberType === "center_manager" ? "센터장" : member.memberType === "center_staff" ? "센터 팀원" : (member.role || "센터 팀원"));
     setField("centerName", member.centerName);
     setField("centerCode", normalizeCenterCode(member.centerCode));
     setField("memberNumber", normalizeMemberNumber(member.memberNumber));
@@ -302,7 +308,12 @@ form.addEventListener("submit", event => {
 form.addEventListener("input", event => {
   if (event.target.name === "memberNumber") {
     lookupMode = "memberNumber";
-    if (normalizeMemberNumber(event.target.value) !== verifiedMemberNumber) invalidateVerification();
+    const nextMemberNumber = normalizeMemberNumber(event.target.value);
+    if (nextMemberNumber !== verifiedMemberNumber) invalidateVerification();
+    window.clearTimeout(form.lookupTimer);
+    if (MEMBER_NUMBER_PATTERN.test(nextMemberNumber)) {
+      form.lookupTimer = window.setTimeout(loadMember, 350);
+    }
   }
   if (event.target.name === "centerCode") {
     lookupMode = "centerCode";
