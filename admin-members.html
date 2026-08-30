@@ -910,6 +910,11 @@ font-weight:500;
 }
 
 
+.password-button{
+background:#315f7a;
+color:#fff;
+}
+
 .delete-button{
 
 margin-left:auto;
@@ -1007,6 +1012,7 @@ grid-template-columns:1fr 1fr;
 width:100%;
 }
 
+.password-button,
 .delete-button{
 margin-left:0;
 grid-column:1/-1;
@@ -2704,6 +2710,15 @@ class="close-button">
 
 
 <button
+id="temporaryPasswordButton"
+class="password-button">
+
+임시 비밀번호 발급
+
+</button>
+
+
+<button
 id="deleteMemberButton"
 class="delete-button">
 
@@ -3002,6 +3017,10 @@ document.getElementById("closeModalButton");
 
 const topCloseButton =
 document.getElementById("topCloseButton");
+
+
+const temporaryPasswordButton =
+document.getElementById("temporaryPasswordButton");
 
 
 const deleteMemberButton =
@@ -5611,6 +5630,86 @@ saveMemberButton.textContent =
 
 }
 
+
+}
+);
+
+
+
+/* ===============================
+   TEMPORARY PASSWORD
+================================ */
+
+temporaryPasswordButton.addEventListener(
+"click",
+async()=>{
+
+if(!selectedMemberId || !auth.currentUser){
+return;
+}
+
+const member = allMembers.find(item => item.id === selectedMemberId);
+if(!member?.memberNumber){
+alert("회원번호가 없는 회원은 임시 비밀번호를 발급할 수 없습니다.");
+return;
+}
+
+const confirmed = confirm(
+(member.name || "이 회원") +
+"의 로그인 비밀번호를 숫자 6자리 임시 비밀번호로 초기화하시겠습니까?\n\n기존 로그인 세션은 종료되며, 발급된 번호는 이번에만 표시됩니다."
+);
+if(!confirmed){
+return;
+}
+
+try{
+temporaryPasswordButton.disabled = true;
+temporaryPasswordButton.textContent = "발급 중...";
+
+const idToken = await auth.currentUser.getIdToken(true);
+const response = await fetch("/api/account/admin/temporary-password",{
+method:"POST",
+headers:{
+"content-type":"application/json",
+"authorization":"Bearer " + idToken
+},
+body:JSON.stringify({
+uid:member.id,
+memberNumber:member.memberNumber,
+reason:"회원 요청에 따른 관리자 임시 비밀번호 발급"
+})
+});
+const result = await response.json().catch(()=>({}));
+if(!response.ok || !result.temporaryPassword){
+throw new Error(result.message || "임시 비밀번호를 발급하지 못했습니다.");
+}
+
+await updateDoc(doc(db,"members",selectedMemberId),{
+mustChangePassword:true,
+temporaryPasswordIssuedAt:serverTimestamp(),
+temporaryPasswordIssuedBy:auth.currentUser.uid,
+updatedAt:serverTimestamp()
+});
+
+let copied = false;
+try{
+await navigator.clipboard.writeText(result.temporaryPassword);
+copied = true;
+}catch{}
+
+alert(
+(member.name || "회원") +
+" 임시 비밀번호: " + result.temporaryPassword +
+"\n\n" + (copied ? "클립보드에 복사했습니다. " : "") +
+"회원에게 안전하게 전달하고, 로그인 후 즉시 변경하도록 안내해 주세요. 이 번호는 다시 표시되지 않습니다."
+);
+
+}catch(error){
+alert("임시 비밀번호 발급 오류: " + error.message);
+}finally{
+temporaryPasswordButton.disabled = false;
+temporaryPasswordButton.textContent = "임시 비밀번호 발급";
+}
 
 }
 );
