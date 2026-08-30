@@ -13,7 +13,7 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./platform-config.js";
-import { offer, offerId } from "./benefit-detail-content.js";
+import { offer, offerId } from "./benefit-detail-content.js?v=20260830-3";
 
 const app = getApps()[0] || initializeApp(firebaseConfig);
 const auth = getAuth(app);
