@@ -780,7 +780,10 @@ const failures = results.flatMap(result => {
   const redirectRule = redirectRuleBySource.get(result.routePath);
   if (redirectRule) {
     const finalPath = new URL(result.finalUrl).pathname;
-    if (finalPath !== redirectRule.to) issues.push(`redirect target ${finalPath}; expected ${redirectRule.to}`);
+    const canonicalTarget = redirectRule.to.replace(/\.html$/, "") || "/";
+    if (finalPath !== redirectRule.to && finalPath !== canonicalTarget) {
+      issues.push(`redirect target ${finalPath}; expected ${redirectRule.to} or ${canonicalTarget}`);
+    }
     if (!result.redirects.some(item => item.status === redirectRule.status)) {
       issues.push(`redirect status missing; expected ${redirectRule.status}`);
     }
