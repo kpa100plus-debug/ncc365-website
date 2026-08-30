@@ -41,3 +41,17 @@ test("wallet login reports wrong password and unknown email errors", () => {
   assert.match(wallet, /비밀번호가 올바르지 않습니다/);
   assert.match(wallet, /등록되지 않은 이메일입니다/);
 });
+
+test("benefit id is explicitly shared with the submit module", () => {
+  const content = readFileSync("js/benefit-detail-content.js", "utf8");
+  assert.match(content, /export const offerId/);
+  assert.match(js, /import \{ offer, offerId \}/);
+  assert.match(js, /offerId,/);
+  assert.doesNotMatch(js, /offerId: id/);
+  assert.doesNotMatch(js, /saved\.offerId === id/);
+});
+
+test("submission immediately reports progress and catches preparation failures", () => {
+  assert.match(js, /혜택 신청을 접수하고 있습니다/);
+  assert.match(js, /try \{\s+const receipt/);
+});
