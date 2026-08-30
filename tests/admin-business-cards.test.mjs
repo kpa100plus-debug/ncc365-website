@@ -47,3 +47,16 @@ test("print checklist is honest about browser JPG and CMYK preflight", () => {
   assert.match(html, /오버프린트 금지/);
   assert.doesNotMatch(html, /CMYK 파일 다운로드/);
 });
+
+test("center code and member number both drive verified member lookup", () => {
+  assert.match(js, /lookupMode = "centerCode"/);
+  assert.match(js, /where\("centerCode", "==", centerCode\)/);
+  assert.match(js, /verifiedCenterCode === data\.centerCode/);
+  assert.match(js, /명함 대상 회원이 여러 명/);
+});
+
+test("studio does not ship misleading sample member data", () => {
+  assert.doesNotMatch(html, /value="김민준"/);
+  assert.doesNotMatch(html, /value="010-1234-5678"/);
+  assert.match(css, /REF-NCC-BUSINESS-CARD-DATA-LOOKUP-FIX-20260830/);
+});
