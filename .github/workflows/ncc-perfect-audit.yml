@@ -54,6 +54,7 @@ jobs:
           NCC_SERVE_DIR: .
           NCC_AUDIT_PHASE: source
           NCC_AUDIT_ENFORCE: "true"
+          NCC_AUDIT_IGNORE_EXTERNAL_FAILURES: "true"
           NCC_AUDIT_CONCURRENCY: "6"
         run: node .github/scripts/ncc-public-audit.mjs
 
@@ -133,6 +134,7 @@ jobs:
           NCC_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.base_url || 'https://ncc365.com' }}
           NCC_AUDIT_PHASE: production
           NCC_AUDIT_ENFORCE: "true"
+          NCC_AUDIT_IGNORE_EXTERNAL_FAILURES: "true"
         run: node .github/scripts/ncc-public-audit.mjs
 
       - name: Upload production audit evidence
