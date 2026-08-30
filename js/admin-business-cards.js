@@ -18,6 +18,8 @@ const exportMessage = $("#exportMessage");
 let verifiedMemberNumber = "";
 let verifiedMemberId = "";
 let exporting = false;
+let lookupMode = "memberNumber";
+let verifiedCenterCode = "";
 
 const roleEnglish = {
   "센터장": "NCC CENTER DIRECTOR",
@@ -64,7 +66,13 @@ function values() {
 }
 
 function exportReady() {
-  return Boolean(verifiedMemberId && verifiedMemberNumber === values().memberNumber && form.checkValidity());
+  const data = values();
+  return Boolean(
+    verifiedMemberId &&
+    verifiedMemberNumber === data.memberNumber &&
+    verifiedCenterCode === data.centerCode &&
+    form.checkValidity()
+  );
 }
 
 function updateExportState() {
@@ -73,6 +81,7 @@ function updateExportState() {
 
 function invalidateVerification(text = "회원번호를 다시 조회해야 인쇄용 JPG를 내보낼 수 있습니다.") {
   verifiedMemberNumber = "";
+  verifiedCenterCode = "";
   verifiedMemberId = "";
   exportMessage.textContent = text;
   updateExportState();
@@ -123,43 +132,69 @@ function setField(name, value) {
 async function loadMember() {
   const button = $("#loadMemberButton");
   const memberNumber = normalizeMemberNumber(form.elements.memberNumber.value);
-  if (!MEMBER_NUMBER_PATTERN.test(memberNumber)) {
-    message.textContent = "먼저 NCC-C-000001 형식의 회원번호를 입력해 주세요.";
+  const centerCode = normalizeCenterCode(form.elements.centerCode.value);
+  const useMemberNumber = lookupMode === "memberNumber" && MEMBER_NUMBER_PATTERN.test(memberNumber);
+
+  if (!useMemberNumber && !centerCode) {
+    message.textContent = "센터코드 또는 NCC-C-000001 형식의 회원번호를 입력해 주세요.";
+    (lookupMode === "centerCode" ? form.elements.centerCode : form.elements.memberNumber).focus();
+    return;
+  }
+  if (lookupMode === "memberNumber" && !MEMBER_NUMBER_PATTERN.test(memberNumber)) {
+    message.textContent = "회원번호는 NCC-C-000001 형식으로 입력해 주세요.";
     form.elements.memberNumber.focus();
     return;
   }
 
   button.disabled = true;
   button.textContent = "조회 중...";
-  exportMessage.textContent = "실제 NCC 회원정보를 확인하고 있습니다.";
-  invalidateVerification("실제 NCC 회원정보를 확인하고 있습니다.");
+  invalidateVerification("실제 NCC 센터·회원정보를 확인하고 있습니다.");
 
   try {
-    const snapshot = await getDocs(query(collection(db, "members"), where("memberNumber", "==", memberNumber), limit(1)));
-    if (snapshot.empty) {
-      message.textContent = "해당 회원번호를 찾지 못했습니다. 회원관리에서 발급번호를 확인해 주세요.";
+    const lookupQuery = useMemberNumber
+      ? query(collection(db, "members"), where("memberNumber", "==", memberNumber), limit(2))
+      : query(collection(db, "members"), where("centerCode", "==", centerCode));
+    const snapshot = await getDocs(lookupQuery);
+    const eligible = snapshot.docs
+      .map(item => ({ id: item.id, ...item.data() }))
+      .filter(item => CENTER_ROLES.includes(item.memberType));
+
+    if (!eligible.length) {
+      message.textContent = useMemberNumber
+        ? "해당 회원번호의 승인된 센터 회원을 찾지 못했습니다."
+        : "해당 센터코드의 승인된 센터 회원을 찾지 못했습니다.";
       return;
     }
 
-    const member = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
-    if (!CENTER_ROLES.includes(member.memberType)) {
-      message.textContent = "센터 명함은 회원 역할이 센터장 또는 센터 팀원으로 승인된 회원만 제작할 수 있습니다.";
-      return;
+    let member;
+    if (useMemberNumber) {
+      member = eligible[0];
+    } else {
+      const managers = eligible.filter(item => item.memberType === "center_manager");
+      if (managers.length === 1) member = managers[0];
+      else if (eligible.length === 1) member = eligible[0];
+      else {
+        message.textContent = "이 센터에는 명함 대상 회원이 여러 명입니다. 정확한 회원번호를 입력해 조회해 주세요.";
+        form.elements.memberNumber.focus();
+        return;
+      }
     }
-    if (!member.centerName || !member.centerCode) {
-      message.textContent = "센터명 또는 센터코드가 비어 있습니다. 회원 역할관리에서 센터 배정을 먼저 완료해 주세요.";
+
+    if (!member.centerName || !member.centerCode || !member.memberNumber) {
+      message.textContent = "센터명·센터코드·회원번호가 완성되지 않았습니다. 회원관리에서 센터 배정을 먼저 완료해 주세요.";
       return;
     }
 
     setField("name", member.name);
     setField("role", member.memberType === "center_manager" ? "센터장" : "센터 팀원");
     setField("centerName", member.centerName);
-    setField("centerCode", member.centerCode);
-    setField("memberNumber", member.memberNumber);
+    setField("centerCode", normalizeCenterCode(member.centerCode));
+    setField("memberNumber", normalizeMemberNumber(member.memberNumber));
     setField("phone", member.phone);
     setField("email", member.email);
     setField("address", member.address || member.region);
     verifiedMemberNumber = normalizeMemberNumber(member.memberNumber);
+    verifiedCenterCode = normalizeCenterCode(member.centerCode);
     verifiedMemberId = member.id;
     render({ quiet: true });
     message.textContent = `${verifiedMemberNumber} · ${member.name || "센터회원"}의 실제 센터정보를 불러왔습니다.`;
@@ -167,10 +202,10 @@ async function loadMember() {
     updateExportState();
   } catch (error) {
     console.error(error);
-    message.textContent = "회원정보를 불러오지 못했습니다. 관리자 권한과 통신 상태를 확인해 주세요.";
+    message.textContent = "센터·회원정보를 불러오지 못했습니다. 관리자 권한과 통신 상태를 확인해 주세요.";
   } finally {
     button.disabled = false;
-    button.textContent = "실제 회원정보 불러오기";
+    button.textContent = "센터·회원정보 불러오기";
   }
 }
 
@@ -266,7 +301,14 @@ form.addEventListener("submit", event => {
   render();
 });
 form.addEventListener("input", event => {
-  if (event.target.name === "memberNumber" && normalizeMemberNumber(event.target.value) !== verifiedMemberNumber) invalidateVerification();
+  if (event.target.name === "memberNumber") {
+    lookupMode = "memberNumber";
+    if (normalizeMemberNumber(event.target.value) !== verifiedMemberNumber) invalidateVerification();
+  }
+  if (event.target.name === "centerCode") {
+    lookupMode = "centerCode";
+    if (normalizeCenterCode(event.target.value) !== verifiedCenterCode) invalidateVerification("센터코드가 변경되었습니다. 실제 센터정보를 다시 조회해 주세요.");
+  }
   window.clearTimeout(form.renderTimer);
   form.renderTimer = window.setTimeout(() => {
     if (form.checkValidity()) render({ quiet: true });
