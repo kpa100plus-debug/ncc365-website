@@ -115,6 +115,6 @@
 @media(max-width:700px){.preview-set,.preview-set.portrait{grid-template-columns:1fr;min-width:0}.fixed-format{align-items:flex-start;flex-direction:column}}
 
 /* WCAG AA contrast for generated card text and protected preview audit */
-.active-badge,.front-copy p,.front-copy>b,.center-identity span,.ncc-seal,.member-panel dt,.back-topline,.secure-band,.back-brand b,.back-brand span,.verification-block>b,.copyright,.signature-area small{color:#fff!important}
-.signature-area strong{color:#30423c!important}
+.active-badge,.front-copy p,.front-copy>b,.center-identity span,.ncc-seal,.member-panel dt,.back-topline,.secure-band,.back-brand b,.back-brand span,.verification-block>b,.copyright{color:#fff!important}
+.signature-area strong,.signature-area small{color:#30423c!important}
 .member-panel dd,.front-copy h3,.center-identity strong,.back-brand strong,.verification-block strong,.card-footer-line{color:#fff!important}
