@@ -469,8 +469,10 @@ async function adminUpdateEmail(request, env, admin) {
 }
 
 function temporaryPassword() {
-  const bytes = crypto.getRandomValues(new Uint8Array(12));
-  return `Ncc!${base64Url(bytes).slice(0, 16)}9a`;
+  // Firebase Auth requires at least six characters. A numeric six-digit
+  // one-time password keeps entry simple while avoiding predictable values.
+  const value = crypto.getRandomValues(new Uint32Array(1))[0];
+  return String(100000 + Math.floor((value / 0x100000000) * 900000));
 }
 
 async function adminTemporaryPassword(request, env, admin) {
