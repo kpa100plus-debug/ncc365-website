@@ -113,3 +113,8 @@
 .verification-block{left:auto;right:5%;bottom:11%;width:19%;display:grid;grid-template-columns:1fr;grid-template-areas:"qr" "title" "number";justify-items:center;gap:2%;text-align:center}.verification-block strong{font-size:1.6cqw}.verification-block span{display:none}.verification-block>b{font-size:1.5cqw}.card-qr{width:100%;padding:4%;border:0;border-radius:1.6cqw}
 .copyright{position:absolute;z-index:2;left:5%;bottom:4%;color:#bacac5;font-size:1.15cqw}
 @media(max-width:700px){.preview-set,.preview-set.portrait{grid-template-columns:1fr;min-width:0}.fixed-format{align-items:flex-start;flex-direction:column}}
+
+/* WCAG AA contrast for generated card text and protected preview audit */
+.active-badge,.front-copy p,.front-copy>b,.center-identity span,.ncc-seal,.member-panel dt,.back-topline,.secure-band,.back-brand b,.back-brand span,.verification-block>b,.copyright,.signature-area small{color:#fff!important}
+.signature-area strong{color:#30423c!important}
+.member-panel dd,.front-copy h3,.center-identity strong,.back-brand strong,.verification-block strong,.card-footer-line{color:#fff!important}
