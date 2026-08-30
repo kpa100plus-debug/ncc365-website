@@ -1,3 +1,16 @@
+const nccHeadLinks=[
+  ["icon","image/png","images/NCC_OFFICIAL.png"],
+  ["apple-touch-icon","image/png","images/NCC_OFFICIAL.png"],
+  ["manifest","","site.webmanifest"]
+];
+for(const [rel,type,href] of nccHeadLinks){
+  if(document.head.querySelector(`link[rel="${rel}"]`))continue;
+  const link=document.createElement("link");
+  link.rel=rel;
+  if(type)link.type=type;
+  link.href=href;
+  document.head.append(link);
+}
 const navItems=[["HOME","index.html","home","nav-home"],["혜택센터","benefits.html","benefits","nav-priority"],["공동구매","groupbuy.html","groupbuy","nav-priority"],["소비자채널","consumer-channel.html","channel","nav-priority"],["전국소비자센터","centers.html","centers","nav-secondary nav-secondary-start"],["파트너센터","partner-center.html","partners","nav-secondary"]];
 const current=document.body.dataset.page||"";
 const header=`<a class="skip-link" href="#mainContent">본문 바로가기</a><header class="platform-header"><div class="platform-header-inner"><a class="platform-logo" href="index.html"><img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽 공식 로고"></a><nav class="platform-nav" id="platformNav">${navItems.map(([label,url,key,groupClass])=>`<a class="${[current===key?"active":"",groupClass].filter(Boolean).join(" ")}" href="${url}">${label}</a>`).join("")}<a class="wallet-link ${current==="wallet"?"active":""}" href="wallet.html">NCC 월렛</a><a class="join-link" href="join.html">회원가입</a></nav><button class="platform-menu" id="platformMenu" aria-expanded="false" aria-label="전체 메뉴 열기">☰</button></div></header>`;

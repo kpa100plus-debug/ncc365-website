@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/png" href="images/NCC_OFFICIAL.png">
+<link rel="apple-touch-icon" href="images/NCC_OFFICIAL.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#063a31">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>NCC 센터 명함 자동제작 | 관리자</title>
   <link rel="stylesheet" href="css/platform.css?v=20260830-1">
@@ -22,37 +26,60 @@
       <div class="form-heading"><p>BUSINESS CARD DATA</p><h2>명함 정보 입력</h2><span>입력 내용은 미리보기 생성에만 사용되며 자동 저장되지 않습니다.</span></div>
 
       <div class="field-grid">
-        <label><span>이름 <b>*</b></span><input name="name" maxlength="20" value="김민준" required></label>
+        <label><span>이름 <b>*</b></span><input name="name" maxlength="20" placeholder="회원정보 조회 시 자동 입력" required></label>
         <label><span>직책 <b>*</b></span><select name="role" required><option value="센터장">센터장</option><option value="운영팀장">운영팀장</option><option value="회원지원팀장">회원지원팀장</option><option value="지역협력매니저">지역협력매니저</option><option value="센터 팀원">센터 팀원</option></select></label>
-        <label class="wide"><span>센터명 <b>*</b></span><input name="centerName" maxlength="50" value="서울강남삼성센터" required></label>
-        <label class="wide"><span>센터코드 <b>*</b></span><input name="centerCode" maxlength="100" value="SEOUL-GANGNAM-SAMSEONG" required></label>
-        <div class="wide lookup-field"><label for="cardMemberNumber">회원번호 <b>*</b></label><div class="member-lookup"><input id="cardMemberNumber" name="memberNumber" maxlength="12" value="NCC-C-000001" pattern="NCC-C-[0-9]{6}" required aria-describedby="memberNumberHelp"><button id="loadMemberButton" type="button">실제 회원정보 불러오기</button></div><small id="memberNumberHelp">현재 운영 규칙: NCC-C-000001 형식 · 센터장/센터 팀원으로 등록된 실제 번호만 출력 가능</small></div>
-        <label><span>전화번호 <b>*</b></span><input name="phone" inputmode="tel" maxlength="20" value="010-1234-5678" required></label>
-        <label><span>이메일 <b>*</b></span><input name="email" type="email" maxlength="80" value="ncc.samseong@ncc365.com" required></label>
-        <label class="wide"><span>주소</span><input name="address" maxlength="100" value="서울특별시 강남구 삼성로 123"></label>
+        <label class="wide"><span>센터명 <b>*</b></span><input name="centerName" maxlength="50" placeholder="센터코드 또는 회원번호로 조회" required></label>
+        <label class="wide"><span>센터코드 <b>*</b></span><input name="centerCode" maxlength="100" placeholder="예: SEOUL-GANGNAM-SAMSEONG" required></label>
+        <div class="wide lookup-field"><label for="cardMemberNumber">회원번호 <b>*</b></label><div class="member-lookup"><input id="cardMemberNumber" name="memberNumber" maxlength="12" placeholder="예: NCC-C-000001" pattern="NCC-C-[0-9]{6}" required aria-describedby="memberNumberHelp"><button id="loadMemberButton" type="button">센터·회원정보 불러오기</button></div><small id="memberNumberHelp">센터코드 또는 NCC-C-000001 형식의 회원번호를 입력한 뒤 조회하세요. 여러 회원이 있는 센터는 회원번호가 필요합니다.</small></div>
+        <label><span>전화번호 <b>*</b></span><input name="phone" inputmode="tel" maxlength="20" placeholder="회원정보 조회 시 자동 입력" required></label>
+        <label><span>이메일 <b>*</b></span><input name="email" type="email" maxlength="80" placeholder="회원정보 조회 시 자동 입력" required></label>
+        <label class="wide"><span>주소</span><input name="address" maxlength="100" placeholder="회원정보 조회 시 자동 입력"></label>
       </div>
 
-      <fieldset><legend>명함 방향</legend><label><input type="radio" name="orientation" value="landscape" checked> 가로형 92×52mm 작업 / 90×50mm 재단</label><label><input type="radio" name="orientation" value="portrait"> 세로형 52×92mm 작업 / 50×90mm 재단</label></fieldset>
+      <input type="hidden" name="orientation" value="landscape">
+      <div class="fixed-format"><b>기본 디자인</b><span>가로형 92×52mm 작업 / 90×50mm 재단</span></div>
       <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
       <button class="preview-button" type="submit">명함 시안 새로 만들기</button>
-      <div class="print-spec"><b>인쇄 규격 자동검사</b><span>300dpi · 가로 1087×614px / 세로 614×1087px</span><span>작업선 92×52mm · 재단선 90×50mm · 안전선 안쪽 배치</span><span>앞·뒤 JPG 개별 출력 · QR 판독영역 확보 · 테두리 재단 오차 주의</span><ul><li>내려받는 JPG는 300dpi RGB 인쇄 참고본입니다.</li><li>최종 인쇄 접수 전 AI 또는 인쇄소에서 전체 CMYK 변환, 모든 글자 윤곽선 처리, 이미지 300dpi를 확인하세요.</li><li>오버프린트 금지, CMY만 사용 금지, 누락 이미지 확인이 필요합니다.</li></ul></div>
+      <div class="print-spec"><b>인쇄 규격 자동검사</b><span>300dpi · 가로 1087×614px</span><span>작업선 92×52mm · 재단선 90×50mm · 안전선 안쪽 배치 · 가로형 전용</span><span>앞·뒤 JPG 개별 출력 · QR 판독영역 확보 · 테두리 재단 오차 주의</span><ul><li>내려받는 JPG는 300dpi RGB 인쇄 참고본입니다.</li><li>최종 인쇄 접수 전 AI 또는 인쇄소에서 전체 CMYK 변환, 모든 글자 윤곽선 처리, 이미지 300dpi를 확인하세요.</li><li>오버프린트 금지, CMY만 사용 금지, 누락 이미지 확인이 필요합니다.</li></ul></div>
     </form>
 
     <section class="preview-workspace" aria-labelledby="previewTitle">
-      <div class="preview-heading"><div><p>LIVE PREVIEW</p><h2 id="previewTitle">앞면·뒷면 시안</h2></div><a id="verificationLink" href="certificate-verify.html?id=NCC-C-000001" target="_blank" rel="noopener">QR 연결 주소 확인</a></div>
+      <div class="preview-heading"><div><p>LIVE PREVIEW</p><h2 id="previewTitle">앞면·뒷면 시안</h2></div><a id="verificationLink" href="certificate-verify.html" target="_blank" rel="noopener">QR 연결 주소 확인</a></div>
       <div id="previewSet" class="preview-set landscape">
-        <article class="business-card card-front" aria-label="명함 앞면"><span class="trim-guide" aria-hidden="true"></span><span class="safe-guide" aria-hidden="true"></span>
-          <i class="corner-ribbon top-right" aria-hidden="true"></i><i class="corner-ribbon bottom-left" aria-hidden="true"></i>
+        <article class="business-card card-front" aria-label="센터 명함 앞면">
+          <span class="trim-guide" aria-hidden="true"></span><span class="safe-guide" aria-hidden="true"></span>
+          <span class="card-geometry geometry-one" aria-hidden="true"></span><span class="card-geometry geometry-two" aria-hidden="true"></span>
           <img class="card-logo" src="images/NCC_OFFICIAL.png" alt="전국소비자클럽 NCC">
-          <div class="front-copy"><p>전국소비자클럽 NCC</p><h3 data-output="name">김민준</h3><div class="role-emblem"><span aria-hidden="true">◆</span><strong data-output="centerRole">서울강남삼성센터 센터장</strong></div><em data-output="roleEnglish">NCC CENTER DIRECTOR</em></div>
-          <dl class="contact-list"><div><dt>M.</dt><dd data-output="phone">010-1234-5678</dd></div><div><dt>E.</dt><dd data-output="email">ncc.samseong@ncc365.com</dd></div><div><dt>A.</dt><dd data-output="address">서울특별시 강남구 삼성로 123</dd></div><div><dt>W.</dt><dd>www.ncc365.com</dd></div></dl>
-          <dl class="code-list"><div><dt>센터코드</dt><dd data-output="centerCode">SEOUL-GANGNAM-SAMSEONG</dd></div><div><dt>회원번호</dt><dd data-output="memberNumber">NCC-C-000001</dd></div></dl>
+          <span class="active-badge">● ACTIVE CENTER</span><span class="gold-chip" aria-hidden="true"></span>
+          <div class="front-copy">
+            <p>NCC OFFICIAL CENTER CARD</p>
+            <h3 data-output="name">미조회</h3>
+            <b data-output="memberNumber">미조회</b>
+            <div class="center-identity"><strong data-output="centerRole">센터정보 미조회</strong><span data-output="centerCode">미조회</span></div>
+          </div>
+          <div class="ncc-seal" aria-hidden="true"><b>NCC</b><small>CENTER 365</small></div>
+          <dl class="member-panel">
+            <div><dt>PHONE</dt><dd data-output="phone">미조회</dd></div>
+            <div><dt>EMAIL</dt><dd data-output="email">미조회</dd></div>
+            <div><dt>ADDRESS</dt><dd data-output="address">미조회</dd></div>
+          </dl>
+          <div class="card-footer-line"><b>DIGITAL CENTER IDENTITY</b><span>◆</span><b>NCC 365</b></div>
         </article>
 
-        <article class="business-card card-back" aria-label="명함 뒷면"><span class="trim-guide" aria-hidden="true"></span><span class="safe-guide" aria-hidden="true"></span>
-          <i class="corner-ribbon top-right" aria-hidden="true"></i><i class="corner-ribbon bottom-left" aria-hidden="true"></i>
-          <div class="back-copy"><h3>소비자에게<br>더 많은 혜택</h3><p>무료 경험 · 할인 · 공동구매<br>문화 · 생활 · 지역 혜택</p></div>
-          <div class="verification-block"><strong>공식 진위확인</strong><span>ncc365.com/certificate-verify.html</span><div id="cardQr" class="card-qr" aria-label="회원번호 공식 진위확인 QR"></div><b data-output="memberNumber">NCC-C-000001</b></div>
+        <article class="business-card card-back" aria-label="센터 명함 뒷면">
+          <span class="trim-guide" aria-hidden="true"></span><span class="safe-guide" aria-hidden="true"></span>
+          <span class="back-topline">NCC 365 · NATIONAL CONSUMER CLUB</span>
+          <div class="secure-band"><b>OFFICIAL NCC CENTER</b><span data-output="centerCode">미조회</span></div>
+          <div class="signature-area"><small>AUTHORIZED CENTER</small><strong data-output="centerRole">센터정보 미조회</strong></div>
+          <img class="back-logo" src="images/NCC_OFFICIAL.png" alt="전국소비자클럽 NCC">
+          <div class="back-brand"><b>NCC 365</b><strong data-output="name">미조회</strong><span data-output="memberNumber">미조회</span></div>
+          <div class="verification-block">
+            <strong>공식 진위확인</strong>
+            <span>ncc365.com/certificate-verify.html</span>
+            <div id="cardQr" class="card-qr" aria-label="회원번호 공식 진위확인 QR"></div>
+            <b data-output="memberNumber">미조회</b>
+          </div>
+          <small class="copyright">© NCC 365 · NATIONAL CONSUMER CLUB</small>
         </article>
       </div>
       <div class="export-panel"><div><strong>인쇄용 JPG 내보내기</strong><span>실제 센터 회원정보를 불러온 뒤 사용할 수 있습니다.</span></div><div class="export-actions"><button type="button" data-export="front" disabled>앞면 JPG · 300dpi</button><button type="button" data-export="back" disabled>뒷면 JPG · 300dpi</button></div><p id="exportMessage" role="status" aria-live="polite"></p></div>
@@ -61,6 +88,6 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
-<script type="module" src="js/admin-business-cards.js?v=20260829-3"></script>
+<script type="module" src="js/admin-business-cards.js?v=20260830-4"></script>
 </body>
 </html>

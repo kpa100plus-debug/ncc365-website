@@ -1,0 +1,56 @@
+{
+  "name": "전국소비자클럽 NCC",
+  "short_name": "NCC 365",
+  "description": "전국소비자클럽 공식 서비스",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#edf2ef",
+  "theme_color": "#063a31",
+  "icons": [
+    {
+      "src": "/images/NCC_OFFICIAL.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "NCC 월렛",
+      "short_name": "월렛",
+      "url": "/wallet.html",
+      "icons": [
+        {
+          "src": "/images/NCC_OFFICIAL.png",
+          "sizes": "any",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "센터 명함 자동제작",
+      "short_name": "센터 명함",
+      "url": "/admin-business-cards.html",
+      "icons": [
+        {
+          "src": "/images/NCC_OFFICIAL.png",
+          "sizes": "any",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "관리자 회원관리",
+      "short_name": "회원관리",
+      "url": "/admin-members.html",
+      "icons": [
+        {
+          "src": "/images/NCC_OFFICIAL.png",
+          "sizes": "any",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

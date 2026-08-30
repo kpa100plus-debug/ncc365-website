@@ -13,7 +13,7 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./platform-config.js";
-import { offer } from "./benefit-detail-content.js";
+import { offer, offerId } from "./benefit-detail-content.js";
 
 const app = getApps()[0] || initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -157,28 +157,27 @@ form.addEventListener("submit", async event => {
   }
 
   const isAlert = data.type === "모집 알림 신청";
-  const receipt = `NCC-${new Date().toISOString().slice(2, 10).replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
-  const record = {
-    ...data,
-    message: String(data.message || ""),
-    memberId: currentMember.id,
-    memberEmail: currentUser.email,
-    offerId: id,
-    offerTitle: offer.title,
-    receipt,
-    status: "new",
-    source: "website"
-  };
-
   button.disabled = true;
   button.textContent = isAlert ? "알림 신청 중..." : "신청 접수 중...";
-  message.textContent = "";
+  message.textContent = isAlert ? "모집 알림 신청을 처리하고 있습니다." : "혜택 신청을 접수하고 있습니다.";
 
   try {
+    const receipt = `NCC-${new Date().toISOString().slice(2, 10).replaceAll("-", "")}-${String(Date.now()).slice(-5)}`;
+    const record = {
+      ...data,
+      message: String(data.message || ""),
+      memberId: currentMember.id,
+      memberEmail: currentUser.email,
+      offerId: offerId,
+      offerTitle: offer.title,
+      receipt,
+      status: "new",
+      source: "website"
+    };
     const ownApplications = await getDocs(query(collection(db, "benefitApplications"), where("memberId", "==", currentMember.id), limit(100)));
     const duplicate = ownApplications.docs.some(item => {
       const saved = item.data();
-      return saved.offerId === id && saved.type === data.type;
+      return saved.offerId === offerId && saved.type === data.type;
     });
     if (duplicate) {
       message.innerHTML = isAlert
