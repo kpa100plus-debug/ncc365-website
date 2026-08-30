@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { gunzipSync } from 'node:zlib';
 
 import { selectBestCenter } from '../js/ncc-center-assignment.js';
 
 const directory = JSON.parse(
-  await readFile(new URL('../data/ncc-center-directory-20260701.json', import.meta.url), 'utf8')
+  gunzipSync(await readFile(new URL('../data/ncc-center-directory-20260701.json.gz', import.meta.url)))
 );
 const centers = directory.centers;
 

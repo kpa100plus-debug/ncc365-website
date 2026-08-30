@@ -2,6 +2,7 @@
 """Build NCC center directory from the official MOIS KIKcd_H workbook."""
 
 import argparse
+import gzip
 import json
 from pathlib import Path
 
@@ -68,10 +69,11 @@ def main():
         "centers": centers,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
+    serialized = (json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
+    if args.output.suffix == ".gz":
+        args.output.write_bytes(gzip.compress(serialized, compresslevel=9, mtime=0))
+    else:
+        args.output.write_bytes(serialized)
     print(json.dumps(payload["meta"], ensure_ascii=False))
 
 

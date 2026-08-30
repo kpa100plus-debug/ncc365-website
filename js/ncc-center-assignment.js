@@ -51,12 +51,16 @@ let staticDirectoryPromise;
 
 async function loadStaticDirectory() {
   if (!staticDirectoryPromise) {
-    staticDirectoryPromise = fetch('./data/ncc-center-directory-20260701.json', {
+    staticDirectoryPromise = fetch('./data/ncc-center-directory-20260701.json.gz', {
       cache: 'force-cache'
     })
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok) throw new Error('CENTER_DIRECTORY_HTTP_' + response.status);
-        return response.json();
+        if (typeof DecompressionStream !== 'function') {
+          throw new Error('CENTER_DIRECTORY_GZIP_UNSUPPORTED');
+        }
+        const stream = response.body.pipeThrough(new DecompressionStream('gzip'));
+        return JSON.parse(await new Response(stream).text());
       })
       .then((payload) => Array.isArray(payload?.centers) ? payload.centers : []);
   }
