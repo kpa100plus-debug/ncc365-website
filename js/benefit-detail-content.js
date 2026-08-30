@@ -1,9 +1,8 @@
 import { benefitMap } from "./benefit-catalog.js";
 
 const $ = selector => document.querySelector(selector);
-const id = new URLSearchParams(location.search).get("id") || "first-health";
-
-export const offer = benefitMap[id] || benefitMap["first-health"];
+export const offerId = new URLSearchParams(location.search).get("id") || "first-health";
+export const offer = benefitMap[offerId] || benefitMap["first-health"];
 
 document.title = `${offer.title} | 전국소비자클럽`;
 $("#crumbTitle").textContent = offer.title;
