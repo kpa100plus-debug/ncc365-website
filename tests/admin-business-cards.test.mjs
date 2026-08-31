@@ -68,11 +68,19 @@ test("center card uses the approved landscape-only green and gold design", () =>
   assert.doesNotMatch(js, /width: 614, height: 1087/);
 });
 
-test("center card back promotes NCC member benefits", () => {
+test("center card back uses an icon-led NCC benefit showcase without personal details", () => {
   assert.match(html, /소비자에게 더 많은 혜택을/);
-  assert.match(html, /무료 경험 · 회원 할인 · 공동구매 · 지역 혜택/);
+  assert.match(html, /CONSUMER BENEFITS · BUSINESS SUPPORT · SHARING ECONOMY/);
+  assert.match(html, /소비자·지역·기업을 연결하는 NCC 365/);
+  assert.match(html, /class="benefit-showcase"/);
+  assert.match(html, /class="benefit-icon-list"/);
+  assert.match(html, /무료 경험/);
+  assert.match(html, /회원 할인/);
+  assert.match(html, /공동구매/);
+  assert.match(html, /지역 혜택/);
   assert.match(html, /소비자를 중심으로 더 큰 가치를 연결합니다/);
   assert.match(html, /class="secure-message"/);
-  assert.match(css, /card-promotion/);
-  assert.match(css, /REF-NCC-CARD-BACK-PROMOTION-ZONES-20260831-01/);
+  assert.doesNotMatch(html, /class="card-promotion"/);
+  assert.doesNotMatch(html, /class="back-logo"/);
+  assert.match(css, /REF-NCC-CARD-BACK-BENEFIT-SHOWCASE-20260831-01/);
 });
