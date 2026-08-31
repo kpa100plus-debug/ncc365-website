@@ -278,3 +278,79 @@
   bottom:4%;
   font-size:1.05cqw;
 }
+
+/* REF-NCC-CARD-BACK-PROMOTION-ZONES-20260831-01
+   Two dedicated copy zones keep the NCC logo, member identity and QR clear. */
+.secure-band{
+  top:14%;
+  height:23%;
+  display:block;
+  padding:0;
+}
+.secure-band-head{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:34%;
+  padding:0 5%;
+  border-bottom:1px solid rgba(218,177,61,.72);
+  color:#fff;
+  font-size:1.35cqw;
+  letter-spacing:.12em;
+}
+.secure-band-head span{
+  max-width:38%;
+  overflow:hidden;
+  text-align:right;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.secure-message{
+  position:absolute;
+  left:5%;
+  right:5%;
+  bottom:12%;
+  display:grid;
+  gap:8%;
+}
+.secure-message strong{
+  color:#fff;
+  font-size:2.15cqw;
+  font-weight:600;
+  letter-spacing:-.025em;
+  line-height:1.2;
+}
+.secure-message span{
+  color:#e7d8a5;
+  font-size:1.38cqw;
+  font-weight:600;
+  letter-spacing:.015em;
+  line-height:1.25;
+}
+.signature-area{
+  top:43%;
+}
+.card-promotion{
+  top:59%;
+  width:48%;
+  gap:7%;
+  padding-left:2.3%;
+}
+.card-promotion strong{
+  font-size:2.05cqw;
+  line-height:1.15;
+}
+.card-promotion span{
+  font-size:1.28cqw;
+  line-height:1.25;
+}
+.back-logo{
+  bottom:11%;
+}
+.back-brand{
+  bottom:14%;
+}
