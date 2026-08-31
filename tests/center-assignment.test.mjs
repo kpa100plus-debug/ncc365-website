@@ -4,6 +4,12 @@ import test from 'node:test';
 import { gunzipSync } from 'node:zlib';
 
 import { selectBestCenter } from '../js/ncc-center-assignment.js';
+import {
+  buildCenterBackfillPatch,
+  hasUsableCenterAddress,
+  isOfficialCenterCode,
+  shouldBackfillCenterCode
+} from '../js/ncc-center-backfill.js';
 
 const directory = JSON.parse(
   gunzipSync(await readFile(new URL('../data/ncc-center-directory-20260701.json.gz', import.meta.url)))
@@ -44,4 +50,40 @@ test('행정구역을 판별할 수 없는 주소는 임의 배정하지 않는�
     centerCode: '',
     centerName: ''
   });
+});
+
+test('기존 회원의 빈값·임시 센터코드만 보완 대상으로 분류한다', () => {
+  assert.equal(shouldBackfillCenterCode({ centerCode: '' }), true);
+  assert.equal(shouldBackfillCenterCode({ centerCode: '잘모름' }), true);
+  assert.equal(shouldBackfillCenterCode({ centerCode: 'NCC-M-1168000000' }), false);
+  assert.equal(shouldBackfillCenterCode({ centerCode: '임의-직접입력' }), false);
+  assert.equal(hasUsableCenterAddress({ region: '서울특별시 강남구 삼성동' }), true);
+  assert.equal(hasUsableCenterAddress({ region: '서울' }), false);
+  assert.equal(isOfficialCenterCode('NCC-L-1111051500'), true);
+});
+
+test('기존 회원 코드 보완은 직접 입력한 센터명과 공식 코드를 보호한다', () => {
+  const assignment = {
+    status: 'assigned',
+    centerCode: 'NCC-M-1168000000',
+    centerName: '서울특별시 강남구 소비자센터',
+    officialAdminCode: '1168000000',
+    level: 'municipality'
+  };
+
+  assert.deepEqual(
+    buildCenterBackfillPatch({ centerCode: '잘모름', centerName: '서울강남삼성센터' }, assignment),
+    {
+      centerCode: 'NCC-M-1168000000',
+      centerAssignmentStatus: 'assigned',
+      centerAssignmentReason: '',
+      centerOfficialAdminCode: '1168000000',
+      centerLevel: 'municipality'
+    }
+  );
+
+  assert.equal(
+    buildCenterBackfillPatch({ centerCode: 'NCC-M-1168000000', centerName: '' }, assignment),
+    null
+  );
 });
