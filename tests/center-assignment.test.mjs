@@ -37,6 +37,16 @@ test('법정동 도로주소는 확인 가능한 시군구 센터로 안전하�
   assert.equal(result.centerCode, 'NCC-M-1168000000');
 });
 
+test('기존 테스트회원의 축약 주소도 공식 시군구 센터로 안전하게 보정한다', () => {
+  const seoul = selectBestCenter('서울 강남 삼성동', centers);
+  assert.equal(seoul.status, 'assigned');
+  assert.equal(seoul.centerCode, 'NCC-M-1168000000');
+
+  const jeonbuk = selectBestCenter('전북 전주', centers);
+  assert.equal(jeonbuk.status, 'assigned');
+  assert.equal(jeonbuk.centerCode, 'NCC-M-5211000000');
+});
+
 test('세종특별자치시는 시군구급 코드가 우선된다', () => {
   const result = selectBestCenter('세종특별자치시 한누리대로 2130', centers);
   assert.equal(result.status, 'assigned');
