@@ -48,6 +48,7 @@ function normalizeCenter(record) {
 }
 
 let staticDirectoryPromise;
+let mergedDirectoryPromise;
 
 async function loadStaticDirectory() {
   if (!staticDirectoryPromise) {
@@ -65,6 +66,34 @@ async function loadStaticDirectory() {
       .then((payload) => Array.isArray(payload?.centers) ? payload.centers : []);
   }
   return staticDirectoryPromise;
+}
+
+async function loadCenterDirectory(db, firestore) {
+  if (!mergedDirectoryPromise) {
+    mergedDirectoryPromise = (async () => {
+      const staticRecords = await loadStaticDirectory();
+
+      try {
+        const snapshot = await firestore.getDocs(firestore.collection(db, 'centerDirectory'));
+        const liveRecords = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+        if (!liveRecords.length) return staticRecords;
+
+        const merged = new Map(staticRecords.map((item) => [item.centerCode, item]));
+        liveRecords.forEach((item) => merged.set(item.centerCode || item.code || item.id, item));
+        return Array.from(merged.values());
+      } catch (directoryError) {
+        console.info('Firestore 센터목록 대신 공식 정적목록을 사용합니다.', directoryError);
+        return staticRecords;
+      }
+    })();
+  }
+
+  try {
+    return await mergedDirectoryPromise;
+  } catch (error) {
+    mergedDirectoryPromise = undefined;
+    throw error;
+  }
 }
 
 export function selectBestCenter(address, records) {
@@ -100,21 +129,7 @@ export async function resolveCenterAssignment(db, address, firestore) {
   }
 
   try {
-    const staticRecords = await loadStaticDirectory();
-    let records = staticRecords;
-
-    try {
-      const snapshot = await firestore.getDocs(firestore.collection(db, 'centerDirectory'));
-      const liveRecords = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
-      if (liveRecords.length) {
-        const merged = new Map(staticRecords.map((item) => [item.centerCode, item]));
-        liveRecords.forEach((item) => merged.set(item.centerCode || item.code || item.id, item));
-        records = Array.from(merged.values());
-      }
-    } catch (directoryError) {
-      console.info('Firestore 센터목록 대신 공식 정적목록을 사용합니다.', directoryError);
-    }
-
+    const records = await loadCenterDirectory(db, firestore);
     return selectBestCenter(address, records);
   } catch (error) {
     console.warn('센터 자동배정 조회 실패', error);
