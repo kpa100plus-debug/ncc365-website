@@ -334,16 +334,22 @@ $("#logoutButton").addEventListener("click", () => signOut(auth));
 onAuthStateChanged(auth, user => {
   const gate = $("#authGate");
   const studio = $("#studioApp");
+  const navigation = $("#adminNavigation");
+  studio.hidden = true;
+  navigation.hidden = true;
   if (!user) {
-    gate.innerHTML = '<strong>관리자 로그인이 필요합니다.</strong><p><a href="wallet.html">NCC 월렛 로그인으로 이동</a></p>';
+    gate.hidden = false;
+    gate.innerHTML = '<strong>센터 명함 자동제작은 관리자 전용 화면입니다.</strong><p>승인된 관리자 계정으로 로그인해 주세요.</p><p><a href="wallet.html">NCC 월렛에서 관리자 계정 로그인</a></p>';
     return;
   }
   if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
-    gate.innerHTML = "<strong>이 화면은 승인된 관리자만 이용할 수 있습니다.</strong>";
+    gate.hidden = false;
+    gate.innerHTML = '<strong>현재 회원 계정으로 로그인되어 있습니다.</strong><p>센터 명함 자동제작은 승인된 관리자 계정만 이용할 수 있습니다.</p><p><a href="wallet.html">NCC 월렛으로 이동</a></p>';
     return;
   }
   gate.hidden = true;
   studio.hidden = false;
+  navigation.hidden = false;
   render({ quiet: true });
   updateExportState();
 });
