@@ -21,6 +21,15 @@ test("business card studio verifies the live member and center role before expor
   assert.doesNotMatch(js, /NCC-CM-/);
 });
 
+test("business card studio distinguishes member login from administrator access", () => {
+  assert.match(html, /id="adminNavigation" hidden/);
+  assert.match(html, /관리자 로그아웃/);
+  assert.match(js, /현재 회원 계정으로 로그인되어 있습니다/);
+  assert.match(js, /센터 명함 자동제작은 관리자 전용 화면입니다/);
+  assert.match(js, /navigation\.hidden = true/);
+  assert.match(js, /navigation\.hidden = false/);
+});
+
 test("business card studio supports exact artwork, trim and portrait specifications", () => {
   assert.match(html, /가로형 92×52mm 작업 \/ 90×50mm 재단/);
   assert.match(html, /300dpi · 가로 1087×614px/);
