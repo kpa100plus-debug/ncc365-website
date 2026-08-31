@@ -21,6 +21,11 @@ const typeLabels = {
 };
 
 const normalizeNumber = value => String(value || "").trim().toUpperCase().replace(/[–—−]/g, "-").replace(/\s+/g, "");
+const certificatePattern = /^NCC-[A-Z0-9]+(?:-[A-Z0-9]+){2,6}$/;
+const certificateDefaults = {
+  business_certificate: { prefix: "BC", title: "NCC 사업체 인증서" },
+  store_certificate: { prefix: "SC", title: "NCC 매장 인증서" }
+};
 const escapeHtml = value => String(value || "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
 const byCreated = (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
 
@@ -111,10 +116,34 @@ function openForm(item = {}) {
     form.elements.status.value = "sample";
     form.elements.public.value = "true";
     form.elements.issuedAt.valueAsDate = new Date();
+    applyCertificateDefaults(form);
   }
   form.hidden = false;
   form.scrollIntoView({ behavior: "smooth", block: "start" });
 }
+
+function nextCertificateNumber(prefix) {
+  const year = new Date().getFullYear();
+  const expression = new RegExp(`^NCC-${prefix}-${year}-(\\d{4})$`);
+  const highest = certificates.reduce((max, item) => {
+    const match = normalizeNumber(item.certificateNumber).match(expression);
+    return match ? Math.max(max, Number(match[1])) : max;
+  }, 0);
+  return `NCC-${prefix}-${year}-${String(highest + 1).padStart(4, "0")}`;
+}
+
+function applyCertificateDefaults(form) {
+  const preset = certificateDefaults[form.elements.certificateType.value];
+  if (!preset) return;
+  form.elements.certificateNumber.value = nextCertificateNumber(preset.prefix);
+  form.elements.certificateNumber.placeholder = `NCC-${preset.prefix}-${new Date().getFullYear()}-0001`;
+  form.elements.title.value = preset.title;
+}
+
+$("#certificateForm").elements.certificateType.addEventListener("change", event => {
+  const form = event.currentTarget.form;
+  if (!form.elements.originalNumber.value) applyCertificateDefaults(form);
+});
 
 $("#certificateForm").onsubmit = async event => {
   event.preventDefault();
@@ -125,8 +154,13 @@ $("#certificateForm").onsubmit = async event => {
   const certificateNumber = normalizeNumber(values.certificateNumber);
   delete values.originalNumber;
 
-  if (!/^NCC-[A-Z0-9]+(?:-[A-Z0-9]+){2,6}$/.test(certificateNumber) || certificateNumber.length > 50) {
+  if (!certificatePattern.test(certificateNumber) || certificateNumber.length > 50) {
     $("#certificateMessage").textContent = "인증번호 형식을 확인해 주세요.";
+    return;
+  }
+  const preset = certificateDefaults[values.certificateType];
+  if (preset && !new RegExp(`^NCC-${preset.prefix}-\\d{4}-\\d{4}$`).test(certificateNumber)) {
+    $("#certificateMessage").textContent = `${preset.title} 번호는 NCC-${preset.prefix}-연도-일련번호 형식만 사용할 수 있습니다.`;
     return;
   }
   if (originalNumber && originalNumber !== certificateNumber) {
