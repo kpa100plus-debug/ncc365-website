@@ -82,5 +82,8 @@ test("center card back uses an icon-led NCC benefit showcase without personal de
   assert.match(html, /class="secure-message"/);
   assert.doesNotMatch(html, /class="card-promotion"/);
   assert.doesNotMatch(html, /class="back-logo"/);
+  assert.doesNotMatch(html, /class="signature-area"/);
+  assert.doesNotMatch(html, /AUTHORIZED CENTER/);
   assert.match(css, /REF-NCC-CARD-BACK-BENEFIT-SHOWCASE-20260831-01/);
+  assert.match(css, /REF-NCC-CARD-BACK-PRINT-SCALE-20260831-01/);
 });
