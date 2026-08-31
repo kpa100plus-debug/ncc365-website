@@ -1,0 +1,231 @@
+name: NCC Protected Pre-App Backup
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - ".github/workflows/ncc-protected-backup.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ncc-protected-pre-app-backup
+  cancel-in-progress: false
+
+jobs:
+  protected-backup:
+    name: Encrypt and preserve production data
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      NCC_PROJECT_ID: ncc-member
+      NCC_STORAGE_BUCKET: ncc-member.firebasestorage.app
+      NCC_D1_DATABASE_NAME: ncc-test-payments
+      NCC_BACKUP_PREFIX: protected-backups/pre-app-20260831-44650e3
+      WRANGLER_VERSION: 4.126.0
+      FIREBASE_TOOLS_VERSION: 15.28.1
+
+    steps:
+      - name: Checkout protected baseline
+        uses: actions/checkout@v5
+
+      - name: Validate protected credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for variable_name in FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [ -z "${!variable_name}" ]; then
+              echo "::error::Required protected credential is unavailable: ${variable_name}"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Authenticate protected Google project
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Install pinned backup tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --global "firebase-tools@${FIREBASE_TOOLS_VERSION}" "wrangler@${WRANGLER_VERSION}"
+          tool_dir="${RUNNER_TEMP}/ncc-backup-tools"
+          mkdir -p "$tool_dir"
+          npm install --prefix "$tool_dir" --ignore-scripts firebase-admin@13.4.0
+
+      - name: Export Firestore without exposing records
+        shell: bash
+        run: |
+          set -euo pipefail
+          backup_dir="${RUNNER_TEMP}/ncc-protected-backup"
+          tool_dir="${RUNNER_TEMP}/ncc-backup-tools"
+          mkdir -p "$backup_dir/firestore"
+          cat > "$tool_dir/export-firestore.cjs" <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const admin = require('firebase-admin');
+
+          admin.initializeApp({ credential: admin.credential.applicationDefault() });
+          const db = admin.firestore();
+          const outputRoot = process.argv[2];
+
+          function encode(value) {
+            if (value === null || value === undefined) return value ?? null;
+            if (value instanceof admin.firestore.Timestamp) {
+              return { __nccType: 'timestamp', seconds: value.seconds, nanoseconds: value.nanoseconds };
+            }
+            if (value instanceof admin.firestore.GeoPoint) {
+              return { __nccType: 'geopoint', latitude: value.latitude, longitude: value.longitude };
+            }
+            if (value instanceof admin.firestore.DocumentReference) {
+              return { __nccType: 'reference', path: value.path };
+            }
+            if (Buffer.isBuffer(value) || value instanceof Uint8Array) {
+              return { __nccType: 'bytes', base64: Buffer.from(value).toString('base64') };
+            }
+            if (Array.isArray(value)) return value.map(encode);
+            if (typeof value === 'object') {
+              return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, encode(item)]));
+            }
+            return value;
+          }
+
+          async function dumpDocument(documentSnapshot) {
+            const subcollections = {};
+            for (const subcollection of await documentSnapshot.ref.listCollections()) {
+              subcollections[subcollection.id] = await dumpCollection(subcollection);
+            }
+            return { id: documentSnapshot.id, data: encode(documentSnapshot.data()), subcollections };
+          }
+
+          async function dumpCollection(collectionReference) {
+            const snapshot = await collectionReference.get();
+            const documents = [];
+            for (const documentSnapshot of snapshot.docs) documents.push(await dumpDocument(documentSnapshot));
+            return documents;
+          }
+
+          (async () => {
+            const roots = await db.listCollections();
+            const index = { projectId: process.env.NCC_PROJECT_ID, exportedAt: new Date().toISOString(), collections: [] };
+            for (const collectionReference of roots) {
+              const documents = await dumpCollection(collectionReference);
+              fs.writeFileSync(path.join(outputRoot, `${collectionReference.id}.json`), JSON.stringify({ collection: collectionReference.id, documents }));
+              index.collections.push({ name: collectionReference.id, rootDocumentCount: documents.length });
+            }
+            fs.writeFileSync(path.join(outputRoot, 'index.json'), JSON.stringify(index, null, 2));
+            console.log(`Firestore root collections exported: ${index.collections.length}`);
+          })().catch((error) => { console.error(error.message); process.exit(1); });
+          NODE
+          NODE_PATH="$tool_dir/node_modules" node "$tool_dir/export-firestore.cjs" "$backup_dir/firestore"
+
+      - name: Export Firebase Authentication users
+        shell: bash
+        run: |
+          set -euo pipefail
+          backup_dir="${RUNNER_TEMP}/ncc-protected-backup"
+          firebase auth:export "$backup_dir/firebase-auth-users.json" \
+            --project "$NCC_PROJECT_ID" \
+            --format json \
+            --non-interactive
+
+      - name: Copy Firebase Storage objects to the encrypted package
+        shell: bash
+        run: |
+          set -euo pipefail
+          backup_dir="${RUNNER_TEMP}/ncc-protected-backup"
+          mkdir -p "$backup_dir/storage"
+          gcloud storage rsync "gs://${NCC_STORAGE_BUCKET}" "$backup_dir/storage" \
+            --recursive \
+            --exclude='(^|/)protected-backups/' \
+            --quiet
+
+      - name: Export Cloudflare D1 payment and account ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          backup_dir="${RUNNER_TEMP}/ncc-protected-backup"
+          wrangler d1 export "$NCC_D1_DATABASE_NAME" \
+            --remote \
+            --output="$backup_dir/cloudflare-d1.sql"
+
+      - name: Package, encrypt, and upload the protected backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          backup_dir="${RUNNER_TEMP}/ncc-protected-backup"
+          archive="${RUNNER_TEMP}/NCC_PROTECTED_PRE_APP_20260831.tar.gz"
+          encrypted="${archive}.enc"
+          manifest="${RUNNER_TEMP}/NCC_PROTECTED_PRE_APP_20260831.manifest.json"
+          checksum="${encrypted}.sha256"
+
+          tar -czf "$archive" -C "$backup_dir" .
+          encryption_key="$(printf '%s' "$FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON" | sha256sum | awk '{print $1}')"
+          export NCC_BACKUP_ENCRYPTION_KEY="$encryption_key"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 600000 -md sha256 \
+            -pass env:NCC_BACKUP_ENCRYPTION_KEY \
+            -in "$archive" \
+            -out "$encrypted"
+          unset NCC_BACKUP_ENCRYPTION_KEY encryption_key
+          sha256sum "$encrypted" | awk '{print $1}' > "$checksum"
+
+          firestore_collections="$(jq '.collections | length' "$backup_dir/firestore/index.json")"
+          auth_users="$(jq 'length' "$backup_dir/firebase-auth-users.json")"
+          storage_objects="$(find "$backup_dir/storage" -type f | wc -l | tr -d ' ')"
+          d1_bytes="$(wc -c < "$backup_dir/cloudflare-d1.sql" | tr -d ' ')"
+          encrypted_bytes="$(wc -c < "$encrypted" | tr -d ' ')"
+          encrypted_sha256="$(cat "$checksum")"
+
+          jq -n \
+            --arg reference "REF-NCC-PROTECTED-PRE-APP-BACKUP-20260831-01" \
+            --arg project "$NCC_PROJECT_ID" \
+            --arg sourceCommit "$GITHUB_SHA" \
+            --arg createdAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg encryption "AES-256-CBC/PBKDF2-SHA256/600000" \
+            --arg sha256 "$encrypted_sha256" \
+            --argjson firestoreCollections "$firestore_collections" \
+            --argjson authUsers "$auth_users" \
+            --argjson storageObjects "$storage_objects" \
+            --argjson d1Bytes "$d1_bytes" \
+            --argjson encryptedBytes "$encrypted_bytes" \
+            '{reference:$reference,project:$project,sourceCommit:$sourceCommit,createdAt:$createdAt,encryption:$encryption,sha256:$sha256,firestoreCollections:$firestoreCollections,authUsers:$authUsers,storageObjects:$storageObjects,d1Bytes:$d1Bytes,encryptedBytes:$encryptedBytes,contains:["Firestore","Firebase Auth","Firebase Storage","Cloudflare D1"]}' \
+            > "$manifest"
+
+          destination="gs://${NCC_STORAGE_BUCKET}/${NCC_BACKUP_PREFIX}"
+          gcloud storage cp "$encrypted" "$destination/NCC_PROTECTED_PRE_APP_20260831.tar.gz.enc" --quiet
+          gcloud storage cp "$checksum" "$destination/NCC_PROTECTED_PRE_APP_20260831.tar.gz.enc.sha256" --quiet
+          gcloud storage cp "$manifest" "$destination/NCC_PROTECTED_PRE_APP_20260831.manifest.json" --quiet
+
+          remote_checksum="$(gcloud storage cat "$destination/NCC_PROTECTED_PRE_APP_20260831.tar.gz.enc.sha256" | tr -d '[:space:]')"
+          if [ "$remote_checksum" != "$encrypted_sha256" ]; then
+            echo "::error::Protected backup checksum verification failed."
+            exit 1
+          fi
+
+          rm -rf "$backup_dir" "$archive" "$encrypted"
+          echo "Protected backup uploaded and checksum verified."
+
