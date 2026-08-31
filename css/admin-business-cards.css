@@ -354,3 +354,72 @@
 .back-brand{
   bottom:14%;
 }
+
+/* REF-NCC-CARD-BACK-BENEFIT-SHOWCASE-20260831-01
+   The lower panel is fixed brand copy, separated from the center identity and QR. */
+.benefit-showcase{
+  position:absolute;
+  z-index:2;
+  top:61%;
+  left:5%;
+  right:28%;
+  bottom:9%;
+  display:grid;
+  align-content:start;
+  gap:5%;
+  padding-left:2.6%;
+  border-left:1px solid rgba(229,189,98,.9);
+}
+.benefit-showcase>p{
+  margin:0;
+  color:#e9d797;
+  font-size:1.02cqw;
+  font-weight:600;
+  letter-spacing:.075em;
+  line-height:1.25;
+}
+.benefit-showcase>strong{
+  color:#fff;
+  font-size:2.65cqw;
+  font-weight:600;
+  letter-spacing:-.02em;
+  line-height:1.1;
+}
+.benefit-showcase>span{
+  color:#d7e4df;
+  font-size:1.36cqw;
+  font-weight:600;
+  letter-spacing:.01em;
+  line-height:1.25;
+}
+.benefit-icon-list{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:4%;
+  margin:2% 0 0;
+  padding:0;
+  list-style:none;
+}
+.benefit-icon-list li{
+  display:grid;
+  justify-items:start;
+  gap:8%;
+  min-width:0;
+}
+.benefit-icon-list svg{
+  width:2.65cqw;
+  height:2.65cqw;
+  overflow:visible;
+  fill:none;
+  stroke:#e8c968;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-width:1.6;
+}
+.benefit-icon-list b{
+  color:#fff;
+  font-size:1.18cqw;
+  font-weight:600;
+  line-height:1.2;
+  white-space:nowrap;
+}
