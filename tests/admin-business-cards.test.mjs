@@ -71,5 +71,8 @@ test("center card uses the approved landscape-only green and gold design", () =>
 test("center card back promotes NCC member benefits", () => {
   assert.match(html, /소비자에게 더 많은 혜택을/);
   assert.match(html, /무료 경험 · 회원 할인 · 공동구매 · 지역 혜택/);
+  assert.match(html, /소비자를 중심으로 더 큰 가치를 연결합니다/);
+  assert.match(html, /class="secure-message"/);
   assert.match(css, /card-promotion/);
+  assert.match(css, /REF-NCC-CARD-BACK-PROMOTION-ZONES-20260831-01/);
 });
