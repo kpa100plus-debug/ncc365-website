@@ -17,6 +17,41 @@ function text(record, keys) {
   return '';
 }
 
+// Older imported member data sometimes omits legal-area suffixes, for example
+// "서울 강남 삼성동" or "전북 전주".  These aliases are used only for
+// matching; the original member address is never rewritten.
+function administrativeAliases(value, level) {
+  const normalized = compact(value);
+  const aliases = new Set(normalized ? [normalized] : []);
+
+  if (level === 'province') {
+    const abbreviated = normalized.replace(/특별자치도$|특별시$|광역시$|자치시$|도$/, '');
+    if (abbreviated.length >= 2) aliases.add(abbreviated);
+  }
+
+  if (level === 'municipality') {
+    const abbreviated = normalized.replace(/(시|군|구)$/, '');
+    if (abbreviated.length >= 2) aliases.add(abbreviated);
+  }
+
+  return [...aliases];
+}
+
+function includesAdministrativeName(address, normalizedAddress, value, level) {
+  const fullName = compact(value);
+  if (fullName && normalizedAddress.includes(fullName)) return true;
+
+  // Short forms must be a complete address token. This prevents a district
+  // such as "성동" from incorrectly matching the final two characters of
+  // "삼성동" in a legacy spaced address.
+  const tokens = String(address ?? '')
+    .normalize('NFKC')
+    .split(/[\s,().-]+/)
+    .map((item) => compact(item))
+    .filter(Boolean);
+  return administrativeAliases(value, level).some((alias) => tokens.includes(alias));
+}
+
 function scoreAddress(address, record) {
   const normalizedAddress = compact(address);
   const province = text(record, ['provinceName', 'sido', 'province']);
@@ -25,12 +60,21 @@ function scoreAddress(address, record) {
   const full = text(record, ['fullName', 'centerArea', 'addressArea']);
   const level = text(record, ['level']);
   const levelBonus = level === 'local' ? 30 : level === 'municipality' ? 20 : 10;
+  const municipalityMatches = municipality && includesAdministrativeName(address, normalizedAddress, municipality, 'municipality');
+  const localMatches = local && normalizedAddress.includes(compact(local));
 
   if (full && normalizedAddress.includes(compact(full))) return 400 + levelBonus + compact(full).length;
-  if (level === 'local' && local && municipality && normalizedAddress.includes(compact(municipality + local))) return 300 + compact(local).length;
-  if (level === 'local' && local && normalizedAddress.includes(compact(local))) return 200 + compact(local).length;
-  if (level === 'municipality' && municipality && normalizedAddress.includes(compact(municipality))) return 100 + compact(municipality).length;
-  if (level === 'province' && province && normalizedAddress.includes(compact(province))) return 50 + compact(province).length;
+  if (level === 'local' && localMatches && municipalityMatches) return 300 + compact(local).length;
+  // A local name alone is deliberately lower than a matched city/county.
+  // Identical names exist in multiple regions, so this avoids guessing a
+  // local center from a legacy address that states a different municipality.
+  if (level === 'local' && localMatches) return 80 + compact(local).length;
+  if (level === 'municipality' && municipality && municipalityMatches) {
+    return 100 + Math.max(...administrativeAliases(municipality, 'municipality').map((item) => item.length));
+  }
+  if (level === 'province' && province && includesAdministrativeName(address, normalizedAddress, province, 'province')) {
+    return 50 + Math.max(...administrativeAliases(province, 'province').map((item) => item.length));
+  }
   return 0;
 }
 
