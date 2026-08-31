@@ -423,3 +423,48 @@
   line-height:1.2;
   white-space:nowrap;
 }
+
+/* REF-NCC-CARD-BACK-PRINT-SCALE-20260831-01
+   The former center-information panel is intentionally removed.  Use its space
+   for larger, print-legible NCC benefit copy and icons while keeping QR clear. */
+.secure-message strong{
+  font-size:2.55cqw;
+}
+.secure-message span{
+  font-size:1.6cqw;
+}
+.benefit-showcase{
+  top:44%;
+  right:27%;
+  bottom:9%;
+  align-content:center;
+  gap:6%;
+  padding-left:3%;
+}
+.benefit-showcase>p{
+  font-size:1.35cqw;
+}
+.benefit-showcase>strong{
+  font-size:3.7cqw;
+  line-height:1.08;
+}
+.benefit-showcase>span{
+  font-size:1.85cqw;
+  line-height:1.3;
+}
+.benefit-icon-list{
+  gap:5%;
+  margin:3% 0 0;
+}
+.benefit-icon-list li{
+  gap:12%;
+}
+.benefit-icon-list svg{
+  width:4.15cqw;
+  height:4.15cqw;
+  stroke-width:1.7;
+}
+.benefit-icon-list b{
+  font-size:1.85cqw;
+  line-height:1.2;
+}
