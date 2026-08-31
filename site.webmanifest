@@ -1,10 +1,12 @@
 {
-  "name": "전국소비자클럽 NCC",
-  "short_name": "NCC 365",
-  "description": "전국소비자클럽 공식 서비스",
-  "start_url": "/index.html",
+  "id": "/app",
+  "name": "전국소비자클럽 NCC 앱",
+  "short_name": "NCC 앱",
+  "description": "혜택, 공동구매, 월렛과 알림을 한 번에 이용하는 전국소비자클럽 공식 앱",
+  "start_url": "/app.html?source=install",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#edf2ef",
   "theme_color": "#063a31",
   "icons": [
@@ -16,6 +18,18 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "NCC 앱 홈",
+      "short_name": "NCC 앱",
+      "url": "/app.html",
+      "icons": [
+        {
+          "src": "/images/NCC_OFFICIAL.png",
+          "sizes": "any",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "NCC 월렛",
       "short_name": "월렛",
