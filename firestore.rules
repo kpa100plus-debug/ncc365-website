@@ -54,6 +54,10 @@ service cloud.firestore {
         "referralCode",
         "centerName",
         "centerCode",
+        "centerAssignmentStatus",
+        "centerAssignmentReason",
+        "centerOfficialAdminCode",
+        "centerLevel",
         "agreePrivacy",
         "agreeMarketing",
         "agreeThirdParty",
@@ -120,6 +124,28 @@ service cloud.firestore {
 
         && request.resource.data.centerName is string
         && request.resource.data.centerCode is string
+        && (
+          !("centerAssignmentStatus" in request.resource.data)
+          || request.resource.data.centerAssignmentStatus in ["assigned", "pending"]
+        )
+        && (
+          !("centerAssignmentReason" in request.resource.data)
+          || request.resource.data.centerAssignmentReason is string
+        )
+        && (
+          !("centerOfficialAdminCode" in request.resource.data)
+          || (
+            request.resource.data.centerOfficialAdminCode is string
+            && (
+              request.resource.data.centerOfficialAdminCode == ""
+              || request.resource.data.centerOfficialAdminCode.matches('^[0-9]{10}$')
+            )
+          )
+        )
+        && (
+          !("centerLevel" in request.resource.data)
+          || request.resource.data.centerLevel in ["", "province", "municipality", "local"]
+        )
 
         && request.resource.data.agreePrivacy == true
         && request.resource.data.agreeMarketing is bool
@@ -1270,6 +1296,27 @@ match /centerActivities/{activityId} {
         && request.resource.data.createdAt == request.time;
       allow read: if isAdmin();
       allow update, delete: if false;
+    }
+
+    // Public center directory contains official administrative names/codes only.
+    // Member data and manager contact information must never be stored here.
+    match /centerDirectory/{centerCode} {
+      allow read: if true;
+      allow create, update: if
+        isAdmin()
+        && request.resource.data.keys().hasAll([
+          "centerCode", "officialAdminCode", "centerName", "level", "status"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "centerCode", "officialAdminCode", "provinceName", "municipalityName",
+          "localName", "fullName", "centerName", "level", "status", "effectiveFrom"
+        ])
+        && request.resource.data.centerCode == centerCode
+        && request.resource.data.centerCode.matches('^NCC-[PML]-[0-9]{10}$')
+        && request.resource.data.officialAdminCode.matches('^[0-9]{10}$')
+        && request.resource.data.level in ["province", "municipality", "local"]
+        && request.resource.data.status in ["reserved", "active", "inactive"];
+      allow delete: if false;
     }
 
     match /{document=**} {
