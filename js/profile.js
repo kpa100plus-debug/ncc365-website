@@ -2,6 +2,8 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12
 import {
   EmailAuthProvider,
   getAuth,
+  GoogleAuthProvider,
+  linkWithPopup,
   onAuthStateChanged,
   reauthenticateWithCredential,
   sendPasswordResetEmail,
@@ -27,6 +29,7 @@ import { firebaseConfig } from "./platform-config.js";
 
 const app = getApps()[0] || initializeApp(firebaseConfig);
 const auth = getAuth(app);
+auth.languageCode = "ko";
 const db = getFirestore(app);
 const $ = selector => document.querySelector(selector);
 
@@ -63,6 +66,7 @@ onAuthStateChanged(auth, async user => {
     await loadAddresses();
     await loadGroupBuyOrders();
     fillBasicForm();
+    updateLoginProviderControls(user);
     $("#profileStatus").hidden = true;
     for (const selector of ["#basicForm", "#profileForm", "#groupBuyOrderSection", "#addressSection", "#securitySection", "#withdrawSection"]) {
       $(selector).hidden = false;
@@ -70,6 +74,46 @@ onAuthStateChanged(auth, async user => {
   } catch (error) {
     console.error(error);
     $("#profileStatus").textContent = error.message || "회원정보를 불러오지 못했습니다.";
+  }
+});
+
+function updateLoginProviderControls(user) {
+  const providers = new Set((user.providerData || []).map(item => item.providerId));
+  const googleButton = $("#connectGoogle");
+  const googleMessage = $("#googleConnectionMessage");
+  const emailChangeForm = $("#emailChangeForm");
+  if (providers.has("google.com")) {
+    googleButton.disabled = true;
+    googleButton.textContent = "Google 계정 연결됨";
+    googleMessage.textContent = "다음 로그인부터 Google 계정을 사용할 수 있습니다.";
+  }
+  if (emailChangeForm) emailChangeForm.hidden = !providers.has("password");
+}
+
+$("#connectGoogle")?.addEventListener("click", async () => {
+  if (!currentUser) return;
+  const button = $("#connectGoogle");
+  const message = $("#googleConnectionMessage");
+  button.disabled = true;
+  button.textContent = "Google 계정을 확인 중...";
+  message.textContent = "";
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    await linkWithPopup(currentUser, provider);
+    updateLoginProviderControls(currentUser);
+  } catch (error) {
+    const code = String(error?.code || "");
+    console.error(error);
+    message.textContent = code.includes("popup-closed-by-user")
+      ? "Google 계정 선택을 취소했습니다."
+      : code.includes("credential-already-in-use") || code.includes("account-exists-with-different-credential")
+        ? "선택한 Google 계정은 다른 로그인에 연결되어 있습니다. 회원가입 이메일과 같은 계정을 선택해 주세요."
+        : code.includes("requires-recent-login")
+          ? "보안을 위해 다시 로그인한 뒤 Google 계정 연결을 시도해 주세요."
+          : "Google 계정을 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+    button.disabled = false;
+    button.textContent = "Google 계정 연결";
   }
 });
 
