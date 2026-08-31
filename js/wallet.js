@@ -1,5 +1,5 @@
 import{initializeApp,getApps}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail,signOut,reload,updatePassword}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getAuth,GoogleAuthProvider,onAuthStateChanged,signInWithEmailAndPassword,signInWithPopup,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail,signOut,reload,updatePassword}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import{getFirestore,collection,doc,getDoc,getDocs,query,where,limit,updateDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import{firebaseConfig}from"./platform-config.js";
 import{formatCardholderName,formatCardRegion,formatCardMemberType}from"./member-card-english.js?v=20260824-1";
@@ -92,6 +92,31 @@ $("#loginForm").onsubmit=async event=>{
   try{await signInWithEmailAndPassword(auth,email,data.password);$("#authMessage").textContent=""}
   catch(error){const code=String(error?.code||"");console.error(error);$("#authMessage").textContent=code.includes("wrong-password")||code.includes("invalid-credential")?"비밀번호가 올바르지 않습니다. 다시 확인해 주세요.":code.includes("user-not-found")?"등록되지 않은 이메일입니다.":code.includes("too-many-requests")?"로그인 시도가 많아 잠시 제한되었습니다. 잠시 후 다시 시도해 주세요.":code.includes("network-request-failed")?"인터넷 연결을 확인한 뒤 다시 시도해 주세요.":"로그인하지 못했습니다. 이메일과 비밀번호를 확인해 주세요.";$("#authMessage").scrollIntoView({behavior:"smooth",block:"center"})}
   finally{button.disabled=false;button.textContent="회원 로그인"}
+};
+
+$("#googleLogin").onclick=async()=>{
+  const button=$("#googleLogin");
+  button.disabled=true;
+  button.textContent="Google 계정을 확인 중...";
+  try{
+    const provider=new GoogleAuthProvider();
+    provider.setCustomParameters({prompt:"select_account"});
+    await signInWithPopup(auth,provider);
+    $("#authMessage").textContent="";
+  }catch(error){
+    const code=String(error?.code||"");
+    console.error(error);
+    $("#authMessage").textContent=code.includes("popup-closed-by-user")
+      ?"Google 계정 선택을 취소했습니다."
+      :code.includes("account-exists-with-different-credential")
+        ?"이 이메일은 비밀번호 로그인으로 이미 등록되어 있습니다. 먼저 이메일 로그인 후 내 정보의 ‘Google 계정 연결’을 이용해 주세요."
+        :code.includes("unauthorized-domain")
+          ?"Google 로그인 도메인 설정을 확인 중입니다. 잠시 후 다시 시도해 주세요."
+          :"Google로 로그인하지 못했습니다. 회원가입 이메일과 같은 Google 계정인지 확인해 주세요.";
+  }finally{
+    button.disabled=false;
+    button.innerHTML='<span class="google-login-mark" aria-hidden="true">G</span> Google로 로그인';
+  }
 };
 
 $("#signupForm").onsubmit=async event=>{
