@@ -127,6 +127,8 @@
   margin-top: 8px;
 }
 
+.wallet-social-login{display:grid;gap:10px;margin:20px 0 4px;text-align:center}.wallet-social-login>span{display:flex;align-items:center;gap:10px;color:#75827d;font-size:13px}.wallet-social-login>span::before,.wallet-social-login>span::after{content:"";height:1px;flex:1;background:#dce3df}.google-login-button{display:flex;min-height:54px;align-items:center;justify-content:center;gap:11px;border:1px solid #cbd5d0;border-radius:9px;background:#fff;color:#20302b;font:600 16px/1.2 inherit;cursor:pointer}.google-login-button:hover,.google-login-button:focus-visible{border-color:#8fa89f;background:#f8fbf9}.google-login-button:focus-visible{outline:3px solid rgba(210,170,80,.22);outline-offset:2px}.google-login-button:disabled{cursor:not-allowed;opacity:.62}.google-login-mark{display:grid;width:22px;height:22px;place-items:center;border-radius:50%;background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 0 50%,#fbbc05 0 75%,#ea4335 0);color:#fff;font-family:Arial,sans-serif;font-size:13px;font-weight:600}.wallet-social-login p{margin:0;color:#64726d;font-size:13px;line-height:1.55}
+
 .text-button {
   margin-top: 12px;
   padding: 9px 0;
