@@ -31,6 +31,7 @@ jobs:
       NCC_STORAGE_BUCKET: ncc-member.firebasestorage.app
       NCC_D1_DATABASE_NAME: ncc-test-payments
       NCC_BACKUP_PREFIX: protected-backups/pre-app-20260831-44650e3
+      NCC_SOURCE_COMMIT: 44650e32af059c13c0323830dffb852a319df005
       WRANGLER_VERSION: 4.126.0
       FIREBASE_TOOLS_VERSION: 15.28.1
 
@@ -62,6 +63,37 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
+
+      - name: Resolve the existing Firebase Storage bucket
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t buckets < <(gcloud storage buckets list \
+            --project="$NCC_PROJECT_ID" \
+            --format='value(name)')
+          selected=""
+          for candidate in "${buckets[@]}"; do
+            case "$candidate" in
+              "$NCC_PROJECT_ID.firebasestorage.app"|"$NCC_PROJECT_ID.appspot.com")
+                selected="$candidate"
+                break
+                ;;
+            esac
+          done
+          if [ -z "$selected" ]; then
+            for candidate in "${buckets[@]}"; do
+              if [[ "$candidate" == "$NCC_PROJECT_ID"* ]]; then
+                selected="$candidate"
+                break
+              fi
+            done
+          fi
+          if [ -z "$selected" ]; then
+            echo "::error::No existing Firebase Storage bucket was found for the NCC project."
+            exit 1
+          fi
+          echo "NCC_STORAGE_BUCKET=$selected" >> "$GITHUB_ENV"
+          echo "Existing NCC Storage bucket resolved."
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
@@ -194,7 +226,7 @@ jobs:
           sha256sum "$encrypted" | awk '{print $1}' > "$checksum"
 
           firestore_collections="$(jq '.collections | length' "$backup_dir/firestore/index.json")"
-          auth_users="$(jq 'length' "$backup_dir/firebase-auth-users.json")"
+          auth_users="$(jq 'if type == "array" then length else (.users // [] | length) end' "$backup_dir/firebase-auth-users.json")"
           storage_objects="$(find "$backup_dir/storage" -type f | wc -l | tr -d ' ')"
           d1_bytes="$(wc -c < "$backup_dir/cloudflare-d1.sql" | tr -d ' ')"
           encrypted_bytes="$(wc -c < "$encrypted" | tr -d ' ')"
@@ -203,7 +235,8 @@ jobs:
           jq -n \
             --arg reference "REF-NCC-PROTECTED-PRE-APP-BACKUP-20260831-01" \
             --arg project "$NCC_PROJECT_ID" \
-            --arg sourceCommit "$GITHUB_SHA" \
+            --arg sourceCommit "$NCC_SOURCE_COMMIT" \
+            --arg workflowCommit "$GITHUB_SHA" \
             --arg createdAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --arg encryption "AES-256-CBC/PBKDF2-SHA256/600000" \
             --arg sha256 "$encrypted_sha256" \
@@ -212,7 +245,7 @@ jobs:
             --argjson storageObjects "$storage_objects" \
             --argjson d1Bytes "$d1_bytes" \
             --argjson encryptedBytes "$encrypted_bytes" \
-            '{reference:$reference,project:$project,sourceCommit:$sourceCommit,createdAt:$createdAt,encryption:$encryption,sha256:$sha256,firestoreCollections:$firestoreCollections,authUsers:$authUsers,storageObjects:$storageObjects,d1Bytes:$d1Bytes,encryptedBytes:$encryptedBytes,contains:["Firestore","Firebase Auth","Firebase Storage","Cloudflare D1"]}' \
+            '{reference:$reference,project:$project,sourceCommit:$sourceCommit,workflowCommit:$workflowCommit,createdAt:$createdAt,encryption:$encryption,sha256:$sha256,firestoreCollections:$firestoreCollections,authUsers:$authUsers,storageObjects:$storageObjects,d1Bytes:$d1Bytes,encryptedBytes:$encryptedBytes,contains:["Firestore","Firebase Auth","Firebase Storage","Cloudflare D1"]}' \
             > "$manifest"
 
           destination="gs://${NCC_STORAGE_BUCKET}/${NCC_BACKUP_PREFIX}"
@@ -228,4 +261,3 @@ jobs:
 
           rm -rf "$backup_dir" "$archive" "$encrypted"
           echo "Protected backup uploaded and checksum verified."
-
