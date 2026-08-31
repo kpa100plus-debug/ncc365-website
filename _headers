@@ -37,5 +37,8 @@
   Cache-Control: no-store, max-age=0
   X-Robots-Tag: noindex, nofollow, noarchive
 
+/certificate-print*
+  Cache-Control: no-store, max-age=0
+
 /deploy-version.txt
   Cache-Control: no-store, max-age=0
