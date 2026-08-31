@@ -41,7 +41,7 @@
       <div class="admin-form-grid">
         <label>인증번호 *<input name="certificateNumber" maxlength="50" required placeholder="NCC-EC-2026-FD-0001"></label>
         <label>현재상태 *<select name="status" required><option value="sample">검토용 샘플</option><option value="active">정상 발급</option><option value="revoked">효력 정지</option><option value="expired">유효기간 만료</option></select></label>
-        <label>문서종류 *<select name="certificateType" required><option value="excellent_company">소비자선정 우수기업</option><option value="excellent_product_service">소비자선정 우수상품·서비스</option><option value="official_partner">공식 파트너</option><option value="center_appointment">센터장 임명장</option></select></label>
+        <label>문서종류 *<select name="certificateType" required><option value="business_certificate">NCC 사업체 인증서</option><option value="store_certificate">NCC 매장 인증서</option><option value="excellent_company">소비자선정 우수기업</option><option value="excellent_product_service">소비자선정 우수상품·서비스</option><option value="official_partner">공식 파트너</option><option value="center_appointment">센터장 임명장</option></select></label>
         <label>홈페이지 공개 *<select name="public" required><option value="true">공개</option><option value="false">비공개</option></select></label>
         <label class="wide">인증서명 *<input name="title" maxlength="120" required value="소비자선정 우수기업 인증서"></label>
         <label class="wide">기업명·선정대상 *<input name="recipientName" maxlength="120" required></label>
@@ -67,6 +67,6 @@
     <div id="certificateList" class="application-list"></div>
   </section>
 </main>
-<script type="module" src="js/admin-certificates.js?v=20260824-1"></script>
+<script type="module" src="js/admin-certificates.js?v=20260831-2"></script>
 </body>
 </html>
