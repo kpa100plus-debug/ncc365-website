@@ -1189,7 +1189,7 @@ match /centerActivities/{activityId} {
         && request.resource.data.certificateNumber is string
         && request.resource.data.certificateNumber.matches('^NCC-[A-Z0-9]+(-[A-Z0-9]+){2,6}$')
         && request.resource.data.certificateType in [
-          "excellent_company", "excellent_product_service",
+          "business_certificate", "store_certificate", "excellent_company", "excellent_product_service",
           "official_partner", "center_appointment"
         ]
         && request.resource.data.title is string
@@ -1240,7 +1240,7 @@ match /centerActivities/{activityId} {
         && request.resource.data.certificateNumber == certificateId
         && request.resource.data.certificateNumber == resource.data.certificateNumber
         && request.resource.data.certificateType in [
-          "excellent_company", "excellent_product_service",
+          "business_certificate", "store_certificate", "excellent_company", "excellent_product_service",
           "official_partner", "center_appointment"
         ]
         && request.resource.data.title is string

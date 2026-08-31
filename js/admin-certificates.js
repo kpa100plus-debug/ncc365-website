@@ -12,6 +12,8 @@ let certificates = [];
 
 const statusLabels = { active: "정상 발급", revoked: "효력 정지", expired: "유효기간 만료", sample: "검토용 샘플" };
 const typeLabels = {
+  business_certificate: "NCC 사업체 인증서",
+  store_certificate: "NCC 매장 인증서",
   excellent_company: "소비자선정 우수기업",
   excellent_product_service: "소비자선정 우수상품·서비스",
   official_partner: "공식 파트너",
@@ -87,6 +89,7 @@ function render() {
       <div class="card-actions">
         <button data-edit="${escapeHtml(item.id)}">기록 수정</button>
         <a href="certificate-verify.html?id=${encodeURIComponent(item.certificateNumber)}" target="_blank" rel="noopener">공개 조회</a>
+        <a href="certificate-print.html?id=${encodeURIComponent(item.certificateNumber)}" target="_blank" rel="noopener">인쇄·PDF</a>
       </div>
     </article>`).join("") : '<div class="empty">조건에 맞는 인증서 기록이 없습니다.</div>';
 
@@ -176,4 +179,3 @@ $("#certificateForm").onsubmit = async event => {
     submit.disabled = false;
   }
 };
-
