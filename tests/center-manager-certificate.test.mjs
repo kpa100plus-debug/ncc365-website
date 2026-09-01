@@ -19,6 +19,13 @@ test("center manager appointment studio supports member selection and direct iss
   assert.match(adminJs, /NCC-APT-/);
 });
 
+test("review preview shows a sample without accessing or issuing operational data", () => {
+  assert.match(adminJs, /__ncc_variant.*preview/);
+  assert.match(adminJs, /enableVisualPreview/);
+  assert.match(adminJs, /검토용 시안/);
+  assert.match(adminJs, /VISUAL_PREVIEW_MODE/);
+});
+
 test("issuance stays inside the existing certificate and audit-log rule shape", () => {
   assert.match(adminJs, /certificateType: CERTIFICATE_TYPE/);
   assert.match(adminJs, /selectionNumber: draft\.centerCode/);
