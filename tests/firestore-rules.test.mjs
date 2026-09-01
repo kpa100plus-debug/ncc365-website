@@ -31,6 +31,7 @@ const certificate = (overrides = {}) => ({
   title: "소비자선정 우수기업 인증서",
   recipientName: "보안규칙 테스트 기업",
   representativeName: "",
+  selectionNumber: "NCC-EC-2026-TEST-0001",
   category: "테스트",
   region: "서울특별시",
   evaluationGroup: "NCC 소비자평가단",
