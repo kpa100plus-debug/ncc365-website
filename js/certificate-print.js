@@ -29,6 +29,20 @@ const renderQr = () => {
   $("#qrCode").innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true, title: "NCC 공식 진위확인 QR 코드" });
 };
 
+// Reveal the A4 sheet only after its reference artwork has fully decoded.
+const waitForTemplate = async () => {
+  const image = document.querySelector(".template");
+  if (!image) throw new Error("CERTIFICATE_TEMPLATE_MISSING");
+  if (!image.complete) {
+    await new Promise((resolve, reject) => {
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", reject, { once: true });
+    });
+  }
+  if (!image.naturalWidth || !image.naturalHeight) throw new Error("CERTIFICATE_TEMPLATE_UNAVAILABLE");
+  if (typeof image.decode === "function") await image.decode();
+};
+
 try {
   if (!/^NCC-[A-Z0-9]+(?:-[A-Z0-9]+){2,6}$/.test(id)) {
     showStatus("인증번호를 확인해 주세요.", "공식 인증번호 형식이 아닙니다.");
@@ -48,6 +62,7 @@ try {
         $("#region").textContent = data.region || "-";
         $("#issuedAt").textContent = dateText(data.issuedAt) || "-";
         $("#number").textContent = `인증번호 ${data.certificateNumber}`;
+        await waitForTemplate();
         renderQr();
         $("#statusMessage").hidden = true;
         $("#certificate").hidden = false;
