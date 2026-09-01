@@ -1822,6 +1822,14 @@ th,td{
   .wrap .crm-tab{width:100%;min-width:0;white-space:normal!important}
 }
 
+
+.center-appointment-button,.member-appointment-button{
+  background:#b78527;
+  color:#fff;
+  white-space:nowrap;
+}
+.member-appointment-button{margin-left:auto;}
+@media(max-width:700px){.member-appointment-button{margin-left:0;grid-column:1/-1;}}
 </style>
 </head>
 
@@ -1998,6 +2006,13 @@ id="bulkImportButton"
 class="bulk-import-button"
 type="button">
 회원 대량등록
+</button>
+
+<button
+id="centerManagerAppointmentButton"
+class="center-appointment-button"
+type="button">
+센터장 임명장 발급
 </button>
 
 <button
@@ -2736,6 +2751,13 @@ class="close-button">
 
 
 <button
+id="memberAppointmentButton"
+class="member-appointment-button"
+type="button">
+센터장 임명장 발급
+</button>
+
+<button
 id="temporaryPasswordButton"
 class="password-button">
 
@@ -2878,6 +2900,9 @@ document.getElementById("loginButton");
 
 const issueMissingNumbersButton =
 document.getElementById("issueMissingNumbersButton");
+
+const centerManagerAppointmentButton =
+document.getElementById("centerManagerAppointmentButton");
 
 
 const backfillMemberPhonesButton =
@@ -3055,6 +3080,9 @@ document.getElementById("saveMemberButton");
 
 const closeModalButton =
 document.getElementById("closeModalButton");
+
+const memberAppointmentButton =
+document.getElementById("memberAppointmentButton");
 
 
 const topCloseButton =
@@ -5646,6 +5674,13 @@ closeModalButton.addEventListener(
 "click",
 closeMemberModal
 );
+
+function openCenterManagerAppointment(){
+  window.location.href = "admin-center-manager-certificates.html";
+}
+
+centerManagerAppointmentButton.addEventListener("click", openCenterManagerAppointment);
+memberAppointmentButton.addEventListener("click", openCenterManagerAppointment);
 
 
 
