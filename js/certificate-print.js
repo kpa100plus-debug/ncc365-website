@@ -33,7 +33,7 @@ const englishTitleFor = (type) => ({
   center_appointment: "NCC CENTER APPOINTMENT",
 }[type] || "NATIONAL CONSUMER CLUB CERTIFICATE");
 
-const dateText = (value) => {
+const selectionLabel = (title) => (title || "소비자선정 우수기업 인증").replace(/\s*인증서\s*$/, "");\n\nconst dateText = (value) => {
   if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return "";
   const [year, month, day] = value.split("-");
   return `${year}년 ${Number(month)}월 ${Number(day)}일`;
