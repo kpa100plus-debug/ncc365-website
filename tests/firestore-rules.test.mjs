@@ -31,6 +31,7 @@ const certificate = (overrides = {}) => ({
   title: "소비자선정 우수기업 인증서",
   recipientName: "보안규칙 테스트 기업",
   representativeName: "",
+  selectionNumber: "",
   category: "테스트",
   region: "서울특별시",
   evaluationGroup: "NCC 소비자평가단",
@@ -109,6 +110,31 @@ test("admin can create a valid certificate but cannot delete it", async () => {
     updatedAt: serverTimestamp()
   }));
   await assertFails(deleteDoc(reference));
+});
+
+test("admin can create a public center manager appointment without a rule change", async () => {
+  const number = "NCC-APT-2026-0001";
+  const adminDb = testEnv.authenticatedContext("admin-1", adminClaims).firestore();
+  await assertSucceeds(setDoc(doc(adminDb, "certificates", number), {
+    ...certificate({
+      certificateNumber: number,
+      certificateType: "center_appointment",
+      title: "센터장 임명장",
+      recipientName: "센터장 테스트",
+      representativeName: "센터장",
+      selectionNumber: "NCC-CTR-SG-000001",
+      category: "센터장",
+      region: "서울특별시 강남구",
+      evaluationGroup: "임명기간 2026년 9월 1일부터 2027년 9월 1일까지 (1년)",
+      issuedAt: "2026-09-01",
+      validUntil: "2027-09-01",
+      issuer: "전국소비자클럽 중앙운영위원회",
+      status: "active",
+      public: true,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    })
+  }));
 });
 
 test("certificate audit logs are append-only", async () => {

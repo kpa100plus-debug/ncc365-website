@@ -11,7 +11,20 @@ const message = $("#verifyMessage");
 const result = $("#verifyResult");
 const memberPattern = /^NCC-C-\d{6}$/;
 const certificatePattern = /^NCC-[A-Z0-9]+(?:-[A-Z0-9]+){2,6}$/;
-const certificateStatus = { active: ["정상 활동", true], revoked: ["일시정지", false], expired: ["탈퇴 또는 만료", false], sample: ["미발급", false] };
+const certificateStatus = {
+  active: ["정상 발급", true],
+  revoked: ["발급 취소", false],
+  expired: ["유효기간 만료", false],
+  sample: ["검토용 샘플", false]
+};
+const certificateTypes = {
+  business_certificate: "NCC 사업체 인증서",
+  store_certificate: "NCC 매장 인증서",
+  excellent_company: "소비자선정 우수기업 인증서",
+  excellent_product_service: "소비자선정 우수상품·서비스 인증서",
+  official_partner: "NCC 공식 파트너 인증서",
+  center_appointment: "센터장 임명장"
+};
 
 function normalizeNumber(value) { return String(value || "").trim().toUpperCase().replace(/[–—−]/g, "-").replace(/\s+/g, ""); }
 function maskPublicName(value) { const chars = [...String(value || "").trim()]; if (!chars.length) return "기록 없음"; if (chars.length === 1) return chars[0] + "○"; if (chars.length === 2) return chars[0] + "○"; return chars[0] + "○".repeat(Math.min(3, chars.length - 2)) + chars.at(-1); }
@@ -50,7 +63,7 @@ async function lookupCertificate(number) {
   if (!snapshot.exists() || snapshot.data().public !== true) return null;
   const data = snapshot.data();
   const meta = certificateStatus[data.status] || certificateStatus.revoked;
-  return { type: "NCC 발급 인증서", number, name: maskPublicName(data.recipientName), status: meta[0], date: data.issuedAt, valid: meta[1], imageUrl: data.imageUrl };
+  return { type: certificateTypes[data.certificateType] || "NCC 발급 인증서", number, name: maskPublicName(data.recipientName), status: meta[0], date: data.issuedAt, valid: meta[1], imageUrl: data.imageUrl };
 }
 async function verify(rawValue, updateUrl = true) {
   const number = normalizeNumber(rawValue);
@@ -60,7 +73,7 @@ async function verify(rawValue, updateUrl = true) {
   const isMember = memberPattern.test(number);
   const isCertificate = !isMember && certificatePattern.test(number);
   if (!isMember && !isCertificate) {
-    message.textContent = "번호 형식을 확인해 주세요. 예: NCC-C-000011 또는 NCC-EC-2026-FD-0001";
+    message.textContent = "번호 형식을 확인해 주세요. 예: NCC-C-000011 또는 NCC-APT-2026-0001";
     message.classList.add("error");
     return;
   }

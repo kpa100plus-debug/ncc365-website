@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>NCC 센터장 임명장 자동발급</title>
+  <link rel="stylesheet" href="css/admin-applications.css?v=20260830-1">
+  <link rel="stylesheet" href="css/center-manager-certificate.css?v=20260901-1">
+  <link rel="stylesheet" href="css/admin-center-manager-certificates.css?v=20260901-1">
+</head>
+<body>
+<main class="admin-shell appointment-admin">
+  <section class="login-panel" id="loginArea">
+    <img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽">
+    <p>NCC ADMINISTRATION</p>
+    <h1>센터장 임명장 자동발급</h1>
+    <input id="adminEmail" aria-label="관리자 이메일" type="email" autocomplete="username" placeholder="관리자 이메일">
+    <input id="adminPassword" aria-label="관리자 비밀번호" type="password" autocomplete="current-password" placeholder="비밀번호">
+    <button id="loginButton" type="button">관리자 로그인</button>
+    <p class="error" id="loginError"></p>
+    <a href="admin.html">← 통합 관리자로 돌아가기</a>
+  </section>
+
+  <section id="adminArea" hidden>
+    <header class="admin-head">
+      <div><p>NCC APPOINTMENT</p><h1>센터장 임명장 자동발급</h1><span>센터장 정보와 발령일을 입력하면 공식 진위확인 QR이 포함된 A4 임명장을 발급합니다.</span></div>
+      <div><a href="admin-business-cards.html">센터 명함 자동제작</a><a href="admin-certificates.html">인증서 관리</a><a href="certificate-verify.html" target="_blank" rel="noopener">공개 조회</a><button id="logoutButton" type="button">로그아웃</button></div>
+    </header>
+
+    <section class="appointment-workspace" aria-label="센터장 임명장 발급">
+      <form id="appointmentForm" class="admin-form appointment-form" novalidate>
+        <div class="form-heading"><p>OFFICIAL APPOINTMENT DATA</p><h2>센터장 정보 입력</h2><span>센터장 회원을 선택하거나 아래 항목을 직접 입력할 수 있습니다. 발령일 기준 임명기간은 1년으로 자동 계산됩니다.</span></div>
+
+        <div class="manager-lookup">
+          <label for="managerSelect">센터장 회원 선택</label>
+          <div><select id="managerSelect" name="managerId"><option value="">센터장 회원 목록을 불러온 뒤 선택</option></select><button id="loadManagersButton" type="button">센터장 회원 목록 불러오기</button></div>
+          <small id="memberLookupMessage">직접 발급할 경우 아래 성명·직책·담당지역을 입력해 주세요.</small>
+        </div>
+
+        <div class="admin-form-grid">
+          <label>성명 *<input name="recipientName" maxlength="120" required placeholder="예: 홍길동"></label>
+          <label>직책 *<input name="role" maxlength="60" required value="센터장" placeholder="예: 센터장"></label>
+          <label class="wide">담당지역 *<input name="region" maxlength="120" required placeholder="예: 서울특별시 강남구"></label>
+          <label>센터코드 *<input name="centerCode" maxlength="60" required placeholder="회원 선택 시 자동 연결"></label>
+          <label>발령일 *<input name="issuedAt" type="date" required></label>
+          <label>임명기간<input name="termText" readonly aria-readonly="true"></label>
+          <label>임명종료일<input name="validUntil" type="date" readonly aria-readonly="true"></label>
+          <label>임명번호<input name="certificateNumber" maxlength="50" readonly aria-readonly="true"></label>
+        </div>
+
+        <input type="hidden" name="certificateType" value="center_appointment">
+        <p id="appointmentMessage" class="appointment-message" role="status" aria-live="polite"></p>
+        <div class="appointment-actions"><button id="previewButton" type="button">A4 미리보기 갱신</button><button id="issueButton" type="submit">센터장 임명장 발급</button></div>
+        <p class="form-note">발급 후 공개 진위확인, 재출력 및 PDF 저장을 사용할 수 있습니다. 취소된 임명장은 공개 조회에 취소 상태로 표시됩니다.</p>
+      </form>
+
+      <section class="appointment-preview-panel" aria-labelledby="previewTitle">
+        <div class="preview-panel-head"><div><p>A4 LIVE PREVIEW</p><h2 id="previewTitle">센터장 임명장 미리보기</h2></div><span>발급 전 시안</span></div>
+        <iframe id="appointmentPreview" title="센터장 임명장 A4 미리보기" loading="eager"></iframe>
+      </section>
+    </section>
+
+    <section class="appointment-history" aria-labelledby="historyTitle">
+      <div class="history-head"><div><p>ISSUANCE HISTORY</p><h2 id="historyTitle">센터장 임명장 발급이력</h2></div><button id="refreshHistoryButton" type="button">발급이력 새로고침</button></div>
+      <div class="toolbar appointment-toolbar"><select id="statusFilter" aria-label="상태 필터"><option value="all">전체 상태</option><option value="active">정상 발급</option><option value="revoked">취소</option><option value="expired">유효기간 만료</option><option value="sample">검토용 샘플</option></select><input id="historySearch" aria-label="임명장 검색" placeholder="임명번호·성명·담당지역·센터코드 검색"></div>
+      <div id="historyList" class="application-list"></div>
+    </section>
+  </section>
+</main>
+<script type="module" src="js/admin-center-manager-certificates.js?v=20260901-1"></script>
+</body>
+</html>

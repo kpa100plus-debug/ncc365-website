@@ -59,6 +59,7 @@ jobs:
         run: node .github/scripts/ncc-public-audit.mjs
 
       - name: Render protected member and administration screens
+        if: always()
         env:
           NCC_SERVE_DIR: .
           NCC_AUDIT_OUTPUT: artifacts/protected-audit
@@ -67,10 +68,11 @@ jobs:
           NCC_AUDIT_ENFORCE: "true"
           NCC_AUDIT_IGNORE_EXTERNAL_FAILURES: "true"
           NCC_AUDIT_CONCURRENCY: "6"
-          NCC_AUDIT_ROUTES: /wallet.html,/profile.html,/center-dashboard.html,/partner-dashboard.html,/admin-applications.html,/admin-certificates.html,/admin-groupbuy.html,/admin-inquiries.html,/admin-payments.html,/admin-feedback.html,/admin-business-cards.html,/admin-members.html,/admin-accounts.html,/admin-operations.html,/admin-roles.html,/benefit-detail.html,/groupbuy-detail.html,/order-detail.html,/payment-checkout.html,/payment-result.html,/certificate-verify.html,/password-reset.html
+          NCC_AUDIT_ROUTES: /wallet.html,/profile.html,/center-dashboard.html,/partner-dashboard.html,/admin-applications.html,/admin-certificates.html,/admin-center-manager-certificates.html,/admin-groupbuy.html,/admin-inquiries.html,/admin-payments.html,/admin-feedback.html,/admin-business-cards.html,/admin-members.html,/admin-accounts.html,/admin-operations.html,/admin-roles.html,/benefit-detail.html,/groupbuy-detail.html,/order-detail.html,/payment-checkout.html,/payment-result.html,/certificate-verify.html,/password-reset.html
         run: node .github/scripts/ncc-public-audit.mjs
 
       - name: Render protected interactive variants
+        if: always()
         env:
           NCC_SERVE_DIR: .
           NCC_AUDIT_OUTPUT: artifacts/protected-variant-audit
@@ -79,7 +81,7 @@ jobs:
           NCC_AUDIT_ENFORCE: "true"
           NCC_AUDIT_IGNORE_EXTERNAL_FAILURES: "true"
           NCC_AUDIT_CONCURRENCY: "6"
-          NCC_AUDIT_ROUTES: /wallet.html?__ncc_variant=back,/profile.html?__ncc_variant=address,/admin-business-cards.html?__ncc_variant=portrait,/admin-certificates.html?__ncc_variant=form,/admin-groupbuy.html?__ncc_variant=form,/admin-groupbuy.html?__ncc_variant=orders,/admin-members.html?__ncc_variant=member-modal,/admin-members.html?__ncc_variant=bulk-modal,/admin-accounts.html?__ncc_variant=recovery,/admin-accounts.html?__ncc_variant=restriction,/admin-accounts.html?__ncc_variant=log
+          NCC_AUDIT_ROUTES: /wallet.html?__ncc_variant=back,/profile.html?__ncc_variant=address,/admin-business-cards.html?__ncc_variant=portrait,/admin-certificates.html?__ncc_variant=form,/admin-center-manager-certificates.html?__ncc_variant=preview,/admin-groupbuy.html?__ncc_variant=form,/admin-groupbuy.html?__ncc_variant=orders,/admin-members.html?__ncc_variant=member-modal,/admin-members.html?__ncc_variant=profile-modal,/admin-members.html?__ncc_variant=bulk-modal,/admin-accounts.html?__ncc_variant=recovery,/admin-accounts.html?__ncc_variant=restriction,/admin-accounts.html?__ncc_variant=log
         run: node .github/scripts/ncc-public-audit.mjs
 
       - name: Upload responsive audit evidence

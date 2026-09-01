@@ -1,0 +1,59 @@
+name: NCC Pull Request Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "admin-center-manager-certificates.html"
+      - "admin-members.html"
+      - "center-manager-certificate-print.html"
+      - "certificate-verify.html"
+      - "css/admin-center-manager-certificates.css"
+      - "css/center-manager-certificate.css"
+      - "js/admin-center-manager-certificates.js"
+      - "js/center-manager-certificate-print.js"
+      - "js/certificate-verify.js"
+      - "package.json"
+      - "tests/admin-members-profile.test.mjs"
+      - ".github/workflows/ncc-pr-preview.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ncc-pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Deploy isolated PR preview
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PREVIEW_BRANCH: pr-${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Confirm preview credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+
+      - name: Deploy review preview only
+        run: |
+          npm install --global wrangler@4.36.0
+          wrangler pages deploy . --project-name ncc365-website --branch "$PREVIEW_BRANCH"
+
+      - name: Publish review link
+        run: |
+          echo "## NCC 검토용 프리뷰" >> "$GITHUB_STEP_SUMMARY"
+          echo "- URL: https://$PREVIEW_BRANCH.ncc365-website.pages.dev/admin-center-manager-certificates.html?__ncc_variant=preview" >> "$GITHUB_STEP_SUMMARY"
+          echo "- 이 배포는 PR 브랜치 전용입니다. 운영 도메인과 Firestore 규칙은 변경하지 않습니다." >> "$GITHUB_STEP_SUMMARY"

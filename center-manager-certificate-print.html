@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NCC 센터장 임명장</title>
+  <link rel="stylesheet" href="css/center-manager-certificate.css?v=20260901-1">
+</head>
+<body class="appointment-print-page">
+  <div class="certificate-tools" id="certificateTools"><a href="admin-center-manager-certificates.html">발급관리로 돌아가기</a><button type="button" onclick="window.print()">PDF 저장·인쇄</button></div>
+  <section class="certificate-status" id="statusMessage" aria-live="polite"><h1>센터장 임명장을 확인하고 있습니다.</h1><p>잠시만 기다려 주세요.</p></section>
+  <main class="appointment-certificate" id="certificate" hidden aria-label="NCC 센터장 임명장">
+    <svg class="certificate-art" viewBox="0 0 210 297" preserveAspectRatio="none" aria-hidden="true">
+      <g fill="none" stroke="#b6842b" stroke-linecap="round" stroke-linejoin="round">
+        <g class="art-corners" stroke-width=".34"><path d="M10 19v-8h8v3h-4v5h5v4h-9"/><path d="M200 19v-8h-8v3h4v5h-5v4h9"/><path d="M10 278v8h8v-3h-4v-5h5v-4h-9"/><path d="M200 278v8h-8v-3h4v-5h-5v-4h9"/></g>
+        <g class="art-phoenix" stroke-width=".38">
+          <path d="M26 26c5-7 14-8 22-2 5 3 7 9 5 13-2 5-8 4-12 1 3 8 3 17-2 25-4 7-4 15 1 24-8-5-12-12-11-20-5 5-8 11-9 18-4-11-1-20 5-28-7 4-12 11-13 18 0-11 4-20 10-27-7 1-12 5-16 10 4-8 10-13 20-14Z"/>
+          <path d="M30 25c3-5 8-8 14-8m-12 13c6 2 11 1 15-3m-13 9c5 3 9 2 13-1m-12 9c3 2 6 5 7 10m-13-9c-1 6 1 10 5 13m-13-6c-4 6-5 13-3 19m16-5c-2 7-1 13 3 18m-17-6c-1 6 0 11 4 15m-7-8c-1 6 0 11 4 15"/>
+          <path d="M27 23c-2-4-3-8-2-12m5 10c0-5 2-9 5-12m1 12c1-5 4-8 7-10"/>
+          <path d="M184 26c-5-7-14-8-22-2-5 3-7 9-5 13 2 5 8 4 12 1-3 8-3 17 2 25 4 7 4 15-1 24 8-5 12-12 11-20 5 5 8 11 9 18 4-11 1-20-5-28 7 4 12 11 13 18 0-11-4-20-10-27 7 1 12 5 16 10-4-8-10-13-20-14Z"/>
+          <path d="M180 25c-3-5-8-8-14-8m12 13c-6 2-11 1-15-3m13 9c-5 3-9 2-13-1m12 9c-3 2-6 5-7 10m13-9c1 6-1 10-5 13m13-6c4 6 5 13 3 19m-16-5c2 7 1 13-3 18m17-6c1 6 0 11-4 15m7-8c1 6 0 11-4 15"/>
+          <path d="M183 23c2-4 3-8 2-12m-5 10c0-5-2-9-5-12m-1 12c-1-5-4-8-7-10"/>
+        </g>
+        <g class="art-flower" stroke-width=".32"><circle cx="105" cy="28" r="3.5"/><circle cx="105" cy="28" r="1.25"/><path d="M105 24c-2.5-5-7-4-6 0 1 3 3 3 6 1m0-1c2.5-5 7-4 6 0-1 3-3 3-6 1m-3 4c-4 1-4 5 0 5 2 0 3-2 3-5m3 0c4 1 4 5 0 5-2 0-3-2-3-5M98 30c-6 3-12 3-16-1m17 4c-7 5-13 6-20 4m32-7c6 3 12 3 16-1m-17 4c7 5 13 6 20 4"/></g>
+      </g>
+    </svg>
+    <div class="certificate-border" aria-hidden="true"></div>
+    <img class="certificate-watermark" src="images/NCC_OFFICIAL.png" alt="">
+    <header class="appointment-heading"><h1>센터장 임명장</h1><p>LETTER OF APPOINTMENT</p></header>
+    <section class="appointment-subject"><p>［ <span id="recipientName">성명</span> ］</p><dl><div><dt>직책</dt><dd id="role">센터장</dd></div><div><dt>담당지역</dt><dd id="region">담당지역</dd></div></dl></section>
+    <section class="appointment-copy"><p>귀하를 전국소비자클럽 운영방침과 전국소비자센터 운영규정에 따라<br>위 지역의 센터장으로 임명합니다.</p><p>귀하는 담당지역의 소비자 혜택 확대와 전국소비자클럽의 신뢰 보호를 위하여<br>성실히 직무를 수행하여 주시기 바랍니다.</p><p class="term-line" id="termLine">임명기간은 발령일로부터 1년입니다.</p></section>
+    <p class="appointment-date" id="issuedAt">YYYY년 MM월 DD일</p>
+    <footer class="appointment-issuer"><h2>전국소비자클럽</h2><p>NATIONAL CONSUMER CLUB</p><strong>중앙운영위원회</strong></footer>
+    <div class="appointment-seal" aria-hidden="true"><b>NCC</b><span>OFFICIAL<br>APPOINTMENT</span></div>
+    <div class="appointment-codes"><span id="centerCode">센터코드&nbsp;&nbsp;NCC-CTR-SG-000001</span><span id="certificateNumber">임명번호&nbsp;&nbsp;NCC-APT-2026-0001</span></div>
+    <div class="appointment-qr"><div id="qrCode" class="qr-code" aria-label="공식 센터확인 QR 코드"></div><strong>공식 센터확인</strong><span>ncc365.com</span></div>
+  </main>
+  <script src="js/vendor/qrcode.js?v=20260901-1"></script>
+  <script type="module" src="js/center-manager-certificate-print.js?v=20260901-1"></script>
+</body>
+</html>

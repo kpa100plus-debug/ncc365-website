@@ -358,10 +358,41 @@ for (let offset = 0; offset < routeViewports.length; offset += auditConcurrency)
           document.querySelectorAll("[data-export]").forEach(button => { button.disabled = false; });
         }
 
+        if (pathname === "/admin-center-manager-certificates.html") {
+          show("#adminArea");
+          value('input[name="recipientName"]', "홍길동");
+          value('input[name="role"]', "센터장");
+          value('input[name="region"]', "서울특별시 강남구");
+          value('input[name="centerCode"]', "NCC-CTR-SG-000001");
+          value('input[name="issuedAt"]', "2026-09-01");
+          value('input[name="validUntil"]', "2027-09-01");
+          value('input[name="termText"]', "2026년 9월 1일부터 2027년 9월 1일까지 (1년)");
+          value('input[name="certificateNumber"]', "NCC-APT-2026-0001");
+          markup("#historyList", `<article class="application-card history-card"><div><p class="receipt">NCC-APT-2026-0001 · 센터장 임명장</p><h2>홍길동 <small>검토용 샘플</small></h2><div class="meta"><span>센터장</span><span>서울특별시 강남구</span><span>센터코드 NCC-CTR-SG-000001</span></div></div></article>`);
+        }
+
         if (pathname === "/admin-members.html") {
           show("#adminArea, #memberArea");
           markup("#memberArea", `<div class="table-wrap"><table><thead><tr><th>회원번호</th><th>이름</th><th>회원유형</th><th>지역</th><th>상태</th><th>관리</th></tr></thead><tbody><tr><td>NCC-C-000016</td><td>김소비</td><td>일반회원</td><td>서울특별시</td><td>활성</td><td><button type="button">상세 관리</button></td></tr></tbody></table></div>`);
-          if (variant === "member-modal") show("#memberModal");
+          if (["member-modal", "profile-modal"].includes(variant)) show("#memberModal");
+          if (variant === "profile-modal") {
+            document.querySelectorAll("#memberModal .crm-tab").forEach(tab => tab.classList.toggle("active", tab.dataset.tab === "profile"));
+            document.querySelectorAll("#memberModal .tab-panel").forEach(panel => {
+              panel.classList.toggle("active", panel.id === "tab-profile");
+              panel.hidden = panel.id !== "tab-profile";
+            });
+            value("#editPostalCode", "06123");
+            value("#editAddress", "서울특별시 강남구 테헤란로 1");
+            value("#editJob", "자영업");
+            value("#editFamilyComposition", "자녀 포함 4인");
+            value("#editPetType", "강아지");
+            value("#editHealthInterests", "검진 · 영양 · 운동");
+            value("#editFrequentPurchases", "식품 · 생활용품");
+            value("#editOnlineMalls", "NCC 온라인몰");
+            value("#editExperienceInterests", "건강 · 생활");
+            text("#profileDataMessage", "검토용 가입 상세정보입니다. 실제 회원 데이터는 변경하지 않습니다.");
+            document.querySelectorAll("[data-profile-interest]").forEach(input => { input.checked = true; });
+          }
           if (variant === "bulk-modal") show("#bulkImportModal");
         }
 
