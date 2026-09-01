@@ -59,6 +59,7 @@ jobs:
         run: node .github/scripts/ncc-public-audit.mjs
 
       - name: Render protected member and administration screens
+        if: always()
         env:
           NCC_SERVE_DIR: .
           NCC_AUDIT_OUTPUT: artifacts/protected-audit
@@ -71,6 +72,7 @@ jobs:
         run: node .github/scripts/ncc-public-audit.mjs
 
       - name: Render protected interactive variants
+        if: always()
         env:
           NCC_SERVE_DIR: .
           NCC_AUDIT_OUTPUT: artifacts/protected-variant-audit
