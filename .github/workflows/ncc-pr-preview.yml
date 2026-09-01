@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - "admin-center-manager-certificates.html"
+      - "admin-members.html"
       - "center-manager-certificate-print.html"
       - "certificate-verify.html"
       - "css/admin-center-manager-certificates.css"
@@ -12,6 +13,8 @@ on:
       - "js/admin-center-manager-certificates.js"
       - "js/center-manager-certificate-print.js"
       - "js/certificate-verify.js"
+      - "package.json"
+      - "tests/admin-members-profile.test.mjs"
       - ".github/workflows/ncc-pr-preview.yml"
 
 permissions:
