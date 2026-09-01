@@ -170,7 +170,7 @@ cursor:not-allowed;
 
 
 /* ===============================
-   LOGIN
+   PROFILE + LOGIN
 ================================ */
 
 .login-box{
@@ -700,6 +700,60 @@ font-size:12px;
 color:var(--sub);
 
 margin:-8px 0 17px;
+}
+
+
+.profile-data-message{
+margin:-7px 0 20px;
+padding:11px 13px;
+border:1px solid #dce9e1;
+border-radius:9px;
+background:#f4f8f5;
+color:#4e6658;
+font-size:13px;
+line-height:1.55;
+}
+
+.profile-data-message.is-error{
+border-color:#eed3d0;
+background:#fff7f6;
+color:#9c514c;
+}
+
+.profile-section-title{
+margin-top:31px;
+padding-top:25px;
+border-top:1px solid #e6ece8;
+}
+
+.profile-interest-grid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:9px;
+}
+
+.profile-interest-grid label{
+display:flex;
+align-items:center;
+gap:8px;
+min-height:44px;
+margin:0;
+padding:9px 11px;
+border:1px solid #dfe7e2;
+border-radius:9px;
+background:#fafcfb;
+font-size:13px;
+font-weight:400;
+color:#415248;
+cursor:pointer;
+}
+
+.profile-interest-grid input{
+width:18px;
+min-height:18px;
+margin:0;
+padding:0;
+accent-color:#3f7b5d;
 }
 
 
@@ -1820,16 +1874,10 @@ th,td{
 @media(max-width:700px){
   .wrap .crm-tabs{display:grid!important;grid-template-columns:1fr 1fr;overflow:visible!important}
   .wrap .crm-tab{width:100%;min-width:0;white-space:normal!important}
+  .profile-interest-grid{grid-template-columns:1fr}
+  .profile-interest-grid label{font-size:14px!important}
 }
 
-
-.center-appointment-button,.member-appointment-button{
-  background:#b78527;
-  color:#fff;
-  white-space:nowrap;
-}
-.member-appointment-button{margin-left:auto;}
-@media(max-width:700px){.member-appointment-button{margin-left:0;grid-column:1/-1;}}
 </style>
 </head>
 
@@ -2009,13 +2057,6 @@ type="button">
 </button>
 
 <button
-id="centerManagerAppointmentButton"
-class="center-appointment-button"
-type="button">
-센터장 임명장 발급
-</button>
-
-<button
 id="logoutButton"
 class="logout-button">
 로그아웃
@@ -2156,6 +2197,15 @@ class="crm-tab active"
 data-tab="basic">
 
 기본정보
+
+</button>
+
+
+<button
+class="crm-tab"
+data-tab="profile">
+
+가입 상세정보
 
 </button>
 
@@ -2380,6 +2430,232 @@ class="readonly-box">
 <!-- TAB 2 -->
 
 <div
+id="tab-profile"
+class="tab-panel">
+
+
+<div class="section-title">
+가입 상세정보
+</div>
+
+<p id="profileDataMessage" class="profile-data-message" role="status" aria-live="polite">
+가입 시 입력한 맞춤·생활·소비정보를 불러오는 중입니다.
+</p>
+
+
+<div class="section-title profile-section-title">
+기본 배송지
+</div>
+
+<div class="section-note">
+공동구매 신청 시 사용할 수 있는 비공개 배송지 정보입니다.
+</div>
+
+<div class="crm-grid">
+
+<div class="form-group">
+<label>우편번호</label>
+<input id="editPostalCode" aria-label="우편번호" inputmode="numeric" maxlength="10">
+</div>
+
+<div class="form-group">
+<label>수령인</label>
+<input id="editRecipientName" aria-label="수령인" maxlength="50">
+</div>
+
+<div class="form-group full">
+<label>도로명주소</label>
+<input id="editAddress" aria-label="도로명주소" maxlength="200">
+</div>
+
+<div class="form-group full">
+<label>상세주소</label>
+<input id="editAddressDetail" aria-label="상세주소" maxlength="150">
+</div>
+
+</div>
+
+
+<div class="section-title profile-section-title">
+추가정보
+</div>
+
+<div class="section-note">
+맞춤 혜택 안내를 위해 가입자가 선택 입력한 정보입니다.
+</div>
+
+<div class="crm-grid">
+
+<div class="form-group">
+<label>직업</label>
+<input id="editJob" aria-label="직업" maxlength="60">
+</div>
+
+<div class="form-group">
+<label>결혼 여부</label>
+<select id="editMaritalStatus" aria-label="결혼 여부">
+<option value="">선택 안 함</option>
+<option value="single">미혼</option>
+<option value="married">기혼</option>
+<option value="other">기타</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>가족 구성</label>
+<input id="editFamilyComposition" aria-label="가족 구성" maxlength="100">
+</div>
+
+<div class="form-group">
+<label>선호 가격대</label>
+<select id="editPreferredPriceRange" aria-label="선호 가격대">
+<option value="">선택 안 함</option>
+<option value="value">실속형</option>
+<option value="mid">중간 가격대</option>
+<option value="premium">프리미엄</option>
+</select>
+</div>
+
+<div class="form-group full">
+<label>관심 분야</label>
+<div id="editProfileInterests" class="profile-interest-grid">
+<label><input type="checkbox" value="beauty-health" data-profile-interest> 건강·뷰티</label>
+<label><input type="checkbox" value="groupbuy" data-profile-interest> 공동구매</label>
+<label><input type="checkbox" value="local-benefit" data-profile-interest> 지역 혜택</label>
+<label><input type="checkbox" value="culture-leisure" data-profile-interest> 문화·여가</label>
+</div>
+</div>
+
+<div class="form-group full">
+<label>선호 상품</label>
+<input id="editPreferredProducts" aria-label="선호 상품" maxlength="200">
+</div>
+
+<div class="form-group full">
+<label>선호 서비스</label>
+<input id="editPreferredServices" aria-label="선호 서비스" maxlength="200">
+</div>
+
+</div>
+
+
+<div class="section-title profile-section-title">
+특별·생활 정보
+</div>
+
+<div class="section-note">
+반려생활·차량·주거·건강·여행·생활서비스 관련 선택정보입니다.
+</div>
+
+<div class="crm-grid">
+
+<div class="form-group">
+<label>반려동물 종류</label>
+<input id="editPetType" aria-label="반려동물 종류" maxlength="80">
+</div>
+
+<div class="form-group">
+<label>차량 보유 여부</label>
+<select id="editHasVehicle" aria-label="차량 보유 여부">
+<option value="">선택 안 함</option>
+<option value="yes">보유</option>
+<option value="no">미보유</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>주거 형태</label>
+<select id="editHousingType" aria-label="주거 형태">
+<option value="">선택 안 함</option>
+<option value="apartment">아파트</option>
+<option value="house">주택</option>
+<option value="officetel">오피스텔</option>
+<option value="other">기타</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>여행 관심 분야</label>
+<input id="editTravelInterests" aria-label="여행 관심 분야" maxlength="150">
+</div>
+
+<div class="form-group full">
+<label>건강 관심 분야</label>
+<input id="editHealthInterests" aria-label="건강 관심 분야" maxlength="150">
+</div>
+
+<div class="form-group full">
+<label>생활서비스 관심 분야</label>
+<input id="editLifeServiceInterests" aria-label="생활서비스 관심 분야" maxlength="150">
+</div>
+
+</div>
+
+
+<div class="section-title profile-section-title">
+소비정보
+</div>
+
+<div class="section-note">
+NCC 혜택과 공동구매 기획을 위한 가입자 선택정보입니다.
+</div>
+
+<div class="crm-grid">
+
+<div class="form-group">
+<label>자주 구매하는 품목</label>
+<input id="editFrequentPurchases" aria-label="자주 구매하는 품목" maxlength="200">
+</div>
+
+<div class="form-group">
+<label>주 이용 온라인몰</label>
+<input id="editOnlineMalls" aria-label="주 이용 온라인몰" maxlength="150">
+</div>
+
+<div class="form-group">
+<label>월평균 소비구간</label>
+<select id="editMonthlySpendRange" aria-label="월평균 소비구간">
+<option value="">선택 안 함</option>
+<option value="under-300k">30만원 미만</option>
+<option value="300k-700k">30~70만원</option>
+<option value="700k-1500k">70~150만원</option>
+<option value="over-1500k">150만원 이상</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>선호 구매방식</label>
+<select id="editPurchaseMethod" aria-label="선호 구매방식">
+<option value="">선택 안 함</option>
+<option value="online">온라인</option>
+<option value="offline">오프라인</option>
+<option value="both">온라인·오프라인 모두</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>무료 경험 관심 분야</label>
+<input id="editExperienceInterests" aria-label="무료 경험 관심 분야" maxlength="150">
+</div>
+
+<div class="form-group">
+<label>후기 참여 가능 여부</label>
+<select id="editReviewAvailable" aria-label="후기 참여 가능 여부">
+<option value="">선택 안 함</option>
+<option value="yes">가능</option>
+<option value="no">어려움</option>
+</select>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- TAB 3 -->
+
+<div
 id="tab-center"
 class="tab-panel">
 
@@ -2451,7 +2727,7 @@ placeholder="예: 서울특별시 강남구 삼성동 소비자센터">
 
 
 
-<!-- TAB 3 -->
+<!-- TAB 4 -->
 
 <div
 id="tab-management"
@@ -2540,7 +2816,7 @@ placeholder="상담내용, 특이사항, 요청사항, 회원 관리메모 등�
 
 
 
-<!-- TAB 4 -->
+<!-- TAB 5 -->
 
 <div
 id="tab-agreement"
@@ -2623,6 +2899,31 @@ class="agree-badge">
 
 <div
 id="viewAgreeThirdParty"
+class="agree-badge">
+
+-
+
+</div>
+
+</div>
+
+
+<div class="agree-card">
+
+<div>
+
+<div class="agree-card-title">
+맞춤 혜택 프로필 활용
+</div>
+
+<div class="agree-card-desc">
+추가 프로필을 맞춤 혜택 안내에 활용하는 선택동의
+</div>
+
+</div>
+
+<div
+id="viewAgreeProfileUse"
 class="agree-badge">
 
 -
@@ -2751,13 +3052,6 @@ class="close-button">
 
 
 <button
-id="memberAppointmentButton"
-class="member-appointment-button"
-type="button">
-센터장 임명장 발급
-</button>
-
-<button
 id="temporaryPasswordButton"
 class="password-button">
 
@@ -2812,10 +3106,12 @@ import {
 getFirestore,
 collection,
 getDocs,
+getDoc,
 query,
 orderBy,
 doc,
 updateDoc,
+writeBatch,
 deleteDoc,
 serverTimestamp,
 runTransaction
@@ -2900,9 +3196,6 @@ document.getElementById("loginButton");
 
 const issueMissingNumbersButton =
 document.getElementById("issueMissingNumbersButton");
-
-const centerManagerAppointmentButton =
-document.getElementById("centerManagerAppointmentButton");
 
 
 const backfillMemberPhonesButton =
@@ -3074,15 +3367,28 @@ const viewAgreeThirdParty =
 document.getElementById("viewAgreeThirdParty");
 
 
+const viewAgreeProfileUse =
+document.getElementById("viewAgreeProfileUse");
+
+
+const profileDataMessage =
+document.getElementById("profileDataMessage");
+
+
+const profileInput =
+id => document.getElementById(id);
+
+
+const profileInterestInputs =
+() => Array.from(document.querySelectorAll("[data-profile-interest]"));
+
+
 const saveMemberButton =
 document.getElementById("saveMemberButton");
 
 
 const closeModalButton =
 document.getElementById("closeModalButton");
-
-const memberAppointmentButton =
-document.getElementById("memberAppointmentButton");
 
 
 const topCloseButton =
@@ -3104,6 +3410,18 @@ let allMembers =
 
 let selectedMemberId =
 null;
+
+
+let selectedMemberProfile =
+null;
+
+
+let selectedMemberProfileState =
+"idle";
+
+
+let memberProfileLoadVersion =
+0;
 
 let currentPage = 1;
 const PAGE_SIZE = 20;
@@ -3202,6 +3520,129 @@ element.className =
 /* ===============================
    LOGIN
 ================================ */
+
+function profileFieldValue(id){
+const element = profileInput(id);
+return element ? String(element.value || "").trim() : "";
+}
+
+
+function setProfileFieldValue(id,value){
+const element = profileInput(id);
+if(element) element.value = value || "";
+}
+
+
+function setProfileMessage(message,isError = false){
+profileDataMessage.textContent = message;
+profileDataMessage.classList.toggle("is-error",isError);
+}
+
+
+function profileDraft(){
+return {
+basic:{
+postalCode:profileFieldValue("editPostalCode"),
+address:profileFieldValue("editAddress"),
+addressDetail:profileFieldValue("editAddressDetail"),
+recipientName:profileFieldValue("editRecipientName")
+},
+additional:{
+job:profileFieldValue("editJob"),
+maritalStatus:profileFieldValue("editMaritalStatus"),
+familyComposition:profileFieldValue("editFamilyComposition"),
+interests:profileInterestInputs().filter(input => input.checked).map(input => input.value),
+preferredProducts:profileFieldValue("editPreferredProducts"),
+preferredServices:profileFieldValue("editPreferredServices"),
+preferredPriceRange:profileFieldValue("editPreferredPriceRange")
+},
+special:{
+petType:profileFieldValue("editPetType"),
+hasVehicle:profileFieldValue("editHasVehicle"),
+housingType:profileFieldValue("editHousingType"),
+healthInterests:profileFieldValue("editHealthInterests"),
+travelInterests:profileFieldValue("editTravelInterests"),
+lifeServiceInterests:profileFieldValue("editLifeServiceInterests")
+},
+consumer:{
+frequentPurchases:profileFieldValue("editFrequentPurchases"),
+onlineMalls:profileFieldValue("editOnlineMalls"),
+monthlySpendRange:profileFieldValue("editMonthlySpendRange"),
+purchaseMethod:profileFieldValue("editPurchaseMethod"),
+experienceInterests:profileFieldValue("editExperienceInterests"),
+reviewAvailable:profileFieldValue("editReviewAvailable")
+}
+};
+}
+
+
+function populateMemberProfile(profile){
+const basic = profile?.basic || {};
+const additional = profile?.additional || {};
+const special = profile?.special || {};
+const consumer = profile?.consumer || {};
+
+setProfileFieldValue("editPostalCode",basic.postalCode);
+setProfileFieldValue("editAddress",basic.address);
+setProfileFieldValue("editAddressDetail",basic.addressDetail);
+setProfileFieldValue("editRecipientName",basic.recipientName);
+setProfileFieldValue("editJob",additional.job);
+setProfileFieldValue("editMaritalStatus",additional.maritalStatus);
+setProfileFieldValue("editFamilyComposition",additional.familyComposition);
+setProfileFieldValue("editPreferredProducts",additional.preferredProducts);
+setProfileFieldValue("editPreferredServices",additional.preferredServices);
+setProfileFieldValue("editPreferredPriceRange",additional.preferredPriceRange);
+
+const interests = Array.isArray(additional.interests) ? additional.interests : [];
+profileInterestInputs().forEach(input => { input.checked = interests.includes(input.value); });
+
+setProfileFieldValue("editPetType",special.petType);
+setProfileFieldValue("editHasVehicle",special.hasVehicle);
+setProfileFieldValue("editHousingType",special.housingType);
+setProfileFieldValue("editHealthInterests",special.healthInterests);
+setProfileFieldValue("editTravelInterests",special.travelInterests);
+setProfileFieldValue("editLifeServiceInterests",special.lifeServiceInterests);
+setProfileFieldValue("editFrequentPurchases",consumer.frequentPurchases);
+setProfileFieldValue("editOnlineMalls",consumer.onlineMalls);
+setProfileFieldValue("editMonthlySpendRange",consumer.monthlySpendRange);
+setProfileFieldValue("editPurchaseMethod",consumer.purchaseMethod);
+setProfileFieldValue("editExperienceInterests",consumer.experienceInterests);
+setProfileFieldValue("editReviewAvailable",consumer.reviewAvailable);
+setAgreement(viewAgreeProfileUse,special.agreeProfileUse === true);
+}
+
+
+async function loadSelectedMemberProfile(member){
+const version = ++memberProfileLoadVersion;
+selectedMemberProfile = null;
+selectedMemberProfileState = "loading";
+populateMemberProfile(null);
+setProfileMessage("가입 시 입력한 맞춤·생활·소비정보를 불러오는 중입니다.");
+saveMemberButton.disabled = true;
+saveMemberButton.textContent = "상세정보 불러오는 중...";
+
+try{
+const snapshot = await getDoc(doc(db,"memberProfiles",member.id));
+if(version !== memberProfileLoadVersion || selectedMemberId !== member.id) return;
+
+selectedMemberProfile = snapshot.exists() ? snapshot.data() : null;
+selectedMemberProfileState = snapshot.exists() ? "loaded" : "missing";
+populateMemberProfile(selectedMemberProfile);
+setProfileMessage(snapshot.exists()
+? "회원가입 시 저장된 상세정보입니다. 수정 후 하단의 ‘수정 저장’을 누르세요."
+: "이 회원은 상세 가입정보가 없는 기존 회원입니다. 입력 후 저장하면 안전한 확장 프로필을 새로 만듭니다.");
+saveMemberButton.disabled = false;
+saveMemberButton.textContent = "수정 저장";
+}catch(error){
+console.error(error);
+if(version !== memberProfileLoadVersion || selectedMemberId !== member.id) return;
+selectedMemberProfileState = "error";
+setProfileMessage("상세 가입정보를 불러오지 못했습니다. 데이터 보호를 위해 수정 저장을 중단했습니다. 창을 닫은 뒤 다시 열어 주세요.",true);
+saveMemberButton.disabled = true;
+saveMemberButton.textContent = "상세정보 확인 필요";
+}
+}
+
 
 loginButton.addEventListener(
 "click",
@@ -3389,6 +3830,10 @@ d.name || "",
 
 phone:
 d.phone || "",
+
+
+phoneKey:
+d.phoneKey || "",
 
 
 email:
@@ -5638,6 +6083,12 @@ member.agreeThirdParty
 );
 
 
+setAgreement(
+viewAgreeProfileUse,
+false
+);
+
+
 openTab(
 "basic"
 );
@@ -5645,6 +6096,11 @@ openTab(
 
 memberModal.style.display =
 "flex";
+
+
+loadSelectedMemberProfile(
+member
+);
 
 
 }
@@ -5662,6 +6118,17 @@ memberModal.style.display =
 "none";
 
 
+memberProfileLoadVersion += 1;
+
+
+selectedMemberProfile =
+null;
+
+
+selectedMemberProfileState =
+"idle";
+
+
 selectedMemberId =
 null;
 
@@ -5674,13 +6141,6 @@ closeModalButton.addEventListener(
 "click",
 closeMemberModal
 );
-
-function openCenterManagerAppointment(){
-  window.location.href = "admin-center-manager-certificates.html";
-}
-
-centerManagerAppointmentButton.addEventListener("click", openCenterManagerAppointment);
-memberAppointmentButton.addEventListener("click", openCenterManagerAppointment);
 
 
 
@@ -5747,6 +6207,28 @@ return;
 }
 
 
+if(
+selectedMemberProfileState === "loading"
+||
+selectedMemberProfileState === "error"
+){
+
+alert("가입 상세정보를 먼저 정상적으로 불러온 뒤 저장해 주세요.");
+return;
+
+}
+
+
+const selectedMember =
+allMembers.find(member => member.id === selectedMemberId);
+
+
+if(!selectedMember){
+alert("선택한 회원을 찾을 수 없습니다. 목록을 새로고침해 주세요.");
+return;
+}
+
+
 
 const name =
 editName.value.trim();
@@ -5807,90 +6289,117 @@ saveMemberButton.textContent =
 
 
 
-await updateDoc(
+const profile =
+profileDraft();
 
+
+const previousProfile =
+selectedMemberProfile || {};
+
+
+const profilePayload = {
+basic:{
+...(previousProfile.basic || {}),
+...profile.basic
+},
+additional:{
+...(previousProfile.additional || {}),
+...profile.additional
+},
+special:{
+...(previousProfile.special || {}),
+...profile.special,
+agreeProfileUse:previousProfile?.special?.agreeProfileUse === true
+},
+consumer:{
+...(previousProfile.consumer || {}),
+...profile.consumer
+}
+};
+
+
+const memberRef =
 doc(
 db,
 "members",
 selectedMemberId
-),
+);
 
+
+const profileRef =
+doc(
+db,
+"memberProfiles",
+selectedMemberId
+);
+
+
+const batch =
+writeBatch(db);
+
+
+batch.update(
+memberRef,
 {
+name:name,
+phone:phone,
+email:editEmail.value.trim(),
+birthDate:editBirthDate.value,
+gender:editGender.value,
+region:region,
+benefit:editBenefit.value,
+hasPet:editHasPet.value,
+referrer:editReferrer.value.trim(),
+referralCode:editReferralCode.value.trim(),
+centerName:editCenterName.value.trim(),
+centerCode:editCenterCode.value.trim(),
+status:editStatus.value,
+managementGrade:editManagementGrade.value,
+adminMemo:editAdminMemo.value.trim(),
+updatedAt:serverTimestamp()
+}
+);
 
 
-name:
-name,
+if(selectedMemberProfileState === "missing"){
 
+batch.set(
+profileRef,
+{
+memberId:selectedMemberId,
+memberNumber:selectedMember.memberNumber || "",
+email:editEmail.value.trim(),
+phoneKey:selectedMember.phoneKey || "",
+profileVersion:1,
+...profilePayload,
+createdAt:serverTimestamp(),
+updatedAt:serverTimestamp()
+}
+);
 
-phone:
-phone,
+}else{
 
-
-email:
-editEmail.value.trim(),
-
-
-birthDate:
-editBirthDate.value,
-
-
-gender:
-editGender.value,
-
-
-region:
-region,
-
-
-benefit:
-editBenefit.value,
-
-
-hasPet:
-editHasPet.value,
-
-
-referrer:
-editReferrer.value.trim(),
-
-
-referralCode:
-editReferralCode.value.trim(),
-
-
-centerName:
-editCenterName.value.trim(),
-
-
-centerCode:
-editCenterCode.value.trim(),
-
-
-status:
-editStatus.value,
-
-
-managementGrade:
-editManagementGrade.value,
-
-
-adminMemo:
-editAdminMemo.value.trim(),
-
-
-updatedAt:
-serverTimestamp()
-
+batch.set(
+profileRef,
+{
+...profilePayload,
+email:editEmail.value.trim(),
+updatedAt:serverTimestamp()
+},
+{
+merge:true
+}
+);
 
 }
 
 
-);
+await batch.commit();
 
 
 
 alert(
-"회원정보가 수정되었습니다."
+"회원정보와 가입 상세정보가 수정되었습니다."
 );
 
 
