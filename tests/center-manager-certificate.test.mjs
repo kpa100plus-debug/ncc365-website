@@ -51,7 +51,7 @@ test("A4 appointment template preserves the final approved essentials", () => {
 test("QR is generated as local SVG and points to the official certificate verification route", () => {
   assert.match(printHtml, /js\/vendor\/qrcode\.js/);
   assert.match(printJs, /window\.qrcode/);
-  assert.match(printJs, /certificate-verify\.html\?id=/);
+  assert.match(printJs, /https:\/\/ncc365\.com\/certificate-verify\.html\?id=/);
   assert.match(printJs, /createSvgTag/);
   assert.doesNotMatch(printJs, /api\.qrserver\.com|chart\.googleapis\.com/);
 });
