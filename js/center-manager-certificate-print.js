@@ -30,7 +30,7 @@ function showStatus(title, message) {
 
 function renderQr(certificateNumber) {
   if (typeof window.qrcode !== "function") throw new Error("QR_GENERATOR_UNAVAILABLE");
-  const verificationUrl = `${location.origin}/certificate-verify.html?id=${encodeURIComponent(certificateNumber)}`;
+  const verificationUrl = `https://ncc365.com/certificate-verify.html?id=${encodeURIComponent(certificateNumber)}`;
   const qr = window.qrcode(0, "M");
   qr.addData(verificationUrl);
   qr.make();
