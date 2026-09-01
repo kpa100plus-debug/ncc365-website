@@ -1,1 +1,47 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NCC 인증서 출력</title><style>body{margin:0;background:#e9ece7;color:#07372f;font-family:Arial,sans-serif}.tools{max-width:1100px;margin:18px auto;display:flex;justify-content:flex-end}.tools button{padding:12px 18px;border:0;border-radius:8px;background:#a77a22;color:#fff;font-weight:600}.sheet{box-sizing:border-box;width:297mm;min-height:210mm;margin:auto;padding:10mm;border:2mm solid #b58a2d;background:#fffdf7}.inner{height:calc(210mm - 24mm);box-sizing:border-box;border:1px solid #d8bd75;padding:12mm;text-align:center;position:relative}.logo{width:110mm;max-height:32mm;object-fit:contain;margin:0 auto 5mm}.mark{letter-spacing:5px;color:#9a7121;font-size:12px;font-weight:600;margin:0}.title{font-size:38px;letter-spacing:3px;margin:11mm 0 5mm}.rule{width:90mm;border:0;border-top:2px solid #b58a2d;margin:0 auto 7mm}.copy{font-size:17px;line-height:1.9;margin:0}.name{font-size:32px;font-weight:600;margin:8mm 0 4mm}.detail{font-size:17px;color:#315b50}.seal{position:absolute;left:16mm;bottom:15mm;width:28mm;height:28mm;border:2px double #b58a2d;border-radius:50%;display:grid;place-items:center;color:#9a7121;font-size:10px;line-height:1.5}.number{position:absolute;right:16mm;bottom:20mm;font-size:14px;letter-spacing:1px}.footer{position:absolute;left:45mm;right:45mm;bottom:7mm;border-top:1px solid #d8bd75;padding-top:4mm;font-size:14px}@media print{.tools{display:none}body{background:#fff}.sheet{margin:0}}@media(max-width:700px){.sheet{width:100%;min-height:0;padding:7px}.inner{height:620px;padding:30px 18px}.logo{width:85%;height:60px}.title{font-size:29px}.name{font-size:26px}.copy,.detail{font-size:16px}.seal{left:18px;bottom:55px}.number{right:18px;bottom:62px;font-size:12px}.footer{left:18px;right:18px;bottom:18px}}</style></head><body><div class="tools"><button onclick="window.print()">PDF 저장·인쇄</button></div><main class="sheet"><section class="inner"><img class="logo" src="images/NCC_HEADER.webp" alt="NCC 전국소비자클럽"><p class="mark">NATIONAL CONSUMER CLUB · OFFICIAL CERTIFICATE</p><h1 class="title" id="title">NCC 인증서</h1><hr class="rule"><p class="copy">본 인증서는 소비자 신뢰와 서비스 기준을 확인하는<br>전국소비자클럽의 공식 발급 기록입니다.</p><p class="name" id="name">조회 중</p><p class="detail" id="detail"></p><div class="seal">NCC<br>OFFICIAL<br>ISSUED</div><p class="number" id="number"></p><p class="footer" id="issuer">NCC 전국소비자클럽</p></section></main><script type="module" src="js/certificate-print.js?v=20260831-2"></script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NCC 공식 인증서</title>
+<style>
+:root{--navy:#10234b;--gold:#b88925;--gold-light:#e7c978;--paper:#fffdf8;--ink:#24252a}
+*{box-sizing:border-box} body{margin:0;background:#eaeee9;color:var(--ink);font-family:"Noto Serif KR","Malgun Myeongjo",serif}.tools{max-width:210mm;margin:18px auto;display:flex;justify-content:flex-end}.tools button{border:0;border-radius:8px;background:#b88925;color:#fff;padding:12px 18px;font-weight:800;font-size:15px;cursor:pointer}
+.certificate{width:210mm;min-height:297mm;margin:0 auto 20px;padding:6mm;border:2px solid var(--gold);background:var(--paper);position:relative;box-shadow:0 12px 30px #10234b24;isolation:isolate}
+.certificate:before,.certificate:after{content:"";position:absolute;inset:3mm;border:1px solid var(--gold-light);pointer-events:none}.certificate:after{inset:4.5mm;border:1px solid #ead79b}
+.corner{position:absolute;width:22mm;height:22mm;border-color:#bd8c22;z-index:2}.corner.tl{top:3mm;left:3mm;border-top:3px solid;border-left:3px solid;border-radius:8mm 0 0}.corner.tr{top:3mm;right:3mm;border-top:3px solid;border-right:3px solid;border-radius:0 8mm 0 0}.corner.bl{bottom:3mm;left:3mm;border-bottom:3px solid;border-left:3px solid;border-radius:0 0 0 8mm}.corner.br{bottom:3mm;right:3mm;border-bottom:3px solid;border-right:3px solid;border-radius:0 0 8mm 0}
+.content{min-height:282mm;padding:17mm 17mm 18mm;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;background-image:radial-gradient(#b8892518 1px,transparent 1px);background-size:8px 8px}
+.kicker{margin:0;color:#a77718;letter-spacing:.22em;font-family:Arial,sans-serif;font-size:10px;font-weight:800}.title{margin:10mm 0 2mm;color:var(--navy);font-size:30px;line-height:1.28;letter-spacing:.05em;word-break:keep-all}.english{margin:0;color:#a77718;font-size:15px;letter-spacing:.04em;font-weight:700}.ornament{width:78%;display:flex;align-items:center;gap:8px;margin:5mm 0 4mm;color:#c39534}.ornament:before,.ornament:after{content:"";height:1px;background:linear-gradient(90deg,transparent,#c39534);flex:1}.ornament:after{background:linear-gradient(90deg,#c39534,transparent)}.crest{width:80mm;height:80mm;border-radius:50%;display:grid;place-items:center;position:relative;margin:1mm 0 3mm;background:radial-gradient(circle,#fffdf6 47%,#f0dfad 48%,#fffdf7 62%,#b88925 63%,#e8cb76 66%,#fffdf7 67%);box-shadow:0 0 0 1px #d5b25d,inset 0 0 0 5px #fff7dc}.crest:before,.crest:after{content:"";position:absolute;top:26mm;width:30mm;height:34mm;border:2px solid #dac27c;border-radius:65% 20% 65% 20%;opacity:.58;z-index:-1}.crest:before{right:63mm;transform:rotate(-24deg)}.crest:after{left:63mm;transform:scaleX(-1) rotate(-24deg)}.official-logo{max-width:59mm;max-height:43mm;object-fit:contain;filter:drop-shadow(0 2px 1px #98712040)}.recipient{margin:5mm 0 3mm;padding:0 8mm;min-height:17mm;color:var(--navy);font-size:28px;font-weight:800;letter-spacing:.08em;display:grid;place-items:center;word-break:keep-all}.fields{width:100%;max-width:136mm;border-top:1px solid #d8b861;border-bottom:1px solid #d8b861;padding:4mm 0;margin:1mm 0 4mm;font-size:16px;line-height:1.85}.field{display:flex;justify-content:center;gap:9mm}.label{min-width:34mm;text-align:right;color:#595348}.value{min-width:55mm;text-align:left;border-bottom:1px solid #d4c8a7;font-weight:700}.statement{max-width:145mm;margin:3mm 0 5mm;font-size:16px;line-height:1.85;word-break:keep-all}.date{font-size:16px;font-weight:700;letter-spacing:.04em}.issuer{margin:6mm 0 0;color:var(--navy);font-size:25px;letter-spacing:.07em;font-weight:800;line-height:1.4}.issuer-sub{margin:1mm 0 0;color:#a77718;font-size:15px;font-weight:700}.bottom{position:absolute;left:17mm;right:17mm;bottom:15mm;display:flex;justify-content:space-between;align-items:end;text-align:left}.serial{font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#272727}.serial span{display:block;margin-top:2mm;color:#756343}.verify{display:flex;align-items:end;gap:3mm;text-align:right}.verify img{width:25mm;height:25mm;background:#fff;padding:2mm;border:1px solid #b88925}.verify small{display:block;font-family:Arial,sans-serif;font-weight:800;line-height:1.4;color:#1f1f1f}.verification-url{font-family:Arial,sans-serif;font-size:10px;color:#735b29}.message{font-size:22px;color:var(--navy);font-weight:800;margin-top:12mm}
+@media print{body{background:#fff}.tools{display:none}.certificate{margin:0;box-shadow:none;break-after:page}@page{size:A4 portrait;margin:0}}
+@media(max-width:700px){.tools{margin:10px}.certificate{width:100%;min-height:0;padding:8px;margin:0}.content{min-height:0;padding:56px 24px 130px}.title{font-size:29px}.english{font-size:12px}.crest{transform:scale(.86);margin:-5mm 0}.recipient{font-size:25px}.fields,.statement,.date{font-size:15px}.issuer{font-size:22px}.bottom{left:22px;right:22px;bottom:35px}.verify img{width:76px;height:76px}.corner{width:60px;height:60px}}
+</style>
+</head>
+<body>
+<div class="tools"><button onclick="window.print()">PDF 저장·인쇄</button></div>
+<main class="certificate">
+  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+  <section class="content">
+    <p class="kicker">NATIONAL CONSUMER CLUB · OFFICIAL CERTIFICATE</p>
+    <h1 class="title" id="title">소비자선정 우수기업 인증서</h1>
+    <p class="english" id="englishTitle">CONSUMER CHOICE EXCELLENT COMPANY</p>
+    <div class="ornament">✦</div>
+    <div class="crest"><img class="official-logo" src="images/NCC_OFFICIAL.png" alt="NCC 전국소비자클럽 공식 로고"></div>
+    <p class="recipient" id="name">조회 중</p>
+    <div class="fields">
+      <div class="field" id="representativeRow"><span class="label">대표자</span><span class="value" id="representative">-</span></div>
+      <div class="field" id="categoryRow"><span class="label">선정부문</span><span class="value" id="category">-</span></div>
+      <div class="field" id="regionRow"><span class="label">선정지역</span><span class="value" id="region">-</span></div>
+    </div>
+    <p class="statement" id="statement">위 사업체는 상품과 서비스의 품질, 소비자 만족도 및 소비자 가치 향상을 위한 노력을 종합적으로 평가하여 소비자선정 우수기업으로 선정되었음을 인증합니다.</p>
+    <p class="date" id="issuedAt"></p>
+    <p class="issuer" id="issuer">전국소비자클럽</p>
+    <p class="issuer-sub">NATIONAL CONSUMER CLUB · 소비자선정위원회</p>
+    <div class="bottom">
+      <p class="serial">인증번호 <strong id="number">-</strong><span id="validUntil"></span></p>
+      <a class="verify" id="verifyLink" href="#" target="_blank" rel="noopener"><img id="qrCode" alt="공식 진위확인 QR"><small>공식 진위확인<br><span class="verification-url">ncc365.com</span></small></a>
+    </div>
+  </section>
+</main>
+<script type="module" src="js/certificate-print.js?v=20260901-1"></script>
+</body>
+</html>
