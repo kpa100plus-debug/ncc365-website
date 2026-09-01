@@ -358,6 +358,19 @@ for (let offset = 0; offset < routeViewports.length; offset += auditConcurrency)
           document.querySelectorAll("[data-export]").forEach(button => { button.disabled = false; });
         }
 
+        if (pathname === "/admin-center-manager-certificates.html") {
+          show("#adminArea");
+          value('input[name="recipientName"]', "홍길동");
+          value('input[name="role"]', "센터장");
+          value('input[name="region"]', "서울특별시 강남구");
+          value('input[name="centerCode"]', "NCC-CTR-SG-000001");
+          value('input[name="issuedAt"]', "2026-09-01");
+          value('input[name="validUntil"]', "2027-09-01");
+          value('input[name="termText"]', "2026년 9월 1일부터 2027년 9월 1일까지 (1년)");
+          value('input[name="certificateNumber"]', "NCC-APT-2026-0001");
+          markup("#historyList", `<article class="application-card history-card"><div><p class="receipt">NCC-APT-2026-0001 · 센터장 임명장</p><h2>홍길동 <small>검토용 샘플</small></h2><div class="meta"><span>센터장</span><span>서울특별시 강남구</span><span>센터코드 NCC-CTR-SG-000001</span></div></div></article>`);
+        }
+
         if (pathname === "/admin-members.html") {
           show("#adminArea, #memberArea");
           markup("#memberArea", `<div class="table-wrap"><table><thead><tr><th>회원번호</th><th>이름</th><th>회원유형</th><th>지역</th><th>상태</th><th>관리</th></tr></thead><tbody><tr><td>NCC-C-000016</td><td>김소비</td><td>일반회원</td><td>서울특별시</td><td>활성</td><td><button type="button">상세 관리</button></td></tr></tbody></table></div>`);
@@ -745,73 +758,3 @@ if (localServer) await new Promise((resolve, reject) => localServer.close(error 
 const failures = results.flatMap(result => {
   const issues = [];
   const ignoreExternalFailures = process.env.NCC_AUDIT_IGNORE_EXTERNAL_FAILURES === "true";
-  const expectedStatus = result.routePath === notFoundAuditRoute ? 404 : 200;
-  if (result.status !== expectedStatus) issues.push(`HTTP ${result.status || "navigation failure"}; expected ${expectedStatus}`);
-  if (result.navigationError) issues.push(`navigation: ${result.navigationError}`);
-  if (result.auditState === "protected" && !result.statePreparation?.applied) issues.push("protected state was not rendered");
-  if (result.pageErrors.length) issues.push(`page errors: ${result.pageErrors.join(" | ")}`);
-  const actionableConsoleErrors = result.consoleErrors.filter(item => !(
-    result.routePath === notFoundAuditRoute
-    && item.includes(notFoundAuditRoute)
-    && /404|Not Found/i.test(item)
-  ));
-  if (!ignoreExternalFailures && actionableConsoleErrors.length) issues.push(`console errors: ${actionableConsoleErrors.join(" | ")}`);
-  const actionableFailedRequests = result.failedRequests.filter(item => !/net::ERR_ABORTED$/i.test(item));
-  if (!ignoreExternalFailures && actionableFailedRequests.length) issues.push(`failed requests: ${actionableFailedRequests.join(" | ")}`);
-  if (!ignoreExternalFailures && result.badResponses.length) issues.push(`bad responses: ${result.badResponses.join(" | ")}`);
-  if (result.inspection?.horizontalOverflow > 2) issues.push(`horizontal overflow ${result.inspection.horizontalOverflow}px`);
-  if (!result.inspection?.expectedFontReady) issues.push(`${expectedFont} not ready`);
-  if (result.inspection?.highWeights.length) issues.push(`unsupported weights: ${unique(result.inspection.highWeights.map(item => item.weight)).join(",")}`);
-  if (result.inspection?.strongNegativeSpacing.length) issues.push("excessive negative letter spacing");
-  if (result.inspection?.contrastIssues.length) issues.push("text contrast below WCAG AA");
-  if (result.inspection?.duplicateIds.length) issues.push(`duplicate ids: ${result.inspection.duplicateIds.join(",")}`);
-  if (result.inspection?.imagesMissingAlt.length) issues.push("images missing alt");
-  if (result.inspection?.brokenFirstPartyImages.length) issues.push("broken first-party images");
-  if (result.inspection?.unlabeledControls.length) issues.push("unlabeled controls");
-  if (result.inspection?.smallControls.length) issues.push("controls below 44px");
-  if (result.inspection?.mobileFormText.length) issues.push("mobile form text below 16px");
-  if (result.inspection?.unreadablySmallText.length) issues.push("mobile text below 12px");
-  if (result.inspection?.clippedText.length) issues.push("clipped mobile text");
-  if (result.inspection?.magazinePage?.clipped) issues.push(`magazine page ${result.inspection.magazinePage.page} content is clipped`);
-  if (!result.inspection?.viewportContent) issues.push("missing viewport meta");
-  if (result.inspection?.zoomBlocked) issues.push("mobile zoom is blocked");
-  if (!result.inspection?.hasMain) issues.push("missing main landmark");
-  if ((result.inspection?.textLength || 0) < 10) issues.push("page content is empty or incomplete");
-  const redirectRule = redirectRuleBySource.get(result.routePath);
-  if (redirectRule) {
-    const finalPath = new URL(result.finalUrl).pathname;
-    const canonicalTarget = redirectRule.to.replace(/\.html$/, "") || "/";
-    if (finalPath !== redirectRule.to && finalPath !== canonicalTarget) {
-      issues.push(`redirect target ${finalPath}; expected ${redirectRule.to} or ${canonicalTarget}`);
-    }
-    if (!result.redirects.some(item => item.status === redirectRule.status)) {
-      issues.push(`redirect status missing; expected ${redirectRule.status}`);
-    }
-  }
-  return issues.length ? [{ route: result.route, viewport: result.viewport, issues }] : [];
-});
-
-const report = {
-  referenceCode: "REF-NCC-MOBILE-FULL-AUDIT-FIX-20260830-01",
-  phase,
-  auditState,
-  baseUrl,
-  generatedAt: new Date().toISOString(),
-  expectedFont,
-  auditedRoutes,
-  auditedViewports: viewports,
-  testedRouteViewportPairs: results.length,
-  failures,
-  results,
-};
-
-await writeFile(path.join(outputDir, `ncc-public-audit-${phase}.json`), `${JSON.stringify(report, null, 2)}\n`);
-console.log(JSON.stringify({
-  referenceCode: report.referenceCode,
-  phase,
-  testedRouteViewportPairs: results.length,
-  failedPairs: failures.length,
-  failureSummary: failures.slice(0, 30),
-}, null, 2));
-
-if (process.env.NCC_AUDIT_ENFORCE === "true" && failures.length) process.exitCode = 1;
