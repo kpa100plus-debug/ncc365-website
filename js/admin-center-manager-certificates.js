@@ -9,6 +9,7 @@ const db = getFirestore(app);
 const ADMIN = "kpa100plus@gmail.com";
 const CERTIFICATE_TYPE = "center_appointment";
 const CERTIFICATE_PATTERN = /^NCC-APT-\d{4}-\d{4}$/;
+const VISUAL_PREVIEW_MODE = new URLSearchParams(location.search).get("__ncc_variant") === "preview";
 const $ = selector => document.querySelector(selector);
 const form = $("#appointmentForm");
 const message = $("#appointmentMessage");
@@ -257,6 +258,10 @@ function certificatePayload() {
 
 async function issueAppointment(event) {
   event.preventDefault();
+  if (VISUAL_PREVIEW_MODE) {
+    setMessage("검토용 시안에서는 실제 발급이나 데이터 저장을 실행할 수 없습니다.");
+    return;
+  }
   syncDateAndNumber({ preserveNumber: true });
   const data = draftData();
   if (!form.reportValidity() || !isDraftReady(data)) {
@@ -297,6 +302,43 @@ async function issueAppointment(event) {
   }
 }
 
+function enableVisualPreview() {
+  const sample = {
+    certificateNumber: "NCC-APT-2026-0001",
+    recipientName: "홍길동",
+    role: "센터장",
+    region: "서울특별시 강남구",
+    centerCode: "NCC-CTR-SG-000001",
+    issuedAt: "2026-09-01",
+    validUntil: "2027-09-01",
+    certificateType: CERTIFICATE_TYPE,
+    representativeName: "센터장",
+    selectionNumber: "NCC-CTR-SG-000001",
+    status: "sample"
+  };
+  document.title = "NCC 센터장 임명장 자동발급 · 검토용 시안";
+  $("#loginArea").hidden = true;
+  $("#adminArea").hidden = false;
+  form.elements.recipientName.value = sample.recipientName;
+  form.elements.role.value = sample.role;
+  form.elements.region.value = sample.region;
+  form.elements.centerCode.value = sample.centerCode;
+  form.elements.issuedAt.value = sample.issuedAt;
+  form.elements.validUntil.value = sample.validUntil;
+  form.elements.certificateNumber.value = sample.certificateNumber;
+  form.elements.termText.value = getTermText(sample.issuedAt, sample.validUntil);
+  appointments = [sample];
+  renderHistory();
+  refreshPreview();
+  ["#loadManagersButton", "#issueButton", "#refreshHistoryButton", "#logoutButton"].forEach(selector => {
+    const control = $(selector);
+    if (control) control.disabled = true;
+  });
+  $("#managerSelect").disabled = true;
+  $("#memberLookupMessage").textContent = "검토용 시안입니다. 실제 회원·센터·발급이력 데이터에는 접근하거나 저장하지 않습니다.";
+  setMessage("검토용 시안: 실제 발급이나 데이터 저장은 실행되지 않습니다.");
+}
+
 $("#loginButton").addEventListener("click", async () => {
   try {
     $("#loginError").textContent = "";
@@ -322,15 +364,19 @@ form.addEventListener("change", event => {
   queuePreview();
 });
 
-onAuthStateChanged(auth, async user => {
-  if (user?.email?.toLowerCase() !== ADMIN) {
-    if (user) await signOut(auth);
-    $("#loginArea").hidden = false;
-    $("#adminArea").hidden = true;
-    return;
-  }
-  $("#loginArea").hidden = true;
-  $("#adminArea").hidden = false;
-  syncDateAndNumber();
-  await loadHistory({ quiet: true });
-});
+if (VISUAL_PREVIEW_MODE) {
+  enableVisualPreview();
+} else {
+  onAuthStateChanged(auth, async user => {
+    if (user?.email?.toLowerCase() !== ADMIN) {
+      if (user) await signOut(auth);
+      $("#loginArea").hidden = false;
+      $("#adminArea").hidden = true;
+      return;
+    }
+    $("#loginArea").hidden = true;
+    $("#adminArea").hidden = false;
+    syncDateAndNumber();
+    await loadHistory({ quiet: true });
+  });
+}
