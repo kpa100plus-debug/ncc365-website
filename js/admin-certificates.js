@@ -179,6 +179,7 @@ $("#certificateForm").onsubmit = async event => {
       title: values.title.trim(),
       recipientName: values.recipientName.trim(),
       representativeName: values.representativeName.trim(),
+      selectionNumber: values.selectionNumber.trim(),
       category: values.category.trim(),
       region: values.region.trim(),
       evaluationGroup: values.evaluationGroup.trim(),

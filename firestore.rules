@@ -1175,13 +1175,13 @@ match /centerActivities/{activityId} {
         isAdmin()
         && request.resource.data.keys().hasAll([
           "certificateNumber", "certificateType", "title", "recipientName",
-          "representativeName", "category", "region", "evaluationGroup",
+          "representativeName", "selectionNumber", "category", "region", "evaluationGroup",
           "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
           "createdAt", "updatedAt"
         ])
         && request.resource.data.keys().hasOnly([
           "certificateNumber", "certificateType", "title", "recipientName",
-          "representativeName", "category", "region", "evaluationGroup",
+          "representativeName", "selectionNumber", "category", "region", "evaluationGroup",
           "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
           "createdAt", "updatedAt"
         ])
@@ -1200,6 +1200,8 @@ match /centerActivities/{activityId} {
         && request.resource.data.recipientName.size() <= 120
         && request.resource.data.representativeName is string
         && request.resource.data.representativeName.size() <= 60
+        && request.resource.data.selectionNumber is string
+        && request.resource.data.selectionNumber.size() <= 60
         && request.resource.data.category is string
         && request.resource.data.category.size() <= 100
         && request.resource.data.region is string
@@ -1227,13 +1229,13 @@ match /centerActivities/{activityId} {
         isAdmin()
         && request.resource.data.keys().hasAll([
           "certificateNumber", "certificateType", "title", "recipientName",
-          "representativeName", "category", "region", "evaluationGroup",
+          "representativeName", "selectionNumber", "category", "region", "evaluationGroup",
           "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
           "createdAt", "updatedAt"
         ])
         && request.resource.data.keys().hasOnly([
           "certificateNumber", "certificateType", "title", "recipientName",
-          "representativeName", "category", "region", "evaluationGroup",
+          "representativeName", "selectionNumber", "category", "region", "evaluationGroup",
           "issuedAt", "validUntil", "issuer", "imageUrl", "status", "public",
           "createdAt", "updatedAt"
         ])
@@ -1251,6 +1253,8 @@ match /centerActivities/{activityId} {
         && request.resource.data.recipientName.size() <= 120
         && request.resource.data.representativeName is string
         && request.resource.data.representativeName.size() <= 60
+        && request.resource.data.selectionNumber is string
+        && request.resource.data.selectionNumber.size() <= 60
         && request.resource.data.category is string
         && request.resource.data.category.size() <= 100
         && request.resource.data.region is string
