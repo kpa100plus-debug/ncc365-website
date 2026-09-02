@@ -94,7 +94,7 @@ function render() {
       <div class="card-actions">
         <button data-edit="${escapeHtml(item.id)}">기록 수정</button>
         <a href="certificate-verify.html?id=${encodeURIComponent(item.certificateNumber)}" target="_blank" rel="noopener">공개 조회</a>
-        <a href="certificate-print.html?id=${encodeURIComponent(item.certificateNumber)}" target="_blank" rel="noopener">인쇄·PDF</a>
+        <a href="certificate-print.html?id=${encodeURIComponent(item.certificateNumber)}${item.status === "sample" ? "&review=1" : ""}" target="_blank" rel="noopener">${item.status === "sample" ? "검토 미리보기·PDF" : "인쇄·PDF"}</a>
       </div>
     </article>`).join("") : '<div class="empty">조건에 맞는 인증서 기록이 없습니다.</div>';
 
