@@ -482,3 +482,45 @@ test("wallet notifications are member read-only and admin updates preserve ident
     updatedAt: serverTimestamp()
   }));
 });
+
+
+test("member export audit logs are admin-only, append-only, and do not accept member values", async () => {
+  const adminDb = testEnv.authenticatedContext("admin-1", adminClaims).firestore();
+  const memberDb = testEnv.authenticatedContext("member-export", {
+    email: "member-export@example.com",
+    email_verified: true
+  }).firestore();
+
+  const validLog = {
+    action: "member_export",
+    format: "csv",
+    exportedCount: 3,
+    filterSummary: {
+      status: "active",
+      memberType: "all",
+      managementGrade: "all",
+      hasKeyword: true
+    },
+    actorUid: "admin-1",
+    actorEmail: "kpa100plus@gmail.com",
+    createdAt: serverTimestamp()
+  };
+
+  const logRef = doc(adminDb, "memberDataExportLogs", "export-1");
+  await assertSucceeds(setDoc(logRef, validLog));
+  await assertSucceeds(getDoc(logRef));
+  await assertFails(updateDoc(logRef, { exportedCount: 4 }));
+  await assertFails(deleteDoc(logRef));
+  await assertFails(setDoc(doc(memberDb, "memberDataExportLogs", "export-member"), {
+    ...validLog,
+    actorUid: "member-export",
+    actorEmail: "member-export@example.com"
+  }));
+  await assertFails(setDoc(doc(adminDb, "memberDataExportLogs", "export-raw-keyword"), {
+    ...validLog,
+    filterSummary: {
+      ...validLog.filterSummary,
+      keyword: "private-contact-search"
+    }
+  }));
+});
