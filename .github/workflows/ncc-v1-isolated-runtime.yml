@@ -230,8 +230,9 @@ jobs:
               if(ent.isDirectory())copyTree(a,b);else if(/\.(html|js|css|svg|png|webp|ico|json|webmanifest|txt)$/.test(ent.name)||['_redirects','_headers'].includes(ent.name)){if(['package.json','package-lock.json','firebase.json','firebase.lockdown.json'].includes(ent.name))continue;let s=fs.readFileSync(a);if(/\.(html|js|css|json|webmanifest|txt)$/.test(ent.name)||ent.name.startsWith('_')){let v=s.toString('utf8');for(const [old,value]of mapping)v=v.split(old).join(value);s=Buffer.from(v);}fs.writeFileSync(b,s);assets++;if(ent.name.endsWith('.html'))html.push(ent.name);}
             }
             // Restrict every server-side fetch to the isolated Firebase lookup/read endpoints.
-            const guardCode=`async function nccFetch(input, init={}) { const u=new URL(typeof input==='string'?input:input.url); const method=init.method||'GET'; const lookup=u.hostname==='identitytoolkit.googleapis.com'&&u.pathname==='/v1/accounts:lookup'&&u.searchParams.get('key')===${JSON.stringify(keyForTarget)}&&method==='POST'; const read=u.hostname==='firestore.googleapis.com'&&u.pathname.startsWith('/v1/projects/${TARGET}/')&&method==='GET'; if(!(lookup||read))throw new Error('ISOLATED_RUNTIME_EGRESS_DENIED');return fetch(input,{...init,redirect:'error'});}\n`;
+            const guardCode=`async function nccFetch(input, init={}) { const u=new URL(typeof input==='string'?input:input.url); const method=init.method||'GET'; const lookup=u.hostname==='identitytoolkit.googleapis.com'&&u.pathname==='/v1/accounts:lookup'&&u.searchParams.get('key')===${JSON.stringify(keyForTarget)}&&method==='POST'; const read=u.hostname==='firestore.googleapis.com'&&u.pathname.startsWith('/v1/projects/${TARGET}/')&&method==='GET'; if(!(lookup||read))throw new Error('ISOLATED_RUNTIME_EGRESS_DENIED');return fetch(input,{...init,redirect:'manual'});}\n`;
             for(const area of ['account','payments']){const f=path.join(source,'functions','api',area,'[[path]].js');let s=fs.readFileSync(f,'utf8').replace(/\bfetch\(/g,'nccFetch(');for(const [old,value]of mapping)s=s.split(old).join(value);fs.writeFileSync(f,guardCode+s);}
+            const redirectFile=path.join(publicDir,'_redirects');let redirects=fs.readFileSync(redirectFile,'utf8');const removed=redirects.split('\n').filter(l=>/^\/app\s+\/app\.html\s+200\s*$/.test(l));guard(removed.length===1,'APP_ALIAS_BASELINE_CHANGED');fs.writeFileSync(redirectFile,redirects.split('\n').filter(l=>!removed.includes(l)).join('\n'));record('isolated_app_redirect_fix','PASS',{removedRules:1,reason:'Avoid /app and /app.html canonical redirect cycle in local Pages runtime',productionUnchanged:true});
             record('runtime_isolation_preparation','PASS',{assets,htmlPages:html.length,configFilesRewritten:changed,serverEgressGuard:true,sourceArchiveUnmodified:true});
             const vars={ADMIN_EMAIL:process.env.NCC_E2E_ADMIN_EMAIL,FIREBASE_API_KEY:keyForTarget,FIREBASE_PROJECT_ID:TARGET,PAYMENT_MODE:'test',PAYMENT_PROVIDER:'simulation',TOSS_MODE:'disabled',TOSS_LIVE_CONFIRMATION:'disabled',PAYMENT_TESTER_EMAILS:[process.env.NCC_E2E_ADMIN_EMAIL,process.env.NCC_E2E_D_EMAIL].join(','),FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON:JSON.stringify(sa)};
             fs.writeFileSync(path.join(source,'.dev.vars'),Object.entries(vars).map(([k,v])=>k+"='"+v+"'").join('\n'),{mode:0o600});
@@ -254,12 +255,12 @@ jobs:
                 const login=await req('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+encodeURIComponent(keyForTarget),{method:'POST',credential:null,body:{email:process.env[`NCC_E2E_${label}_EMAIL`],password:process.env[`NCC_E2E_${label}_PASSWORD`],returnSecureToken:true}});
                 const bearer=login.data.idToken;guard(JSON.parse(Buffer.from(bearer.split('.')[1],'base64url')).aud===TARGET,'RUNTIME_LOGIN_AUDIENCE');
                 const me=await http('/api/payments/me',bearer),admin=await http('/api/payments/admin/list',bearer);
-                record('pages_real_firebase_d1_'+label,me.status===200&&admin.status===(label==='ADMIN'?200:403)?'PASS':'FAIL',{memberHttp:me.status,adminHttp:admin.status,realFirebase:true,localD1:true});
+                record('pages_real_firebase_d1_'+label,me.status===200&&admin.status===(label==='ADMIN'?200:403)?'PASS':'FAIL',{memberHttp:me.status,adminHttp:admin.status,memberErrorCode:me.data.error?.code,adminErrorCode:admin.data.error?.code,realFirebase:true,localD1:true});
               }
               const sample=spawnSync('python3',['-c',"import sqlite3,sys,json;c=sqlite3.connect(':memory:');c.executescript(open(sys.argv[1]).read());print(json.dumps(c.execute('SELECT member_number FROM member_verifications LIMIT 1').fetchone()[0]))",path.join(input,'cloudflare-d1.sql')],{encoding:'utf8'});guard(sample.status===0,'VERIFICATION_SAMPLE_MISSING');
               const member=await http('/api/account/verify?id='+encodeURIComponent(JSON.parse(sample.stdout)));record('pages_member_verification_d1',member.status===200&&member.data.ok?'PASS':'FAIL',{http:member.status,publicMaskedResponse:true});
-            }finally{child.kill('SIGTERM');fs.closeSync(log);}
-            report.overall=report.checks.some(c=>c.status==='FAIL')?'FAILED':'PARTIAL_PASS_FULL_RESTORE_GATE_NOT_PASSED';
+            }finally{child.kill('SIGTERM');fs.closeSync(log);const logs=fs.readFileSync(path.join(root,'private-runtime.log'),'utf8');const kinds=[[/redirect.*mode|Unsupported redirect/i,'REDIRECT_MODE'],[/ISOLATED_RUNTIME_EGRESS_DENIED/,'EGRESS_GUARD'],[/certificate|TLS|SSL/i,'TLS_ERROR'],[/SQLITE_ERROR|no such table/i,'SQLITE_ERROR']].filter(([pattern])=>pattern.test(logs)).map(([,kind])=>kind);record('runtime_diagnostics','INFO',{kinds});}
+            report.overall=report.checks.some(c=>c.status==='FAIL')?'FAILED':'PARTIAL_PASS_FULL_RESTORE_GATE_NOT_PASSED';if(report.overall==='FAILED')process.exitCode=1;
           }
           
           async function main(){
@@ -274,7 +275,7 @@ jobs:
             await restoreRules();await restoreUsers();await restoreFirestore();await loginTests();
             const indexes=(await req(`https://firestore.googleapis.com/v1/${DB}/collectionGroups/-/indexes`)).data.indexes||[];
             record('composite_index_count',indexes.length===0?'PASS':'FAIL',{source:0,target:indexes.length});
-            report.overall=report.checks.some(c=>c.status==='FAIL')?'FAILED':'PARTIAL_PASS_FULL_RESTORE_GATE_NOT_PASSED';
+            report.overall=report.checks.some(c=>c.status==='FAIL')?'FAILED':'PARTIAL_PASS_FULL_RESTORE_GATE_NOT_PASSED';if(report.overall==='FAILED')process.exitCode=1;
           }
           if(require.main===module)main().catch(e=>{report.overall='FAILED';report.failure=/^[A-Z0-9_]+$/.test(e.message)?e.message:'ERROR_DETAILS_SUPPRESSED';if(e.safe)report.error=e.safe;console.error('NCC_RESTORE_STOP '+JSON.stringify({failure:report.failure,error:report.error}));process.exitCode=1;}).finally(()=>{report.finishedAt=new Date().toISOString();save();console.log('NCC_CLOUD_RESTORE_REPORT '+JSON.stringify(report));});
           module.exports={mapped,canonical,equal,TARGET};
