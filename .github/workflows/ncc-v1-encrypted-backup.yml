@@ -66,7 +66,7 @@ jobs:
               if(method!=='GET') throw new Error('READ_ONLY_GUARD'); token=cfToken;
             } else throw new Error('HOST_GUARD');
             const r=await fetch(u,{method,redirect:'error',signal:AbortSignal.timeout(30000),headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
-            if(!r.ok) throw new Error('HTTP_'+r.status);
+            if(!r.ok) { write('api-error-'+requests+'.json',{host:u.hostname,path:u.pathname,query:u.search,http:r.status,response:await r.text()}); throw new Error('HTTP_'+r.status); }
             if(binary) return Buffer.from(await r.arrayBuffer());
             const data=await r.json();
             if(u.hostname==='api.cloudflare.com' && data.success===false) throw new Error('CF_API_FAILED');
@@ -177,7 +177,7 @@ jobs:
             write('cloudflare-pages-project.json',config.result);
             write('cloudflare-pages-domains.json',(await req(base+'/domains')).result);
             const deployed=[];let page=1;
-            while(page<=100) {const r=await req(base+'/deployments?per_page=100&page='+page);deployed.push(...r.result);if(r.result.length<100)break;page++;}
+            while(page<=100) {const r=await req(base+'/deployments?per_page=10&page='+page);deployed.push(...r.result);if(r.result.length<10)break;page++;}
             if(page>100)throw new Error('PAGINATION_LIMIT');
             write('cloudflare-pages-deployments.json',deployed);
             return {deploymentRecords:deployed.length,secretValuesMayBeRedacted:true};
@@ -217,10 +217,10 @@ jobs:
             await auth();
             await section('firestoreDocuments',firestore);
             await section('authenticationUsers',authUsers);
-            await section('authenticationConfig',async()=>{write('firebase-auth-config.json',await req('https://identitytoolkit.googleapis.com/admin/v2/projects/ncc-member/config'));return {passwordRecoveryConfigNeedsVerification:true};});
+            await section('authenticationConfig',async()=>{const c=await req('https://identitytoolkit.googleapis.com/admin/v2/projects/ncc-member/config');write('firebase-auth-config.json',c);return {hashParametersCaptured:['algorithm','signerKey','saltSeparator','rounds','memoryCost'].every(k=>Object.hasOwn(c.signIn?.hashConfig||{},k))};});
             await section('firestoreMetadata',async()=>{write('firestore-database.json',await req('https://firestore.googleapis.com/v1/'+db));return {};});
-            await section('firestoreIndexes',async()=>{const v=await paged('https://firestore.googleapis.com/v1/'+db+'/collectionGroups/-/indexes?pageSize=100','indexes','firestore-indexes.json');return {indexes:v.length};});
-            await section('firestoreFields',async()=>{const v=await paged('https://firestore.googleapis.com/v1/'+db+'/collectionGroups/-/fields?pageSize=100','fields','firestore-fields.json');return {fieldOverrides:v.length};});
+            await section('firestoreIndexes',async()=>{const v=await paged('https://firestore.googleapis.com/v1/'+db+'/collectionGroups/-/indexes','indexes','firestore-indexes.json');return {indexes:v.length};});
+            await section('firestoreFields',async()=>{const v=await paged('https://firestore.googleapis.com/v1/'+db+'/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig%3Dfalse%20OR%20ttlConfig%3A*','fields','firestore-fields.json');return {fieldOverrides:v.length};});
             await section('securityRules',rules);
             await section('storage',storage);
             await section('cloudflarePages',pages);
