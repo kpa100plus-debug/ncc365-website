@@ -1,0 +1,224 @@
+name: NCC V1 isolated D1 restore verification
+on:
+  push:
+    branches: [backup/ncc-v1-encrypted-20260905]
+    paths: [.github/workflows/ncc-v1-isolated-d1-restore.yml]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ncc-v1-isolated-d1-restore-260905
+  cancel-in-progress: false
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Restore saved SQL into isolated D1 only
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
+          NCC_RESTORE_SCOPE: D1
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        shell: bash
+        run: |
+          umask 077
+          cat > runner-key-seal.json <<'NCC_SEAL'
+          {"meta":{"format":"NCC-RESTORE-RUNNER-KEY-SEAL-v1","repository":"kpa100plus-debug/ncc365-website","target":"ncc-v1-restore-kpa-260905","artifactId":9964069253,"artifactSha256":"38a973160e8446cf8a9c5bd0e0016f5c56820f5778c9a5bf45babecc781ea07d","expiresAt":"2026-09-06T08:00:00Z"},"aad":"{\"format\":\"NCC-RESTORE-RUNNER-KEY-SEAL-v1\",\"repository\":\"kpa100plus-debug/ncc365-website\",\"target\":\"ncc-v1-restore-kpa-260905\",\"artifactId\":9964069253,\"artifactSha256\":\"38a973160e8446cf8a9c5bd0e0016f5c56820f5778c9a5bf45babecc781ea07d\",\"expiresAt\":\"2026-09-06T08:00:00Z\"}","iv":"bpOZu6lUxLl1fpww","tag":"yfknZkeVkFYg+czZSOJfEw==","ciphertext":"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","wrappedKeys":{"0fcb8909b32192ce39f4e783743e5fff44f8b33d":"PmsJK2VrVde4nAhGdCLKUjHMZXK7EQSalk0oaxswDH8cvr+C0yh/PGtNAcyyDSIgDKJ6/qOCwt5LuWN9Yp3dIWhmQ38iKfeLopBBboaUrJARdFNj9T75YR3vd0lptC1gOmE4ZQHYHgvG+L/u5ImQCsEKZj5mhKDWPitZ80hyfrEjx0oBOphGUPnY7c2ahWKyaAAyL5FgC3q176E5ziofekPCig96F0N7i4eh8MUucfCFJniyG/lUSvWqJUy7iRWyPYA5bwe71N2ieg6GW023YqhfcPZ3wQw02sxchPUrGojouzngFJxCSyzMEL6GXBCKUy12s2UPxN8TEvMsapXwtA==","bf6ecd20a3b5b165ad8bfe3a47b5c0a0c01df89c":"Xnb8HNa4sXlHmk07Dh7zsoKTnNJBV0+s8/xlmvpil+ddTaOFdOV0+Ey+Sm+OJve0+PytVTCddYrdfwtIvu7EfoatiV3n9bz7o5N3FyKZUr9VPGrcbPzPC/Izpbzz1ZO2WqHZcNfCbBtfTgZ2enE2TToXkviBGpoWIgAfnK6z++/bw3m7RwJukYwHfezl5f6EcGv7sU42pSXcshHqCi3oI9UxTgSgxqce2mosZx2sx667X32n5b+gE1vmoZbBA5Rx99dLFjC6YgsM0V5SWTGE/QEIG4knZMvNWimSLfBrTeodQx1Fa7JzQDtTEdozoVD7VFxekTsU9UHB0ya29VE4XA==","0cb6441464f31b689b7fd2fb9e10a002829480e4":"apbfwZPff2MSpc9sBB9TR7RxbaJjj48LL+pe1EGvs8zcn+QCZ8ZrUkLz0IBmGQ0D6PqJz2cDXmJOdojHv8A9hVMaefEBI0Ym95CaugK7XVBo2dUkoFOr+/OO5FmWfbE3Bp3ytv+clgcFImLntXndN/awTq5arY9/MtJckIQeZ3F35KDPExUb8qnvFVssuJD0ejn3cdJ02k6hGnZs7zfW41HAHsmw60UknnUO9qu+ezIWe/KUai5WyXgNXbfqbUrQDtpgZ0Ti5zE7UpIprSbS/z+gxM8Qg2ttptrndp8TYdCMB2N7a/b5IgpEz0tY4GWKjR5yZ4Dt77Zsp7pXYgMOuA==","faccccc65a9cf13c7e728ae83079fe618adf0624":"LvnweFlL5tQsMghEd5qsvcCHq3qyPwGtecTCCAoUPwVye5Tq4pCmiI2EyTRQCRsB9ivD5/GCPmIR1PgxdIpIqZOf/QyTSd3YvJq3wr8P1OS5pdFwn/mscTVZkH5YYqtF5sDwHtGkk6BJ/qJNhuINr4fodmZCMGS13azbZ4ZpVmwHs/h56W77ZQuQjZ5x8CRZ6lEEDOd/72mBhSZLfL7dJ2m8I1n031T09/iwy6zYMW9pqDR6ip/lmLA54UAnjyzwn67LfSv/mORVDCJqXsXsj9PcooKhKpxvRTf2mmTrBpPJcPFetePRSrfoxL9645lA3YePhlpgTEPrcYg2V4YkxQ=="}}
+          NCC_SEAL
+          cat > restore.cjs <<'NCC_RESTORE'
+          'use strict';
+          // Isolated restore only. No production resource requests or writes.
+          const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+          const {spawnSync} = require('node:child_process');
+          const TARGET = 'ncc-v1-restore-kpa-260905';
+          const REPO = 'kpa100plus-debug/ncc365-website';
+          const ARTIFACT = 9964069253;
+          const ZIP_HASH = '38a973160e8446cf8a9c5bd0e0016f5c56820f5778c9a5bf45babecc781ea07d';
+          const TAR_HASH = '287c1c0cb872960a8194b2fdbc2e113d7f8ecd7d7cd2f9bbede49db0ed491865';
+          const DB = `projects/${TARGET}/databases/(default)`;
+          const DOCS = `https://firestore.googleapis.com/v1/${DB}/documents`;
+          const AUTH = `https://identitytoolkit.googleapis.com/v1/projects/${TARGET}`;
+          const RULES = `https://firebaserules.googleapis.com/v1/projects/${TARGET}`;
+          const CONFIG = `https://identitytoolkit.googleapis.com/admin/v2/projects/${TARGET}/config`;
+          const report = {reference:'REF-NCC-V1-ENCRYPTED-BACKUP-20260905-01',target:TARGET,sourceProject:'ncc-member',productionWrites:false,startedAt:new Date().toISOString(),checks:[],limitations:['Cloudflare Pages/D1 runtime is not verified by this Firebase restore.','Google OAuth, email delivery, push and real-device behavior are not verified.','Production secret environment values and full IAM/SSL settings are outside the captured backup.','Firestore server create/update times are regenerated in the isolated project.']};
+          let root, input, token, keyForTarget, count=0;
+          function guard(ok,code){if(!ok)throw new Error(code);}
+          const hash = b => crypto.createHash('sha256').update(b).digest('hex');
+          function record(name,status,details={}){report.checks.push({name,status,...details});console.log('NCC_CHECK '+JSON.stringify({name,status,...details}));}
+          function save(){if(root){fs.writeFileSync(path.join(root,'verification.json'),JSON.stringify(report,null,2),{mode:0o600});}}
+          function normalizeTimestamp(value){const m=value.match(/^(.*T\d{2}:\d{2}:\d{2})(?:\.(\d{1,9}))?Z$/);guard(m,'TIMESTAMP_FORMAT_GUARD');return m[1]+'.'+(m[2]||'').padEnd(9,'0')+'Z';}
+          function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object')return Object.fromEntries(Object.keys(v).sort().map(k=>[k,k==='timestampValue'?normalizeTimestamp(v[k]):canonical(v[k])]));return v;}
+          const equal = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
+          function mapped(v){if(Array.isArray(v))return v.map(mapped);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,value])=>[k,k==='referenceValue'?value.replace('projects/ncc-member/','projects/'+TARGET+'/'):mapped(value)]));return v;}
+          function load(name){return JSON.parse(fs.readFileSync(path.join(input,name)));}
+          function run(cmd,args){const r=spawnSync(cmd,args,{encoding:'utf8',maxBuffer:5*1024*1024});guard(r.status===0,'ARCHIVE_TOOL_FAILED');return r.stdout;}
+          async function req(url,{method='GET',body,credential=token,expected=[200]}={}){
+            guard(++count<3000,'REQUEST_LIMIT');
+            const u = new URL(url);
+            const scoped = (u.hostname==='firestore.googleapis.com'&&u.pathname.startsWith(`/v1/projects/${TARGET}/`)) || (u.hostname==='identitytoolkit.googleapis.com'&&(u.pathname.startsWith(`/v1/projects/${TARGET}/`)||u.pathname===`/admin/v2/projects/${TARGET}/config`)) || (u.hostname==='firebaserules.googleapis.com'&&u.pathname.startsWith(`/v1/projects/${TARGET}/`));
+            const login = u.hostname==='identitytoolkit.googleapis.com'&&u.pathname==='/v1/accounts:signInWithPassword'&&u.searchParams.get('key')===keyForTarget&&keyForTarget;
+            guard(u.protocol==='https:'&&!u.username&&!u.password&&(scoped||login),'TARGET_URL_GUARD');
+            guard(['GET','POST','PATCH'].includes(method),'METHOD_GUARD');
+            if(login)guard(credential===null&&method==='POST','LOGIN_GUARD');
+            const r=await fetch(u,{method,redirect:'error',signal:AbortSignal.timeout(30000),headers:{...(credential?{Authorization:'Bearer '+credential}:{}),...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
+            const data=await r.json().catch(()=>({}));
+            if(!expected.includes(r.status)){
+              const e=new Error('HTTP_'+r.status);e.safe={host:u.hostname,path:u.pathname,http:r.status,status:data.error?.status,reason:(data.error?.details||[]).map(d=>d.reason).filter(Boolean),code:(data.error?.message||'').match(/^([A-Z][A-Z_0-9]{2,80})(?:$|[ :])/)?.[1]};throw e;
+            }
+            return {status:r.status,data};
+          }
+          async function authenticate(sa){
+            guard(sa.project_id==='ncc-member'&&sa.client_email==='firebase-adminsdk-fbsvc@ncc-member.iam.gserviceaccount.com','IDENTITY_GUARD');
+            const b64=v=>Buffer.from(JSON.stringify(v)).toString('base64url'),now=Math.floor(Date.now()/1000);
+            const unsigned=b64({alg:'RS256',typ:'JWT'})+'.'+b64({iss:sa.client_email,scope:'https://www.googleapis.com/auth/cloud-platform',aud:'https://oauth2.googleapis.com/token',iat:now,exp:now+3600});
+            const assertion=unsigned+'.'+crypto.createSign('RSA-SHA256').update(unsigned).sign(sa.private_key,'base64url');
+            const r=await fetch('https://oauth2.googleapis.com/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(30000),body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion})});
+            guard(r.ok,'RUNNER_AUTH_FAILED'); token=(await r.json()).access_token;guard(token,'RUNNER_AUTH_FAILED');
+          }
+          async function recover(sa){
+            const seal=JSON.parse(fs.readFileSync(path.join(__dirname,'runner-key-seal.json')));
+            guard(seal.meta.target===TARGET&&seal.meta.repository===REPO&&seal.meta.artifactId===ARTIFACT&&seal.meta.artifactSha256===ZIP_HASH&&seal.aad===JSON.stringify(seal.meta),'SEAL_CONTEXT_GUARD');
+            guard(Date.now()<Date.parse(seal.meta.expiresAt),'SEAL_EXPIRED');
+            guard(seal.wrappedKeys[sa.private_key_id],'RUNNER_CERT_NOT_MATCHED');
+            const wrappingKey=crypto.privateDecrypt({key:sa.private_key,oaepHash:'sha256',padding:crypto.constants.RSA_PKCS1_OAEP_PADDING},Buffer.from(seal.wrappedKeys[sa.private_key_id],'base64'));
+            const decipher=crypto.createDecipheriv('aes-256-gcm',wrappingKey,Buffer.from(seal.iv,'base64'));decipher.setAAD(Buffer.from(seal.aad));decipher.setAuthTag(Buffer.from(seal.tag,'base64'));
+            const recoveryPrivate=Buffer.concat([decipher.update(Buffer.from(seal.ciphertext,'base64')),decipher.final()]);
+            const r=await fetch(`https://api.github.com/repos/${REPO}/actions/artifacts/${ARTIFACT}/zip`,{headers:{Authorization:'Bearer '+process.env.GITHUB_TOKEN,Accept:'application/vnd.github+json'},redirect:'manual',signal:AbortSignal.timeout(30000)});
+            guard(r.status===302,'BACKUP_DOWNLOAD_REDIRECT_FAILED');const location=new URL(r.headers.get('location'));
+            guard(location.protocol==='https:'&&(/\.blob\.core\.windows\.net$/.test(location.hostname)||/\.actions\.githubusercontent\.com$/.test(location.hostname)),'ARTIFACT_HOST_GUARD');
+            const download=await fetch(location,{redirect:'error',signal:AbortSignal.timeout(90000)});guard(download.ok,'BACKUP_DOWNLOAD_FAILED');
+            const zip=Buffer.from(await download.arrayBuffer());guard(hash(zip)===ZIP_HASH,'BACKUP_ZIP_HASH_FAILED');
+            const zpath=path.join(root,'backup.zip');fs.writeFileSync(zpath,zip,{mode:0o600});
+            const names=run('unzip',['-Z1',zpath]).trim().split('\n');guard(names.every(n=>['NCC_V1_20260905.encrypted.json','capture-status.json'].includes(n)),'ZIP_MEMBERS_GUARD');
+            run('unzip',['-q',zpath,'-d',root]);
+            const enc=JSON.parse(fs.readFileSync(path.join(root,'NCC_V1_20260905.encrypted.json')));
+            guard(enc.format==='NCC-RSA-OAEP-SHA256-AES256GCM-v1'&&enc.plaintextSha256===TAR_HASH,'BACKUP_FORMAT_GUARD');
+            const k=crypto.privateDecrypt({key:recoveryPrivate,oaepHash:'sha256',padding:crypto.constants.RSA_PKCS1_OAEP_PADDING},Buffer.from(enc.wrappedKey,'base64'));
+            const d=crypto.createDecipheriv('aes-256-gcm',k,Buffer.from(enc.iv,'base64'));d.setAuthTag(Buffer.from(enc.tag,'base64'));
+            const tar=Buffer.concat([d.update(Buffer.from(enc.ciphertext,'base64')),d.final()]);guard(hash(tar)===TAR_HASH,'BACKUP_DECRYPT_HASH_FAILED');
+            recoveryPrivate.fill(0);k.fill(0);wrappingKey.fill(0);
+            const tpath=path.join(root,'backup.tar.gz');fs.writeFileSync(tpath,tar,{mode:0o600});
+            guard(run('tar',['-tzf',tpath]).trim().split('\n').every(n=>!n.startsWith('/')&&!n.split('/').includes('..')),'TAR_PATH_GUARD');
+            guard(run('tar',['-tvzf',tpath]).trim().split('\n').every(n=>['-','d'].includes(n[0])),'TAR_TYPE_GUARD');
+            input=path.join(root,'input');fs.mkdirSync(input,{mode:0o700});run('tar',['-xzf',tpath,'-C',input,'--no-same-owner']);
+            let files=0;for(const line of fs.readFileSync(path.join(input,'SHA256SUMS.txt'),'utf8').trim().split('\n')){const m=line.match(/^([a-f0-9]{64})  (.+)$/);guard(m&&!m[2].startsWith('/')&&!m[2].split('/').includes('..'),'MANIFEST_PATH_GUARD');guard(hash(fs.readFileSync(path.join(input,m[2])))===m[1],'MANIFEST_HASH_FAILED');files++;}
+            const manifest=load('manifest.json');guard(manifest.project==='ncc-member'&&manifest.sourceCommit==='849b45158e7448135b27054e3b00ef6f4f6efdae','SOURCE_BASELINE_GUARD');
+            record('saved_backup_integrity','PASS',{artifactId:ARTIFACT,zipSha256:ZIP_HASH,plaintextSha256:TAR_HASH,verifiedFiles:files});
+          }
+          async function users(){let all=[],next;do{const r=await req(AUTH+'/accounts:batchGet?maxResults=1000'+(next?'&nextPageToken='+encodeURIComponent(next):''));all.push(...r.data.users||[]);next=r.data.nextPageToken;guard(all.length<=1000,'USER_COUNT_GUARD');}while(next);return all;}
+          async function restoreFirestore(){
+            const documents=load('firestore-documents.json').documents;guard(documents.length===197,'SOURCE_DOC_COUNT_GUARD');
+            const missing=[];
+            for(const d of documents){guard(d.name.startsWith('projects/ncc-member/databases/(default)/documents/'),'SOURCE_DOCUMENT_GUARD');const r=await req(DOCS+'/'+d.name.split('/documents/')[1],{expected:[200,404]});if(r.status===404)missing.push(d);else guard(equal(r.data.fields||{},mapped(d.fields||{})),'EXISTING_TARGET_DOCUMENT_DIFFERS');}
+            for(let i=0;i<missing.length;i+=100){const writes=missing.slice(i,i+100).map(d=>({update:{name:d.name.replace('projects/ncc-member/','projects/'+TARGET+'/'),fields:mapped(d.fields||{})},currentDocument:{exists:false}}));await req(DOCS+':commit',{method:'POST',body:{writes}});}
+            for(const d of documents){const r=await req(DOCS+'/'+d.name.split('/documents/')[1]);guard(equal(r.data.fields||{},mapped(d.fields||{})),'RESTORED_DOCUMENT_DIFFERS');}
+            record('firestore_cloud_roundtrip','PASS',{documents:documents.length,created:missing.length,collections:load('firestore-documents.json').collections.length,typesAndValuesCompared:true});
+          }
+          async function restoreUsers(){
+            const original=load('firebase-auth-users.json').users;guard(original.length===10,'SOURCE_USER_COUNT_GUARD');
+            const existing=await users();guard(existing.every(u=>original.some(v=>v.localId===u.localId&&v.email===u.email)),'UNEXPECTED_TARGET_USER');
+            const incoming=original.filter(u=>!existing.some(v=>v.localId===u.localId));
+            const h=load('firebase-auth-config.json').signIn.hashConfig;guard(h.algorithm==='SCRYPT'&&h.signerKey,'SCRYPT_CONFIG_GUARD');
+            if(incoming.length){const r=await req(AUTH+'/accounts:batchCreate',{method:'POST',body:{users:incoming.map(u=>{const v=Object.fromEntries(['localId','email','emailVerified','displayName','photoUrl','phoneNumber','disabled','passwordHash','salt','customAttributes','createdAt','lastLoginAt'].filter(k=>u[k]!==undefined).map(k=>[k,u[k]]));const providers=(u.providerUserInfo||[]).filter(p=>!['password','phone'].includes(p.providerId));if(providers.length)v.providerUserInfo=providers;return v;}),hashAlgorithm:h.algorithm,signerKey:h.signerKey,saltSeparator:h.saltSeparator,rounds:h.rounds,memoryCost:h.memoryCost,sanityCheck:true,allowOverwrite:false}});guard(!(r.data.error||[]).length,'AUTH_IMPORT_PARTIAL_FAILURE');}
+            const after=await users();guard(after.length===original.length,'RESTORED_USER_COUNT_DIFFERS');
+            const fields=['email','emailVerified','disabled','displayName','photoUrl','phoneNumber','customAttributes','createdAt'];let hashes=0;
+            for(const u of original){const v=after.find(v=>v.localId===u.localId);guard(v,'RESTORED_UID_MISSING');for(const key of fields)if(u[key]!==undefined)guard(equal(v[key],u[key]),'RESTORED_USER_FIELD_DIFFERS_'+key);for(const p of u.providerUserInfo||[]){if(['password','phone'].includes(p.providerId))continue;guard((v.providerUserInfo||[]).some(q=>q.providerId===p.providerId&&q.rawId===p.rawId),'RESTORED_PROVIDER_DIFFERS');}if(u.passwordHash&&v.passwordHash===u.passwordHash&&v.salt===u.salt)hashes++;}
+            record('auth_cloud_roundtrip','PASS',{users:after.length,created:incoming.length,uidsAndProfilesCompared:true,matchingExportedPasswordHashes:hashes,passwordAlgorithm:'SCRYPT',passwordSignIn:'CHECKED_SEPARATELY'});
+          }
+          async function restoreRules(){
+            const releases=load('firebase-rules-releases.json').releases;const release=releases.find(r=>r.name==='projects/ncc-member/releases/cloud.firestore');guard(release,'SOURCE_RULES_RELEASE_MISSING');
+            const source=load('firebase-rulesets.json')[release.rulesetName].source;guard(source?.files?.length,'SOURCE_RULES_MISSING');
+            const existing=await req(RULES+'/releases/cloud.firestore',{expected:[200,404]});let rulesetName;
+            if(existing.status===200){const old=await req('https://firebaserules.googleapis.com/v1/'+existing.data.rulesetName);if(equal(old.data.source,source))rulesetName=existing.data.rulesetName;}
+            if(!rulesetName){const created=await req(RULES+'/rulesets',{method:'POST',body:{source}});rulesetName=created.data.name;guard(rulesetName?.startsWith(`projects/${TARGET}/rulesets/`),'TARGET_RULESET_GUARD');
+              if(existing.status===404)await req(RULES+'/releases',{method:'POST',body:{name:`projects/${TARGET}/releases/cloud.firestore`,rulesetName}});
+              else await req(RULES+'/releases/cloud.firestore',{method:'PATCH',body:{release:{name:`projects/${TARGET}/releases/cloud.firestore`,rulesetName},updateMask:'rulesetName'}});
+            }
+            const live=await req(RULES+'/releases/cloud.firestore');guard(live.data.rulesetName===rulesetName,'RULES_RELEASE_DIFFERS');const liveSource=await req('https://firebaserules.googleapis.com/v1/'+rulesetName);guard(equal(liveSource.data.source,source),'RULES_SOURCE_DIFFERS');
+            record('firestore_rules_cloud_restore','PASS',{files:source.files.length,sourceSha256:hash(Buffer.from(JSON.stringify(source)))});
+          }
+          async function loginTests(){
+            const config=(await req(CONFIG)).data;keyForTarget=config.client?.apiKey;
+            if(!keyForTarget){record('original_password_login','UNVERIFIED',{reason:'TARGET_CLIENT_API_KEY_UNAVAILABLE'});return;}
+            const original=load('firebase-auth-users.json').users,documents=load('firestore-documents.json').documents;
+            let tested=0;
+            for(const label of ['ADMIN','D']){
+              const email=process.env[`NCC_E2E_${label}_EMAIL`],password=process.env[`NCC_E2E_${label}_PASSWORD`];
+              if(!email||!password||!original.some(u=>u.email?.toLowerCase()===email.toLowerCase())){record('original_password_login_'+label,'UNVERIFIED',{reason:'MATCHING_STORED_TEST_CREDENTIAL_UNAVAILABLE'});continue;}
+              const r=await req('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+encodeURIComponent(keyForTarget),{method:'POST',credential:null,body:{email,password,returnSecureToken:true},expected:[200,400,403]});
+              if(r.status!==200){record('original_password_login_'+label,'FAIL',{http:r.status});continue;}
+              const claims=JSON.parse(Buffer.from(r.data.idToken.split('.')[1],'base64url'));
+              guard(claims.aud===TARGET&&claims.iss===`https://securetoken.google.com/${TARGET}`&&r.data.localId===original.find(u=>u.email?.toLowerCase()===email.toLowerCase()).localId,'LOGIN_TARGET_UID_GUARD');tested++;
+              record('original_password_login_'+label,'PASS',{targetAudienceConfirmed:true,uidPreserved:true});
+              const own=documents.find(d=>d.name.includes('/documents/members/')&&d.fields.authUid?.stringValue===r.data.localId);
+              if(own){const read=await req(DOCS+'/'+own.name.split('/documents/')[1],{credential:r.data.idToken,expected:[200,403]});record('owner_member_read_'+label,read.status===200?'PASS':'FAIL',{http:read.status});}
+              if(label==='D'){
+                const other=documents.find(d=>d.name.includes('/documents/members/')&&d.fields.authUid?.stringValue&&d.fields.authUid.stringValue!==r.data.localId);
+                if(other){const read=await req(DOCS+'/'+other.name.split('/documents/')[1],{credential:r.data.idToken,expected:[200,403]});record('unrelated_member_read_denied',read.status===403?'PASS':'FAIL',{http:read.status});}
+              }
+            }
+            if(!tested)record('original_password_login','UNVERIFIED',{reason:'NO_SUCCESSFUL_ORIGINAL_PASSWORD_LOGIN'});
+            const privateDoc=documents.find(d=>d.name.includes('/documents/members/')&&d.fields.authUid?.stringValue);
+            if(privateDoc){const r=await req(DOCS+'/'+privateDoc.name.split('/documents/')[1],{credential:null,expected:[200,401,403]});record('anonymous_member_read_denied',[401,403].includes(r.status)?'PASS':'FAIL',{http:r.status});}
+          }
+          async function restoreD1(){
+            const account=process.env.CLOUDFLARE_ACCOUNT_ID,cfToken=process.env.CLOUDFLARE_API_TOKEN;
+            guard(/^[a-f0-9]{32}$/.test(account||'')&&cfToken,'CF_CREDENTIAL_MISSING');
+            const name='ncc-v1-restore-260905';let selectedId;
+            const api=`https://api.cloudflare.com/client/v4/accounts/${account}/d1/database`;
+            async function cf(suffix='',method='GET',body){
+              guard(suffix===''||(selectedId&&suffix==='/'+selectedId+'/query'),'D1_TARGET_GUARD');
+              guard(method==='GET'||method==='POST','D1_METHOD_GUARD');
+              if(method==='POST'&&!suffix)guard(body?.name===name,'D1_CREATE_NAME_GUARD');
+              const r=await fetch(api+suffix,{method,redirect:'error',signal:AbortSignal.timeout(90000),headers:{Authorization:'Bearer '+cfToken,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
+              const data=await r.json();
+              if(!r.ok||data.success===false){const e=new Error('CF_HTTP_'+r.status);e.safe={service:'D1',http:r.status,codes:(data.errors||[]).map(x=>x.code)};throw e;}
+              return data.result;
+            }
+            const list=await cf();guard(Array.isArray(list),'D1_LIST_RESPONSE');const found=list.filter(x=>x.name===name);guard(found.length<=1,'D1_NAME_AMBIGUOUS');
+            let db=found[0];if(!db)db=await cf('','POST',{name});
+            guard(db.name===name&&/^[0-9a-f-]{36}$/.test(db.uuid||''),'D1_ISOLATED_ID_GUARD');selectedId=db.uuid;
+            const python=`import sqlite3,json,sys\nc=sqlite3.connect(':memory:');c.row_factory=sqlite3.Row\nc.executescript(open(sys.argv[1]).read())\nt=[r[0] for r in c.execute("select name from sqlite_master where type='table' and name not like 'sqlite_%' order by name")]\nout={'tables':{},'integrity':c.execute('PRAGMA integrity_check').fetchone()[0]}\nfor n in t:\n out['tables'][n]={'columns':[dict(r) for r in c.execute('PRAGMA table_info('+n+')')],'rows':[dict(r) for r in c.execute('SELECT * FROM '+n)]}\nprint(json.dumps(out))`;
+            const local=spawnSync('python3',['-c',python,path.join(input,'cloudflare-d1.sql')],{encoding:'utf8',maxBuffer:2*1024*1024});guard(local.status===0,'D1_SOURCE_SQL_INVALID');const expected=JSON.parse(local.stdout);guard(expected.integrity==='ok'&&Object.keys(expected.tables).length===8,'D1_SOURCE_SCHEMA_GUARD');
+            const inventory=await cf('/'+selectedId+'/query','POST',{sql:"SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%'"});guard(Array.isArray(inventory)&&inventory.every(x=>x.success!==false),'D1_QUERY_FAILED');
+            const current=inventory.flatMap(x=>x.results||[]).map(x=>x.name);let imported=false;
+            if(!current.length){const importedResult=await cf('/'+selectedId+'/query','POST',{sql:fs.readFileSync(path.join(input,'cloudflare-d1.sql'),'utf8')});guard(importedResult.every(x=>x.success!==false),'D1_IMPORT_PARTIAL_FAILURE');imported=true;}
+            else guard(current.every(n=>Object.hasOwn(expected.tables,n)),'UNEXPECTED_D1_TABLE');
+            const details=[];
+            for(const [table,original] of Object.entries(expected.tables)){
+              guard(/^[a-z_]+$/.test(table),'D1_TABLE_NAME_GUARD');
+              const actual=(await cf('/'+selectedId+'/query','POST',{sql:'SELECT * FROM '+table}))[0];guard(actual.success!==false,'D1_READ_FAILED');
+              const rowsHash=rows=>hash(Buffer.from(JSON.stringify(rows.map(r=>JSON.stringify(canonical(r))).sort())));
+              guard(actual.results.length===original.rows.length&&rowsHash(actual.results)===rowsHash(original.rows),'D1_ROW_CONTENT_DIFFERS');
+              const columns=(await cf('/'+selectedId+'/query','POST',{sql:'PRAGMA table_info('+table+')'}))[0].results;guard(equal(columns,original.columns),'D1_COLUMN_SCHEMA_DIFFERS');
+              details.push({table,rows:original.rows.length,contentSha256:rowsHash(actual.results)});
+            }
+            record('cloudflare_d1_cloud_roundtrip','PASS',{database:name,databaseId:selectedId,imported,tables:details});
+          }
+          async function main(){
+            guard(process.env.GITHUB_REPOSITORY===REPO&&process.env.GITHUB_REF==='refs/heads/backup/ncc-v1-encrypted-20260905','RUN_CONTEXT_GUARD');
+            root=path.join(process.env.RUNNER_TEMP,'ncc-cloud-restore');fs.mkdirSync(root,{mode:0o700});
+            const sa=JSON.parse(process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON||'{}');await authenticate(sa);await recover(sa);
+            if(process.env.NCC_RESTORE_SCOPE==='D1'){await restoreD1();report.overall='PARTIAL_PASS_FULL_RESTORE_GATE_NOT_PASSED';return;}
+            const db=(await req('https://firestore.googleapis.com/v1/'+DB)).data;guard(db.name===DB&&db.type==='FIRESTORE_NATIVE'&&db.locationId==='asia-northeast3','DATABASE_ISOLATION_GUARD');
+            record('isolated_target','PASS',{project:TARGET,region:db.locationId,freeTier:db.freeTier});
+            // Publish and verify original security rules BEFORE placing any member data here.
+            await restoreRules();await restoreUsers();await restoreFirestore();await loginTests();
+            const indexes=(await req(`https://firestore.googleapis.com/v1/${DB}/collectionGroups/-/indexes`)).data.indexes||[];
+            record('composite_index_count',indexes.length===0?'PASS':'FAIL',{source:0,target:indexes.length});
+            report.overall=report.checks.some(c=>c.status==='FAIL')?'FAILED':'PARTIAL_PASS_FULL_RESTORE_GATE_NOT_PASSED';
+          }
+          if(require.main===module)main().catch(e=>{report.overall='FAILED';report.failure=/^[A-Z0-9_]+$/.test(e.message)?e.message:'ERROR_DETAILS_SUPPRESSED';if(e.safe)report.error=e.safe;console.error('NCC_RESTORE_STOP '+JSON.stringify({failure:report.failure,error:report.error}));process.exitCode=1;}).finally(()=>{report.finishedAt=new Date().toISOString();save();console.log('NCC_CLOUD_RESTORE_REPORT '+JSON.stringify(report));});
+          module.exports={mapped,canonical,equal,TARGET};
+          NCC_RESTORE
+          node restore.cjs
+      - name: Save counts and verification status only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ncc-isolated-d1-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ncc-cloud-restore/verification.json
+          if-no-files-found: error
+          retention-days: 30
