@@ -1,0 +1,260 @@
+name: NCC V1 encrypted read-only backup
+on:
+  push:
+    branches: [backup/ncc-v1-encrypted-20260905]
+    paths: [.github/workflows/ncc-v1-encrypted-backup.yml]
+permissions:
+  contents: read
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Export permitted NCC resources and encrypt
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
+          NCC_BACKUP_PUBLIC_KEY: |
+            -----BEGIN PUBLIC KEY-----
+            MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA0IcfKN2hDjK663vulXmP
+            tMgFTRH819omlqDqrA72xtl0lYUkcJ6NuzAwZJ7OIrRkUlzzUhFJMi7BVJET0mAE
+            G1pDqKv13Bxl7mXO0sq6ylhY3XzOxEJ+jtw7Za81byhy83Iua6g6T2D6IGbtWrwz
+            g2DJtiI5IZJq1XBnxAlmc9QnoKpHTK080lAt4NYDw+nGyZQpnNqocQTmoWOt3RUe
+            /dErbM9A+ntsGMD6O/FSMYKRIFeLMP/iAm9C7rjqvmYFGZIKycf/s2TDqyivpBjz
+            kqBhwzJ7HCuL22Khcfhs9vuy4ROSjQ9Q2zNK1zuSuBNqKXtoUxVDelzgRUDCgU2d
+            De9AvSPTxMaEcS17C1ssubRzacFe9EofJnp3lbDRhbsJAD+qu9VIFS0qDR8g26Z1
+            rGzNZQ8d4RljQCCVHuH3krUJ4yvucqbOVZNwwfqJ/I8jUgM+WW+ZlNtdF/p8xqTZ
+            gPiYYrzh/CC/pxKnO1G0D51puGSIm7n9iA1de1FIsXodAgMBAAE=
+            -----END PUBLIC KEY-----
+        shell: bash
+        run: |
+          node <<'NCC_NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const crypto = require('node:crypto');
+          const {spawnSync} = require('node:child_process');
+          
+          const PROJECT = 'ncc-member';
+          const SOURCE = '849b45158e7448135b27054e3b00ef6f4f6efdae';
+          const root = path.join(process.env.RUNNER_TEMP, 'ncc-v1-export-'+process.env.GITHUB_RUN_ID);
+          fs.mkdirSync(root, {mode:0o700});
+          const started = new Date().toISOString();
+          const manifest = {reference:'REF-NCC-V1-ENCRYPTED-BACKUP-20260905-01',project:PROJECT,sourceCommit:SOURCE,startedAt:started,productionWrites:false,restorationTested:false,sections:{},limitations:[]};
+          let googleToken, requests=0;
+          const cfToken=process.env.CLOUDFLARE_API_TOKEN;
+          const account=process.env.CLOUDFLARE_ACCOUNT_ID;
+          const write = (file,obj) => fs.writeFileSync(path.join(root,file),JSON.stringify(obj,null,2),{mode:0o600});
+          const db='projects/ncc-member/databases/(default)';
+          const docs=db+'/documents';
+          const encPath = s => s.split('/').map(encodeURIComponent).join('/');
+          async function req(url,{method='GET',body,binary=false}={}) {
+            if (++requests>20000) throw new Error('REQUEST_LIMIT');
+            const u=new URL(url);
+            let token;
+            if (u.protocol!=='https:' || u.username || u.password) throw new Error('URL_GUARD');
+            if(u.hostname==='firestore.googleapis.com' && u.pathname.startsWith('/v1/projects/ncc-member/')) {
+              if(method!=='GET' && !(method==='POST' && u.pathname.endsWith(':listCollectionIds'))) throw new Error('READ_ONLY_GUARD');
+              token=googleToken;
+            } else if(u.hostname==='identitytoolkit.googleapis.com' && (u.pathname.startsWith('/v1/projects/ncc-member/') || u.pathname.startsWith('/admin/v2/projects/ncc-member/'))) {
+              if(method!=='GET') throw new Error('READ_ONLY_GUARD'); token=googleToken;
+            } else if(u.hostname==='firebaserules.googleapis.com' && u.pathname.startsWith('/v1/projects/ncc-member/')) {
+              if(method!=='GET') throw new Error('READ_ONLY_GUARD'); token=googleToken;
+            } else if(u.hostname==='storage.googleapis.com' && (u.pathname==='/storage/v1/b' && u.searchParams.get('project')===PROJECT || /^\/storage\/v1\/b\/ncc-member\.(firebasestorage\.app|appspot\.com)(\/|$)/.test(u.pathname))) {
+              if(method!=='GET') throw new Error('READ_ONLY_GUARD'); token=googleToken;
+            } else if(u.hostname==='api.cloudflare.com' && u.pathname.startsWith('/client/v4/')) {
+              if(method!=='GET') throw new Error('READ_ONLY_GUARD'); token=cfToken;
+            } else throw new Error('HOST_GUARD');
+            const r=await fetch(u,{method,redirect:'error',signal:AbortSignal.timeout(30000),headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
+            if(!r.ok) throw new Error('HTTP_'+r.status);
+            if(binary) return Buffer.from(await r.arrayBuffer());
+            const data=await r.json();
+            if(u.hostname==='api.cloudflare.com' && data.success===false) throw new Error('CF_API_FAILED');
+            return data;
+          }
+          async function section(name,fn) {
+            try {manifest.sections[name]={status:'complete',...await fn()};console.log(name+': complete');}
+            catch(e){const reason=/^(HTTP_\d+|[A-Z_]+)$/.test(e.message)?e.message:'ERROR_DETAILS_SUPPRESSED';manifest.sections[name]={status:'incomplete',reason};console.log(name+': incomplete ('+reason+')');}
+          }
+          async function auth() {
+            const sa=JSON.parse(process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON||'');
+            if(sa.project_id!==PROJECT) throw new Error('PROJECT_GUARD');
+            const now=Math.floor(Date.now()/1000), b64=o=>Buffer.from(JSON.stringify(o)).toString('base64url');
+            const input=b64({alg:'RS256',typ:'JWT'})+'.'+b64({iss:sa.client_email,scope:'https://www.googleapis.com/auth/cloud-platform',aud:'https://oauth2.googleapis.com/token',iat:now,exp:now+3600});
+            const assertion=input+'.'+crypto.createSign('RSA-SHA256').update(input).sign(sa.private_key,'base64url');
+            const r=await fetch('https://oauth2.googleapis.com/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(30000),headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion})});
+            if(!r.ok)throw new Error('GOOGLE_AUTH_FAILED');
+            googleToken=(await r.json()).access_token;
+            if(!googleToken)throw new Error('GOOGLE_AUTH_FAILED');
+          }
+          async function firestore() {
+            const readTime=new Date(Date.now()-2000).toISOString();
+            const output={format:'firestore-rest-typed-v1',project:PROJECT,readTime,collections:[],documents:[],missingParents:[]};
+            const seen=new Set();
+            async function walk(parent) {
+              if(!(parent===docs||parent.startsWith(docs+'/'))||seen.has(parent))throw new Error('DOCUMENT_PATH_GUARD');
+              seen.add(parent);
+              let pageToken;
+              do {
+                const page=await req('https://firestore.googleapis.com/v1/'+encPath(parent)+':listCollectionIds',{method:'POST',body:{pageSize:100,readTime,...(pageToken?{pageToken}:{})}});
+                for(const id of page.collectionIds||[]) {
+                  if(typeof id!=='string'||id.includes('/'))throw new Error('COLLECTION_GUARD');
+                  const collection=parent+'/'+id;
+                  output.collections.push(collection);
+                  let docToken;
+                  do {
+                    const q=new URLSearchParams({pageSize:'100',showMissing:'true',readTime,...(docToken?{pageToken:docToken}:{})});
+                    const batch=await req('https://firestore.googleapis.com/v1/'+encPath(collection)+'?'+q);
+                    for(const doc of batch.documents||[]) {
+                      if(typeof doc.name!=='string'||!doc.name.startsWith(collection+'/')||doc.name.slice(collection.length+1).includes('/'))throw new Error('DOCUMENT_PATH_GUARD');
+                      if(doc.createTime||doc.updateTime) output.documents.push(doc); else output.missingParents.push(doc.name);
+                      await walk(doc.name);
+                    }
+                    docToken=batch.nextPageToken;
+                  }while(docToken);
+                }
+                pageToken=page.nextPageToken;
+              }while(pageToken);
+            }
+            await walk(docs);
+            if(new Set(output.documents.map(d=>d.name)).size!==output.documents.length)throw new Error('DUPLICATE_DOCUMENT');
+            write('firestore-documents.json',output);
+            return {readTime,collections:output.collections.length,documents:output.documents.length,missingParents:output.missingParents.length};
+          }
+          async function authUsers() {
+            let pageToken;const users=[];
+            do {
+              const query=new URLSearchParams({maxResults:'1000',...(pageToken?{nextPageToken:pageToken}:{})});
+              const page=await req('https://identitytoolkit.googleapis.com/v1/projects/ncc-member/accounts:batchGet?'+query);
+              users.push(...(page.users||[]));pageToken=page.nextPageToken;
+            }while(pageToken);
+            if(new Set(users.map(x=>x.localId)).size!==users.length)throw new Error('DUPLICATE_AUTH_USER');
+            write('firebase-auth-users.json',{format:'identity-toolkit-batchGet-v1',users});
+            const passwords=users.filter(x=>x.passwordHash).length;
+            return {users:users.length,usersWithPasswordHash:passwords,atomicSnapshot:false};
+          }
+          async function paged(url,key,file) {
+            let pageToken;const values=[];
+            do {const u=new URL(url);if(pageToken)u.searchParams.set('pageToken',pageToken);const page=await req(u);values.push(...(page[key]||[]));pageToken=page.nextPageToken;}while(pageToken);
+            write(file,{[key]:values});return values;
+          }
+          async function rules() {
+            const releases=await paged('https://firebaserules.googleapis.com/v1/projects/ncc-member/releases?pageSize=100','releases','firebase-rules-releases.json');
+            const sets={};
+            for(const release of releases) {
+              if(!/^projects\/ncc-member\/rulesets\/[^/]+$/.test(release.rulesetName))throw new Error('RULESET_GUARD');
+              if(!sets[release.rulesetName])sets[release.rulesetName]=await req('https://firebaserules.googleapis.com/v1/'+release.rulesetName);
+            }
+            write('firebase-rulesets.json',sets);return {releases:releases.length,rulesets:Object.keys(sets).length};
+          }
+          async function storage() {
+            const buckets=await paged('https://storage.googleapis.com/storage/v1/b?project=ncc-member&maxResults=100','items','storage-buckets.json');
+            const selected=buckets.filter(b=>['ncc-member.firebasestorage.app','ncc-member.appspot.com'].includes(b.name));
+            const index=[];let bytes=0;
+            fs.mkdirSync(path.join(root,'storage'),{mode:0o700});
+            for(const bucket of selected) {
+              let pageToken;
+              do {
+                const q=new URLSearchParams({maxResults:'1000',versions:'true',...(pageToken?{pageToken}:{})});
+                const page=await req('https://storage.googleapis.com/storage/v1/b/'+bucket.name+'/o?'+q);
+                for(const obj of page.items||[]) {
+                  const file=crypto.createHash('sha256').update(bucket.name+'\0'+obj.name+'\0'+obj.generation).digest('hex');
+                  const url='https://storage.googleapis.com/storage/v1/b/'+bucket.name+'/o/'+encodeURIComponent(obj.name)+'?alt=media&generation='+encodeURIComponent(obj.generation);
+                  const data=await req(url,{binary:true});
+                  fs.writeFileSync(path.join(root,'storage',file),data,{mode:0o600});bytes+=data.length;
+                  index.push({bucket:bucket.name,metadata:obj,file:'storage/'+file,sha256:crypto.createHash('sha256').update(data).digest('hex')});
+                }
+                pageToken=page.nextPageToken;
+              }while(pageToken);
+            }
+            write('storage-objects.json',index);
+            return {buckets:selected.length,objects:index.length,bytes,atomicSnapshot:false};
+          }
+          async function pages() {
+            if(!/^[a-f0-9]{32}$/i.test(account||''))throw new Error('ACCOUNT_GUARD');
+            const base='https://api.cloudflare.com/client/v4/accounts/'+account+'/pages/projects/ncc365-website';
+            const config=await req(base);if(config.result?.name!=='ncc365-website')throw new Error('PROJECT_GUARD');
+            write('cloudflare-pages-project.json',config.result);
+            write('cloudflare-pages-domains.json',(await req(base+'/domains')).result);
+            const deployed=[];let page=1;
+            while(page<=100) {const r=await req(base+'/deployments?per_page=100&page='+page);deployed.push(...r.result);if(r.result.length<100)break;page++;}
+            if(page>100)throw new Error('PAGINATION_LIMIT');
+            write('cloudflare-pages-deployments.json',deployed);
+            return {deploymentRecords:deployed.length,secretValuesMayBeRedacted:true};
+          }
+          async function dns() {
+            const z=await req('https://api.cloudflare.com/client/v4/zones?name=ncc365.com&per_page=50');
+            const matches=(z.result||[]).filter(v=>v.name==='ncc365.com');
+            if(matches.length!==1)throw new Error('ZONE_NOT_VISIBLE');
+            const zone=matches[0];
+            // This is the exact user-requested zone; it may be hosted in a different account from Pages.
+            if(!/^[a-f0-9]{32}$/i.test(zone.id))throw new Error('ZONE_GUARD');
+            write('cloudflare-zone.json',zone);
+            const records=[];let page=1;
+            while(page<=100){const r=await req('https://api.cloudflare.com/client/v4/zones/'+zone.id+'/dns_records?per_page=100&page='+page);records.push(...r.result);if(r.result.length<100)break;page++;}
+            if(page>100)throw new Error('PAGINATION_LIMIT');
+            write('cloudflare-dns.json',records);return {records:records.length};
+          }
+          function run(program,args,extraEnv={}) {
+            const result=spawnSync(program,args,{env:{PATH:process.env.PATH,HOME:process.env.HOME,LANG:'C.UTF-8',...extraEnv},encoding:'utf8',timeout:180000,maxBuffer:2*1024*1024});
+            if(result.status!==0)throw new Error('SUBPROCESS_FAILED');
+          }
+          async function source() {
+            const mirror=path.join(process.env.RUNNER_TEMP,'ncc-source-'+process.env.GITHUB_RUN_ID+'.git');
+            run('git',['clone','--mirror','https://github.com/kpa100plus-debug/ncc365-website.git',mirror]);
+            run('git',['--git-dir='+mirror,'cat-file','-e',SOURCE+'^{commit}']);
+            run('git',['--git-dir='+mirror,'bundle','create',path.join(root,'source-all-refs.bundle'),'--all']);
+            run('git',['--git-dir='+mirror,'bundle','verify',path.join(root,'source-all-refs.bundle')]);
+            run('git',['--git-dir='+mirror,'archive','--format=tar.gz','--output='+path.join(root,'source-production.tar.gz'),SOURCE]);
+            return {commit:SOURCE,bundleVerified:true};
+          }
+          async function d1() {
+            run('npx',['--yes','wrangler@4.126.0','d1','export','ncc-test-payments','--remote','--output='+path.join(root,'cloudflare-d1.sql')],{CLOUDFLARE_API_TOKEN:cfToken,CLOUDFLARE_ACCOUNT_ID:account,NPM_CONFIG_CACHE:path.join(process.env.RUNNER_TEMP,'npm-cache-ncc'),WRANGLER_SEND_METRICS:'false'});
+            if(fs.statSync(path.join(root,'cloudflare-d1.sql')).size===0)throw new Error('EMPTY_D1_EXPORT');
+            return {database:'ncc-test-payments',bytes:fs.statSync(path.join(root,'cloudflare-d1.sql')).size};
+          }
+          async function main() {
+            await auth();
+            await section('firestoreDocuments',firestore);
+            await section('authenticationUsers',authUsers);
+            await section('authenticationConfig',async()=>{write('firebase-auth-config.json',await req('https://identitytoolkit.googleapis.com/admin/v2/projects/ncc-member/config'));return {passwordRecoveryConfigNeedsVerification:true};});
+            await section('firestoreMetadata',async()=>{write('firestore-database.json',await req('https://firestore.googleapis.com/v1/'+db));return {};});
+            await section('firestoreIndexes',async()=>{const v=await paged('https://firestore.googleapis.com/v1/'+db+'/collectionGroups/-/indexes?pageSize=100','indexes','firestore-indexes.json');return {indexes:v.length};});
+            await section('firestoreFields',async()=>{const v=await paged('https://firestore.googleapis.com/v1/'+db+'/collectionGroups/-/fields?pageSize=100','fields','firestore-fields.json');return {fieldOverrides:v.length};});
+            await section('securityRules',rules);
+            await section('storage',storage);
+            await section('cloudflarePages',pages);
+            await section('cloudflareDNS',dns);
+            await section('cloudflareD1',d1);
+            await section('gitSource',source);
+            manifest.finishedAt=new Date().toISOString();
+            manifest.limitations.push('Not an all-service atomic snapshot; Firestore uses one readTime, Auth, Storage, D1 and Pages are captured separately.','Restore into an isolated environment has not been tested.','Cloudflare DNS visibility may be restricted; SSL/rules/settings outside captured resources, other Workers/KV/R2 and IAM are not covered.','Pages API may redact secret values. Service-account and API token credentials are deliberately excluded.','Authentication hash configuration and password sign-in restoration require separate verification.');
+            manifest.status=Object.values(manifest.sections).some(v=>v.status!=='complete')?'PARTIAL_BACKUP':'CAPTURED_NOT_RESTORE_VERIFIED';
+            write('manifest.json',manifest);
+            const hashes=[];
+            function hashDir(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())hashDir(f);else hashes.push(crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex')+'  '+path.relative(root,f));}}
+            hashDir(root);fs.writeFileSync(path.join(root,'SHA256SUMS.txt'),hashes.join('\n')+'\n',{mode:0o600});
+            const tar=path.join(process.env.RUNNER_TEMP,'NCC_V1_20260905.tar.gz');
+            run('tar',['-czf',tar,'-C',root,'.']);
+            const plain=fs.readFileSync(tar), key=crypto.randomBytes(32),iv=crypto.randomBytes(12);
+            const cipher=crypto.createCipheriv('aes-256-gcm',key,iv);
+            const ciphertext=Buffer.concat([cipher.update(plain),cipher.final()]);
+            const wrappedKey=crypto.publicEncrypt({key:process.env.NCC_BACKUP_PUBLIC_KEY,oaepHash:'sha256',padding:crypto.constants.RSA_PKCS1_OAEP_PADDING},key);
+            const encrypted={format:'NCC-RSA-OAEP-SHA256-AES256GCM-v1',wrappedKey:wrappedKey.toString('base64'),iv:iv.toString('base64'),tag:cipher.getAuthTag().toString('base64'),ciphertext:ciphertext.toString('base64'),plaintextSha256:crypto.createHash('sha256').update(plain).digest('hex')};
+            const output=path.join(process.env.RUNNER_TEMP,'ncc-encrypted-deliverable');fs.mkdirSync(output,{mode:0o700});
+            fs.writeFileSync(path.join(output,'NCC_V1_20260905.encrypted.json'),JSON.stringify(encrypted),{mode:0o600});
+            fs.writeFileSync(path.join(output,'capture-status.json'),JSON.stringify(manifest,null,2),{mode:0o600});
+            console.log('Encrypted package ready: '+manifest.status);
+            console.log('NCC_CAPTURE_STATUS '+JSON.stringify(manifest));
+            if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## NCC V1 encrypted capture\n\nStatus: '+manifest.status+'\n\nRestore not yet tested. Private data is inside the encrypted artifact only.\n');
+          }
+          main().catch(()=>{console.error('Backup stopped; sensitive error details suppressed. No production writes performed.');process.exitCode=1;});
+          NCC_NODE
+      - name: Upload encrypted backup and non-sensitive status
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ncc-v1-encrypted-20260905-${{ github.run_id }}
+          path: ${{ runner.temp }}/ncc-encrypted-deliverable/
+          retention-days: 90
+          if-no-files-found: error
+          compression-level: 0
