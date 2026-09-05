@@ -49,7 +49,8 @@ jobs:
           const hash = b => crypto.createHash('sha256').update(b).digest('hex');
           function record(name,status,details={}){report.checks.push({name,status,...details});console.log('NCC_CHECK '+JSON.stringify({name,status,...details}));}
           function save(){if(root){fs.writeFileSync(path.join(root,'verification.json'),JSON.stringify(report,null,2),{mode:0o600});}}
-          function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object')return Object.fromEntries(Object.keys(v).sort().map(k=>[k,k==='timestampValue'?new Date(v[k]).toISOString():canonical(v[k])]));return v;}
+          function normalizeTimestamp(value){const m=value.match(/^(.*T\d{2}:\d{2}:\d{2})(?:\.(\d{1,9}))?Z$/);guard(m,'TIMESTAMP_FORMAT_GUARD');return m[1]+'.'+(m[2]||'').padEnd(9,'0')+'Z';}
+          function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object')return Object.fromEntries(Object.keys(v).sort().map(k=>[k,k==='timestampValue'?normalizeTimestamp(v[k]):canonical(v[k])]));return v;}
           const equal = (a,b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
           function mapped(v){if(Array.isArray(v))return v.map(mapped);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,value])=>[k,k==='referenceValue'?value.replace('projects/ncc-member/','projects/'+TARGET+'/'):mapped(value)]));return v;}
           function load(name){return JSON.parse(fs.readFileSync(path.join(input,name)));}
@@ -65,7 +66,7 @@ jobs:
             const r=await fetch(u,{method,redirect:'error',signal:AbortSignal.timeout(30000),headers:{...(credential?{Authorization:'Bearer '+credential}:{}),...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
             const data=await r.json().catch(()=>({}));
             if(!expected.includes(r.status)){
-              const e=new Error('HTTP_'+r.status);e.safe={host:u.hostname,path:u.pathname,http:r.status,status:data.error?.status,reason:(data.error?.details||[]).map(d=>d.reason).filter(Boolean)};throw e;
+              const e=new Error('HTTP_'+r.status);e.safe={host:u.hostname,path:u.pathname,http:r.status,status:data.error?.status,reason:(data.error?.details||[]).map(d=>d.reason).filter(Boolean),code:(data.error?.message||'').match(/^([A-Z][A-Z_0-9]{2,80})(?:$|[ :])/)?.[1]};throw e;
             }
             return {status:r.status,data};
           }
@@ -121,7 +122,7 @@ jobs:
             const existing=await users();guard(existing.every(u=>original.some(v=>v.localId===u.localId&&v.email===u.email)),'UNEXPECTED_TARGET_USER');
             const incoming=original.filter(u=>!existing.some(v=>v.localId===u.localId));
             const h=load('firebase-auth-config.json').signIn.hashConfig;guard(h.algorithm==='SCRYPT'&&h.signerKey,'SCRYPT_CONFIG_GUARD');
-            if(incoming.length){const r=await req(AUTH+'/accounts:batchCreate',{method:'POST',body:{users:incoming,hashAlgorithm:h.algorithm,signerKey:h.signerKey,saltSeparator:h.saltSeparator,rounds:h.rounds,memoryCost:h.memoryCost,sanityCheck:true,allowOverwrite:false}});guard(!(r.data.error||[]).length,'AUTH_IMPORT_PARTIAL_FAILURE');}
+            if(incoming.length){const r=await req(AUTH+'/accounts:batchCreate',{method:'POST',body:{users:incoming.map(u=>{const v=Object.fromEntries(['localId','email','emailVerified','displayName','photoUrl','phoneNumber','disabled','passwordHash','salt','customAttributes','createdAt','lastLoginAt'].filter(k=>u[k]!==undefined).map(k=>[k,u[k]]));const providers=(u.providerUserInfo||[]).filter(p=>!['password','phone'].includes(p.providerId));if(providers.length)v.providerUserInfo=providers;return v;}),hashAlgorithm:h.algorithm,signerKey:h.signerKey,saltSeparator:h.saltSeparator,rounds:h.rounds,memoryCost:h.memoryCost,sanityCheck:true,allowOverwrite:false}});guard(!(r.data.error||[]).length,'AUTH_IMPORT_PARTIAL_FAILURE');}
             const after=await users();guard(after.length===original.length,'RESTORED_USER_COUNT_DIFFERS');
             const fields=['email','emailVerified','disabled','displayName','photoUrl','phoneNumber','customAttributes','createdAt'];let hashes=0;
             for(const u of original){const v=after.find(v=>v.localId===u.localId);guard(v,'RESTORED_UID_MISSING');for(const key of fields)if(u[key]!==undefined)guard(equal(v[key],u[key]),'RESTORED_USER_FIELD_DIFFERS_'+key);for(const p of u.providerUserInfo||[]){if(['password','phone'].includes(p.providerId))continue;guard((v.providerUserInfo||[]).some(q=>q.providerId===p.providerId&&q.rawId===p.rawId),'RESTORED_PROVIDER_DIFFERS');}if(u.passwordHash&&v.passwordHash===u.passwordHash&&v.salt===u.salt)hashes++;}
@@ -170,14 +171,13 @@ jobs:
             const db=(await req('https://firestore.googleapis.com/v1/'+DB)).data;guard(db.name===DB&&db.type==='FIRESTORE_NATIVE'&&db.locationId==='asia-northeast3','DATABASE_ISOLATION_GUARD');
             record('isolated_target','PASS',{project:TARGET,region:db.locationId,freeTier:db.freeTier});
             // Publish and verify original security rules BEFORE placing any member data here.
-            await restoreRules();await restoreFirestore();await restoreUsers();await loginTests();
+            await restoreRules();await restoreUsers();await restoreFirestore();await loginTests();
             const indexes=(await req(`https://firestore.googleapis.com/v1/${DB}/collectionGroups/-/indexes`)).data.indexes||[];
             record('composite_index_count',indexes.length===0?'PASS':'FAIL',{source:0,target:indexes.length});
             report.overall=report.checks.some(c=>c.status==='FAIL')?'FAILED':'PARTIAL_PASS_FULL_RESTORE_GATE_NOT_PASSED';
           }
           if(require.main===module)main().catch(e=>{report.overall='FAILED';report.failure=/^[A-Z0-9_]+$/.test(e.message)?e.message:'ERROR_DETAILS_SUPPRESSED';if(e.safe)report.error=e.safe;console.error('NCC_RESTORE_STOP '+JSON.stringify({failure:report.failure,error:report.error}));process.exitCode=1;}).finally(()=>{report.finishedAt=new Date().toISOString();save();console.log('NCC_CLOUD_RESTORE_REPORT '+JSON.stringify(report));});
           module.exports={mapped,canonical,equal,TARGET};
-          
           NCC_RESTORE
           node restore.cjs
       - name: Save counts and verification status only
