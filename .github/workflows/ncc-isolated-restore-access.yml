@@ -1,0 +1,38 @@
+name: NCC isolated restore access check
+on:
+  push:
+    branches: [backup/ncc-v1-encrypted-20260905]
+    paths: [.github/workflows/ncc-isolated-restore-access.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check existing runner identity and isolated target access
+        env:
+          FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON }}
+        shell: bash
+        run: |
+          node <<'NCC_NODE'
+          const c = require('node:crypto');
+          async function main() {
+            const sa = JSON.parse(process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON || '{}');
+            if (sa.project_id !== 'ncc-member' || !sa.client_email || !sa.private_key) throw new Error('IDENTITY_GUARD');
+            const now = Math.floor(Date.now()/1000);
+            const b64 = x => Buffer.from(JSON.stringify(x)).toString('base64url');
+            const input = b64({alg:'RS256',typ:'JWT'})+'.'+b64({iss:sa.client_email,scope:'https://www.googleapis.com/auth/cloud-platform',aud:'https://oauth2.googleapis.com/token',iat:now,exp:now+600});
+            const assertion = input+'.'+c.createSign('RSA-SHA256').update(input).sign(sa.private_key,'base64url');
+            const r = await fetch('https://oauth2.googleapis.com/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(20000),body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion})});
+            if (!r.ok) throw new Error('AUTH_FAILED');
+            const {access_token} = await r.json();
+            if (!access_token) throw new Error('AUTH_FAILED');
+            const target = 'ncc-v1-restore-kpa-260905';
+            const permissions = ['datastore.entities.create','datastore.entities.get','datastore.entities.list','firebaseauth.users.create','firebaseauth.users.get','firebaseauth.configs.get','firebaserules.rulesets.create','firebaserules.releases.create','firebaserules.releases.update'];
+            const p = await fetch('https://cloudresourcemanager.googleapis.com/v1/projects/'+target+':testIamPermissions',{method:'POST',redirect:'error',signal:AbortSignal.timeout(20000),headers:{Authorization:'Bearer '+access_token,'Content-Type':'application/json'},body:JSON.stringify({permissions})});
+            const data = p.ok ? await p.json() : {};
+            console.log('NCC_RESTORE_ACCESS '+JSON.stringify({target,serviceAccount:sa.client_email,http:p.status,granted:permissions.filter(x=>(data.permissions||[]).includes(x)),missing:permissions.filter(x=>!(data.permissions||[]).includes(x)),productionWrites:false,restoreExecuted:false}));
+          }
+          main().catch(()=>{console.error('Access check failed; sensitive details suppressed.');process.exitCode=1;});
+          NCC_NODE
