@@ -50,6 +50,7 @@ with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED) as z:
         if name==old_asset: name=new_asset;data=s.encode();changed.append(name)
         elif name.startswith('daily-fortune-now.pages.dev/') and name.endswith('.html') and b'index-d8fOMnWB.js' in data:
             data=data.replace(b'index-d8fOMnWB.js',new_name.encode());changed.append(name)
+            data=data.replace(b'</head>',b'<style>.glam-hero .hero-copy{word-break:keep-all;text-wrap:pretty}.hero-meta,.share-help,.share-options button small{font-size:12px}.category-grid p{word-break:keep-all;overflow-wrap:anywhere}</style></head>')
         info.filename=name
         z.writestr(info,data)
 with zipfile.ZipFile(out) as z:
