@@ -69,4 +69,15 @@ jobs:
           })().catch(e=>{console.error(e.message);process.exitCode=1});
           JS
 
-# Post-integration verification: f73d97775f0bc3a1ecc4facaadee37642b86c797
+      - name: Verify deployed game translation revision
+        run: |
+          node <<'JS'
+          const {execFileSync}=require('node:child_process');
+          function read(path){return execFileSync('curl',['-4','--fail','--silent','--show-error','--max-time','20','https://dtlabkr.dpdns.org'+path+'?verify=20260908-03'],{encoding:'utf8',maxBuffer:2000000});}
+          const en=JSON.parse(read('/data/locales/en.json')).translations;
+          if(en['기억력 기록 도전 방법']!=='How to play the memory game')throw Error('English help revision not live');
+          if(en['빛나는 타일을 차례로 기억하세요.']!=='Remember the order in which the tiles light up.')throw Error('English tile instructions not live');
+          const locale=read('/assets/js/locale.js');
+          if(!locale.includes('20260908-2')||!locale.includes("import { translateGameLabel }"))throw Error('Locale revision not live');
+          console.log('Deployed English help and dynamic game translation revision verified.');
+          JS
