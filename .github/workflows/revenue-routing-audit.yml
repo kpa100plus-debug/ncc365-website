@@ -38,3 +38,30 @@ jobs:
             }
           }).catch(e=>{console.error(e.message);process.exitCode=1});
           JS
+
+      - name: Read public site metadata without loading advertising
+        run: |
+          node <<'JS'
+          (async()=>{
+            for(const [origin,paths] of [
+              ['https://dtlabkr.dpdns.org',['/','/robots.txt','/sitemap.xml','/ads.txt','/legal/privacy/','/contact/']],
+              ['https://daily-fortune-now.pages.dev',['/','/robots.txt','/sitemap.xml','/ads.txt','/privacy/','/contact/']],
+              ['https://arcana-day.pages.dev',['/','/robots.txt','/sitemap.xml','/ads.txt','/privacy/','/contact/']]
+            ]){
+              for(const path of paths){
+                const r=await fetch(origin+path,{signal:AbortSignal.timeout(20000)});
+                const s=await r.text();
+                const result={url:origin+path,status:r.status,final_url:r.url};
+                if(path==='/'){
+                  result.canonical=s.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)?.[1]||null;
+                  result.ad_client=s.match(/ca-pub-\d+/)?.[0]||null;
+                }
+                if(path==='/ads.txt')result.publisher_match=s.includes('google.com, pub-3207271051639372, DIRECT, f08c47fec0942fa0');
+                if(path==='/robots.txt')result.sitemap=s.match(/Sitemap:\s*(\S+)/i)?.[1]||null;
+                if(path==='/sitemap.xml')result.urls=(s.match(/<loc>/g)||[]).length;
+                console.log(JSON.stringify(result));
+                if(!r.ok)throw Error('Public route failed: '+origin+path);
+              }
+            }
+          })().catch(e=>{console.error(e.message);process.exitCode=1});
+          JS
