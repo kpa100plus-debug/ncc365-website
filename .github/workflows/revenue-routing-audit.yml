@@ -51,8 +51,8 @@ jobs:
               for(const path of paths){
                 const {spawnSync}=require('node:child_process');
                 const curl=spawnSync('curl',['-4','--location','--silent','--show-error','--max-time','20','--write-out','\\n%{http_code}\\n%{url_effective}',origin+path],{encoding:'utf8',maxBuffer:2000000});
-                if(curl.status!==0){console.log(JSON.stringify({url:origin+path,transport_error:curl.stderr.trim()}));process.exitCode=1;continue;}
-                const lines=curl.stdout.split('\\n'),url=lines.pop(),status=Number(lines.pop()),s=lines.join('\\n');
+                if(curl.status!==0){console.log(JSON.stringify({url:origin+path,transport_error:curl.stderr.trim()}));process.exitCode=1;break;}
+                const lines=curl.stdout.split(String.fromCharCode(10)),url=lines.pop(),status=Number(lines.pop()),s=lines.join(String.fromCharCode(10));
                 const r={url,status,ok:status>=200&&status<300};
                 const result={url:origin+path,status:r.status,final_url:r.url};
                 if(path==='/'){
