@@ -49,8 +49,11 @@ jobs:
               ['https://arcana-day.pages.dev',['/','/robots.txt','/sitemap.xml','/ads.txt','/privacy/','/contact/']]
             ]){
               for(const path of paths){
-                const r=await fetch(origin+path,{signal:AbortSignal.timeout(20000)});
-                const s=await r.text();
+                const {spawnSync}=require('node:child_process');
+                const curl=spawnSync('curl',['-4','--location','--silent','--show-error','--max-time','20','--write-out','\\n%{http_code}\\n%{url_effective}',origin+path],{encoding:'utf8',maxBuffer:2000000});
+                if(curl.status!==0){console.log(JSON.stringify({url:origin+path,transport_error:curl.stderr.trim()}));process.exitCode=1;continue;}
+                const lines=curl.stdout.split('\\n'),url=lines.pop(),status=Number(lines.pop()),s=lines.join('\\n');
+                const r={url,status,ok:status>=200&&status<300};
                 const result={url:origin+path,status:r.status,final_url:r.url};
                 if(path==='/'){
                   result.canonical=s.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)?.[1]||null;
