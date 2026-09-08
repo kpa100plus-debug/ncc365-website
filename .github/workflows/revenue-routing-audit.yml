@@ -68,3 +68,5 @@ jobs:
             }
           })().catch(e=>{console.error(e.message);process.exitCode=1});
           JS
+
+# Post-integration verification: f73d97775f0bc3a1ecc4facaadee37642b86c797
