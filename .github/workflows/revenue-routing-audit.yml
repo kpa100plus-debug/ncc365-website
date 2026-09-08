@@ -32,7 +32,9 @@ jobs:
                 production_deployments_enabled:c.production_deployments_enabled,
                 production_branch:c.production_branch||x.production_branch,
                 path_includes:c.path_includes,path_excludes:c.path_excludes,
-                preview_deployment_setting:c.preview_deployment_setting}));
+                preview_deployment_setting:c.preview_deployment_setting,
+                production_deployment:x.canonical_deployment?.id,
+                production_commit:x.canonical_deployment?.deployment_trigger?.metadata?.commit_hash}));
             }
           }).catch(e=>{console.error(e.message);process.exitCode=1});
           JS
