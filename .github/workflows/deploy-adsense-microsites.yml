@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: ${{ github.ref == 'refs/heads/main' }}
     name: Verify, deploy, and recheck both Pages sites
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -201,7 +202,7 @@ jobs:
           NODE
 
       - name: Deploy Arcana Day to production
-        if: ${{ steps.projects.outputs.arcana_present == 'true' }}
+        if: ${{ steps.projects.outputs.arcana_present == 'true' && github.ref == 'refs/heads/main' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -209,7 +210,7 @@ jobs:
             wrangler pages deploy "$RUNNER_TEMP/adsense-sites/arcana-day.pages.dev" \
             --project-name arcana-day \
             --branch "${{ steps.projects.outputs.arcana_branch }}" \
-            --commit-message "AdSense readiness deployment 2026-08-29"
+            --commit-message "Revenue site maintenance ${GITHUB_SHA}"
 
       - name: Deploy Daily Fortune Now to production
         shell: bash
@@ -219,7 +220,7 @@ jobs:
             wrangler pages deploy "$RUNNER_TEMP/adsense-sites/daily-fortune-now.pages.dev" \
             --project-name daily-fortune-now \
             --branch "${{ steps.projects.outputs.fortune_branch }}" \
-            --commit-message "AdSense readiness deployment 2026-08-29"
+            --commit-message "Revenue site maintenance ${GITHUB_SHA}"
 
       - name: Verify Daily Fortune Now AdSense installation
         shell: bash
