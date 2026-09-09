@@ -3,7 +3,8 @@ import { createServer } from "node:http";
 import path from "node:path";
 
 const playwrightModule = process.env.NCC_PLAYWRIGHT_MODULE || "playwright";
-const { chromium } = await import(playwrightModule);
+const playwrightImport = await import(playwrightModule);
+const { chromium } = playwrightImport.chromium ? playwrightImport : playwrightImport.default;
 
 let baseUrl = (process.env.NCC_BASE_URL || "https://ncc365.com").replace(/\/$/, "");
 const outputDir = process.env.NCC_AUDIT_OUTPUT || "artifacts/public-audit";

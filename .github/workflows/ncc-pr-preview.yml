@@ -10,6 +10,7 @@ on:
       - "certificate-verify.html"
       - "css/admin-center-manager-certificates.css"
       - "css/center-manager-certificate.css"
+      - "css/wallet.css"
       - "js/admin-center-manager-certificates.js"
       - "js/center-manager-certificate-print.js"
       - "js/certificate-verify.js"
