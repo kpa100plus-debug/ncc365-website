@@ -49,7 +49,7 @@ async function findMember(user) {
       const snapshot = await getDoc(doc(db, "members", saved.id));
       if (snapshot.exists()) return { id: snapshot.id, ...saved, ...snapshot.data() };
     } catch (error) {
-      console.warn("월렛 회원문서 직접 복원 실패, 보조 조회를 계속합니다.", error);
+      console.warn("지갑 회원문서 직접 복원 실패, 보조 조회를 계속합니다.", error);
     }
   }
 
@@ -89,11 +89,11 @@ function fillMember(targetForm) {
 
 function showLoginRequired() {
   const sideAction = $("#memberSideAction");
-  $("#memberSideGuide").textContent = "NCC 월렛에 로그인한 회원만 신청할 수 있습니다.";
+  $("#memberSideGuide").textContent = "NCC 소비자지갑에 로그인한 회원만 신청할 수 있습니다.";
   sideAction.hidden = false;
-  sideAction.textContent = "NCC 월렛 로그인";
+  sideAction.textContent = "NCC 소비자지갑 로그인";
   sideAction.href = "wallet.html";
-  $("#formMessage").innerHTML = '신청하려면 <a href="wallet.html">NCC 월렛에 먼저 로그인</a>해 주세요.';
+  $("#formMessage").innerHTML = '신청하려면 <a href="wallet.html">NCC 소비자지갑에 먼저 로그인</a>해 주세요.';
   setFormReady(false);
 }
 
@@ -113,7 +113,7 @@ onAuthStateChanged(auth, async user => {
   try {
     currentMember = await findMember(user);
     if (!currentMember) {
-      $("#formMessage").innerHTML = '로그인 계정과 연결된 NCC 회원정보를 찾지 못했습니다. <a href="wallet.html">월렛에서 회원정보를 확인</a>해 주세요.';
+      $("#formMessage").innerHTML = '로그인 계정과 연결된 NCC 회원정보를 찾지 못했습니다. <a href="wallet.html">지갑에서 회원정보를 확인</a>해 주세요.';
       $("#memberSideGuide").textContent = "로그인 계정과 NCC 회원정보 연결을 확인해 주세요.";
       const action = $("#memberSideAction");
       action.hidden = false;
@@ -152,7 +152,7 @@ form.addEventListener("submit", async event => {
     return;
   }
   if (!currentUser || !currentMember) {
-    message.innerHTML = '로그인 상태를 확인할 수 없습니다. <a href="wallet.html">NCC 월렛에서 다시 확인</a>해 주세요.';
+    message.innerHTML = '로그인 상태를 확인할 수 없습니다. <a href="wallet.html">NCC 소비자지갑에서 다시 확인</a>해 주세요.';
     return;
   }
 
@@ -181,8 +181,8 @@ form.addEventListener("submit", async event => {
     });
     if (duplicate) {
       message.innerHTML = isAlert
-        ? '이미 모집 알림을 신청한 혜택입니다. <a href="wallet.html#activity">NCC 월렛 알림·신청내역 보기</a>'
-        : '이미 신청한 혜택입니다. <a href="wallet.html#activity">NCC 월렛에서 진행상태 보기</a>';
+        ? '이미 모집 알림을 신청한 혜택입니다. <a href="wallet.html#activity">NCC 소비자지갑 알림·신청내역 보기</a>'
+        : '이미 신청한 혜택입니다. <a href="wallet.html#activity">NCC 소비자지갑에서 진행상태 보기</a>';
       return;
     }
 
@@ -196,15 +196,15 @@ form.addEventListener("submit", async event => {
     $("#receiptNo").textContent = receipt;
     $("#successTitle").textContent = isAlert ? "모집 알림 신청이 완료되었습니다" : "혜택 신청이 정상 접수되었습니다";
     $("#successGuide").textContent = isAlert
-      ? "NCC 월렛 신청내역에 저장되었습니다. 관리자가 모집 시작을 승인하면 월렛 알림함에 안내가 표시됩니다."
-      : "NCC 월렛에서 신청내역과 진행상태를 확인할 수 있습니다.";
+      ? "NCC 소비자지갑 신청내역에 저장되었습니다. 관리자가 모집 시작을 승인하면 지갑 알림함에 안내가 표시됩니다."
+      : "NCC 소비자지갑에서 신청내역과 진행상태를 확인할 수 있습니다.";
     $("#successBox").hidden = false;
     $("#successBox").scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (error) {
     console.error(error);
     const code = String(error?.code || "");
     message.textContent = code.includes("permission-denied")
-      ? "회원 인증 또는 신청 저장 권한을 확인하지 못했습니다. NCC 월렛에서 다시 로그인해 주세요."
+      ? "회원 인증 또는 신청 저장 권한을 확인하지 못했습니다. NCC 소비자지갑에서 다시 로그인해 주세요."
       : code.includes("unavailable")
         ? "통신이 원활하지 않습니다. 잠시 후 다시 시도해 주세요."
         : "신청 처리 중 오류가 발생했습니다. 입력내용은 유지되므로 다시 시도해 주세요.";

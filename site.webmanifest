@@ -2,7 +2,7 @@
   "id": "/app",
   "name": "전국소비자클럽 NCC 앱",
   "short_name": "NCC 앱",
-  "description": "혜택, 공동구매, 월렛과 알림을 한 번에 이용하는 전국소비자클럽 공식 앱",
+  "description": "혜택, 공동구매, 지갑과 알림을 한 번에 이용하는 전국소비자클럽 공식 앱",
   "start_url": "/app.html?source=install",
   "scope": "/",
   "display": "standalone",
@@ -31,8 +31,8 @@
       ]
     },
     {
-      "name": "NCC 월렛",
-      "short_name": "월렛",
+      "name": "NCC 소비자지갑",
+      "short_name": "지갑",
       "url": "/wallet.html",
       "icons": [
         {

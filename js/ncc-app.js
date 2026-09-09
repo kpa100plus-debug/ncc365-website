@@ -70,7 +70,7 @@ function renderAccount() {
   const name = esc(member.name || member.displayName || "회원");
   $("#greeting").innerHTML = `${name}님,<br>오늘의 NCC 혜택을 확인하세요`;
   $("#memberLead").textContent = `${member.region || "내 지역"}을 기준으로 혜택과 공동구매 소식을 편하게 확인할 수 있어요.`;
-  $("#memberAccountCard").innerHTML = `<p class="app-kicker">NCC MEMBER</p><h2>${name}님의<br>디지털 NCC 월렛</h2><a href="wallet.html">내 QR·회원카드 열기 <span>→</span></a>`;
+  $("#memberAccountCard").innerHTML = `<p class="app-kicker">NCC MEMBER</p><h2>${name}님의<br>디지털 NCC 소비자지갑</h2><a href="wallet.html">내 QR·회원카드 열기 <span>→</span></a>`;
 }
 
 function renderActivity() {
@@ -95,7 +95,7 @@ function notificationCard(item) {
 function renderNotifications() {
   const target = $("#appNotificationList");
   if (!state.member) {
-    target.innerHTML = '<div class="empty-app-state">NCC 월렛에 로그인하면 신청 결과와 주문·배송 소식을 이곳에서 확인할 수 있습니다.</div>';
+    target.innerHTML = '<div class="empty-app-state">NCC 소비자지갑에 로그인하면 신청 결과와 주문·배송 소식을 이곳에서 확인할 수 있습니다.</div>';
     return;
   }
   if (!state.notifications.length) {

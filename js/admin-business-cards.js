@@ -339,12 +339,12 @@ onAuthStateChanged(auth, user => {
   navigation.hidden = true;
   if (!user) {
     gate.hidden = false;
-    gate.innerHTML = '<strong>센터 명함 자동제작은 관리자 전용 화면입니다.</strong><p>승인된 관리자 계정으로 로그인해 주세요.</p><p><a href="wallet.html">NCC 월렛에서 관리자 계정 로그인</a></p>';
+    gate.innerHTML = '<strong>센터 명함 자동제작은 관리자 전용 화면입니다.</strong><p>승인된 관리자 계정으로 로그인해 주세요.</p><p><a href="wallet.html">NCC 소비자지갑에서 관리자 계정 로그인</a></p>';
     return;
   }
   if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
     gate.hidden = false;
-    gate.innerHTML = '<strong>현재 회원 계정으로 로그인되어 있습니다.</strong><p>센터 명함 자동제작은 승인된 관리자 계정만 이용할 수 있습니다.</p><p><a href="wallet.html">NCC 월렛으로 이동</a></p>';
+    gate.innerHTML = '<strong>현재 회원 계정으로 로그인되어 있습니다.</strong><p>센터 명함 자동제작은 승인된 관리자 계정만 이용할 수 있습니다.</p><p><a href="wallet.html">NCC 소비자지갑으로 이동</a></p>';
     return;
   }
   gate.hidden = true;

@@ -13,7 +13,7 @@ for(const [rel,type,href] of nccHeadLinks){
 }
 const navItems=[["HOME","index.html","home","nav-home"],["혜택센터","benefits.html","benefits","nav-priority"],["공동구매","groupbuy.html","groupbuy","nav-priority"],["소비자채널","consumer-channel.html","channel","nav-priority"],["전국소비자센터","centers.html","centers","nav-secondary nav-secondary-start"],["파트너센터","partner-center.html","partners","nav-secondary"]];
 const current=document.body.dataset.page||"";
-const header=`<a class="skip-link" href="#mainContent">본문 바로가기</a><header class="platform-header"><div class="platform-header-inner"><a class="platform-logo" href="index.html"><img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽 공식 로고"></a><nav class="platform-nav" id="platformNav">${navItems.map(([label,url,key,groupClass])=>`<a class="${[current===key?"active":"",groupClass].filter(Boolean).join(" ")}" href="${url}">${label}</a>`).join("")}<a class="wallet-link ${current==="wallet"?"active":""}" href="wallet.html">NCC 월렛</a><a class="join-link" href="join.html">회원가입</a></nav><button class="platform-menu" id="platformMenu" aria-expanded="false" aria-label="전체 메뉴 열기">☰</button></div></header>`;
+const header=`<a class="skip-link" href="#mainContent">본문 바로가기</a><header class="platform-header"><div class="platform-header-inner"><a class="platform-logo" href="index.html"><img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽 공식 로고"></a><nav class="platform-nav" id="platformNav">${navItems.map(([label,url,key,groupClass])=>`<a class="${[current===key?"active":"",groupClass].filter(Boolean).join(" ")}" href="${url}">${label}</a>`).join("")}<a class="wallet-link ${current==="wallet"?"active":""}" href="wallet.html">NCC 소비자지갑</a><a class="join-link" href="join.html">회원가입</a></nav><button class="platform-menu" id="platformMenu" aria-expanded="false" aria-label="전체 메뉴 열기">☰</button></div></header>`;
 const footer=`<footer class="platform-footer"><div class="footer-grid"><div class="footer-brand"><img src="images/NCC_HEADER.webp?v=20260826-1" alt="전국소비자클럽"><p>대한민국 소비자가 더 많은 혜택을 누리는 곳<br>NATIONAL CONSUMER CLUB<br><small>© 2026 ISEA GROUP. All Rights Reserved.</small></p></div><div class="footer-links"><a href="benefits.html">혜택센터</a><a href="partner-center.html">파트너센터</a><a href="centers.html">전국소비자센터</a><a href="certificate-verify.html">인증서 진위확인</a><a href="admin.html">관리자</a></div></div></footer>`;
 document.body.insertAdjacentHTML("afterbegin",header);document.body.insertAdjacentHTML("beforeend",footer);const menu=document.querySelector("#platformMenu"),nav=document.querySelector("#platformNav");menu?.addEventListener("click",()=>{const open=nav.classList.toggle("open");menu.setAttribute("aria-expanded",String(open));menu.textContent=open?"×":"☰"});nav?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>nav.classList.remove("open")));
 
@@ -26,8 +26,8 @@ let shellSignOut=null;
 function updateMemberNav(user){
   const signedIn=Boolean(user);
   if(walletLink){
-    walletLink.textContent=signedIn?"NCC 월렛":"회원 로그인";
-    walletLink.setAttribute("aria-label",signedIn?"NCC 월렛 열기":"NCC 회원 로그인");
+    walletLink.textContent=signedIn?"NCC 소비자지갑":"회원 로그인";
+    walletLink.setAttribute("aria-label",signedIn?"NCC 소비자지갑 열기":"NCC 회원 로그인");
   }
   if(!joinLink)return;
   joinLink.removeAttribute("aria-busy");
@@ -35,7 +35,7 @@ function updateMemberNav(user){
   joinLink.classList.toggle("is-logout",signedIn);
   joinLink.textContent=signedIn?"로그아웃":"회원가입";
   joinLink.href=signedIn?"#logout":"join.html";
-  joinLink.setAttribute("aria-label",signedIn?"NCC 월렛 로그아웃":"NCC 회원가입");
+  joinLink.setAttribute("aria-label",signedIn?"NCC 소비자지갑 로그아웃":"NCC 회원가입");
 }
 
 joinLink?.addEventListener("click",async event=>{

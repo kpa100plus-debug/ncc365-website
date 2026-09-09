@@ -86,7 +86,7 @@ function card(application) {
       <h2>${esc(application.offerTitle)} <small>${esc(application.type)}</small></h2>
       <div class="meta"><b>${esc(application.name)}</b><span>${esc(application.phone)}</span><span>${esc(application.region)}</span></div>
       <p class="message">${esc(application.message || "신청 내용 없음")}</p>
-      <p class="notification-note">${alert ? "승인으로 저장하면 모집 시작 안내가" : "상태를 저장하면 처리 안내가"} 회원의 NCC 월렛 알림함에 표시됩니다.</p>
+      <p class="notification-note">${alert ? "승인으로 저장하면 모집 시작 안내가" : "상태를 저장하면 처리 안내가"} 회원의 NCC 소비자지갑 알림함에 표시됩니다.</p>
     </div>
     <div class="card-actions">
       <select id="status-${application.id}" aria-label="${esc(application.offerTitle)} 처리상태">${Object.entries(labels).map(([value, label]) => `<option value="${value}" ${application.status === value ? "selected" : ""}>${label}</option>`).join("")}</select>
@@ -147,7 +147,7 @@ async function save(event) {
     target.status = status;
     render();
     setStatus(notificationCreated
-      ? `${target.receipt || "신청"} 상태를 ${labels[status]}(으)로 저장하고 NCC 월렛 알림을 반영했습니다.`
+      ? `${target.receipt || "신청"} 상태를 ${labels[status]}(으)로 저장하고 NCC 소비자지갑 알림을 반영했습니다.`
       : `${target.receipt || "신청"} 상태를 ${labels[status]}(으)로 저장했습니다. 신규 상태 또는 이전 형식 신청은 알림을 만들지 않습니다.`
     );
   } catch (error) {

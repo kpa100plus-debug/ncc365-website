@@ -22,7 +22,7 @@ function shell() {
   const html = `<section id="walletActivity" class="wallet-activity">
     <div class="wallet-activity-head">
       <div><p class="eyebrow">MY ACTIVITY</p><h2>알림·신청·주문·배송·후기</h2></div>
-      <div class="wallet-activity-tabs" role="tablist" aria-label="월렛 이용내역 구분">
+      <div class="wallet-activity-tabs" role="tablist" aria-label="지갑 이용내역 구분">
         <button class="active" data-activity="all">전체</button>
         <button data-activity="notification">알림함</button>
         <button data-activity="benefit">혜택</button>
@@ -82,7 +82,7 @@ function render() {
   const orderCount = records.filter(item => item.kind === "groupbuy").length;
   const shippingCount = records.filter(item => item.status === "shipping").length;
   const reviewCount = records.filter(reviewEligible).length;
-  document.querySelector("#walletActivitySummary").innerHTML = `<div><span>월렛 알림</span><b>${notificationCount}</b></div><div><span>혜택 신청</span><b>${benefitCount}</b></div><div><span>공동구매 주문</span><b>${orderCount}</b></div><div><span>배송 중</span><b>${shippingCount}</b></div><div><span>후기 가능</span><b>${reviewCount}</b></div>`;
+  document.querySelector("#walletActivitySummary").innerHTML = `<div><span>지갑 알림</span><b>${notificationCount}</b></div><div><span>혜택 신청</span><b>${benefitCount}</b></div><div><span>공동구매 주문</span><b>${orderCount}</b></div><div><span>배송 중</span><b>${shippingCount}</b></div><div><span>후기 가능</span><b>${reviewCount}</b></div>`;
   const visible = records.filter(item => active === "all" || item.kind === active || (active === "review" && reviewEligible(item)));
   document.querySelector("#walletActivityList").innerHTML = visible.length ? visible.map(card).join("") : '<div class="wallet-empty">해당 이용내역이 없습니다.</div>';
 }
