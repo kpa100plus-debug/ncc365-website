@@ -45,5 +45,5 @@ test("NCC app includes compact device-safe layout rules", () => {
 
 test("service worker only falls back to the app shell for app navigation", () => {
   assert.match(serviceWorker, /\["\/app", "\/app\.html"\]\.includes\(url\.pathname\)/);
-  assert.match(serviceWorker, /ncc-app-shell-20260909-naming-1/);
+  assert.match(serviceWorker, /ncc-app-shell-20260909-icon03-1/);
 });

@@ -1,4 +1,4 @@
-const CACHE_NAME = "ncc-app-shell-20260909-naming-1";
+const CACHE_NAME = "ncc-app-shell-20260909-icon03-1";
 const APP_SHELL = [
   "/app.html",
   "/css/ncc-app.css?v=20260831-1",
