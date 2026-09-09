@@ -13,7 +13,7 @@ test("NCC app exposes all five core member destinations", () => {
     assert.match(appHtml, new RegExp(`data-tab="${tab}"`));
     assert.match(appHtml, new RegExp(`data-panel="${tab}"`));
   }
-  assert.match(appHtml, /NCC 월렛/);
+  assert.match(appHtml, /NCC 소비자지갑/);
   assert.match(appHtml, /공동구매/);
   assert.match(appHtml, /NCC 알림/);
 });
@@ -45,5 +45,5 @@ test("NCC app includes compact device-safe layout rules", () => {
 
 test("service worker only falls back to the app shell for app navigation", () => {
   assert.match(serviceWorker, /\["\/app", "\/app\.html"\]\.includes\(url\.pathname\)/);
-  assert.match(serviceWorker, /ncc-app-shell-20260831-1/);
+  assert.match(serviceWorker, /ncc-app-shell-20260909-naming-1/);
 });

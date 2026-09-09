@@ -25,7 +25,7 @@ test("application waits for auth and restores the wallet member before submissio
 
 test("participation and recruitment alert have separate, honest success feedback", () => {
   assert.match(js, /모집 알림 신청이 완료되었습니다/);
-  assert.match(js, /관리자가 모집 시작을 승인하면 월렛 알림함에 안내가 표시됩니다/);
+  assert.match(js, /관리자가 모집 시작을 승인하면 지갑 알림함에 안내가 표시됩니다/);
   assert.match(html, /id="successTitle"/);
   assert.doesNotMatch(js, /자동.*(?:이메일|문자)|(?:이메일|문자).*자동/);
 });
