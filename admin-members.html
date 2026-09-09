@@ -1411,9 +1411,21 @@ td:nth-child(11){
   min-width:150px;
 }
 
-.bulk-import-button:disabled{
+.bulk-import-button:disabled,
+.member-export-button:disabled{
   opacity:.55;
   cursor:not-allowed;
+}
+
+.member-export-button{
+  background:#226853;
+  color:#fff;
+  white-space:nowrap;
+  min-width:170px;
+}
+
+.member-export-button.excel{
+  background:#1f5d86;
 }
 
 .bulk-modal{
@@ -2054,6 +2066,20 @@ id="bulkImportButton"
 class="bulk-import-button"
 type="button">
 회원 대량등록
+</button>
+
+<button
+id="memberExportCsvButton"
+class="member-export-button"
+type="button">
+현재 필터 CSV 다운로드
+</button>
+
+<button
+id="memberExportExcelButton"
+class="member-export-button excel"
+type="button">
+현재 필터 엑셀 다운로드
 </button>
 
 <button
@@ -3113,6 +3139,7 @@ doc,
 updateDoc,
 writeBatch,
 deleteDoc,
+addDoc,
 serverTimestamp,
 runTransaction
 }
@@ -3207,6 +3234,12 @@ document.getElementById("backfillCenterCodesButton");
 
 const bulkImportButton =
 document.getElementById("bulkImportButton");
+
+const memberExportCsvButton =
+document.getElementById("memberExportCsvButton");
+
+const memberExportExcelButton =
+document.getElementById("memberExportExcelButton");
 
 const bulkImportModal =
 document.getElementById("bulkImportModal");
@@ -4254,6 +4287,139 @@ applyFilters();
 
 
 
+/* ===============================
+   REF-NCC-MEMBER-EXPORT-20260901-01
+   OWNER ADMIN · CURRENT FILTER EXPORT
+=============================== */
+
+const MEMBER_EXPORT_COLUMNS = [
+  ["회원번호", "memberNumber"],
+  ["이름", "name"],
+  ["회원유형", "memberType"],
+  ["연락처", "phone"],
+  ["이메일", "email"],
+  ["생년월일", "birthDate"],
+  ["성별", "gender"],
+  ["지역", "region"],
+  ["추천인", "referrer"],
+  ["추천코드", "referralCode"],
+  ["소속센터", "centerName"],
+  ["센터코드", "centerCode"],
+  ["관리등급", "managementGrade"],
+  ["상태", "status"],
+  ["관심혜택", "benefit"],
+  ["반려동물", "hasPet"],
+  ["가입일", "joinDate"],
+  ["최종수정일", "updatedAt"]
+];
+
+function exportCell(value){
+  const text = String(value ?? "").replace(/\r?\n/g," ").trim();
+  return /^[=+\-@]/.test(text) ? "'" + text : text;
+}
+
+function exportValue(member, key){
+  if(key === "memberType") return memberTypeText(member.memberType);
+  if(key === "status") return statusText(member.status);
+  if(key === "gender") return member.gender === "male" ? "남성" : member.gender === "female" ? "여성" : "";
+  if(key === "hasPet") return member.hasPet === "yes" ? "보유" : member.hasPet === "no" ? "미보유" : "";
+  if(key === "managementGrade") return gradeText(member.managementGrade);
+  return member[key] || "";
+}
+
+function csvValue(value){
+  return '"' + exportCell(value).replaceAll('"','""') + '"';
+}
+
+function xmlValue(value){
+  return exportCell(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&apos;");
+}
+
+function downloadExportFile(filename, content, type){
+  const blob = new Blob([content],{type});
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(()=>URL.revokeObjectURL(url),0);
+}
+
+function buildMemberCsv(members){
+  const rows = [
+    MEMBER_EXPORT_COLUMNS.map(([label])=>csvValue(label)).join(","),
+    ...members.map(member=>MEMBER_EXPORT_COLUMNS.map(([,key])=>csvValue(exportValue(member,key))).join(","))
+  ];
+  return "\uFEFF" + rows.join("\r\n");
+}
+
+function buildMemberExcelXml(members){
+  const row = values => "<Row>" + values.map(value=>"<Cell><Data ss:Type=\\\"String\\">" + xmlValue(value) + "</Data></Cell>").join("") + "</Row>";
+  return "<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>" +
+    "<Workbook xmlns=\\\"urn:schemas-microsoft-com:office:spreadsheet\\\" xmlns:ss=\\\"urn:schemas-microsoft-com:office:spreadsheet\\\">" +
+    "<Worksheet ss:Name=\\\"회원목록\\\"><Table>" +
+    row(MEMBER_EXPORT_COLUMNS.map(([label])=>label)) +
+    members.map(member=>row(MEMBER_EXPORT_COLUMNS.map(([,key])=>exportValue(member,key)))).join("") +
+    "</Table></Worksheet></Workbook>";
+}
+
+function exportFilterSummary(){
+  return {
+    status:statusFilter.value || "all",
+    memberType:memberTypeFilter.value || "all",
+    managementGrade:gradeFilter.value || "all",
+    hasKeyword:Boolean(memberSearch.value.trim())
+  };
+}
+
+async function downloadFilteredMembers(format){
+  if(!auth.currentUser) return;
+  const members = [...currentFilteredMembers];
+  if(!members.length){
+    alert("현재 필터 조건에 해당하는 회원이 없습니다.");
+    return;
+  }
+
+  const button = format === "csv" ? memberExportCsvButton : memberExportExcelButton;
+  const originalLabel = button.textContent;
+  try{
+    button.disabled = true;
+    button.textContent = "접근기록 저장 중...";
+
+    await addDoc(collection(db,"memberDataExportLogs"),{
+      action:"member_export",
+      format,
+      exportedCount:members.length,
+      filterSummary:exportFilterSummary(),
+      actorUid:auth.currentUser.uid,
+      actorEmail:auth.currentUser.email || "",
+      createdAt:serverTimestamp()
+    });
+
+    const date = new Date().toISOString().slice(0,10).replaceAll("-","");
+    if(format === "csv"){
+      downloadExportFile("NCC_회원목록_" + date + ".csv",buildMemberCsv(members),"text/csv;charset=utf-8");
+    }else{
+      downloadExportFile("NCC_회원목록_" + date + ".xls",buildMemberExcelXml(members),"application/vnd.ms-excel");
+    }
+  }catch(error){
+    console.error(error);
+    alert("개인정보 접근기록을 저장하지 못해 다운로드를 중단했습니다. 관리자 권한과 네트워크 상태를 확인해 주세요.");
+  }finally{
+    button.disabled = false;
+    button.textContent = originalLabel;
+  }
+}
+
+memberExportCsvButton.addEventListener("click",()=>downloadFilteredMembers("csv"));
+memberExportExcelButton.addEventListener("click",()=>downloadFilteredMembers("excel"));
 
 
 /* ===============================

@@ -1302,6 +1302,40 @@ match /centerActivities/{activityId} {
       allow update, delete: if false;
     }
 
+
+    match /memberDataExportLogs/{logId} {
+      allow create: if
+        isAdmin()
+        && request.resource.data.keys().hasAll([
+          "action", "format", "exportedCount", "filterSummary",
+          "actorUid", "actorEmail", "createdAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "action", "format", "exportedCount", "filterSummary",
+          "actorUid", "actorEmail", "createdAt"
+        ])
+        && request.resource.data.action == "member_export"
+        && request.resource.data.format in ["csv", "excel"]
+        && request.resource.data.exportedCount is int
+        && request.resource.data.exportedCount >= 0
+        && request.resource.data.filterSummary is map
+        && request.resource.data.filterSummary.keys().hasAll([
+          "status", "memberType", "managementGrade", "hasKeyword"
+        ])
+        && request.resource.data.filterSummary.keys().hasOnly([
+          "status", "memberType", "managementGrade", "hasKeyword"
+        ])
+        && request.resource.data.filterSummary.status is string
+        && request.resource.data.filterSummary.memberType is string
+        && request.resource.data.filterSummary.managementGrade is string
+        && request.resource.data.filterSummary.hasKeyword is bool
+        && request.resource.data.actorUid == request.auth.uid
+        && request.resource.data.actorEmail == request.auth.token.email
+        && request.resource.data.createdAt == request.time;
+      allow read: if isAdmin();
+      allow update, delete: if false;
+    }
+
     // Public center directory contains official administrative names/codes only.
     // Member data and manager contact information must never be stored here.
     match /centerDirectory/{centerCode} {
