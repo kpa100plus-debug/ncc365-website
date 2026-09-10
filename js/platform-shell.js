@@ -1,6 +1,6 @@
 const nccHeadLinks=[
-  ["icon","image/png","/images/ncc-card03-48.png"],
-  ["apple-touch-icon","image/png","/images/ncc-card03-180.png"],
+  ["icon","image/png","/images/ncc-icon20-48.png"],
+  ["apple-touch-icon","image/png","/images/ncc-icon20-180.png"],
   ["manifest","","site.webmanifest"]
 ];
 for(const [rel,type,href] of nccHeadLinks){
