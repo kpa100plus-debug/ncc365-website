@@ -2,8 +2,7 @@
 # Preserve old public URLs while directing users to the maintained pages.
 /pages/experience.html  /benefits.html          301
 /pages/groupbuy.html    /groupbuy.html          301
-/pages/center.html      /center.html            301
+/pages/center.html      /center.html             301
 /pages/partner.html     /partner.html           301
 /pages/channel.html     /consumer-channel.html  301
 /pages/signup.html      /join.html              301
-/app                    /app.html               200
