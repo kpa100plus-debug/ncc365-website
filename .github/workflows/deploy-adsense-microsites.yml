@@ -104,7 +104,8 @@ jobs:
             const root = path.join(base, name);
             const files = walk(root);
             const html = files.filter((file) => file.endsWith('.html'));
-            if (html.length !== 11) throw new Error(`${name}: expected 11 HTML files, found ${html.length}`);
+            const minimumPages = name === 'arcana-day.pages.dev' ? 20 : 11;
+            if (html.length < minimumPages) throw new Error(`${name}: expected at least ${minimumPages} HTML files, found ${html.length}`);
             for (const file of files) {
               if (fs.statSync(file).size === 0) throw new Error(`${name}: empty file ${path.relative(root, file)}`);
             }
